@@ -1,0 +1,84 @@
+{% load static %}
+<html lang="en" dir="rtl">
+<head>
+    {% csrf_token %}
+    <meta charset="UTF-8">
+    <title>Automation System</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/myStyle.css' %}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/funcs.js' %}"></script>
+
+    <script>
+        $(document).ready( function () {
+                search_machine();
+                search_profession();
+                search_position();
+            }
+        )
+    </script>
+
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+      <div>
+          <a href="/home/"><button type="button" class="btn btn-dark" style="font-size: 13px">بازگشت به خانه</button></a>
+          <a href="/home/add-base-data/"><button type="button" class="btn btn-dark" style="font-size: 13px">ویرایش اطلاعات پایه</button></a>
+          <a href="/home/create-report/"><button type="button" class="btn btn-dark" style="font-size: 13px">ایجاد گزارش روزانه</button></a>
+          <a href="/home/daily-reports/"><button type="button" class="btn btn-dark" style="font-size: 13px">آرشیو گزارشات</button></a>
+      </div>
+      <h1 class="navbar-brand" style="font-size: 13px">سامانه اتوماسیون</h1>
+  </div>
+</nav>
+
+
+{% block content %}
+
+<div class="container-fluid" style="padding: 5%">
+    <div class="row" >
+        <a href="/home/create-report/" class="navbar-brand ">
+            <div class="p-1 row hover" style="margin-bottom: 2%;">
+                <div class="p-3 border bg-light " style="text-align: center; border-radius: 10px;">
+                    ایجاد گزارش
+                </div>
+            </div>
+        </a>
+        <a href="/home/daily-reports/" class="navbar-brand ">
+            <div class="p-1 row hover" style="margin-bottom: 2%;">
+                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">
+                    آرشیو گزارشات
+                </div>
+            </div>
+        </a>
+        <a href="/home/add-base-data" class="navbar-brand">
+            <div class="p-1 row hover">
+                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">
+                    ویرایش اطلاعات پایه
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+
+
+<!--<footer class="bg-light text-center" style="position: fixed; height: 25px; bottom: 0; width: 100%">-->
+<!--  <div class="text-center p-1">-->
+<!--    <a class="text-dark navbar-brand" style="text-decoration: none; font-size: 15px;">این یک نوار اطلاعات ثابت است</a>-->
+<!--  </div>-->
+<!--</footer>-->
+
+</body>
+</html>
+
+

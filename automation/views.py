@@ -1,0 +1,304 @@
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from django.http import JsonResponse
+
+from .models import *
+from .converters import *
+import jdatetime
+import json
+# Create your views here.
+
+
+# TODO : Bug Fix ; error raise for adding already existing objects
+
+
+def home(request):
+    return render(request, "base.html")
+
+
+def add_base_data_template(request):
+    professions = Profession.objects.all()
+    positions = Position.objects.all()
+    machines = Machine.objects.all()
+
+    if not professions.exists():
+        professions = []
+    if not positions.exists():
+        positions = []
+    if not machines.exists():
+        machines = []
+
+    context = {
+        "positions": positions,
+        "professions": professions,
+        "machines": machines,
+        "machine_types": MACHINE_TYPES,
+    }
+
+    return render(request, "modify-base-data.html", context=context)
+
+
+def create_report_template(request):
+
+    if DailyReport.objects.all().count() == 0:
+        positions = Position.objects.all()
+        professions = Profession.objects.all()
+        machines = Machine.objects.all()
+
+        context = {
+            "positions": positions,
+            "professions": professions,
+            "machines": machines,
+            "machine_types": MACHINE_TYPES,
+        }
+    else:
+        report = DailyReport.objects.last()
+        positions = PositionCount.objects.filter(dailyReport=report)
+        professions = ProfessionCount.objects.filter(dailyReport=report)
+        machines = MachineCount.objects.filter(dailyReport=report)
+
+        context = {
+            "positions": positions,
+            "professions": professions,
+            "machines": machines,
+            "machine_types": MACHINE_TYPES,
+        }
+
+    return render(request, "daily-report.html", context=context)
+
+
+def add_position_to_db(request):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        position = request.POST.get("position")
+
+        new_position = Position.objects.create(name=position)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_machine_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        machine = request.POST.get("machine")
+        type = request.POST.get("machineType")
+
+        new_machine = Machine.objects.create(name=machine, type=type)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_profession_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        profession = request.POST.get("profession")
+
+        new_profession = Profession.objects.create(name=profession)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def del_position_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("position")
+        obj = Position.objects.get(name=name)
+        objCount = PositionCount.objects.filter(position=obj.id)
+        obj.delete()
+        objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_profession_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("profession")
+        obj = Profession.objects.get(name=name)
+        objCount = PositionCount.objects.filter(position=obj.id)
+        obj.delete()
+        objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_machine_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("machine")
+        obj = Machine.objects.get(name=name)
+        objCount = MachineCount.objects.filter(machine=obj.id)
+        obj.delete()
+        objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def save_daily_report_to_db(request):
+    if request.method == "POST":
+        data = dict(request.POST)
+        positions = {}
+        professions = {}
+        machines = {}
+
+        for key, value in data.items():
+            if "position" in key:
+                positions[key.split("_")[1]] = int(value[0])
+            elif "profession" in key:
+                if key.split("_")[1] in professions.keys():
+                    professions[key.split("_")[1]].append(int(value[0]))
+                else:
+                    professions[key.split("_")[1]] = []
+                    professions[key.split("_")[1]].append(int(value[0]))
+            elif "machine" in key:
+                machines[key.split("_")[1]] = int(value[0])
+
+        # print(positions)
+        # print(professions)
+        # print(machines)
+
+        report = DailyReport.objects.create(
+            project_name="پروژه آلفا",
+            employer="کارفرما",
+            employee="پیمانکار",
+            contract_number="123456789",
+        )
+
+        for position, count in positions.items():
+            if count > 0:
+                pos = Position.objects.get(name=position)
+                obj = PositionCount.objects.create(
+                    position=pos,
+                    dailyReport=report,
+                    count=count,
+                )
+                report.positions.add(obj.position)
+            else:
+                continue
+
+        for profession, count in professions.items():
+            if sum(count) > 0:
+                prof = Profession.objects.get(name=profession)
+                obj = ProfessionCount.objects.create(
+                    profession=prof,
+                    dailyReport=report,
+                    countExpert=count[0],
+                    countSemiExpert=count[1],
+                    countNonExpert=count[2],
+                )
+                obj.cal_countTotal()
+
+                report.professions.add(obj.profession)
+
+            else:
+                continue
+
+        for machine, count in machines.items():
+            if count > 0:
+                machine = machine.split("-")[1].strip()
+                mach = Machine.objects.get(name=machine)
+
+                obj = MachineCount.objects.create(
+                    machine=mach,
+                    dailyReport=report,
+                    count=count,
+                )
+                report.machines.add(obj.machine)
+
+            else:
+                continue
+
+        report.cal_countPeople()
+        report.cal_countMachines()
+
+        return redirect(to="/home/daily-reports")
+    else:
+        return -1
+
+
+def del_daily_report_from_db(request):
+    if request.method == "POST":
+        obj = DailyReport.objects.get(id=request.POST["id"])
+        obj.delete()
+        return redirect(to="/home/daily-reports")
+    else:
+        return -1
+
+
+
+def reports_daily(request):
+    reports = DailyReport.objects.all()
+
+    context = {
+        "reports": reports,
+    }
+
+    return render(request, "reports-list.html", context=context)
+
+
+def report_on_day(request, idd):
+    # report = DailyReport.objects.get(id=idd)
+    report = get_object_or_404(DailyReport, pk=idd)
+
+    positions = PositionCount.objects.filter(dailyReport=report)
+    professions = ProfessionCount.objects.filter(dailyReport=report)
+    machines = MachineCount.objects.filter(dailyReport=report)
+    other = {
+        "weekday": report.get_weekday_display(),
+        "date": report.date.strftime('%Y/%m/%d'),
+    }
+
+    context = {
+        "report": report,
+        "positions": positions,
+        "professions": professions,
+        "machines": machines,
+        "other": other,
+    }
+    return render(request, "print-report.html", context=context)
+
+
+def get_options(request, type):
+    if request.method == "POST":
+        data = json.loads(request.POST['options'])["options"]
+        data = [item.strip()[:-1].strip() for item in data]
+
+        if type == "profession":
+            data = Profession.objects.exclude(name__in=data).all()
+        elif type == "position":
+            data = Position.objects.exclude(name__in=data).all()
+        elif type == "machine":
+            data = Machine.objects.exclude(name__in=data).all()
+        if data.exists():
+            data = json.dumps(list(data.values()))
+        else:
+            data = "[]"
+
+        context = {
+            type: data,
+        }
+
+        return JsonResponse(context)

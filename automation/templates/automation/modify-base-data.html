@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="container" style="margin-top: 2%">
+    <div class="row">
+        <div class="col order-first">
+
+            <table class="table" style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            سمت
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">+</span>
+                        </th>
+                    </tr>
+                </thead>
+
+                {% for position in positions %}
+                    <tr  id="{{position.name}}">
+                        <td>
+                            {{ position.name }}
+                            <span class="badge rounded-pill bg-danger"
+                                style="float: left; color: black; " onclick="del_position('{{ position.name }}', true)">-</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col">
+            <table class="table" style="font-size: 13px">
+                <thead class="table-dark">
+                    <tr class="">
+                            <th class="" >
+                                تخصص
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">+</span>
+                            </th>
+                    </tr>
+                </thead>
+
+                {% for profession in professions %}
+                    <tr id="{{profession.name}}">
+                        <td class="">
+                            {{ profession.name }}
+                            <span class="badge rounded-pill bg-danger"
+                                style="float: left; color: black" onclick="del_profession('{{ profession.name }}', true)">-</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col">
+            <table class="table" style="font-size: 13px">
+                <thead class="table-dark">
+                    <tr class="">
+                            <th class="" >
+                                ماشین آلات
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">+</span>
+                            </th>
+                    </tr>
+                </thead>
+
+                {% for machine in machines %}
+                    <tr id="{{ machine.name }}">
+                        <td class="">
+                            {{ machine.name }}
+                            <span class="badge rounded-pill bg-danger"
+                                style="float: left; color: black" onclick="del_machine('{{ machine.name }}', true)">-</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade " id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropPositionsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropPositionsLabel" style="margin-right: auto">افزودن سمت</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-position" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="position" class="form-control" placeholder="نام سمت">
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon1" style="border: none">افزودن سمت</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropProfessions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropProfessionsLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropProfessionsLabel" style="margin-right: auto">افزودن تخصص</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-profession" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="profession" class="form-control" placeholder="نام تخصص">
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon2" style="border: none">افزودن تخصص</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropMachinesLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropMachinesLabel" style="margin-right: auto">افزودن ماشین</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-machine" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="machine" class="form-control" placeholder="نام ماشین">
+                        <select class="form-select" id="machineType" name="machineType">
+                            {% for type in machine_types %}
+                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon3" style="border: none">افزودن ماشین</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

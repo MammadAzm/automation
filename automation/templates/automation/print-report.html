@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container" style="margin-top: 1%">
+        <div class="row">
+            <table class="table" id="table-header" style="font-size: 13px">
+                <thead class="table-dark">
+                    <tr>
+                        <th>پروژه</th>
+                        <th class="table-light">{{ report.project_name }}</th>
+                        <th>شماره قرارداد</th>
+                        <th class="table-light">{{ report.contract_number }}</th>
+                    </tr>
+                    <tr>
+                        <th>کارفرما</th>
+                        <th class="table-light">{{ report.employer }}</th>
+                        <th>پیمانکار</th>
+                        <th class="table-light">{{ report.employee }}</th>
+                    </tr>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th class="table-light">{{ other.date }}</th>
+                        <th>روز</th>
+                        <th class="table-light">{{ other.weekday }}</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col order-first">
+                <table class="table" id="table-position" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>سمت</th>
+                            <th>تعداد</th>
+                        </tr>
+                    </thead>
+                    {% for position in positions %}
+                        <tr>
+                            <td>{{ position }}</td>
+                            <td>{{ position.count }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col">
+                <table class="table" id="table-profession" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>سمت</th>
+                            <th>ماهر</th>
+                            <th>نیمه ماهر</th>
+                            <th>ساده</th>
+                            <th>کل</th>
+                        </tr>
+                    </thead>
+                    {% for profession in professions %}
+                        <tr>
+                            <td>{{ profession }}</td>
+                            <td>{{ profession.countExpert }}</td>
+                            <td>{{ profession.countSemiExpert }}</td>
+                            <td>{{ profession.countNonExpert }}</td>
+                            <td>{{ profession.countTotal }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col">
+                <table class="table" id="table-machine" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ماشین</th>
+                            <th>تعداد</th>
+                        </tr>
+                    </thead>
+                    {% for machine in machines %}
+                        <tr>
+                            <td>{{ machine }}</td>
+                            <td>{{ machine.count }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+{% endblock %}
+

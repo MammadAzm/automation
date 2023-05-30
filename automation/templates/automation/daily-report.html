@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<form action="/edit-db/save-daily-report" method="post" id="report-form">
+    {% csrf_token %}
+    <div class="container" style="margin-top: 2%">
+        <div class="row">
+            <div class="col order-first">
+
+                <table class="table" id="table-position" style="font-size: 13px">
+
+                    <thead class="table-dark">
+                        <tr class="">
+                            <th class="" >
+                                سمت
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">+</span>
+                            </th>
+                            <th class="">
+                                تعداد
+                            </th>
+                        </tr>
+                    </thead>
+
+                    {% for position in positions %}
+                        <tr id="{{ position }}">
+                            <td class="">
+<!--                                {{ position }}-->
+                                {{ position }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black; " onclick="del_position('{{ position }}', false)">-</span>
+                            </td>
+                            <td class=" ">
+                                <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0{{ position.count }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col">
+                <table class="table" id="table-profession" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr class="">
+                                <th class="" >
+                                    تخصص
+                                    <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">+</span>
+                                </th>
+                                <th class="">ماهر</th>
+                                <th class="">نیمه ماهر</th>
+                                <th class="">ساده</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for profession in professions %}
+
+                        <tr id="{{ profession }}">
+                            <td class="">
+                                {{ profession }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black" onclick="del_profession('{{ profession }}', false)">-</span>
+                            </td>
+                            <td class="">
+                                <input required class="small-input-integer" type="number" id="{{ profession }}_ExpertCount" name="profession_{{ profession }}_ExpertCount" min="0" value="0{{ profession.countExpert }}">
+                            </td>
+                            <td class="">
+                                <input required class="small-input-integer" type="number" id="{{ profession }}_SemiExpertCount" name="profession_{{ profession }}_SemiExpertCount" min="0" value="0{{ profession.countSemiExpert }}"></td>
+                            <td class="">
+                                <input required class="small-input-integer" type="number" id="{{ profession }}_NonExpertCount" name="profession_{{ profession }}_NonExpertCount" min="0" value="0{{ profession.countNonExpert }}">
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col">
+                <table class="table" id="table-machine" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr class="">
+                            <th class="" >
+                                ماشین
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">+</span>
+                            </th>
+                            <th class="">
+                                تعداد
+                            </th>
+                        </tr>
+                    </thead>
+
+                    {% for machine in machines %}
+                        <tr id="{{ machine }}">
+                            <td class="">
+<!--                                {{ machine }}-->
+                                {{ machine }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>
+                            </td>
+                            <td class="">
+                                <input required class="small-input-integer" type="number" id="{{ machine }}_count" name="machine_{{ machine }}_count" min="0" value="0{{ machine.count }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <button type="submit" class="btn btn-outline-success ">ذخیره</button>
+
+        </div>
+
+    </div>
+
+
+</form>
+
+
+
+
+
+
+
+
+
+    <div class="modal fade" id="staticBackdropProfessions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropProfessionsLabel" style="margin-right: auto">افزودن تخصص</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input id="profession-name" disabled required type="text" name="machine" class="form-control" placeholder="تخصص">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuProfessions" data-bs-toggle="dropdown" onclick='fetch_options("profession")'>
+                                    Select an option
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-professions">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-profession">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for profession in professions %}
+                                        <li><a class="dropdown-item">{{ profession }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+
+
+                            <button class="btn btn-outline-success bp3-round" onclick="add_profession_to_daily_report()"
+                                    type="button" id="btn-add-profession" style="border: none">افزودن تخصص</button>
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropMachinesLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropMachinesLabel" style="margin-right: auto">افزودن ماشین</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input id="machine-name" disabled required type="text" name="machine" class="form-control" placeholder="ماشین">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_options("machine")' >
+                                    Select an option
+                                </button>
+
+                                <ul class="dropdown-menu" id="dropdown-menu-machines" aria-labelledby="dropdownMenuMachines">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-machine">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for machine in machines %}
+                                        <li><a class="dropdown-item">{{ machine }}</a></li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </div>
+
+
+
+                            <button class="btn btn-outline-success bp3-round" onclick="add_machine_to_daily_report()"
+                                    type="button" id="btn-add-machine" style="border: none">افزودن ماشین</button>
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"   >
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropPositionsLabel" style="margin-right: auto">افزودن سمت</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input id="position-name" disabled required type="text" name="position" class="form-control" placeholder="سمت">
+
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuPositions" data-bs-toggle="dropdown" onclick='fetch_options("position")' >
+                                    Select an option
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-positions" aria-labelledby="dropdownMenuPositions">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-position">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for position in positions %}
+                                        <li><a class="dropdown-item">{{ position }}</a></li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </div>
+
+
+
+                            <button class="btn btn-outline-success bp3-round" onclick="add_position_to_daily_report()"
+                                    type="button" id="btn-add-position" style="border: none">افزودن ماشین</button>
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
