@@ -24,7 +24,7 @@
                             </th>
                         </tr>
                     </thead>
-
+                    <tbody>
                     {% for position in positions %}
                         <tr id="{{ position }}">
                             <td class="">
@@ -37,6 +37,7 @@
                                 <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0{{ position.count }}">
                             </td>
                         </tr>
+                    </tbody>
                     {% endfor %}
                 </table>
             </div>
@@ -99,7 +100,7 @@
                             </th>
                         </tr>
                     </thead>
-
+                    <tbody>
                     {% for machine in machines %}
                         <tr id="{{ machine }}">
                             <td class="">
@@ -113,6 +114,7 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
             </div>
 

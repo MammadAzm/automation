@@ -22,3 +22,7 @@ td {
     vertical-align: middle;
     background-color: red;
 }
+
+.onhover:hover {
+    box-shadow: 0 1px 10px 2px #00002d;
+}
