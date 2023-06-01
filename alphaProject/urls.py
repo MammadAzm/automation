@@ -42,7 +42,7 @@ urlpatterns = [
     path("edit-db/del-profession", del_profession_from_db),
     path("edit-db/del-machine", del_machine_from_db),
 
-    path("edit-db/get-options/<type>", get_options),
+    path("edit-db/get-options/<typee>", get_options),
 
     # path("edit-db/add-machine-to-daily-report", add_machine_to_daily_report),
 ]

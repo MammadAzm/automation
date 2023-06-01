@@ -218,7 +218,9 @@ def save_daily_report_to_db(request):
 
         for machine, count in machines.items():
             if count > 0:
-                machine = machine.split("-")[1].strip()
+                # print(machine)
+                machine = machine.strip()
+                # machine = machine.split("-")[1].strip()
                 mach = Machine.objects.get(name=machine)
 
                 obj = MachineCount.objects.create(
@@ -281,16 +283,15 @@ def report_on_day(request, idd):
     return render(request, "print-report.html", context=context)
 
 
-def get_options(request, type):
+def get_options(request, typee):
     if request.method == "POST":
         data = json.loads(request.POST['options'])["options"]
         data = [item.strip()[:-1].strip() for item in data]
-
-        if type == "profession":
+        if typee == "profession":
             data = Profession.objects.exclude(name__in=data).all()
-        elif type == "position":
+        elif typee == "position":
             data = Position.objects.exclude(name__in=data).all()
-        elif type == "machine":
+        elif typee == "machine":
             data = Machine.objects.exclude(name__in=data).all()
         if data.exists():
             data = json.dumps(list(data.values()))
@@ -298,7 +299,7 @@ def get_options(request, type):
             data = "[]"
 
         context = {
-            type: data,
+            typee: data,
         }
 
         return JsonResponse(context)

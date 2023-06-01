@@ -310,7 +310,6 @@ function fetch_options(type){
     options.forEach(option => {
       option.remove()
     });
-
     let table = document.getElementById("table-" + type)
     let tbody = table.getElementsByTagName("tbody")[0]
     let rows = tbody.getElementsByTagName("tr")
@@ -321,7 +320,6 @@ function fetch_options(type){
         let item = rows[i].getElementsByTagName("td")[0]
         innerHTMLs.push(item.textContent);
     }
-
     options = JSON.stringify(
         {
             'options': innerHTMLs,
