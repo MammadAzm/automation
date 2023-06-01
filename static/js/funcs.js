@@ -305,7 +305,6 @@ function add_material_to_daily_report() {
     input.name = "material_"+val+"_count";
     input.min = '0';
     input.value = '0';
-    cell2.appendChild(input)
 
     let cell3 = document.createElement('td', );
     cell3.className = "";
@@ -318,6 +317,11 @@ function add_material_to_daily_report() {
     select.style.textAlign = 'left  ';
     select.style.padding = '0';
     select.style.paddingLeft = '15%';
+
+    input.onchange = function () {
+        toggle_requirement.call(this, select.id, input.id)
+    }
+    cell2.appendChild(input)
 
     let option = document.createElement('option',)
     option.value = ""
@@ -535,3 +539,14 @@ function fetch_units(callback) {
     });
 }
 
+function toggle_requirement(toggleID, conditionID) {
+
+    let select = document.getElementById(toggleID)
+    let input = document.getElementById(conditionID)
+    if (input.value == 0) {
+        select.required = false
+    } else if (input.value > 0) {
+        select.required = true
+    }
+
+}

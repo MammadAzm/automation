@@ -187,16 +187,49 @@
                                     </td>
                                     <td class="">
                                         {% if material.amount %}
-                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1" name="material_{{ material }}_count" min="0" value="{{ material.amount }}">
-                                        {% else %}
-                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1" name="material_{{ material }}_count" min="0" value="0">
-                                        {% endif %}
+                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
+                                                   name="material_{{ material }}_count" min="0" value="{{ material.amount }}">
+
 
                                     </td>
                                     <td class="">
                                         <select required class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
                                             style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+
                                             {% if material.amount %}
+
+                                            {% else %}
+                                                <option selected disabled hidden value="" >انتخاب</option>
+                                            {% endif %}
+
+                                            {% for unit in units %}
+
+                                                {% if material.unit == unit %}
+                                                    <option value="{{ unit.name }}" selected name="">{{ unit.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ unit.name }}" name="">{{ unit.name }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </select>
+                                    </td>
+
+                                        {% else %}
+
+                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
+                                                   name="material_{{ material }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
+
+
+                                    </td>
+
+                                    <td class="">
+
+                                        <select class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
+                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+
+                                            {% if material.amount %}
+
                                             {% else %}
                                                 <option selected disabled hidden value="" >انتخاب</option>
                                             {% endif %}
@@ -214,6 +247,9 @@
 
                                         </select>
                                     </td>
+
+                                        {% endif %}
+
                                 </tr>
                             {% endfor %}
                             </tbody>
