@@ -194,11 +194,11 @@
 
                                     </td>
                                     <td class="">
-                                        <select class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
+                                        <select required class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
                                             style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
                                             {% if material.amount %}
                                             {% else %}
-                                                <option hidden selected disabled>انتخاب</option>
+                                                <option selected disabled hidden value="" >انتخاب</option>
                                             {% endif %}
 
 
@@ -211,13 +211,6 @@
                                                 {% endif %}
 
                                             {% endfor %}
-<!--                                            <script>fetch_units_for('{{ material }}')</script>-->
-<!--                                            {% if material.unit %}-->
-<!--                                                -->
-<!--                                            {% else %}-->
-
-<!--                                            {% endif %}-->
-
 
                                         </select>
                                     </td>
