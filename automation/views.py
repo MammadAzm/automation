@@ -219,7 +219,11 @@ def save_daily_report_to_db(request):
                     professions[key.split("_")[1]] = []
                     professions[key.split("_")[1]].append(int(value[0]))
             elif "machine" in key:
-                machines[key.split("_")[1]] = int(value[0])
+                if key.split("_")[1] in machines.keys():
+                    machines[key.split("_")[1]].append(int(value[0]))
+                else:
+                    machines[key.split("_")[1]] = []
+                    machines[key.split("_")[1]].append(int(value[0]))
             elif "material" in key:
                 if "count" in key:
                     materials[key.split("_")[1]] = [float(value[0]), None]
@@ -269,7 +273,7 @@ def save_daily_report_to_db(request):
                 continue
 
         for machine, count in machines.items():
-            if count > 0:
+            if count[0] > 0 or count[1] > 0:
                 # print(machine)
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
@@ -278,7 +282,9 @@ def save_daily_report_to_db(request):
                 obj = MachineCount.objects.create(
                     machine=mach,
                     dailyReport=report,
-                    count=count,
+                    activeCount=count[0],
+                    inactiveCount=count[1],
+                    totalCount=sum(count),
                 )
                 report.machines.add(obj.machine)
 

@@ -6,23 +6,23 @@
 
 <form action="/edit-db/save-daily-report" method="post" id="report-form">
     {% csrf_token %}
-    <div class="container" style="margin-top: 2%">
+    <div class="container-xxl px-4" style="margin-top: 2%">
         <div class="row">
-            <div class="col-7">
+            <div class="col-6">
 
-                <div class="row">
+                <div class="row ">
 
-                    <div class="col-4" style="padding: 0; margin: 0;">
-                        <table class="table" id="table-position" style="font-size: 13px; margin: 0;">
+                    <div class="col-4 " style="padding: 0; margin: 0;">
+                        <table class="table" id="table-position" style="font-size: 13px;">
 
                             <thead class="table-dark">
                                 <tr class="">
-                                    <th class="" >
+                                    <th class="" style="width: 75%">
                                         سمت
                                         <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
                                         data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">+</span>
                                     </th>
-                                    <th class="" style="width: 10%">
+                                    <th class="">
                                         تعداد
                                     </th>
                                 </tr>
@@ -37,7 +37,7 @@
                                             style="float: left; color: black; " onclick="del_position('{{ position }}', false)">-</span>
                                     </td>
                                     <td class="">
-                                        {% if machine.count %}
+                                        {% if position.count %}
                                             <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="{{ position.count }}">
                                         {% else %}
                                             <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0">
@@ -50,18 +50,18 @@
                         </table>
                     </div>
 
-                    <div class="col-6" style="padding: 0; margin: 0">
-                        <table class="table" id="table-profession" style="font-size: 13px; margin: 0;">
+                    <div class="col-7  me-2 " style="padding: 0; margin: 0">
+                        <table class="table" id="table-profession" style="font-size: 13px;">
                             <thead class="table-dark">
                                 <tr class="">
-                                        <th class="" >
+                                        <th class="" style="width: 45%">
                                             تخصص
                                             <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">+</span>
                                         </th>
-                                        <th class="" style="width: 10%">ماهر</th>
-                                        <th class="" style="width: 22%">نیمه ماهر</th>
-                                        <th class="" style="width: 10%">ساده</th>
+                                        <th class="">ماهر</th>
+                                        <th class="">نیمه ماهر</th>
+                                        <th class="">ساده</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,21 +108,21 @@
 
                 <div class="row">
 
-                    <div class="col-4" style="padding: 0; margin: 0">
+                    <div class="col-5" style="padding: 0; margin: 0">
                         <table class="table" id="table-machine" style="font-size: 13px">
                             <thead class="table-dark">
                                 <tr class="">
-                                    <th class="" >
+                                    <th class="" style="width: 60%">
                                         ماشین
                                         <span class="badge rounded-pill bg-warning" style="float: left; color: black"
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">+</span>
                                     </th>
                                     <th class="">
-                                        تعداد
+                                        فعال
                                     </th>
 
                                     <th class="">
-                                        وضعیت
+                                        غیرفعال
                                     </th>
                                 </tr>
                             </thead>
@@ -135,11 +135,21 @@
                                         <span class="badge rounded-pill bg-danger"
                                             style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>
                                     </td>
+
                                     <td class="">
-                                        {% if machine.count %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_count" name="machine_{{ machine }}_count" min="0" value="{{ machine.count }}">
+                                        {% if machine.activeCount %}
+                                            <input required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="{{ machine.activeCount }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_count" name="machine_{{ machine }}_count" min="0" value="0"
+                                            <input required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="0"
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td class="">
+                                        {% if machine.inactiveCount %}
+                                            <input required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                        {% else %}
+                                            <input required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="0"
                                         {% endif %}
 
                                     </td>
@@ -149,7 +159,7 @@
                         </table>
                     </div>
 
-                    <div class="col-6" style="padding: 0; margin: 0">
+                    <div class="col-6 me-2" style="padding: 0; margin: 0">
                         <table class="table" id="table-material" style="font-size: 13px">
                             <thead class="table-dark">
                                 <tr class="">
@@ -221,7 +231,7 @@
 
             </div>
 
-            <div class="col-5">
+            <div class="col-6">
 
                 <div class="row">
 

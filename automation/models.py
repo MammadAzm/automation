@@ -68,8 +68,9 @@ class MachineCount(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
-    count = models.PositiveIntegerField(default=0)
-    # status = models.BooleanField(default=True)
+    activeCount = models.PositiveIntegerField(default=0)
+    inactiveCount = models.PositiveIntegerField(default=0)
+    totalCount = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('dailyReport', 'machine',)
@@ -131,7 +132,9 @@ class DailyReport(models.Model):
     countPeople = models.IntegerField(default=0)
 
     machines = models.ManyToManyField(Machine, through='MachineCount')
-    countMachines = models.IntegerField(default=0)
+    countActiveMachines = models.IntegerField(default=0)
+    countInactiveMachines = models.IntegerField(default=0)
+    countAllMachines = models.IntegerField(default=0)
 
     materials = models.ManyToManyField(Material, through='MaterialCount')
 
@@ -148,8 +151,9 @@ class DailyReport(models.Model):
 
     def cal_countMachines(self):
         for machine in self.machinecount_set.all():
-            self.countMachines += machine.count
-
+            self.countActiveMachines += machine.activeCount
+            self.countInactiveMachines += machine.inactiveCount
+            self.countAllMachines += machine.totalCount
         self.save()
 
     def __str__(self):

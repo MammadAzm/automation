@@ -76,13 +76,17 @@
                     <thead class="table-dark">
                         <tr>
                             <th>ماشین</th>
-                            <th>تعداد</th>
+                            <th>فعال</th>
+                            <th>غیرفعال</th>
+                            <th>کل</th>
                         </tr>
                     </thead>
                     {% for machine in machines %}
                         <tr>
                             <td>{{ machine }}</td>
-                            <td>{{ machine.count }}</td>
+                            <td>{{ machine.activeCount }}</td>
+                            <td>{{ machine.inactiveCount }}</td>
+                            <td>{{ machine.totalCount }}</td>
                         </tr>
                     {% endfor %}
                 </table>
