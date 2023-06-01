@@ -233,53 +233,53 @@
 
             <div class="col-6">
 
-                <div class="row">
+<!--                <div class="row">-->
 
-                    <div class="col" style="padding: 0; margin: 0">
-                        <table class="table" id="table-machine2" style="font-size: 13px">
-                            <thead class="table-dark">
-                                <tr class="">
-                                    <th class="" >
-                                        شرح عملیات اجرایی
-                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
-                                    </th>
-                                    <th class="" style="width: 10%">
-                                        واحد
-                                    </th>
-                                    <th class="" style="width: 12%">
-                                        تا دیروز
-                                    </th>
-                                    <th class="" style="width: 10%">
-                                        امروز
-                                    </th>
-                                    <th class="" style="width: 12%">
-                                        کل آیتم
-                                    </th>
-                                    <th class="" style="width: 10%">
-                                        درصد
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for machine in machines %}
-                                <tr id="{{ machine }}2">
-                                    <td class="">
-        <!--                                {{ machine }}-->
-                                        {{ machine }}
-                                        <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>
-                                    </td>
-                                    <td class="">
-<!--                                        <input required class="small-input-integer" type="number" id="{{ machine }}_count2" name="machine_{{ machine }}_count" min="0" value="{{ machine.count }}">-->
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+<!--                    <div class="col" style="padding: 0; margin: 0">-->
+<!--                        <table class="table" id="table-machine2" style="font-size: 13px">-->
+<!--                            <thead class="table-dark">-->
+<!--                                <tr class="">-->
+<!--                                    <th class="" >-->
+<!--                                        شرح عملیات اجرایی-->
+<!--                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black"-->
+<!--                                            data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>-->
+<!--                                    </th>-->
+<!--                                    <th class="" style="width: 10%">-->
+<!--                                        واحد-->
+<!--                                    </th>-->
+<!--                                    <th class="" style="width: 12%">-->
+<!--                                        تا دیروز-->
+<!--                                    </th>-->
+<!--                                    <th class="" style="width: 10%">-->
+<!--                                        امروز-->
+<!--                                    </th>-->
+<!--                                    <th class="" style="width: 12%">-->
+<!--                                        کل آیتم-->
+<!--                                    </th>-->
+<!--                                    <th class="" style="width: 10%">-->
+<!--                                        درصد-->
+<!--                                    </th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            {% for machine in machines %}-->
+<!--                                <tr id="{{ machine }}2">-->
+<!--                                    <td class="">-->
+<!--        &lt;!&ndash;                                {{ machine }}&ndash;&gt;-->
+<!--                                        {{ machine }}-->
+<!--                                        <span class="badge rounded-pill bg-danger"-->
+<!--                                            style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>-->
+<!--                                    </td>-->
+<!--                                    <td class="">-->
+<!--&lt;!&ndash;                                        <input required class="small-input-integer" type="number" id="{{ machine }}_count2" name="machine_{{ machine }}_count" min="0" value="{{ machine.count }}">&ndash;&gt;-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            {% endfor %}-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
 
-                </div>
+<!--                </div>-->
 
             </div>
         </div>

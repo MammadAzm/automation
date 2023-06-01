@@ -92,8 +92,6 @@ function del_material(mat, db) {
 }
 
 
-
-
 function search_machine() {
     let dropdownItems = $('#dropdown-menu-machines').find('a');
 
@@ -244,14 +242,27 @@ function add_machine_to_daily_report() {
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
-    input.id = "machine_"+val+"_count";
-    input.name = "machine_"+val+"_count";
+    input.id = "machine_"+val+"_activeCount";
+    input.name = "machine_"+val+"_activeCount";
     input.min = '0';
     input.value = '0';
     cell2.appendChild(input)
 
+    let cell3 = document.createElement('td', );
+    cell3.className = "";
+    input = document.createElement('input', );
+    input.required = true;
+    input.className = "small-input-integer";
+    input.type = "number";
+    input.id = "machine_"+val+"_inactiveCount";
+    input.name = "machine_"+val+"_inactiveCount";
+    input.min = '0';
+    input.value = '0';
+    cell3.appendChild(input)
+
     newRow.appendChild(cell1);
     newRow.appendChild(cell2);
+    newRow.appendChild(cell3);
 
     table.querySelector('tbody').appendChild(newRow);
 
@@ -288,7 +299,7 @@ function add_material_to_daily_report() {
     cell2.className = "";
     let input = document.createElement('input', );
     input.required = true;
-    input.className = "small-input-integer";
+    input.className = "small-input-integer w-75";
     input.type = "number";
     input.id = "material_"+val+"_count";
     input.name = "material_"+val+"_count";
@@ -434,7 +445,6 @@ function add_position_to_daily_report() {
     table.querySelector('tbody').appendChild(newRow);
 
 }
-
 
 
 function fetch_options(type){
