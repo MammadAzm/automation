@@ -6,7 +6,6 @@
 <div class="container" style="margin-top: 2%">
     <div class="row">
         <div class="col order-first">
-
             <table class="table" style="font-size: 13px">
 
                 <thead class="table-dark">
@@ -79,6 +78,30 @@
             </table>
         </div>
 
+        <div class="col">
+            <table class="table" style="font-size: 13px">
+                <thead class="table-dark">
+                    <tr class="">
+                            <th class="" >
+                                مصالح
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">+</span>
+                            </th>
+                    </tr>
+                </thead>
+
+                {% for material in materials %}
+                    <tr id="{{ material.name }}">
+                        <td class="">
+                            {{ material.name }}
+                            <span class="badge rounded-pill bg-danger"
+                                style="float: left; color: black" onclick="del_material('{{ material.name }}', true)">-</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -139,7 +162,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropMachinesLabel" aria-hidden="true">
+<div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -172,5 +195,37 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdropMaterials" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropMaterialsLabel" style="margin-right: auto">افزودن مصالح</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-material" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="material" class="form-control" placeholder="نام مصالح">
+<!--                        <select class="form-select" id="machineType" name="machineType">-->
+<!--                            {% for type in machine_types %}-->
+<!--                                <option value="{{ type.0 }}">{{ type.1 }}</option>-->
+<!--                            {% endfor %}-->
+<!--                        </select>-->
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon4" style="border: none">افزودن مصالح</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}

@@ -60,7 +60,8 @@ class Machine(models.Model):
 
     def __str__(self):
         # return self.name
-        return str(self.get_type_display()) + " - " + self.name
+        # return str(self.get_type_display()) + " - " + self.name
+        return self.name
 
 
 class MachineCount(models.Model):
@@ -68,13 +69,39 @@ class MachineCount(models.Model):
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     count = models.PositiveIntegerField(default=0)
+    # status = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ('dailyReport', 'machine')
+        unique_together = ('dailyReport', 'machine',)
 
     def __str__(self):
         # TODO : add dailyReport.date to the returning string of the object
         return self.machine.name
+
+
+class Unit(models.Model):
+    name = models.CharField(max_length=25, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Material(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class MaterialCount(models.Model):
+    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+
+    amount = models.FloatField(default=0.0,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.material.name
 
 
 class DailyReport(models.Model):
@@ -105,6 +132,8 @@ class DailyReport(models.Model):
 
     machines = models.ManyToManyField(Machine, through='MachineCount')
     countMachines = models.IntegerField(default=0)
+
+    materials = models.ManyToManyField(Material, through='MaterialCount')
 
     def cal_countPeople(self):
         for position in self.positioncount_set.all():

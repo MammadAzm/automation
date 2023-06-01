@@ -67,6 +67,32 @@ function del_machine(mach, db) {
 
 }
 
+function del_material(mat, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-material',
+            data: {
+            'material': mat,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(mat)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(mat)
+        console.log(mat)
+        obj.remove()
+    }
+
+}
+
+
+
 
 function search_machine() {
     let dropdownItems = $('#dropdown-menu-machines').find('a');
@@ -155,6 +181,35 @@ function search_position() {
     });
 }
 
+function search_material() {
+    let dropdownItems = $('#dropdown-menu-materials').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-position').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-material").dispatchEvent(event);
+      $('#material-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-material').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
 
 function add_machine_to_daily_report() {
     let val = document.getElementById("machine-name").value;
@@ -202,6 +257,84 @@ function add_machine_to_daily_report() {
 
 }
 
+function add_material_to_daily_report() {
+    let val = document.getElementById("material-name").value;
+    document.getElementById("material-name").value = "";
+    if (!val) {
+        return 0
+    }
+    let table = document.getElementById("table-material");
+
+    let newRow = document.createElement('tr');
+    newRow.id = val;
+
+    let cell1 = document.createElement('td', );
+    cell1.className = "";
+    cell1.innerHTML = val;
+    let span = document.createElement('span', );
+    Object.assign(span.style, {
+        float: 'left',
+        color: 'black',
+    });
+    span.className = "badge rounded-pill bg-danger";
+    span.innerHTML = "-";
+    span.addEventListener('click', function() {
+    del_material(val, false);
+    });
+    cell1.innerHTML = val;
+    cell1.appendChild(span)
+
+    let cell2 = document.createElement('td', );
+    cell2.className = "";
+    let input = document.createElement('input', );
+    input.required = true;
+    input.className = "small-input-integer";
+    input.type = "number";
+    input.id = "material_"+val+"_count";
+    input.name = "material_"+val+"_count";
+    input.min = '0';
+    input.value = '0';
+    cell2.appendChild(input)
+
+    let cell3 = document.createElement('td', );
+    cell3.className = "";
+    let select = document.createElement('select',)
+    select.required = true;
+    select.className = "form-select";
+    select.id = "material_"+val+"_unit";
+    select.name = "material_"+val+"_unit";
+    select.style.fontSize = '11px';
+    select.style.textAlign = 'left  ';
+    select.style.padding = '0';
+    select.style.paddingLeft = '15%';
+
+    let option = document.createElement('option',)
+    option.value = ""
+    option.innerHTML = "انتخاب"
+    option.disabled = true
+    option.hidden = true
+    option.selected = true
+    select.appendChild(option)
+
+    fetch_units(function (units) {
+        units.forEach(unit => {
+            let option = document.createElement('option',)
+            option.value = unit.name
+            option.innerHTML = unit.name
+            select.appendChild(option)
+        })
+    })
+
+    cell3.appendChild(select)
+
+    newRow.appendChild(cell1);
+    newRow.appendChild(cell2);
+    newRow.appendChild(cell3);
+
+    table.querySelector('tbody').appendChild(newRow);
+
+}
+
 function add_profession_to_daily_report() {
     let val = document.getElementById("profession-name").value
     document.getElementById("profession-name").value = "";
@@ -234,7 +367,6 @@ function add_profession_to_daily_report() {
 
     let counts = ["_ExpertCount", "_SemiExpertCount",
                      "_NonExpertCount", "_count",]
-    let cells = []
     for (let i=0; i<3; i++){
         let cell_i = document.createElement('td', );
         cell_i.className = "";
@@ -304,6 +436,7 @@ function add_position_to_daily_report() {
 }
 
 
+
 function fetch_options(type){
     let menu = document.getElementById("dropdown-menu-" + type + "s")
     let options = menu.querySelectorAll('.dropdown-item');
@@ -354,11 +487,12 @@ function fetch_options(type){
                 search_profession();
             } else if (type=="machine") {
                 search_machine();
+            } else if (type=="material") {
+                search_material();
             }
         }
     });
 }
-
 
 function del_report(reportID){
     $.ajax({
@@ -373,6 +507,20 @@ function del_report(reportID){
         success: function(response) {
             // location.reload(true);
             document.getElementById("table-"+reportID).remove();
+        }
+    });
+}
+
+function fetch_units(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-units/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["units"])
+
+            callback(opts)
         }
     });
 }

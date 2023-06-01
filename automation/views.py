@@ -8,7 +8,7 @@ import json
 # Create your views here.
 
 
-# TODO : Bug Fix ; error raise for adding already existing objects
+# TODO : Bug Fix ; error raises for adding already existing objects
 
 
 def home(request):
@@ -19,6 +19,7 @@ def add_base_data_template(request):
     professions = Profession.objects.all()
     positions = Position.objects.all()
     machines = Machine.objects.all()
+    materials = Material.objects.all()
 
     if not professions.exists():
         professions = []
@@ -26,11 +27,14 @@ def add_base_data_template(request):
         positions = []
     if not machines.exists():
         machines = []
+    if not materials.exists():
+        materials = []
 
     context = {
         "positions": positions,
         "professions": professions,
         "machines": machines,
+        "materials": materials,
         "machine_types": MACHINE_TYPES,
     }
 
@@ -43,11 +47,15 @@ def create_report_template(request):
         positions = Position.objects.all()
         professions = Profession.objects.all()
         machines = Machine.objects.all()
+        materials = Material.objects.all()
+        units = Unit.objects.all()
 
         context = {
             "positions": positions,
             "professions": professions,
             "machines": machines,
+            "materials": materials,
+            "units": units,
             "machine_types": MACHINE_TYPES,
         }
     else:
@@ -55,11 +63,15 @@ def create_report_template(request):
         positions = PositionCount.objects.filter(dailyReport=report)
         professions = ProfessionCount.objects.filter(dailyReport=report)
         machines = MachineCount.objects.filter(dailyReport=report)
+        materials = MaterialCount.objects.filter(dailyReport=report)
+        units = Unit.objects.all()
 
         context = {
             "positions": positions,
             "professions": professions,
             "machines": machines,
+            "materials": materials,
+            "units": units,
             "machine_types": MACHINE_TYPES,
         }
 
@@ -88,6 +100,22 @@ def add_machine_to_db(request,):
         type = request.POST.get("machineType")
 
         new_machine = Machine.objects.create(name=machine, type=type)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_material_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        material = request.POST.get("material")
+        # type = request.POST.get("machineType")
+
+        new_material = Material.objects.create(name=material)
 
         return redirect(redirect_url)
 
@@ -157,12 +185,29 @@ def del_machine_from_db(request):
     return HttpResponse(-1)
 
 
+def del_material_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("material")
+        obj = Material.objects.get(name=name)
+        objCount = MaterialCount.objects.filter(material=obj.id)
+        obj.delete()
+        objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
 def save_daily_report_to_db(request):
     if request.method == "POST":
         data = dict(request.POST)
+
         positions = {}
         professions = {}
         machines = {}
+        materials = {}
 
         for key, value in data.items():
             if "position" in key:
@@ -175,10 +220,17 @@ def save_daily_report_to_db(request):
                     professions[key.split("_")[1]].append(int(value[0]))
             elif "machine" in key:
                 machines[key.split("_")[1]] = int(value[0])
+            elif "material" in key:
+                if "count" in key:
+                    materials[key.split("_")[1]] = [float(value[0]), None]
+                elif "unit" in key:
+                    materials[key.split("_")[1]][1] = value[0]
+
 
         # print(positions)
         # print(professions)
         # print(machines)
+        # print(materials)
 
         report = DailyReport.objects.create(
             project_name="پروژه آلفا",
@@ -233,6 +285,22 @@ def save_daily_report_to_db(request):
             else:
                 continue
 
+        for material, amount in materials.items():
+            if amount[0] > 0:
+                material = material.strip()
+
+                mat = Material.objects.get(name=material)
+                unit = Unit.objects.get(name=amount[1])
+                obj = MaterialCount.objects.create(
+                    material=mat,
+                    dailyReport=report,
+                    amount=amount[0],
+                    unit=unit,
+                )
+                report.materials.add(obj.material)
+            else:
+                continue
+
         report.cal_countPeople()
         report.cal_countMachines()
 
@@ -248,7 +316,6 @@ def del_daily_report_from_db(request):
         return redirect(to="/home/daily-reports")
     else:
         return -1
-
 
 
 def reports_daily(request):
@@ -268,6 +335,7 @@ def report_on_day(request, idd):
     positions = PositionCount.objects.filter(dailyReport=report)
     professions = ProfessionCount.objects.filter(dailyReport=report)
     machines = MachineCount.objects.filter(dailyReport=report)
+    materials = MaterialCount.objects.filter(dailyReport=report)
     other = {
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
@@ -278,6 +346,7 @@ def report_on_day(request, idd):
         "positions": positions,
         "professions": professions,
         "machines": machines,
+        "materials": materials,
         "other": other,
     }
     return render(request, "print-report.html", context=context)
@@ -293,6 +362,8 @@ def get_options(request, typee):
             data = Position.objects.exclude(name__in=data).all()
         elif typee == "machine":
             data = Machine.objects.exclude(name__in=data).all()
+        elif typee == "material":
+            data = Material.objects.exclude(name__in=data).all()
         if data.exists():
             data = json.dumps(list(data.values()))
         else:
@@ -303,3 +374,18 @@ def get_options(request, typee):
         }
 
         return JsonResponse(context)
+
+
+def get_units(request):
+    if request.method == "GET":
+        units = Unit.objects.all()
+        if units.exists():
+            data = json.dumps(list(units.values()))
+        else:
+            data = "[]"
+        context = {
+            "units": data
+        }
+        return JsonResponse(context)
+
+

@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="container" style="margin-top: 1%">
+
         <div class="row">
             <table class="table" id="table-header" style="font-size: 13px">
                 <thead class="table-dark">
@@ -26,8 +27,9 @@
                 </thead>
             </table>
         </div>
+
         <div class="row">
-            <div class="col order-first">
+            <div class="col">
                 <table class="table" id="table-position" style="font-size: 13px">
                     <thead class="table-dark">
                         <tr>
@@ -66,7 +68,9 @@
                     {% endfor %}
                 </table>
             </div>
+        </div>
 
+        <div class="row">
             <div class="col">
                 <table class="table" id="table-machine" style="font-size: 13px">
                     <thead class="table-dark">
@@ -84,7 +88,26 @@
                 </table>
             </div>
 
+            <div class="col">
+                <table class="table" id="table-material" style="font-size: 13px">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>مصالح</th>
+                            <th>مقدار</th>
+                            <th>واحد</th>
+                        </tr>
+                    </thead>
+                    {% for material in materials %}
+                        <tr>
+                            <td>{{ material }}</td>
+                            <td>{{ material.amount }}</td>
+                            <td>{{ material.unit }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
+
 
     </div>
 

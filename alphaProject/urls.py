@@ -35,14 +35,17 @@ urlpatterns = [
     path("edit-db/add-position", add_position_to_db),
     path("edit-db/add-profession", add_profession_to_db),
     path("edit-db/add-machine", add_machine_to_db),
+    path("edit-db/add-material", add_material_to_db),
     path("edit-db/save-daily-report", save_daily_report_to_db),
     path("edit-db/del-daily-report/", del_daily_report_from_db),
 
     path("edit-db/del-position", del_position_from_db),
     path("edit-db/del-profession", del_profession_from_db),
     path("edit-db/del-machine", del_machine_from_db),
+    path("edit-db/del-material", del_material_from_db),
 
     path("edit-db/get-options/<typee>", get_options),
+    path("edit-db/get-units/", get_units),
 
     # path("edit-db/add-machine-to-daily-report", add_machine_to_daily_report),
 ]
