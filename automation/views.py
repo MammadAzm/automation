@@ -20,6 +20,7 @@ def add_base_data_template(request):
     positions = Position.objects.all()
     machines = Machine.objects.all()
     materials = Material.objects.all()
+    equipes = Equipe.objects.all()
 
     if not professions.exists():
         professions = []
@@ -29,12 +30,15 @@ def add_base_data_template(request):
         machines = []
     if not materials.exists():
         materials = []
+    if not equipes.exists():
+            equipes = []
 
     context = {
         "positions": positions,
         "professions": professions,
         "machines": machines,
         "materials": materials,
+        "equipes": equipes,
         "machine_types": MACHINE_TYPES,
     }
 

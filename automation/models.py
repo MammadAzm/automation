@@ -105,6 +105,13 @@ class MaterialCount(models.Model):
         return self.material.name
 
 
+class Equipe(models.Model):
+    name = models.CharField(max_length=150, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class DailyReport(models.Model):
     # --------------------Header----------------------
     project_name = models.CharField(max_length=250, default="Automation Project")
