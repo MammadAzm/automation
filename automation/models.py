@@ -136,9 +136,10 @@ class ContractorCount(models.Model):
 class Equipe(models.Model):
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
-    name = models.CharField(max_length=150, default="", unique=True)
+    name = models.CharField(max_length=150, unique=True, blank=True)
 
     def set_name(self):
+        print(self.profession.name + "-" + self.contractor.name)
         self.name = self.profession.name + "-" + self.contractor.name
 
     class Meta:
