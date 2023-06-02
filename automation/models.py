@@ -105,11 +105,68 @@ class MaterialCount(models.Model):
         return self.material.name
 
 
-class Equipe(models.Model):
+class Contractor(models.Model):
     name = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
         return self.name
+
+
+class ContractorCount(models.Model):
+    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
+    dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+
+    countExpert = models.PositiveIntegerField()
+    countSemiExpert = models.PositiveIntegerField()
+    countNonExpert = models.PositiveIntegerField()
+
+    countTotal = models.PositiveIntegerField(default=0)
+
+    def cal_countTotal(self):
+        self.countTotal = self.countExpert + self.countSemiExpert + self.countNonExpert
+        self.save()
+
+    class Meta:
+        unique_together = ('dailyReport', 'contractor')
+
+    def __str__(self):
+        return self.profession.name
+
+
+class Equipe(models.Model):
+    profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
+    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150, default="", unique=True)
+
+    def set_name(self):
+        self.name = self.profession.name + "-" + self.contractor.name
+
+    class Meta:
+        unique_together = ('profession', 'contractor')
+
+    def __str__(self):
+        return self.profession.name + "-" + self.contractor.name
+
+
+class EquipeCount(models.Model):
+    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+
+    countExpert = models.PositiveIntegerField()
+    countSemiExpert = models.PositiveIntegerField()
+    countNonExpert = models.PositiveIntegerField()
+
+    countTotal = models.PositiveIntegerField(default=0)
+
+    def cal_countTotal(self):
+        self.countTotal = self.countExpert + self.countSemiExpert + self.countNonExpert
+        self.save()
+
+    class Meta:
+        unique_together = ('dailyReport', 'equipe')
+
+    def __str__(self):
+        return str(self.equipe)
 
 
 class DailyReport(models.Model):
@@ -138,12 +195,20 @@ class DailyReport(models.Model):
 
     countPeople = models.IntegerField(default=0)
 
+    # TODO : Check and Track the machine summation
     machines = models.ManyToManyField(Machine, through='MachineCount')
     countActiveMachines = models.IntegerField(default=0)
     countInactiveMachines = models.IntegerField(default=0)
     countAllMachines = models.IntegerField(default=0)
 
     materials = models.ManyToManyField(Material, through='MaterialCount')
+
+    # TODO : Check and Track the Contractors and Equipes summation
+    contractors = models.ManyToManyField(Contractor, through='ContractorCount')
+    countContractors = models.IntegerField(default=0)
+
+    equipes = models.ManyToManyField(Equipe, through='EquipeCount')
+    countEquipes = models.IntegerField(default=0)
 
     def cal_countPeople(self):
         for position in self.positioncount_set.all():

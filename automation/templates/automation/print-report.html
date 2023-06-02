@@ -51,19 +51,21 @@
                     <thead class="table-dark">
                         <tr>
                             <th>تخصص</th>
+                            <th>پیمانکار</th>
                             <th>ماهر</th>
                             <th>نیمه ماهر</th>
                             <th>ساده</th>
                             <th>کل</th>
                         </tr>
                     </thead>
-                    {% for profession in professions %}
+                    {% for equipe in equipes %}
                         <tr>
-                            <td>{{ profession }}</td>
-                            <td>{{ profession.countExpert }}</td>
-                            <td>{{ profession.countSemiExpert }}</td>
-                            <td>{{ profession.countNonExpert }}</td>
-                            <td>{{ profession.countTotal }}</td>
+                            <td>{{ equipe.equipe.profession }}</td>
+                            <td>{{ equipe.equipe.contractor }}</td>
+                            <td>{{ equipe.countExpert }}</td>
+                            <td>{{ equipe.countSemiExpert }}</td>
+                            <td>{{ equipe.countNonExpert }}</td>
+                            <td>{{ equipe.countTotal }}</td>
                         </tr>
                     {% endfor %}
                 </table>

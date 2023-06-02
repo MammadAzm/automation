@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
+from django.db.models import Q
 
 from .models import *
 from .converters import *
@@ -20,6 +21,7 @@ def add_base_data_template(request):
     positions = Position.objects.all()
     machines = Machine.objects.all()
     materials = Material.objects.all()
+    contractors = Contractor.objects.all()
     equipes = Equipe.objects.all()
 
     if not professions.exists():
@@ -30,14 +32,17 @@ def add_base_data_template(request):
         machines = []
     if not materials.exists():
         materials = []
+    if not contractors.exists():
+            contractors = []
     if not equipes.exists():
-            equipes = []
+                equipes = []
 
     context = {
         "positions": positions,
         "professions": professions,
         "machines": machines,
         "materials": materials,
+        "contractors": contractors,
         "equipes": equipes,
         "machine_types": MACHINE_TYPES,
     }
@@ -52,6 +57,7 @@ def create_report_template(request):
         professions = Profession.objects.all()
         machines = Machine.objects.all()
         materials = Material.objects.all()
+        equipes = Equipe.objects.all()
         units = Unit.objects.all()
 
         context = {
@@ -59,15 +65,18 @@ def create_report_template(request):
             "professions": professions,
             "machines": machines,
             "materials": materials,
+            "equipes": equipes,
             "units": units,
             "machine_types": MACHINE_TYPES,
         }
     else:
+
         report = DailyReport.objects.last()
         positions = PositionCount.objects.filter(dailyReport=report)
         professions = ProfessionCount.objects.filter(dailyReport=report)
         machines = MachineCount.objects.filter(dailyReport=report)
         materials = MaterialCount.objects.filter(dailyReport=report)
+        equipes = EquipeCount.objects.filter(dailyReport=report)
         units = Unit.objects.all()
 
         context = {
@@ -75,6 +84,7 @@ def create_report_template(request):
             "professions": professions,
             "machines": machines,
             "materials": materials,
+            "equipes": equipes,
             "units": units,
             "machine_types": MACHINE_TYPES,
         }
@@ -144,6 +154,53 @@ def add_profession_to_db(request,):
     return HttpResponse("Problem")
 
 
+def add_contractor_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        contractor = request.POST.get("contractor")
+
+        new_contractor = Contractor.objects.create(name=contractor)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_equipe_to_db(request,):
+    if request.method == "POST":
+        # redirect_url = request.META.get('HTTP_REFERER', '/')
+        prof = request.POST.get("profession")
+        cont = request.POST.get("contractor")
+
+        prof = Profession.objects.get(name=prof)
+        cont = Contractor.objects.get(name=cont)
+
+        obj, new = Equipe.objects.get_or_create(
+            profession=prof,
+            contractor=cont,
+            defaults={
+                "profession": prof,
+                "contractor": cont,
+            }
+        )
+
+        if new:
+            return HttpResponse(True)
+        else:
+            return HttpResponse(False)
+        # return redirect(to=redirect_url)
+
+
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
 def del_position_from_db(request):
     if request.method == "POST":
         name = request.POST.get("position")
@@ -204,6 +261,40 @@ def del_material_from_db(request):
     return HttpResponse(-1)
 
 
+def del_contractor_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("contractor")
+        obj = Contractor.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_equipe_from_db(request):
+    if request.method == "POST":
+        prof = request.POST.get("profession")
+        cont = request.POST.get("contractor")
+
+        obj = Equipe.objects.filter(
+            profession=Profession.objects.get(name=prof),
+            contractor=Contractor.objects.get(name=cont),
+        )
+        obj.delete()
+
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
 def save_daily_report_to_db(request):
     if request.method == "POST":
         data = dict(request.POST)
@@ -212,16 +303,57 @@ def save_daily_report_to_db(request):
         professions = {}
         machines = {}
         materials = {}
+        equipes = {}
+        contractors = {}
+
+        print(data)
 
         for key, value in data.items():
             if "position" in key:
                 positions[key.split("_")[1]] = int(value[0])
             elif "profession" in key:
-                if key.split("_")[1] in professions.keys():
-                    professions[key.split("_")[1]].append(int(value[0]))
+                prof = key.split("_")[2].split("-")[0]
+                if key.split("_")[2].split("-")[0] in professions.keys():
+                    if "Semi" in key.split("_")[3]:
+                        professions[prof][1] += int(value[0])
+                    elif "Non" in key.split("_")[3]:
+                        professions[prof][2] += int(value[0])
+                    else:
+                        professions[prof][0] += int(value[0])
+
                 else:
-                    professions[key.split("_")[1]] = []
-                    professions[key.split("_")[1]].append(int(value[0]))
+                    professions[prof] = [0, 0, 0]
+                    if "Semi" in key.split("_")[3]:
+                        professions[prof][1] += int(value[0])
+                    elif "Non" in key.split("_")[3]:
+                        professions[prof][2] += int(value[0])
+                    else:
+                        professions[prof][0] += int(value[0])
+
+                cont = key.split("_")[2].split("-")[1]
+                if key.split("_")[2].split("-")[1] in contractors.keys():
+                    if "Semi" in key.split("_")[3]:
+                        contractors[cont][1] += int(value[0])
+                    elif "Non" in key.split("_")[3]:
+                        contractors[cont][2] += int(value[0])
+                    else:
+                        contractors[cont][0] += int(value[0])
+
+                else:
+                    contractors[cont] = [0, 0, 0]
+                    if "Semi" in key.split("_")[3]:
+                        contractors[cont][1] += int(value[0])
+                    elif "Non" in key.split("_")[3]:
+                        contractors[cont][2] += int(value[0])
+                    else:
+                        contractors[cont][0] += int(value[0])
+
+                if key.split("_")[2] in equipes.keys():
+                    equipes[key.split("_")[2]].append(int(value[0]))
+                else:
+                    equipes[key.split("_")[2]] = []
+                    equipes[key.split("_")[2]].append(int(value[0]))
+
             elif "machine" in key:
                 if key.split("_")[1] in machines.keys():
                     machines[key.split("_")[1]].append(int(value[0]))
@@ -234,11 +366,12 @@ def save_daily_report_to_db(request):
                 elif "unit" in key:
                     materials[key.split("_")[1]][1] = value[0]
 
-
         # print(positions)
         # print(professions)
         # print(machines)
         # print(materials)
+        # print(equipes)
+        # print(contractors)
 
         report = DailyReport.objects.create(
             project_name="پروژه آلفا",
@@ -311,6 +444,42 @@ def save_daily_report_to_db(request):
             else:
                 continue
 
+        for contractor, count in contractors.items():
+            if sum(count) > 0:
+                cont = Contractor.objects.get(name=contractor)
+                obj = ContractorCount.objects.create(
+                    contractor=cont,
+                    dailyReport=report,
+                    countExpert=count[0],
+                    countSemiExpert=count[1],
+                    countNonExpert=count[2],
+                )
+                obj.cal_countTotal()
+
+                report.contractors.add(obj.contractor)
+            else:
+                continue
+
+        for equipe, count in equipes.items():
+            if sum(count) > 0:
+                prof, cont = equipe.split("-")
+                equ = Equipe.objects.get(
+                    profession=Profession.objects.get(name=prof),
+                    contractor=Contractor.objects.get(name=cont),
+                )
+                obj = EquipeCount.objects.create(
+                    equipe=equ,
+                    dailyReport=report,
+                    countExpert=count[0],
+                    countSemiExpert=count[1],
+                    countNonExpert=count[2],
+                )
+                obj.cal_countTotal()
+
+                report.equipes.add(obj.equipe)
+            else:
+                continue
+
         report.cal_countPeople()
         report.cal_countMachines()
 
@@ -346,6 +515,7 @@ def report_on_day(request, idd):
     professions = ProfessionCount.objects.filter(dailyReport=report)
     machines = MachineCount.objects.filter(dailyReport=report)
     materials = MaterialCount.objects.filter(dailyReport=report)
+    equipes = EquipeCount.objects.filter(dailyReport=report)
     other = {
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
@@ -357,6 +527,7 @@ def report_on_day(request, idd):
         "professions": professions,
         "machines": machines,
         "materials": materials,
+        "equipes": equipes,
         "other": other,
     }
     return render(request, "print-report.html", context=context)
@@ -365,7 +536,8 @@ def report_on_day(request, idd):
 def get_options(request, typee):
     if request.method == "POST":
         data = json.loads(request.POST['options'])["options"]
-        data = [item.strip()[:-1].strip() for item in data]
+        data = [item.strip().strip() for item in data]
+        data = [f"{item.strip().split('-')[0].strip()}-{item.split('-')[-1].strip()}" for item in data]
         if typee == "profession":
             data = Profession.objects.exclude(name__in=data).all()
         elif typee == "position":
@@ -374,6 +546,27 @@ def get_options(request, typee):
             data = Machine.objects.exclude(name__in=data).all()
         elif typee == "material":
             data = Material.objects.exclude(name__in=data).all()
+        elif typee == "contractor":
+            data = Contractor.objects.exclude(name__in=data).all()
+        elif typee == "equipe":
+            data = Equipe.objects.exclude(name__in=data).all()
+            if len(data) > 0:
+                final = {}
+                for item in data:
+                    prof = item.profession.name
+                    cont = item.contractor.name
+                    final[f"{prof}-{cont}"] = [prof, cont]
+                context = {
+                    typee: data,
+                }
+                return JsonResponse(final)
+            else:
+                data = "[]"
+                context = {
+                    typee: data,
+                }
+                return JsonResponse(context)
+
         if data.exists():
             data = json.dumps(list(data.values()))
         else:
@@ -382,8 +575,10 @@ def get_options(request, typee):
         context = {
             typee: data,
         }
-
         return JsonResponse(context)
+
+    else:
+        pass
 
 
 def get_units(request):

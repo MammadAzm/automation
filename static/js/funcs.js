@@ -85,12 +85,57 @@ function del_material(mat, db) {
         });
     } else {
         let obj = document.getElementById(mat)
-        console.log(mat)
         obj.remove()
     }
 
 }
 
+function del_contractor(contractor, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-contractor',
+            data: {
+            'contractor': contractor,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(contractor)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(equipe)
+        obj.remove()
+    }
+
+}
+
+function del_equipe(prof, cont, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-equipe',
+            data: {
+            'profession': prof,
+            'contractor': cont,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(prof+"-"+cont)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(prof)
+        obj.remove()
+    }
+
+}
 
 function search_machine() {
     let dropdownItems = $('#dropdown-menu-machines').find('a');
@@ -136,6 +181,66 @@ function search_profession() {
     });
     // Add event listener to the search input
     $('#search-profession').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_contractor() {
+    let dropdownItems = $('#dropdown-menu-contractors').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-contractor').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-contractor").dispatchEvent(event);
+      $('#contractor-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-contractor').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_equipes() {
+    // for create report page
+
+    let dropdownItems = $('#dropdown-menu-equipes-professions').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-equipe-profession').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-equipe-profession").dispatchEvent(event);
+      $('#equipe-profession-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-equipe-profession').on('keyup', function() {
       let searchText = $(this).val().toLowerCase();
 
       // Loop through each dropdown item and hide/show based on search text
@@ -208,6 +313,36 @@ function search_material() {
     });
 }
 
+function search_equipe(type) {
+    // for base data page
+
+    let dropdownItems = $('#dropdown-menu-equipes-'+type+'s').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-equipe-'+type).val("");
+      let event = new Event('keyup');
+      document.getElementById("search-equipe-" + type).dispatchEvent(event);
+      $('#equipe-'+type+'-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-equipe-' + type).on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
 
 function add_machine_to_daily_report() {
     let val = document.getElementById("machine-name").value;
@@ -404,6 +539,65 @@ function add_profession_to_daily_report() {
 
 }
 
+function add_equipe_to_daily_report() {
+    let val = document.getElementById("equipe-profession-name").value
+    let prof = val.split("-")[0]
+    let cont = val.split("-")[1]
+
+    document.getElementById("equipe-profession-name").value = "";
+    if (!val) {
+        return 0
+    }
+    let table = document.getElementById("table-equipes-profession")
+
+    let newRow = document.createElement('tr');
+    newRow.id = val;
+
+    let cell1 = document.createElement('td', );
+    cell1.className = "";
+    let span = document.createElement('span', );
+    Object.assign(span.style, {
+        float: 'left',
+        color: 'black',
+    });
+    span.className = "badge rounded-pill bg-danger";
+    span.innerHTML = "-";
+    span.addEventListener('click', function() {
+    del_profession(val, false);
+    });
+    cell1.innerHTML = prof;
+    cell1.appendChild(span)
+    newRow.appendChild(cell1);
+
+    let cell2 = document.createElement('td', );
+    cell2.className = "";
+    cell2.innerHTML = cont
+    newRow.appendChild(cell2)
+
+    let counts = ["_ExpertCount", "_SemiExpertCount",
+                     "_NonExpertCount", "_count",]
+    for (let i=0; i<3; i++){
+        let cell_i = document.createElement('td', );
+        cell_i.className = "";
+
+        let input = document.createElement('input', );
+        input.required = true;
+        input.className = "small-input-integer";
+        input.type = "number";
+        input.id = prof+counts[i];
+        input.name = "equipe_profession_"+val+counts[i];
+        input.min = '0';
+        input.value = '0';
+
+        cell_i.appendChild(input);
+
+        newRow.appendChild(cell_i);
+    }
+
+    table.querySelector('tbody').appendChild(newRow);
+
+}
+
 function add_position_to_daily_report() {
     let val = document.getElementById("position-name").value;
     document.getElementById("position-name").value = "";
@@ -450,9 +644,72 @@ function add_position_to_daily_report() {
 
 }
 
+function add_equipe_to_base_data() {
+    let valProf = document.getElementById("equipe-profession-name").value
+    document.getElementById("equipe-profession-name").value = "";
+
+    let valCont = document.getElementById("equipe-contractor-name").value
+    document.getElementById("equipe-contractor-name").value = "";
+    if (!valProf) {
+        return 0
+    } else if (!valCont) {
+        return 0
+    }
+
+    let table = document.getElementById("table-equipe")
+
+    let newRow = document.createElement('tr');
+    newRow.id = valProf + "-" + valCont;
+
+    let cell1 = document.createElement('td', );
+    cell1.className = "";
+    let span = document.createElement('span', );
+    Object.assign(span.style, {
+        float: 'left',
+        color: 'black',
+    });
+    span.className = "badge rounded-pill bg-danger";
+    span.innerHTML = "-";
+    span.addEventListener('click', function() {
+    del_equipe(valProf, valCont,true);
+    });
+    cell1.innerHTML = valProf + "-" + valCont;
+    cell1.appendChild(span)
+    newRow.appendChild(cell1);
+
+     $.ajax({
+            type: 'POST',
+            url: '/edit-db/add-equipe',
+            data: {
+            'profession': valProf,
+            'contractor': valCont,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    table.querySelector('tbody').appendChild(newRow);
+                }
+            }
+        });
+
+}
 
 function fetch_options(type){
-    let menu = document.getElementById("dropdown-menu-" + type + "s")
+    let typetype = false;
+    if (type[0] == "equipe"){
+        if (type[1] == "profession") {
+            type = "profession"
+            typetype = "equipes-profession"
+        } else {
+            type = "contractor"
+            typetype = "equipes-contractor"
+        }
+    } else {
+        typetype = type;
+    }
+    let menu = document.getElementById("dropdown-menu-" + typetype + "s")
     let options = menu.querySelectorAll('.dropdown-item');
     options.forEach(option => {
       option.remove()
@@ -467,12 +724,33 @@ function fetch_options(type){
         let item = rows[i].getElementsByTagName("td")[0]
         innerHTMLs.push(item.textContent);
     }
-    options = JSON.stringify(
-        {
+
+    if (typetype.includes("equipe")) {
+        let opts = innerHTMLs
+        for (let i = 0; i < opts.length; i++) {
+            let item = opts[i].replace(/-/g, "") .trim()
+            let li = document.createElement("li")
+            let a = document.createElement("a")
+            a.className = "dropdown-item";
+            a.innerHTML = item;
+
+            li.appendChild(a);
+            menu.appendChild(li);
+        }
+
+        if (type=="profession") {
+           search_equipe(type);
+        } else if (type=="contractor") {
+            search_equipe(type);
+        }
+
+    } else {
+        options = JSON.stringify(
+            {
             'options': innerHTMLs,
             }
         )
-    $.ajax({
+        $.ajax({
         type: 'POST',
         url: '/edit-db/get-options/'+type,
         data: {
@@ -506,6 +784,70 @@ function fetch_options(type){
             }
         }
     });
+    }
+
+}
+
+function fetch_equipes(){
+    let menu = document.getElementById("dropdown-menu-equipes-professions")
+    let options_profs = menu.querySelectorAll('.dropdown-item');
+    options_profs.forEach(option => {
+      option.remove()
+    });
+
+    // let menu_conts = document.getElementById("dropdown-menu-equipes-contractors")
+    // let options_conts = menu_conts.querySelectorAll('.dropdown-item');
+    // options_profs.forEach(option => {
+    //   option.remove()
+    // });
+
+    let table = document.getElementById("table-equipes-profession")
+    let tbody = table.getElementsByTagName("tbody")[0]
+    let rows = tbody.getElementsByTagName("tr")
+
+    let innerHTMLs = []
+
+    for (let i = 0; i < rows.length; i++) {
+        let prof = rows[i].getElementsByTagName("td")[0]
+        let cont = rows[i].getElementsByTagName("td")[1]
+
+        innerHTMLs.push(prof.textContent + "-" + cont.textContent);
+    }
+
+    options = JSON.stringify(
+        {
+        'options': innerHTMLs,
+        }
+    )
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/get-options/equipe',
+        data: {
+        'options': options,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            let opts = response
+
+            for (let key in opts) {
+                let li = document.createElement("li")
+                let a = document.createElement("a")
+                a.className = "dropdown-item";
+                a.innerHTML = key;
+
+                li.appendChild(a);
+                menu.appendChild(li);
+            }
+
+
+            search_equipes();
+
+        }
+    });
+
+
 }
 
 function del_report(reportID){

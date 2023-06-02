@@ -5,8 +5,9 @@
 
 <div class="container" style="margin-top: 2%">
     <div class="row">
-        <div class="col order-first">
-            <table class="table" style="font-size: 13px">
+
+        <div class="col">
+            <table class="table" id="table-position" style="font-size: 13px">
 
                 <thead class="table-dark">
                     <tr class="">
@@ -31,7 +32,7 @@
         </div>
 
         <div class="col">
-            <table class="table" style="font-size: 13px">
+            <table class="table" id="table-profession" style="font-size: 13px">
                 <thead class="table-dark">
                     <tr class="">
                             <th class="" >
@@ -55,7 +56,7 @@
         </div>
 
         <div class="col">
-            <table class="table" style="font-size: 13px">
+            <table class="table" id="table-machine" style="font-size: 13px">
                 <thead class="table-dark">
                     <tr class="">
                             <th class="" >
@@ -79,7 +80,7 @@
         </div>
 
         <div class="col">
-            <table class="table" style="font-size: 13px">
+            <table class="table" id="table-material" style="font-size: 13px">
                 <thead class="table-dark">
                     <tr class="">
                             <th class="" >
@@ -103,10 +104,67 @@
         </div>
 
     </div>
+
+    <div class="row">
+
+        <div class="col">
+            <table class="table" id="table-contractor" style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            پیمانکار
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">+</span>
+                        </th>
+                    </tr>
+                </thead>
+
+                {% for contractor in contractors %}
+                    <tr  id="{{contractor.name}}">
+                        <td>
+                            {{ contractor.name }}
+                            <span class="badge rounded-pill bg-danger"
+                                style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">-</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col">
+            <table class="table" id="table-equipe" style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            اکیپ
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">+</span>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for equipe in equipes %}
+                        <tr  id="{{ equipe.profession }}-{{ equipe.contractor }}">
+                            <td>
+                                {{ equipe.profession }}-{{ equipe.contractor }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">-</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
 
 
-<div class="modal fade " id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropPositionsLabel" aria-hidden="true">
+<div class="modal fade " id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -134,7 +192,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="staticBackdropProfessions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropProfessionsLabel" aria-hidden="true">
+<div class="modal fade" id="staticBackdropProfessions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -227,5 +285,99 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="staticBackdropContractors" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropContractorsLabel" style="margin-right: auto">افزودن پیمانکار</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-contractor" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="contractor" class="form-control" placeholder="نام پیمانکار">
+
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon5" style="border: none">افزودن پیمانکار</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropEquipes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropEquipesLabel" style="margin-right: auto">افزودن اکیپ</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"])'>
+                                    انتخاب تخصص
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-equipes-professions">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-profession">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"])'>
+                                    انتخاب پیمانکار
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-equipes-contractors">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-contractor">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
+                                </ul>
+                            </div>
+
+                            <input id="equipe-profession-name" disabled required type="text" name="equipe" class="form-control">
+                            <input id="equipe-contractor-name" disabled required type="text" name="equipe" class="form-control">
+
+                        </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_base_data()" style="float: left"
+                                    type="button" id="btn-add-profession" style="border: none">افزودن اکیپ</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

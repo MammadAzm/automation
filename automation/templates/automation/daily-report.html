@@ -51,50 +51,54 @@
                     </div>
 
                     <div class="col-7  me-2 " style="padding: 0; margin: 0">
-                        <table class="table" id="table-profession" style="font-size: 13px;">
+                        <table class="table" id="table-equipes-profession" style="font-size: 13px;">
                             <thead class="table-dark">
                                 <tr class="">
-                                        <th class="" style="width: 45%">
+                                        <th class="" style="width: 40%">
                                             تخصص
                                             <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">+</span>
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">+</span>
                                         </th>
+                                        <th class="">اکیپ</th>
                                         <th class="">ماهر</th>
-                                        <th class="">نیمه ماهر</th>
+                                        <th class="" style="width: 18%">نیمه ماهر</th>
                                         <th class="">ساده</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for profession in professions %}
 
-                                <tr id="{{ profession }}">
+                            {% for equipe in equipes %}
+                                <tr id="{{ equipe }}">
+
                                     <td class="">
-                                        {{ profession }}
+                                        {{ equipe.profession }}{{ equipe.equipe.profession }}
                                         <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black" onclick="del_profession('{{ profession }}', false)">-</span>
+                                            style="float: left; color: black" onclick="del_profession('{{ equipe }}', false)">-</span>
                                     </td>
-
+                                    <td>
+                                        {{ equipe.contractor }}{{ equipe.equipe.contractor }}
+                                    </td>
                                     <td class="">
-                                        {% if profession.countExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_ExpertCount" name="profession_{{ profession }}_ExpertCount" min="0" value="{{ profession.countExpert }}">
+                                        {% if equipe.countExpert %}
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="{{ equipe.countExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_ExpertCount" name="profession_{{ profession }}_ExpertCount" min="0" value="0">
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
                                     <td class="">
-                                        {% if profession.countSemiExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_SemiExpertCount" name="profession_{{ profession }}_SemiExpertCount" min="0" value="{{ profession.countSemiExpert }}">
+                                        {% if equipe.countSemiExpert %}
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="{{ equipe.countSemiExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_SemiExpertCount" name="profession_{{ profession }}_SemiExpertCount" min="0" value="0">
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
                                     <td class="">
-                                        {% if profession.countNonExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_NonExpertCount" name="profession_{{ profession }}_NonExpertCount" min="0" value="{{ profession.countNonExpert }}">
+                                        {% if equipe.countNonExpert %}
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="{{ equipe.countNonExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ profession }}_NonExpertCount" name="profession_{{ profession }}_NonExpertCount" min="0" value="0">
+                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
@@ -355,7 +359,7 @@
 
                 <div class="modal-body">
                         <div class="input-group mb-3">
-                            <input id="profession-name" disabled required type="text" name="machine" class="form-control" placeholder="تخصص">
+                            <input id="profession-name" disabled required type="text" name="profession" class="form-control" placeholder="تخصص">
 
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button"
@@ -391,11 +395,7 @@
     </div>
 
 
-
-
-
-
-    <div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropMachinesLabel" aria-hidden="true">
+    <div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -443,7 +443,6 @@
             </div>
         </div>
     </div>
-
 
 
     <div class="modal fade" id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"   >
@@ -544,6 +543,54 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="staticBackdropEquipes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropEquipesLabel" style="margin-right: auto">افزودن اکیپ</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_equipes()'>
+                                    انتخاب تخصص
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-equipes-professions">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-profession">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                </ul>
+                            </div>
+
+
+
+                            <input id="equipe-profession-name" disabled required type="text" name="equipe" class="form-control">
+
+                        </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_daily_report()" style="float: left"
+                                    type="button" id="btn-add-equipe" style="border: none">افزودن اکیپ</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
 
 
