@@ -296,6 +296,7 @@ def del_equipe_from_db(request):
 
 
 def save_daily_report_to_db(request):
+    # TODO : Modify this service usage in the front-side to be called through AJAX Request
     if request.method == "POST":
         data = dict(request.POST)
 
@@ -306,7 +307,6 @@ def save_daily_report_to_db(request):
         equipes = {}
         contractors = {}
 
-        print(data)
 
         for key, value in data.items():
             if "position" in key:
