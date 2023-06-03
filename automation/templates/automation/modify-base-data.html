@@ -234,7 +234,9 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input required type="text" name="machine" class="form-control" placeholder="نام ماشین">
-                        <select class="form-select" id="machineType" name="machineType">
+                        <select required class="form-select" id="machineType" name="machineType"
+                            style="text-align: right;">
+                            <option selected disabled hidden value="" >انتخاب</option>
                             {% for type in machine_types %}
                                 <option value="{{ type.0 }}">{{ type.1 }}</option>
                             {% endfor %}

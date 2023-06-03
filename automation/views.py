@@ -177,16 +177,22 @@ def add_equipe_to_db(request,):
 
         prof = Profession.objects.get(name=prof)
         cont = Contractor.objects.get(name=cont)
-        print("HERE")
-        obj = Equipe.objects.create(
+
+        # TODO : Make line below get_or_create
+        obj , new = Equipe.objects.get_or_create(
             profession=prof,
             contractor=cont,
+            defaults={
+                "profession": prof,
+                "contractor": cont,
+            }
         )
-
-        obj.set_name()
-        obj.save()
-
-        return HttpResponse(True)
+        if new:
+            obj.set_name()
+            #obj.save()
+            return HttpResponse(True)
+        else:
+            return HttpResponse(False)
         # return redirect(to=redirect_url)
 
     elif request.method == "GET":

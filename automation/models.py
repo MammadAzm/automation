@@ -139,8 +139,8 @@ class Equipe(models.Model):
     name = models.CharField(max_length=150, unique=True, blank=True)
 
     def set_name(self):
-        print(self.profession.name + "-" + self.contractor.name)
         self.name = self.profession.name + "-" + self.contractor.name
+        self.save()
 
     class Meta:
         unique_together = ('profession', 'contractor')
