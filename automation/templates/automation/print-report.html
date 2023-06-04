@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container-xxl px-4" style="margin-top: 1%">
+    <div class="container-xxl px-4" style="margin-top: 1%;">
 
         <div class="row">
 
             <div class="row">
-                <table class="table" id="table-header" style="font-size: 13px">
+                <table class="table" id="table-header" style="font-size: 13px;">
                     <thead class="table-dark">
                         <tr>
                             <th>پروژه</th>
@@ -36,17 +36,17 @@
                 <div class="row">
 
                     <div class="col-4" style="padding: 0; margin: 0;">
-                        <table class="table" id="table-position" style="font-size: 13px">
+                        <table class="table" id="table-position" style="font-size: 13px;">
                             <thead class="table-dark">
                                 <tr>
                                     <th style="width: 75%">سمت</th>
-                                    <th>تعداد</th>
+                                    <th style="text-align: center">تعداد</th>
                                 </tr>
                             </thead>
                             {% for position in positions %}
                                 <tr>
                                     <td>{{ position }}</td>
-                                    <td>{{ position.count }}</td>
+                                    <td style="text-align: center">{{ position.count }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -58,20 +58,20 @@
                                 <tr>
                                     <th>تخصص</th>
                                     <th>پیمانکار</th>
-                                    <th>ماهر</th>
-                                    <th style="width: 18%">نیمه ماهر</th>
-                                    <th>ساده</th>
-                                    <th>کل</th>
+                                    <th style="text-align: center">ماهر</th>
+                                    <th style="width: 18%; text-align: center">نیمه ماهر</th>
+                                    <th style="text-align: center">ساده</th>
+                                    <th style="text-align: center">کل</th>
                                 </tr>
                             </thead>
                             {% for equipe in equipes %}
                                 <tr>
                                     <td>{{ equipe.equipe.profession }}</td>
                                     <td>{{ equipe.equipe.contractor }}</td>
-                                    <td>{{ equipe.countExpert }}</td>
-                                    <td>{{ equipe.countSemiExpert }}</td>
-                                    <td>{{ equipe.countNonExpert }}</td>
-                                    <td>{{ equipe.countTotal }}</td>
+                                    <td style="text-align: center">{{ equipe.countExpert }}</td>
+                                    <td style="text-align: center">{{ equipe.countSemiExpert }}</td>
+                                    <td style="text-align: center">{{ equipe.countNonExpert }}</td>
+                                    <td style="text-align: center">{{ equipe.countTotal }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -86,17 +86,17 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th style="width: 60%">ماشین</th>
-                                    <th>فعال</th>
-                                    <th>غیرفعال</th>
-                                    <th>کل</th>
+                                    <th style="text-align: center">فعال</th>
+                                    <th style="text-align: center">غیرفعال</th>
+                                    <th style="text-align: center">کل</th>
                                 </tr>
                             </thead>
                             {% for machine in machines %}
                                 <tr>
                                     <td>{{ machine }}</td>
-                                    <td>{{ machine.activeCount }}</td>
-                                    <td>{{ machine.inactiveCount }}</td>
-                                    <td>{{ machine.totalCount }}</td>
+                                    <td style="text-align: center">{{ machine.activeCount }}</td>
+                                    <td style="text-align: center">{{ machine.inactiveCount }}</td>
+                                    <td style="text-align: center">{{ machine.totalCount }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -107,15 +107,15 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>مصالح</th>
-                                    <th>مقدار</th>
-                                    <th>واحد</th>
+                                    <th style="text-align: center">مقدار</th>
+                                    <th style="text-align: center">واحد</th>
                                 </tr>
                             </thead>
                             {% for material in materials %}
                                 <tr>
                                     <td>{{ material }}</td>
-                                    <td>{{ material.amount }}</td>
-                                    <td>{{ material.unit }}</td>
+                                    <td style="text-align: center">{{ material.amount }}</td>
+                                    <td style="text-align: center">{{ material.unit }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
