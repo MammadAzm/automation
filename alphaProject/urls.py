@@ -37,6 +37,7 @@ urlpatterns = [
     path("edit-db/add-machine", add_machine_to_db),
     path("edit-db/add-material", add_material_to_db),
     path("edit-db/add-contractor", add_contractor_to_db),
+    path("edit-db/add-zone", add_zone_to_db),
     path("edit-db/add-equipe", add_equipe_to_db),
 
     path("edit-db/save-daily-report", save_daily_report_to_db),
@@ -47,6 +48,7 @@ urlpatterns = [
     path("edit-db/del-machine", del_machine_from_db),
     path("edit-db/del-material", del_material_from_db),
     path("edit-db/del-contractor", del_contractor_from_db),
+    path("edit-db/del-zone", del_zone_from_db),
     path("edit-db/del-equipe", del_equipe_from_db),
 
     path("edit-db/get-options/<typee>", get_options),

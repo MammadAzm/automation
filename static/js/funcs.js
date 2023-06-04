@@ -113,6 +113,29 @@ function del_contractor(contractor, db) {
 
 }
 
+function del_zone(zone, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-zone',
+            data: {
+            'zone': zone,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(zone)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(zone)
+        obj.remove()
+    }
+
+}
+
 function del_equipe(prof, cont, db) {
     if (db) {
         $.ajax({
@@ -709,25 +732,26 @@ function fetch_options(type){
     } else {
         typetype = type;
     }
+
     let menu = document.getElementById("dropdown-menu-" + typetype + "s")
     let options = menu.querySelectorAll('.dropdown-item');
     options.forEach(option => {
       option.remove()
     });
+
     let table = document.getElementById("table-" + type)
     let tbody = table.getElementsByTagName("tbody")[0]
     let rows = tbody.getElementsByTagName("tr")
-
     let innerHTMLs = []
-
     for (let i = 0; i < rows.length; i++) {
         let item = rows[i].getElementsByTagName("td")[0]
-        innerHTMLs.push(item.textContent);
+        item = item.textContent.replace("-" , "").trim()
+        innerHTMLs.push(item);
     }
-
     if (typetype.includes("equipe")) {
         let opts = innerHTMLs
         for (let i = 0; i < opts.length; i++) {
+
             let item = opts[i].replace(/-/g, "") .trim()
             let li = document.createElement("li")
             let a = document.createElement("a")
@@ -761,14 +785,12 @@ function fetch_options(type){
         },
         success: function(response) {
             let opts = response[type]
-
             opts = JSON.parse(opts)
             for (let i = 0; i < opts.length; i++) {
                 let li = document.createElement("li")
                 let a = document.createElement("a")
                 a.className = "dropdown-item";
                 a.innerHTML = opts[i].name;
-
                 li.appendChild(a);
                 menu.appendChild(li);
             }
@@ -830,8 +852,10 @@ function fetch_equipes(){
         },
         success: function(response) {
             let opts = response
-
             for (let key in opts) {
+                if (key == "equipe"){
+                    break;
+                }
                 let li = document.createElement("li")
                 let a = document.createElement("a")
                 a.className = "dropdown-item";

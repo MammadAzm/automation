@@ -170,6 +170,14 @@ class EquipeCount(models.Model):
         return str(self.equipe)
 
 
+class Zone(models.Model):
+    # TODO : make unique=true
+    name = models.CharField(max_length=250,)
+
+    def __str__(self):
+        return self.name
+
+
 class DailyReport(models.Model):
     # --------------------Header----------------------
     project_name = models.CharField(max_length=250, default="Automation Project")

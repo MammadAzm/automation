@@ -23,6 +23,7 @@ def add_base_data_template(request):
     materials = Material.objects.all()
     contractors = Contractor.objects.all()
     equipes = Equipe.objects.all()
+    zones = Zone.objects.all()
 
     if not professions.exists():
         professions = []
@@ -36,6 +37,8 @@ def add_base_data_template(request):
             contractors = []
     if not equipes.exists():
                 equipes = []
+    if not zones.exists():
+                zones = []
 
     context = {
         "positions": positions,
@@ -44,6 +47,7 @@ def add_base_data_template(request):
         "materials": materials,
         "contractors": contractors,
         "equipes": equipes,
+        "zones": zones,
         "machine_types": MACHINE_TYPES,
     }
 
@@ -169,6 +173,21 @@ def add_contractor_to_db(request,):
     return HttpResponse("Problem")
 
 
+def add_zone_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        zone = request.POST.get("zone")
+
+        new_zone = Zone.objects.create(name=zone)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
 def add_equipe_to_db(request,):
     if request.method == "POST":
         # redirect_url = request.META.get('HTTP_REFERER', '/')
@@ -265,6 +284,21 @@ def del_contractor_from_db(request):
     if request.method == "POST":
         name = request.POST.get("contractor")
         obj = Contractor.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_zone_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("zone")
+        obj = Zone.objects.get(name=name)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -537,7 +571,10 @@ def get_options(request, typee):
     if request.method == "POST":
         data = json.loads(request.POST['options'])["options"]
         data = [item.strip().strip() for item in data]
-        data = [f"{item.strip().split('-')[0].strip()}-{item.split('-')[-1].strip()}" for item in data]
+        if "equipe" in typee:
+            data = [f"{item.strip().split('-')[0].strip()}-{item.split('-')[-1].strip()}" for item in data]
+        else:
+            pass
         if typee == "profession":
             data = Profession.objects.exclude(name__in=data).all()
         elif typee == "position":

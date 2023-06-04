@@ -31,7 +31,6 @@
                             {% for position in positions %}
                                 <tr id="{{ position }}">
                                     <td class="">
-        <!--                                {{ position }}-->
                                         {{ position }}
                                         <span class="badge rounded-pill bg-danger"
                                             style="float: left; color: black; " onclick="del_position('{{ position }}', false)">-</span>
@@ -470,9 +469,9 @@
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-<!--                                    {% for position in positions %}-->
-<!--                                        <li><a class="dropdown-item">{{ position }}</a></li>-->
-<!--                                    {% endfor %}-->
+                                    {% for position in positions %}
+                                        <li><a class="dropdown-item">{{ position }}</a></li>
+                                    {% endfor %}
 
 
                                 </ul>

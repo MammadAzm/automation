@@ -160,6 +160,34 @@
             </table>
         </div>
 
+        <div class="col">
+            <table class="table" id="table-zone" style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            زون
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">+</span>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for zone in zones %}
+                        <tr  id="{{ zone }}">
+                            <td>
+                                {{ zone }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">-</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -381,5 +409,35 @@
             </div>
         </div>
     </div>
+
+<div class="modal fade" id="staticBackdropZones" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropZonesLabel" style="margin-right: auto">افزودن زون</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-zone" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="zone" class="form-control" placeholder="نام زون">
+
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon6" style="border: none">افزودن زون</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}
