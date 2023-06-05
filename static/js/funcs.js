@@ -842,7 +842,6 @@ function add_task_to_daily_report() {
         return 0
     }
     let table = document.getElementById("table-task");
-
     $.ajax({
         type: 'POST',
         url: '/edit-db/get-task',
@@ -895,17 +894,17 @@ function add_task_to_daily_report() {
             let cell5 = document.createElement('td', );
             cell5.className = "";
             cell5.style.textAlign = "center"
-            cell5.innerHTML = obj.doneVolume;
+            cell5.innerHTML = obj.doneVolume.toFixed(2);
 
             let cell6 = document.createElement('td', );
             cell6.className = "";
             cell6.style.textAlign = "center"
-            cell6.innerHTML = obj.totalVolume;
+            cell6.innerHTML = obj.totalVolume.toFixed(2);
 
             let cell7 = document.createElement('td', );
             cell7.className = "";
             cell7.style.textAlign = "center"
-            cell7.innerHTML = obj.donePercentage;
+            cell7.innerHTML = obj.donePercentage.toFixed(2);
 
             let cell8 = document.createElement('td', );
             cell8.className = "";
@@ -1279,6 +1278,7 @@ function fetch_tasks(){
 
         innerHTMLs.push(name + "-" + equipe.textContent + "-" + zone.textContent);
     }
+
     options = JSON.stringify(
         {
         'options': innerHTMLs,

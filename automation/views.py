@@ -72,6 +72,7 @@ def create_report_template(request):
         materials = Material.objects.all()
         equipes = Equipe.objects.all()
         units = Unit.objects.all()
+        tasks = Task.objects.all()
 
         context = {
             "positions": positions,
@@ -80,10 +81,11 @@ def create_report_template(request):
             "materials": materials,
             "equipes": equipes,
             "units": units,
+            "tasks": tasks,
             "machine_types": MACHINE_TYPES,
         }
-    else:
 
+    else:
         report = DailyReport.objects.last()
         positions = PositionCount.objects.filter(dailyReport=report)
         professions = ProfessionCount.objects.filter(dailyReport=report)
@@ -91,6 +93,7 @@ def create_report_template(request):
         materials = MaterialCount.objects.filter(dailyReport=report)
         equipes = EquipeCount.objects.filter(dailyReport=report)
         units = Unit.objects.all()
+        tasks = TaskReport.objects.filter(dailyReport=report)
 
         context = {
             "positions": positions,
@@ -99,6 +102,7 @@ def create_report_template(request):
             "materials": materials,
             "equipes": equipes,
             "units": units,
+            "tasks": tasks,
             "machine_types": MACHINE_TYPES,
         }
 
@@ -420,6 +424,7 @@ def save_daily_report_to_db(request):
         materials = {}
         equipes = {}
         contractors = {}
+        tasks = {}
 
 
         for key, value in data.items():
@@ -479,6 +484,8 @@ def save_daily_report_to_db(request):
                     materials[key.split("_")[1]] = [float(value[0]), None]
                 elif "unit" in key:
                     materials[key.split("_")[1]][1] = value[0]
+            elif "task" in key:
+                tasks[key.split("_")[1]] = float(value[0])
 
         # print(positions)
         # print(professions)
@@ -486,6 +493,9 @@ def save_daily_report_to_db(request):
         # print(materials)
         # print(equipes)
         # print(contractors)
+        # print(tasks)
+
+        # return HttpResponse(1)
 
         report = DailyReport.objects.create(
             project_name="پروژه آلفا",
@@ -525,7 +535,6 @@ def save_daily_report_to_db(request):
 
         for machine, count in machines.items():
             if count[0] > 0 or count[1] > 0:
-                # print(machine)
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
                 mach = Machine.objects.get(name=machine)
@@ -594,6 +603,17 @@ def save_daily_report_to_db(request):
             else:
                 continue
 
+        for task, amount in tasks.items():
+            if amount > 0:
+                tsk = Task.objects.get(unique_str=task)
+                tsk_rep = TaskReport(
+                    task=tsk,
+                    dailyReport=report,
+                    todayVolume=amount,
+                )
+                tsk_rep.update_percentage()
+                report.tasks.add(tsk_rep.task)
+
         report.cal_countPeople()
         report.cal_countMachines()
 
@@ -630,6 +650,7 @@ def report_on_day(request, idd):
     machines = MachineCount.objects.filter(dailyReport=report)
     materials = MaterialCount.objects.filter(dailyReport=report)
     equipes = EquipeCount.objects.filter(dailyReport=report)
+    tasks = TaskReport.objects.filter(dailyReport=report)
     other = {
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
@@ -642,6 +663,7 @@ def report_on_day(request, idd):
         "machines": machines,
         "materials": materials,
         "equipes": equipes,
+        "tasks": tasks,
         "other": other,
     }
     return render(request, "print-report.html", context=context)
@@ -688,9 +710,6 @@ def get_options(request, typee):
                 }
                 return JsonResponse(context)
 
-        print(list(data.values()))
-        print(list(data))
-        print(data)
         if data.exists():
             data = json.dumps(list(data.values()))
         else:
@@ -708,10 +727,14 @@ def get_options(request, typee):
 def get_tasks(request,):
     if request.method == "POST":
         data = json.loads(request.POST['options'])["options"]
-        data = [item.strip().strip() for item in data]
-
+        # data = [item.strip().split("-") for item in data]
+        data = list(
+            map(
+                lambda x: "".join([x[0].strip(), "-", x[1].strip(), "-", x[2].strip(), "-", x[3].strip()]),
+                [item.strip().split("-") for item in data]
+            )
+        )
         data = Task.objects.exclude(unique_str__in=data).all()
-
         if data.exists():
             out = []
             for item in data:
@@ -732,6 +755,7 @@ def get_tasks(request,):
             data = {
                 "task": data,
             }
+            data = json.dumps(data)
         return JsonResponse(data, safe=False)
 
     else:

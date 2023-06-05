@@ -262,20 +262,20 @@
 
             </div>
 
-            <div class="col-6">
+            <div class="col-6 ">
                 <table class="table" id="table-task" style="font-size: 13px">
 
                 <thead class="table-dark">
                     <tr class="">
-                        <th class="" >
+                        <th class="" style="width: 26%">
                             شرح عملیات
                                 <span class="badge rounded-pill bg-warning" style="float: left; color: black"
                                     data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
                         </th>
-                        <th class="" >
+                        <th class="" style="width: 17%">
                             اکیپ
                         </th>
-                        <th class="" >
+                        <th class="" style="width: 8%">
                             زون
                         </th>
                         <th class="" >
@@ -285,12 +285,12 @@
                             تا دیروز
                         </th>
                         <th class="text-centred" >
-                            حجم/مقدار کل
+                            کل
                         </th>
                         <th class="text-centred" >
                             درصد
                         </th>
-                        <th class="text-centred" >
+                        <th class="text-centred" style="width: 10%">
                             واحد
                         </th>
                     </tr>
@@ -301,43 +301,47 @@
                     {% for task in tasks %}
                         <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
                             <td>
-                                {{ task.name }}
+                                {{ task.task.name }}
                                 <span class="badge rounded-pill bg-danger"
-                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">-</span>
+                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', false)">-</span>
                             </td>
 
                             <td>
-                                {{ task.equipe }}
+                                {{ task.task.equipe }}
                             </td>
 
                             <td>
-                                {{ task.zone }}
+                                {{ task.task.zone }}
                             </td>
 
                             <td>
-                                {{ task.unit }}
+                                <input required class="small-input-integer" id="task_{{ task.task.unique_str }}_today"
+                                       name="task_{{ task.task.unique_str }}_today" min="0" value="0" type="number">
                             </td>
 
-                            <td>
-                                {{ task.totalVolume }}
+                            <td class="text-centred">
+                                {{ task.task.doneVolume }}
                             </td>
+
+                            <td class="text-centred">
+                                {{ task.task.totalVolume }}
+                            </td>
+
+                            <td class="text-centred">
+                                {{ task.task.donePercentage|floatformat:2 }}
+                            </td>
+
+                            <td class="text-centred">
+                                {{ task.task.unit }}
+                            </td>
+
+
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
         <div class="row">
@@ -618,7 +622,7 @@
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button"
                                         id="dropdownMenuTasks" data-bs-toggle="dropdown" onclick='fetch_tasks()'>
-                                    انتخاب تخصص
+                                    انتخاب عملیات
                                 </button>
                                 <ul class="dropdown-menu" id="dropdown-menu-tasks">
                                     <li>
