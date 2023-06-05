@@ -136,6 +136,31 @@ function del_zone(zone, db) {
 
 }
 
+/*
+function del_unit(unit, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-unit',
+            data: {
+            'unit': unit,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(unit)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(unit)
+        obj.remove()
+    }
+
+}
+*/
+
 function del_equipe(prof, cont, db) {
     if (db) {
         $.ajax({
@@ -155,6 +180,33 @@ function del_equipe(prof, cont, db) {
         });
     } else {
         let obj = document.getElementById(prof)
+        obj.remove()
+    }
+
+}
+
+function del_task(taskName, equipeName, zoneName, taskVol, unitName, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-task',
+            data: {
+            'taskName': taskName,
+            'equipeName': equipeName,
+            'zoneName': zoneName,
+            'taskVol': taskVol,
+            'unitName': unitName,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(taskName+"-"+equipeName+"-"+zoneName)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(taskName+"-"+equipeName+"-"+zoneName)
         obj.remove()
     }
 
@@ -322,6 +374,122 @@ function search_material() {
     });
     // Add event listener to the search input
     $('#search-material').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_equipe_task() {
+    let dropdownItems = $('#dropdown-menu-tasks').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-task').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-task").dispatchEvent(event);
+      $('#equipetask-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-task').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_tasks() {
+    let dropdownItems = $('#dropdown-menu-tasks').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-task').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-task").dispatchEvent(event);
+      $('#task-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-task').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_zone_task() {
+    let dropdownItems = $('#dropdown-menu-zones').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-zone').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-zone").dispatchEvent(event);
+      $('#zone-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-zone').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_unit_task() {
+    let dropdownItems = $('#dropdown-menu-units').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-unit').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-unit").dispatchEvent(event);
+      $('#unit-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-unit').on('keyup', function() {
       let searchText = $(this).val().toLowerCase();
 
       // Loop through each dropdown item and hide/show based on search text
@@ -667,6 +835,119 @@ function add_position_to_daily_report() {
 
 }
 
+function add_task_to_daily_report() {
+    let val = document.getElementById("task-name").value;
+    document.getElementById("task-name").value = "";
+    if (!val) {
+        return 0
+    }
+    let table = document.getElementById("table-task");
+
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/get-task',
+        data: {
+        'options': val,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            let obj = response
+            let newRow = document.createElement('tr');
+            newRow.id = val;
+            let cell1 = document.createElement('td', );
+            cell1.className = "";
+            cell1.innerHTML = obj.name;
+            let span = document.createElement('span', );
+            Object.assign(span.style, {
+                float: 'left',
+                color: 'black',
+            });
+            span.className = "badge rounded-pill bg-danger";
+            span.innerHTML = "-";
+            span.addEventListener('click', function() {
+            del_task(obj.name, obj.equipe, obj.zone, obj.totalVolume, obj.unit, false);
+            });
+            cell1.innerHTML = obj.name;
+            cell1.appendChild(span)
+
+            let cell2 = document.createElement('td', );
+            cell2.className = "";
+            cell2.innerHTML = obj.equipe;
+
+            let cell3 = document.createElement('td', );
+            cell3.className = "";
+            cell3.innerHTML = obj.zone;
+
+            let cell4 = document.createElement('td', );
+            let input = document.createElement('input', );
+            input.required = true;
+            input.className = "small-input-integer";
+            input.type = "number";
+            input.id = "task_"+val+"_today";
+            input.name = "task_"+val+"_today";
+            input.min = '0';
+            input.value = '0';
+            cell4.className = "";
+            cell4.appendChild(input)
+
+            let cell5 = document.createElement('td', );
+            cell5.className = "";
+            cell5.style.textAlign = "center"
+            cell5.innerHTML = obj.doneVolume;
+
+            let cell6 = document.createElement('td', );
+            cell6.className = "";
+            cell6.style.textAlign = "center"
+            cell6.innerHTML = obj.totalVolume;
+
+            let cell7 = document.createElement('td', );
+            cell7.className = "";
+            cell7.style.textAlign = "center"
+            cell7.innerHTML = obj.donePercentage;
+
+            let cell8 = document.createElement('td', );
+            cell8.className = "";
+            cell8.style.textAlign = "center"
+            cell8.innerHTML = obj.unit;
+
+
+            newRow.appendChild(cell1);
+            newRow.appendChild(cell2);
+            newRow.appendChild(cell3);
+            newRow.appendChild(cell4);
+            newRow.appendChild(cell5);
+            newRow.appendChild(cell6);
+            newRow.appendChild(cell7);
+            newRow.appendChild(cell8);
+
+
+            table.querySelector('tbody').appendChild(newRow);
+        }
+    });
+
+
+
+    // let cell2 = document.createElement('td', );
+    // cell2.className = "";
+    // let input = document.createElement('input', );
+    // input.required = true;
+    // input.className = "small-input-integer";
+    // input.type = "number";
+    // input.id = "position_"+val+"_count";
+    // input.name = "position_"+val+"_count";
+    // input.min = '0';
+    // input.value = '0';
+    // cell2.appendChild(input);
+    //
+    //
+    // newRow.appendChild(cell2);
+
+
+
+}
+
 function add_equipe_to_base_data() {
     let valProf = document.getElementById("equipe-profession-name").value
     document.getElementById("equipe-profession-name").value = "";
@@ -719,6 +1000,87 @@ function add_equipe_to_base_data() {
 
 }
 
+function add_task_to_base_data() {
+    let taskName = document.getElementById("task-name").value
+    document.getElementById("task-name").value = "";
+
+    let equipeName = document.getElementById("equipetask-name").value
+    document.getElementById("equipetask-name").value = "";
+
+    let zoneName = document.getElementById("zone-name").value
+    document.getElementById("zone-name").value = "";
+
+    let taskVol = document.getElementById("task-volume").value
+    document.getElementById("task-volume").value = "";
+
+    let unitName = document.getElementById("unit-name").value
+    document.getElementById("unit-name").value = "";
+
+    if ( !taskName || !equipeName || !zoneName || !taskVol || !unitName ) {
+        return 0
+    }
+    let table = document.getElementById("table-task")
+
+    let newRow = document.createElement('tr');
+    newRow.id = taskName + "-" + equipeName + "-" + zoneName;
+
+    let descr = document.createElement('td', );
+    descr.className = "";
+    let span = document.createElement('span', );
+    Object.assign(span.style, {
+        float: 'left',
+        color: 'black',
+    });
+    span.className = "badge rounded-pill bg-danger";
+    span.innerHTML = "-";
+    span.addEventListener('click', function() {
+    del_task(taskName, equipeName, zoneName, taskVol, unitName, true);
+    });
+    descr.innerHTML = taskName;
+    descr.appendChild(span)
+
+    let equipeCell = document.createElement('td', );
+    equipeCell.className = ""
+    equipeCell.innerHTML = equipeName;
+
+    let zoneCell = document.createElement('td', );
+    zoneCell.className = ""
+    zoneCell.innerHTML = zoneName;
+
+    let unitCell = document.createElement('td', );
+    unitCell.className = ""
+    unitCell.innerHTML = unitName;
+
+    let volCell = document.createElement('td', );
+    volCell.className = ""
+    volCell.innerHTML = taskVol;
+
+    newRow.appendChild(descr);
+    newRow.appendChild(equipeCell);
+    newRow.appendChild(zoneCell);
+    newRow.appendChild(unitCell);
+    newRow.appendChild(volCell);
+     $.ajax({
+            type: 'POST',
+            url: '/edit-db/add-task',
+            data: {
+            'taskName': taskName,
+            'equipeName': equipeName,
+            'zoneName': zoneName,
+            'unitName': unitName,
+            'taskVol': taskVol,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    table.querySelector('tbody').appendChild(newRow);
+                }
+            }
+        });
+}
+
 function fetch_options(type){
     let typetype = false;
     if (type[0] == "equipe"){
@@ -768,6 +1130,25 @@ function fetch_options(type){
             search_equipe(type);
         }
 
+    } else if ( type == "zone" || type == "unit" ){
+            let opts = innerHTMLs
+        for (let i = 0; i < opts.length; i++) {
+
+            let item = opts[i]
+            let li = document.createElement("li")
+            let a = document.createElement("a")
+            a.className = "dropdown-item";
+            a.innerHTML = item;
+
+            li.appendChild(a);
+            menu.appendChild(li);
+            if (type == "zone"){
+                search_zone_task();
+            } else {
+                search_unit_task();
+            }
+
+        }
     } else {
         options = JSON.stringify(
             {
@@ -803,6 +1184,10 @@ function fetch_options(type){
                 search_machine();
             } else if (type=="material") {
                 search_material();
+            } else if (type=="task") {
+                search_equipe_task();
+            } else if (type=="zone") {
+                search_zone_task();
             }
         }
     });
@@ -874,6 +1259,61 @@ function fetch_equipes(){
 
 }
 
+function fetch_tasks(){
+    let menu = document.getElementById("dropdown-menu-tasks")
+    let options = menu.querySelectorAll('.dropdown-item');
+    options.forEach(option => {
+      option.remove()
+    });
+
+    let table = document.getElementById("table-task")
+    let tbody = table.getElementsByTagName("tbody")[0]
+    let rows = tbody.getElementsByTagName("tr")
+
+    let innerHTMLs = []
+
+    for (let i = 0; i < rows.length; i++) {
+        let name = rows[i].getElementsByTagName("td")[0].textContent.replace("-", "",).trim()
+        let equipe = rows[i].getElementsByTagName("td")[1]
+        let zone = rows[i].getElementsByTagName("td")[2]
+
+        innerHTMLs.push(name + "-" + equipe.textContent + "-" + zone.textContent);
+    }
+    options = JSON.stringify(
+        {
+        'options': innerHTMLs,
+        }
+    )
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/get-tasks',
+        data: {
+        'options': options,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            let opts = response
+            opts = JSON.parse(opts)
+            for (let i=0 ; i < opts.length; i++) {
+                let li = document.createElement("li")
+                let a = document.createElement("a")
+                a.className = "dropdown-item";
+                a.innerHTML = opts[i].name + "-" + opts[i].equipe + "-" + opts[i].zone;
+                li.appendChild(a);
+                li.style.textAlign = "right"
+                menu.appendChild(li);
+            }
+
+            search_tasks();
+
+        }
+    });
+
+
+}
+
 function del_report(reportID){
     $.ajax({
         type: 'POST',
@@ -906,7 +1346,6 @@ function fetch_units(callback) {
 }
 
 function toggle_requirement(toggleID, conditionID) {
-
     let select = document.getElementById(toggleID)
     let input = document.getElementById(conditionID)
     if (input.value == 0) {

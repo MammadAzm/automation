@@ -263,55 +263,68 @@
             </div>
 
             <div class="col-6">
+                <table class="table" id="table-task" style="font-size: 13px">
 
-<!--                <div class="row">-->
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            شرح عملیات
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
+                        </th>
+                        <th class="" >
+                            اکیپ
+                        </th>
+                        <th class="" >
+                            زون
+                        </th>
+                        <th class="" >
+                            امروز
+                        </th>
+                        <th class="text-centred" >
+                            تا دیروز
+                        </th>
+                        <th class="text-centred" >
+                            حجم/مقدار کل
+                        </th>
+                        <th class="text-centred" >
+                            درصد
+                        </th>
+                        <th class="text-centred" >
+                            واحد
+                        </th>
+                    </tr>
+                </thead>
 
-<!--                    <div class="col" style="padding: 0; margin: 0">-->
-<!--                        <table class="table" id="table-machine2" style="font-size: 13px">-->
-<!--                            <thead class="table-dark">-->
-<!--                                <tr class="">-->
-<!--                                    <th class="" >-->
-<!--                                        شرح عملیات اجرایی-->
-<!--                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black"-->
-<!--                                            data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>-->
-<!--                                    </th>-->
-<!--                                    <th class="" style="width: 10%">-->
-<!--                                        واحد-->
-<!--                                    </th>-->
-<!--                                    <th class="" style="width: 12%">-->
-<!--                                        تا دیروز-->
-<!--                                    </th>-->
-<!--                                    <th class="" style="width: 10%">-->
-<!--                                        امروز-->
-<!--                                    </th>-->
-<!--                                    <th class="" style="width: 12%">-->
-<!--                                        کل آیتم-->
-<!--                                    </th>-->
-<!--                                    <th class="" style="width: 10%">-->
-<!--                                        درصد-->
-<!--                                    </th>-->
-<!--                                </tr>-->
-<!--                            </thead>-->
-<!--                            <tbody>-->
-<!--                            {% for machine in machines %}-->
-<!--                                <tr id="{{ machine }}2">-->
-<!--                                    <td class="">-->
-<!--        &lt;!&ndash;                                {{ machine }}&ndash;&gt;-->
-<!--                                        {{ machine }}-->
-<!--                                        <span class="badge rounded-pill bg-danger"-->
-<!--                                            style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>-->
-<!--                                    </td>-->
-<!--                                    <td class="">-->
-<!--&lt;!&ndash;                                        <input required class="small-input-integer" type="number" id="{{ machine }}_count2" name="machine_{{ machine }}_count" min="0" value="{{ machine.count }}">&ndash;&gt;-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                            {% endfor %}-->
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </div>-->
+                <tbody>
 
-<!--                </div>-->
+                    {% for task in tasks %}
+                        <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
+                            <td>
+                                {{ task.name }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">-</span>
+                            </td>
 
+                            <td>
+                                {{ task.equipe }}
+                            </td>
+
+                            <td>
+                                {{ task.zone }}
+                            </td>
+
+                            <td>
+                                {{ task.unit }}
+                            </td>
+
+                            <td>
+                                {{ task.totalVolume }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             </div>
         </div>
 
@@ -582,6 +595,53 @@
                 <div class="modal-footer">
                     <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_daily_report()" style="float: left"
                                     type="button" id="btn-add-equipe" style="border: none">افزودن اکیپ</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="staticBackdropTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuTasks" data-bs-toggle="dropdown" onclick='fetch_tasks()'>
+                                    انتخاب تخصص
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-tasks">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-task">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                </ul>
+                            </div>
+
+
+
+                            <input id="task-name" disabled required type="text" name="task" class="form-control">
+
+                        </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success bp3-round" onclick="add_task_to_daily_report()" style="float: left"
+                                    type="button" id="btn-add-task" style="border: none">افزودن عملیات</button>
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
                 </div>
 

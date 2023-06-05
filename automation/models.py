@@ -178,6 +178,47 @@ class Zone(models.Model):
         return self.name
 
 
+class Task(models.Model):
+    unique_str = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
+    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    totalVolume = models.FloatField(default=0.1,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    doneVolume = models.FloatField(default=0.0,)
+    donePercentage = models.FloatField(default=0.0,)
+
+    def update_percentage(self):
+        self.donePercentage = (self.doneVolume / self.totalVolume)*100
+        self.save()
+
+    def set_unique(self):
+        self.unique_str = self.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        self.save()
+
+    class Meta:
+        unique_together = ('name', 'equipe', 'zone')
+
+    def __str__(self):
+        return self.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+
+
+class TaskReport(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+    todayVolume = models.FloatField(default=0.0,)
+
+    def update_percentage(self):
+        self.task.doneVolume += self.todayVolume
+        self.task.update_percentage()
+        self.save()
+
+    def __str__(self):
+        return self.task
+
+    class Meta:
+        unique_together = ('dailyReport', 'task')
+
 class DailyReport(models.Model):
     # --------------------Header----------------------
     project_name = models.CharField(max_length=250, default="Automation Project")
@@ -219,6 +260,8 @@ class DailyReport(models.Model):
     equipes = models.ManyToManyField(Equipe, through='EquipeCount')
     countEquipes = models.IntegerField(default=0)
 
+    tasks = models.ManyToManyField(Task, through="TaskReport")
+
     def cal_countPeople(self):
         for position in self.positioncount_set.all():
             self.countPositions += position.count
@@ -236,6 +279,11 @@ class DailyReport(models.Model):
             self.countInactiveMachines += machine.inactiveCount
             self.countAllMachines += machine.totalCount
         self.save()
+
+    def update_tasks(self):
+        for task in self.taskreport_set.all():
+            task.update_percentage()
+            self.save()
 
     def __str__(self):
         return self.project_name

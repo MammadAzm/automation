@@ -20,7 +20,7 @@ td {
 
 .text-centred {
     vertical-align: middle;
-    background-color: red;
+    text-align: center;
 }
 
 .onhover:hover {

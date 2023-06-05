@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core import serializers
 
 from .models import *
 from .converters import *
@@ -24,6 +25,8 @@ def add_base_data_template(request):
     contractors = Contractor.objects.all()
     equipes = Equipe.objects.all()
     zones = Zone.objects.all()
+    tasks = Task.objects.all()
+    units = Unit.objects.all()
 
     if not professions.exists():
         professions = []
@@ -34,11 +37,15 @@ def add_base_data_template(request):
     if not materials.exists():
         materials = []
     if not contractors.exists():
-            contractors = []
+        contractors = []
     if not equipes.exists():
-                equipes = []
+        equipes = []
     if not zones.exists():
-                zones = []
+        zones = []
+    if not tasks.exists():
+        tasks = []
+    if not units.exists():
+        units = []
 
     context = {
         "positions": positions,
@@ -48,6 +55,8 @@ def add_base_data_template(request):
         "contractors": contractors,
         "equipes": equipes,
         "zones": zones,
+        "tasks": tasks,
+        "units": units,
         "machine_types": MACHINE_TYPES,
     }
 
@@ -188,6 +197,37 @@ def add_zone_to_db(request,):
     return HttpResponse("Problem")
 
 
+def add_task_to_db(request,):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        taskName = request.POST.get("taskName")
+        equipeName = request.POST.get("equipeName")
+        zoneName = request.POST.get("zoneName")
+        unitName = request.POST.get("unitName")
+        taskVol = request.POST.get("taskVol")
+
+        try:
+            new_task = Task.objects.create(
+                name=taskName,
+                equipe=Equipe.objects.get(name=equipeName),
+                zone=Zone.objects.get(name=zoneName),
+                totalVolume=float(taskVol),
+                unit=Unit.objects.get(name=unitName),
+            )
+            new_task.set_unique()
+            new_task.update_percentage()
+            return HttpResponse(True)
+            # return redirect(redirect_url)
+
+        except:
+            return HttpResponse(False)
+
+    elif request.method == "GET":
+        pass
+
+        return HttpResponse("Problem")
+
+
 def add_equipe_to_db(request,):
     if request.method == "POST":
         # redirect_url = request.META.get('HTTP_REFERER', '/')
@@ -310,6 +350,21 @@ def del_zone_from_db(request):
     return HttpResponse(-1)
 
 
+def del_unit_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("unit")
+        obj = Unit.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
 def del_equipe_from_db(request):
     if request.method == "POST":
         prof = request.POST.get("profession")
@@ -318,6 +373,31 @@ def del_equipe_from_db(request):
         obj = Equipe.objects.filter(
             profession=Profession.objects.get(name=prof),
             contractor=Contractor.objects.get(name=cont),
+        )
+        obj.delete()
+
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_task_from_db(request):
+    if request.method == "POST":
+        taskName = request.POST.get("taskName")
+        equipeName = request.POST.get("equipeName")
+        taskVol = request.POST.get("taskVol")
+        zoneName = request.POST.get("zoneName")
+        unitName = request.POST.get("unitName")
+
+        obj = Task.objects.filter(
+            name=taskName,
+            equipe=Equipe.objects.get(name=equipeName),
+            zone=Zone.objects.get(name=zoneName),
+            totalVolume=taskVol,
+            unit=Unit.objects.get(name=unitName),
         )
         obj.delete()
 
@@ -585,6 +665,10 @@ def get_options(request, typee):
             data = Material.objects.exclude(name__in=data).all()
         elif typee == "contractor":
             data = Contractor.objects.exclude(name__in=data).all()
+        elif typee == "task":
+            data = Equipe.objects.exclude(name__in=data).all()
+        elif typee == "zone":
+            data = Zone.objects.exclude(name__in=data).all()
         elif typee == "equipe":
             data = Equipe.objects.exclude(name__in=data).all()
             if len(data) > 0:
@@ -604,6 +688,9 @@ def get_options(request, typee):
                 }
                 return JsonResponse(context)
 
+        print(list(data.values()))
+        print(list(data))
+        print(data)
         if data.exists():
             data = json.dumps(list(data.values()))
         else:
@@ -613,6 +700,69 @@ def get_options(request, typee):
             typee: data,
         }
         return JsonResponse(context)
+
+    else:
+        pass
+
+
+def get_tasks(request,):
+    if request.method == "POST":
+        data = json.loads(request.POST['options'])["options"]
+        data = [item.strip().strip() for item in data]
+
+        data = Task.objects.exclude(unique_str__in=data).all()
+
+        if data.exists():
+            out = []
+            for item in data:
+                obj = {
+                    "name": item.name,
+                    "equipe": item.equipe.name,
+                    "zone": item.zone.name,
+                    "totalVolume": item.totalVolume,
+                    "unit": item.unit.name,
+                    "doneVolume": item.doneVolume,
+                    "donePercentage": item.donePercentage,
+                }
+                out.append(obj)
+
+            data = json.dumps(out)
+        else:
+            data = "[]"
+            data = {
+                "task": data,
+            }
+        return JsonResponse(data, safe=False)
+
+    else:
+        pass
+
+
+def get_task(request,):
+    if request.method == "POST":
+        name, prof, cont, zone = [item.strip() for item in request.POST['options'].split("-")]
+
+        item = Task.objects.filter(
+            name=name,
+            zone=Zone.objects.get(name=zone),
+            equipe=Equipe.objects.get(name=f"{prof}-{cont}"),
+        )
+        if item.exists():
+            item = item[0]
+            data = {
+                "name": item.name,
+                "equipe": item.equipe.name,
+                "zone": item.zone.name,
+                "totalVolume": item.totalVolume,
+                "unit": item.unit.name,
+                "doneVolume": item.doneVolume,
+                "donePercentage": item.donePercentage,
+            }
+            # data = json.dumps(data)
+        else:
+            data = []
+
+        return JsonResponse(data,)
 
     else:
         pass

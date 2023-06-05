@@ -188,6 +188,94 @@
             </table>
         </div>
 
+        <div class="col">
+            <table class="table" id="table-unit" hidden style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            واحد
+<!--                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"-->
+<!--                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">+</span>-->
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for unit in units %}
+                        <tr  id="{{ unit }}">
+                            <td>
+                                {{ unit }}
+<!--                                <span class="badge rounded-pill bg-danger"-->
+<!--                                    style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">-</span>-->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col">
+            <table class="table" id="table-task" style="font-size: 13px">
+
+                <thead class="table-dark">
+                    <tr class="">
+                        <th class="" >
+                            شرح عملیات
+                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
+                        </th>
+                        <th class="" >
+                            اکیپ
+                        </th>
+                        <th class="" >
+                            زون
+                        </th>
+                        <th class="" >
+                            واحد
+                        </th>
+                        <th class="" >
+                            حجم/مقدار کل
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for task in tasks %}
+                        <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
+                            <td>
+                                {{ task.name }}
+                                <span class="badge rounded-pill bg-danger"
+                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">-</span>
+                            </td>
+
+                            <td>
+                                {{ task.equipe }}
+                            </td>
+
+                            <td>
+                                {{ task.zone }}
+                            </td>
+
+                            <td>
+                                {{ task.unit }}
+                            </td>
+
+                            <td>
+                                {{ task.totalVolume }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -432,6 +520,132 @@
             </div>
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--
+<div class="modal fade" id="staticBackdropUnits" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropUnitsLabel" style="margin-right: auto">افزودن واحد</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-unit" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="zone" class="form-control" placeholder="نام زون">
+
+                        <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon6" style="border: none">افزودن زون</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+-->
+
+<div class="modal fade" id="staticBackdropTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-task" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3 ">
+                        <input required type="text" name="task-name" id="task-name" class="form-control" placeholder="نام عملیات">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task")'>
+                                انتخاب اکیپ
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-tasks">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-task">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
+                            </ul>
+                        </div>
+                            <input required disabled type="text" name="equipetask-name" id="equipetask-name" class="form-control" placeholder="اکیپ">
+                        </div>
+
+                         <div class="input-group mb-3">
+                            <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone")'>
+                                انتخاب زون
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-zones">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-zone">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
+                            </ul>
+                        </div>
+                            <input required disabled type="text" name="zone-name" id="zone-name" class="form-control" placeholder="زون">
+                        </div>
+
+                         <div class="input-group mb-3">
+                             <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit")'>
+                                انتخاب واحد
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-units">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-unit">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
+                            </ul>
+                        </div>
+                             <input required  type="number"  name="task-name" id="task-volume" class="form-control" placeholder="مقدار">
+                             <input required disabled type="text" name="zone-name" id="unit-name" class="form-control" placeholder="واحد">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data()"
+                                type="submit" id="button-addon7" >افزودن عملیات</button>
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
             </div>
 
