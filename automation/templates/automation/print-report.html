@@ -32,7 +32,7 @@
 
             <div class="col-6">
 
-                <div class="row">
+                <div class="row" style="margin-bottom: 0; padding-bottom: 0">
 
                     <div class="col-4" style="padding: 0; margin: 0;">
                         <table class="table" id="table-position" style="font-size: 13px;">
@@ -48,6 +48,12 @@
                                     <td style="text-align: center">{{ position.count }}</td>
                                 </tr>
                             {% endfor %}
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 75%">تعداد کل</th>
+                                    <th style="text-align: center">{{ report.countPositions }}</th>
+                                </tr>
+                            </thead>
                         </table>
                     </div>
 
@@ -73,9 +79,27 @@
                                     <td style="text-align: center">{{ equipe.countTotal }}</td>
                                 </tr>
                             {% endfor %}
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 75%" colspan="5">تعداد کل</th>
+                                    <th style="text-align: center">{{ report.countProfessions }}</th>
+                                </tr>
+                            </thead>
                         </table>
                     </div>
+                </div>
 
+                <div class="row" style="margin-top: 0">
+                    <div class="col-11" style="padding: 0; margin: 0;">
+                        <table class="table me-1" style="margin-top: 0;">
+                            <thead class="table-dark" style="font-size: 13px">
+                                <tr>
+                                    <th style="width: 90%">تعداد کل نفرات</th>
+                                    <th style="text-align: center">{{ report.countPeople }}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="row">
