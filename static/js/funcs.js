@@ -551,20 +551,25 @@ function add_machine_to_daily_report() {
     cell1.innerHTML = val;
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_machine(val, false);
     });
+
     cell1.innerHTML = val;
     cell1.appendChild(span)
 
     let cell2 = document.createElement('td', );
     cell2.className = "";
     let input = document.createElement('input', );
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
@@ -572,11 +577,14 @@ function add_machine_to_daily_report() {
     input.name = "machine_"+val+"_activeCount";
     input.min = '0';
     input.value = '0';
+
     cell2.appendChild(input)
 
     let cell3 = document.createElement('td', );
     cell3.className = "";
     input = document.createElement('input', );
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
@@ -610,11 +618,12 @@ function add_material_to_daily_report() {
     cell1.innerHTML = val;
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_material(val, false);
     });
@@ -624,6 +633,8 @@ function add_material_to_daily_report() {
     let cell2 = document.createElement('td', );
     cell2.className = "";
     let input = document.createElement('input', );
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     input.required = true;
     input.className = "small-input-integer w-75";
     input.type = "number";
@@ -691,11 +702,12 @@ function add_profession_to_daily_report() {
     cell1.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_profession(val, false);
     });
@@ -713,6 +725,8 @@ function add_profession_to_daily_report() {
         cell_i.className = "";
 
         let input = document.createElement('input', );
+        input.style.borderRadius = "0"
+        input.style.textAlign = "center"
         input.required = true;
         input.className = "small-input-integer";
         input.type = "number";
@@ -748,11 +762,12 @@ function add_equipe_to_daily_report() {
     cell1.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_profession(val, false);
     });
@@ -772,6 +787,8 @@ function add_equipe_to_daily_report() {
         cell_i.className = "";
 
         let input = document.createElement('input', );
+        input.style.borderRadius = "0"
+        input.style.textAlign = "center"
         input.required = true;
         input.className = "small-input-integer";
         input.type = "number";
@@ -805,11 +822,12 @@ function add_position_to_daily_report() {
     cell1.innerHTML = val;
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_position(val, false);
     });
@@ -819,6 +837,8 @@ function add_position_to_daily_report() {
     let cell2 = document.createElement('td', );
     cell2.className = "";
     let input = document.createElement('input', );
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
@@ -860,11 +880,12 @@ function add_task_to_daily_report() {
             cell1.innerHTML = obj.name;
             let span = document.createElement('span', );
             Object.assign(span.style, {
-                float: 'left',
+                float: 'right',
                 color: 'black',
             });
-            span.className = "badge rounded-pill bg-danger";
-            span.innerHTML = "-";
+            span.className = "badge rounded-pill";
+            span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
             span.addEventListener('click', function() {
             del_task(obj.name, obj.equipe, obj.zone, obj.totalVolume, obj.unit, false);
             });
@@ -881,6 +902,8 @@ function add_task_to_daily_report() {
 
             let cell4 = document.createElement('td', );
             let input = document.createElement('input', );
+            input.style.borderRadius = "0"
+            input.style.textAlign = "center"
             input.required = true;
             input.className = "small-input-integer";
             input.type = "number";
@@ -931,6 +954,8 @@ function add_task_to_daily_report() {
     // let cell2 = document.createElement('td', );
     // cell2.className = "";
     // let input = document.createElement('input', );
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     // input.required = true;
     // input.className = "small-input-integer";
     // input.type = "number";
@@ -968,11 +993,12 @@ function add_equipe_to_base_data() {
     cell1.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_equipe(valProf, valCont,true);
     });
@@ -1027,11 +1053,12 @@ function add_task_to_base_data() {
     descr.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'left',
+        float: 'right',
         color: 'black',
     });
-    span.className = "badge rounded-pill bg-danger";
-    span.innerHTML = "-";
+    span.className = "badge rounded-pill";
+    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+    span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
     del_task(taskName, equipeName, zoneName, taskVol, unitName, true);
     });
@@ -1327,8 +1354,10 @@ function del_report(reportID){
         success: function(response) {
             // location.reload(true);
             document.getElementById("table-"+reportID).remove();
+            iter_reports();
         }
     });
+
 }
 
 function fetch_units(callback) {
@@ -1348,10 +1377,35 @@ function fetch_units(callback) {
 function toggle_requirement(toggleID, conditionID) {
     let select = document.getElementById(toggleID)
     let input = document.getElementById(conditionID)
+    input.style.borderRadius = "0"
+    input.style.textAlign = "center"
     if (input.value == 0) {
         select.required = false
     } else if (input.value > 0) {
         select.required = true
     }
 
+}
+
+function iter_reports() {
+    let btns = document.querySelectorAll('.btn-danger')
+    let btn = btns[btns.length - 1]
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/check-deletability/',
+        data: {
+            "id" : btn.id,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            if (response=="True") {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+
+        }
+    });
 }

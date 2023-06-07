@@ -58,6 +58,7 @@ urlpatterns = [
     path("edit-db/get-tasks", get_tasks),
     path("edit-db/get-task", get_task),
     path("edit-db/get-units/", get_units),
+    path("edit-db/check-deletability/", check_deletability),
 
     # path("edit-db/add-machine-to-daily-report", add_machine_to_daily_report),
 ]

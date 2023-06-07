@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from jdatetime import datetime
+import jdatetime
 from .converters import *
 
 
@@ -187,6 +188,7 @@ class Task(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     doneVolume = models.FloatField(default=0.0,)
     donePercentage = models.FloatField(default=0.0,)
+    # preDoneVolume = models.FloatField(default=0.0,)
 
     def update_percentage(self):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
@@ -205,19 +207,62 @@ class Task(models.Model):
 
 class TaskReport(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     todayVolume = models.FloatField(default=0.0,)
+    preDoneVolume = models.FloatField(default=0.0, )
+    preDonePercentage = models.FloatField(default=0.0, )
 
-    def update_percentage(self):
-        self.task.doneVolume += self.todayVolume
-        self.task.update_percentage()
-        self.save()
+    '''
+    def update_children(self, parent=None):
+        print("=========================")
+        print("AAAA")
+        children = TaskReport.objects.filter(parent=self)
+        if not parent:
+            parent = self.parent
+        for child in children:
+            print("New Child --------------")
+            child.parent = parent
+            child.save()
+            if child.parent:
+                child.task.doneVolume = child.parent.preDoneVolume + child.parent.todayVolume + child.todayVolume
+                print(f"Done Volume Total : {child.parent.preDoneVolume} + {child.parent.todayVolume} + {child.todayVolume} = ", child.task.doneVolume)
+            else:
+                child.task.doneVolume = 0.0
+            print(f"Done Volume Total : ", 0)
+            child.task.update_percentage()
+            print("Done Volume Total % : ", child.task.donePercentage)
+            child.preDoneVolume = child.task.doneVolume
+            child.preDonePercentage = child.preDoneVolume / child.task.totalVolume *100
+            child.save()
+
+            parent = child
+
+            child.update_children(parent)
+    '''
+
+    def update_percentage(self, reverse):
+        if not reverse:
+            self.task.preDoneVolume = self.task.doneVolume
+            self.preDoneVolume = self.task.doneVolume
+            self.preDonePercentage = self.preDoneVolume / self.task.totalVolume *100
+            self.task.doneVolume += self.todayVolume
+
+            self.task.update_percentage()
+            self.save()
+
+        else:
+            self.task.doneVolume -= self.todayVolume
+            self.task.update_percentage()
+
+            self.save()
 
     def __str__(self):
         return self.task
 
     class Meta:
         unique_together = ('dailyReport', 'task')
+
 
 class DailyReport(models.Model):
     # --------------------Header----------------------
@@ -228,7 +273,7 @@ class DailyReport(models.Model):
                                        validators=[RegexValidator(r'^\d{1,10}$', 'Enter a valid number.')],
                                        default="123456789")
 
-    date = models.DateField(default=datetime.now().strftime("%Y-%m-%d"))
+    date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
     #
     # temperature_min = models.DecimalField(max_digits=5, decimal_places=2)
@@ -262,6 +307,23 @@ class DailyReport(models.Model):
 
     tasks = models.ManyToManyField(Task, through="TaskReport")
 
+    deletable = models.BooleanField(default=1)
+
+    def check_deletability(self):
+        now = jdatetime.datetime.now()
+        now = jdatetime.datetime(now.year, now.month, now.day,
+                                 now.hour, now.minute, now.second,)
+        date = jdatetime.datetime(self.date.year, self.date.month, self.date.day,
+                                  self.date.hour, self.date.minute, self.date.second,)
+
+        bound = jdatetime.timedelta(0, 0, 1, 0, 0, 0,)
+        if now - date < bound:
+            self.deletable = 0
+            self.save()
+        else:
+            self.deletable = 1
+            self.save()
+
     def cal_countPeople(self):
         for position in self.positioncount_set.all():
             self.countPositions += position.count
@@ -280,9 +342,9 @@ class DailyReport(models.Model):
             self.countAllMachines += machine.totalCount
         self.save()
 
-    def update_tasks(self):
+    def update_tasks(self, reverse):
         for task in self.taskreport_set.all():
-            task.update_percentage()
+            task.update_percentage(reverse)
             self.save()
 
     def __str__(self):

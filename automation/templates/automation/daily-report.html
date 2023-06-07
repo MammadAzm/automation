@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 
 {% block content %}
@@ -8,21 +8,64 @@
     {% csrf_token %}
     <div class="container-xxl px-4" style="margin-top: 2%">
         <div class="row">
+
+            <div class="row">
+<!--                <table class="table table-bordered border-dark" id="table-header" style="font-size: 13px;">-->
+<!--                    <thead class="">-->
+<!--                        <tr>-->
+<!--                            <th>پروژه</th>-->
+<!--                            <th class="table-light">-->
+<!--                                <input id="project_name" value="{{ report.project_name }}" required type="text" name="project_name" placeholder="پروژه"-->
+<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
+<!--                            </th>-->
+<!--                            <th>شماره قرارداد</th>-->
+<!--                            <th class="table-light">-->
+<!--                                <input id="contract_no" value="{{ report.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد"-->
+<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>کارفرما</th>-->
+<!--                            <th class="table-light">-->
+<!--                                <input id="employer" value="{{ report.employer }}" required type="text" name="employer" placeholder="کارفرما"-->
+<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
+<!--                            </th>-->
+<!--                            <th>پیمانکار</th>-->
+<!--                            <th class="table-light">-->
+<!--                                <input id="employee" value="{{ report.employee }}" required type="text" name="employee" placeholder="پیمانکار"-->
+<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>تاریخ</th>-->
+<!--                            <th class="table-light">-->
+<!--&lt;!&ndash;                                <input id="date" value="{{ other.date }}" required type="text" name="date" placeholder="تاریخ"&ndash;&gt;-->
+<!--&lt;!&ndash;                                style="outline: none; border: none; background-color: #f8f9fa">&ndash;&gt;-->
+<!--                                <input required id="date" name="data"/>-->
+<!--                            </th>-->
+
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                </table>-->
+            </div>
+
             <div class="col-6">
 
                 <div class="row ">
 
                     <div class="col-4 " style="padding: 0; margin: 0;">
-                        <table class="table" id="table-position" style="font-size: 13px;">
+                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 13px;">
 
-                            <thead class="table-dark">
+                            <thead class="">
                                 <tr class="">
                                     <th class="" style="width: 75%">
+                                        <span class="badge rounded-pill" style="color: black; margin-left: 5pt;"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
+                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                        </span>
                                         سمت
-                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">+</span>
                                     </th>
-                                    <th class="">
+                                    <th class=""  style="text-align: center">
                                         تعداد
                                     </th>
                                 </tr>
@@ -30,16 +73,18 @@
                             <tbody>
                             {% for position in positions %}
                                 <tr id="{{ position }}">
-                                    <td class="">
+                                    <td class="" style="font-family: 'B Nazanin';font-weight: bold; ">
+                                        <span class="badge rounded-pill"
+                                            style="color: black; margin-left: 5pt;" onclick="del_position('{{ position }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
                                         {{ position }}
-                                        <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black; " onclick="del_position('{{ position }}', false)">-</span>
                                     </td>
-                                    <td class="">
+                                    <td class="" style="font-family: 'B Nazanin';">
                                         {% if position.count %}
-                                            <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="{{ position.count }}">
+                                            <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="{{ position.count }}">
                                         {% else %}
-                                            <input class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0">
+                                            <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0">
                                         {% endif %}
 
                                     </td>
@@ -50,18 +95,20 @@
                     </div>
 
                     <div class="col-7  me-2 " style="padding: 0; margin: 0">
-                        <table class="table" id="table-equipes-profession" style="font-size: 13px;">
-                            <thead class="table-dark">
+                        <table class="table table-bordered border-dark" id="table-equipes-profession" style="font-size: 13px;">
+                            <thead class="">
                                 <tr class="">
                                         <th class="" style="width: 40%">
+                                            <span class="badge rounded-pill" style="margin-left: 5pt; color: black;"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
+                                                <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                            </span>
                                             تخصص
-                                            <span class="badge rounded-pill bg-warning" style="float: left; color: black;"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">+</span>
                                         </th>
-                                        <th class="">اکیپ</th>
-                                        <th class="">ماهر</th>
-                                        <th class="" style="width: 18%">نیمه ماهر</th>
-                                        <th class="">ساده</th>
+                                        <th class="" style="text-align: center">اکیپ</th>
+                                        <th class="" style="text-align: center">ماهر</th>
+                                        <th class="" style="width: 18%; text-align: center">نیمه ماهر</th>
+                                        <th class="" style="text-align: center">ساده</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,34 +117,36 @@
                                 <tr id="{{ equipe }}">
 
                                     <td class="">
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 5pt; color: black" onclick="del_profession('{{ equipe }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
                                         {{ equipe.profession }}{{ equipe.equipe.profession }}
-                                        <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black" onclick="del_profession('{{ equipe }}', false)">-</span>
                                     </td>
                                     <td>
                                         {{ equipe.contractor }}{{ equipe.equipe.contractor }}
                                     </td>
                                     <td class="">
                                         {% if equipe.countExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="{{ equipe.countExpert }}">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="{{ equipe.countExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="0">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
                                     <td class="">
                                         {% if equipe.countSemiExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="{{ equipe.countSemiExpert }}">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="{{ equipe.countSemiExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="0">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
                                     <td class="">
                                         {% if equipe.countNonExpert %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="{{ equipe.countNonExpert }}">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="{{ equipe.countNonExpert }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="0">
+                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="0">
                                         {% endif %}
                                     </td>
 
@@ -112,13 +161,15 @@
                 <div class="row">
 
                     <div class="col-5" style="padding: 0; margin: 0">
-                        <table class="table" id="table-machine" style="font-size: 13px">
-                            <thead class="table-dark">
+                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 13px">
+                            <thead class="">
                                 <tr class="">
                                     <th class="" style="width: 60%">
+                                        <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                        </span>
                                         ماشین
-                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">+</span>
                                     </th>
                                     <th class="">
                                         فعال
@@ -133,25 +184,27 @@
                             {% for machine in machines %}
                                 <tr id="{{ machine }}">
                                     <td class="">
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 5pt; color: black" onclick="del_machine('{{ machine }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
                                         {{ machine }}
-                                        <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black" onclick="del_machine('{{ machine }}', false)">-</span>
                                     </td>
 
                                     <td class="">
                                         {% if machine.activeCount %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="{{ machine.activeCount }}">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="{{ machine.activeCount }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="0"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="0"
                                         {% endif %}
 
                                     </td>
 
                                     <td class="">
                                         {% if machine.inactiveCount %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
                                         {% else %}
-                                            <input required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="0"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="0"
                                         {% endif %}
 
                                     </td>
@@ -162,13 +215,15 @@
                     </div>
 
                     <div class="col-6 me-2" style="padding: 0; margin: 0">
-                        <table class="table" id="table-material" style="font-size: 13px">
-                            <thead class="table-dark">
+                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 13px">
+                            <thead class="">
                                 <tr class="">
                                     <th class="" >
+                                        <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">
+                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                        </span>
                                         مصالح
-                                        <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">+</span>
                                     </th>
                                     <th class="">
                                         مقدار
@@ -182,21 +237,22 @@
                             {% for material in materials %}
                                 <tr id="{{ material }}">
                                     <td class="">
-        <!--                                {{ machine }}-->
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 5pt; color: black" onclick="del_material('{{ material }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
                                         {{ material }}
-                                        <span class="badge rounded-pill bg-danger"
-                                            style="float: left; color: black" onclick="del_material('{{ material }}', false)">-</span>
                                     </td>
                                     <td class="">
                                         {% if material.amount %}
-                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
                                                    name="material_{{ material }}_count" min="0" value="{{ material.amount }}">
 
 
                                     </td>
                                     <td class="">
                                         <select required class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
-                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
 
                                             {% if material.amount %}
 
@@ -219,7 +275,7 @@
 
                                         {% else %}
 
-                                            <input required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
                                                    name="material_{{ material }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
 
 
@@ -263,90 +319,100 @@
             </div>
 
             <div class="col-6 ">
-                <table class="table" id="table-task" style="font-size: 13px">
-
-                <thead class="table-dark">
-                    <tr class="">
-                        <th class="" style="width: 26%">
-                            شرح عملیات
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
-                        </th>
-                        <th class="" style="width: 17%">
-                            اکیپ
-                        </th>
-                        <th class="" style="width: 8%">
-                            زون
-                        </th>
-                        <th class="" >
-                            امروز
-                        </th>
-                        <th class="text-centred" >
-                            تا دیروز
-                        </th>
-                        <th class="text-centred" >
-                            کل
-                        </th>
-                        <th class="text-centred" >
-                            درصد
-                        </th>
-                        <th class="text-centred" style="width: 10%">
-                            واحد
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for task in tasks %}
-                        <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
-                            <td>
-                                {{ task.task.name }}
-                                <span class="badge rounded-pill bg-danger"
-                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', false)">-</span>
-                            </td>
-
-                            <td>
-                                {{ task.task.equipe }}
-                            </td>
-
-                            <td>
-                                {{ task.task.zone }}
-                            </td>
-
-                            <td>
-                                <input required class="small-input-integer" id="task_{{ task.task.unique_str }}_today"
-                                       name="task_{{ task.task.unique_str }}_today" min="0" value="0" type="number">
-                            </td>
-
-                            <td class="text-centred">
-                                {{ task.task.doneVolume }}
-                            </td>
-
-                            <td class="text-centred">
-                                {{ task.task.totalVolume }}
-                            </td>
-
-                            <td class="text-centred">
-                                {{ task.task.donePercentage|floatformat:2 }}
-                            </td>
-
-                            <td class="text-centred">
-                                {{ task.task.unit }}
-                            </td>
-
-
+                <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
+                    <thead class="">
+                        <tr class="">
+                            <th class="" style="width: 26%">
+                                <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                    <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                </span>
+                                شرح عملیات
+                            </th>
+                            <th class="" style="width: 17%">
+                                اکیپ
+                            </th>
+                            <th class="" style="width: 8%">
+                                موقعیت
+                            </th>
+                            <th class="" >
+                                امروز
+                            </th>
+                            <th class="text-centred" >
+                                تا دیروز
+                            </th>
+                            <th class="text-centred" >
+                                کل
+                            </th>
+                            <th class="text-centred" >
+                                درصد
+                            </th>
+                            <th class="text-centred" style="width: 10%">
+                                واحد
+                            </th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+
+                        {% for task in tasks %}
+                            <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
+                                <td>
+                                    <span class="badge rounded-pill"
+                                        style="margin-left: 5pt; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', false)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                    </span>
+                                    {{ task.task.name }}
+                                    {{ task.name }}
+                                </td>
+
+                                <td>
+                                    {{ task.task.equipe }}
+                                    {{ task.equipe.name }}
+                                </td>
+
+                                <td>
+                                    {{ task.task.zone }}
+                                    {{ task.zone }}
+                                </td>
+
+                                <td>
+                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}{{ task.unique_str }}_today"
+                                           name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="0" type="number">
+                                </td>
+
+                                <td class="text-centred">
+                                    {{ task.task.doneVolume }}
+                                    {{ task.doneVolume }}
+                                </td>
+
+                                <td class="text-centred">
+                                    {{ task.task.totalVolume }}
+                                    {{ task.totalVolume }}
+                                </td>
+
+                                <td class="text-centred">
+                                    {{ task.task.donePercentage|floatformat:2 }}
+                                    {{ task.donePercentage|floatformat:2 }}%
+                                </td>
+
+                                <td class="text-centred">
+                                    {{ task.task.unit }}
+                                    {{ task.unit }}
+                                </td>
+
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
 
 
         <div class="row">
 
-            <button type="submit" class="btn btn-outline-success ">ذخیره</button>
+            <button type="submit" class="btn btn-success ">ذخیره</button>
 
         </div>
 
@@ -377,9 +443,9 @@
                             <input id="profession-name" disabled required type="text" name="profession" class="form-control" placeholder="تخصص">
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         id="dropdownMenuProfessions" data-bs-toggle="dropdown" onclick='fetch_options("profession")'>
-                                    Select an option
+                                    انتخاب
                                 </button>
                                 <ul class="dropdown-menu" id="dropdown-menu-professions">
                                     <li>
@@ -394,15 +460,13 @@
                                 </ul>
                             </div>
 
-
-
                             <button class="btn btn-outline-success bp3-round" onclick="add_profession_to_daily_report()"
-                                    type="button" id="btn-add-profession" style="border: none">افزودن تخصص</button>
+                                    type="button" id="btn-add-profession" style="border: none">افزودن</button>
                         </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -424,9 +488,9 @@
                             <input id="machine-name" disabled required type="text" name="machine" class="form-control" placeholder="ماشین">
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
                                         id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_options("machine")' >
-                                    Select an option
+                                    انتخاب
                                 </button>
 
                                 <ul class="dropdown-menu" id="dropdown-menu-machines" aria-labelledby="dropdownMenuMachines">
@@ -443,16 +507,13 @@
 
                                 </ul>
                             </div>
-
-
-
-                            <button class="btn btn-outline-success bp3-round" onclick="add_machine_to_daily_report()"
-                                    type="button" id="btn-add-machine" style="border: none">افزودن ماشین</button>
                         </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button class="btn btn-outline-success bp3-round" onclick="add_machine_to_daily_report()"
+                                    type="button" id="btn-add-machine">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -471,13 +532,14 @@
 
                 <div class="modal-body">
                         <div class="input-group mb-3">
-                            <input id="position-name" disabled required type="text" name="position" class="form-control" placeholder="سمت">
+                            <input id="position-name" disabled required type="text"
+                                   name="position" class="form-control" placeholder="سمت">
 
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle  px-5  " type="button"
                                         id="dropdownMenuPositions" data-bs-toggle="dropdown" onclick='fetch_options("position")' >
-                                    Select an option
+                                    انتخاب
                                 </button>
                                 <ul class="dropdown-menu" id="dropdown-menu-positions" aria-labelledby="dropdownMenuPositions">
                                     <li>
@@ -489,20 +551,15 @@
                                     {% for position in positions %}
                                         <li><a class="dropdown-item">{{ position }}</a></li>
                                     {% endfor %}
-
-
                                 </ul>
                             </div>
-
-
-
-                            <button class="btn btn-outline-success bp3-round" onclick="add_position_to_daily_report()"
-                                    type="button" id="btn-add-position" style="border: none">افزودن ماشین</button>
                         </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button class="btn btn-outline-success bp3-round" onclick="add_position_to_daily_report()"
+                                    type="button" id="btn-add-position">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -524,9 +581,9 @@
                             <input id="material-name" disabled required type="text" name="material" class="form-control" placeholder="مصالح">
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
                                         id="dropdownMenuMaterials" data-bs-toggle="dropdown" onclick='fetch_options("material")' >
-                                    Select an option
+                                    انتخاب
                                 </button>
 
                                 <ul class="dropdown-menu" id="dropdown-menu-materials" aria-labelledby="dropdownMenuMaterials">
@@ -543,16 +600,13 @@
 
                                 </ul>
                             </div>
-
-
-
-                            <button class="btn btn-outline-success bp3-round" onclick="add_material_to_daily_report()"
-                                    type="button" id="btn-add-material" style="border: none">افزودن مصالح</button>
                         </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button class="btn btn-outline-success bp3-round" onclick="add_material_to_daily_report()"
+                                    type="button" id="btn-add-material">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -571,9 +625,10 @@
 
                 <div class="modal-body">
                         <div class="input-group mb-3">
-
+                            <input id="equipe-profession-name" disabled required type="text" name="equipe" class="form-control" placeholder="اکیپ">
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+
+                                <button class="btn btn-outline-secondary dropdown-toggle px-7" type="button"
                                         id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_equipes()'>
                                     انتخاب تخصص
                                 </button>
@@ -587,19 +642,14 @@
 
                                 </ul>
                             </div>
-
-
-
-                            <input id="equipe-profession-name" disabled required type="text" name="equipe" class="form-control">
-
                         </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_daily_report()" style="float: left"
-                                    type="button" id="btn-add-equipe" style="border: none">افزودن اکیپ</button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_daily_report()" style="float: left;"
+                                    type="button" id="btn-add-equipe" style="border: none">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -618,11 +668,11 @@
 
                 <div class="modal-body">
                         <div class="input-group mb-3">
-
+                            <input id="task-name" disabled required type="text" name="task" class="form-control" placeholder="عملیات">
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
                                         id="dropdownMenuTasks" data-bs-toggle="dropdown" onclick='fetch_tasks()'>
-                                    انتخاب عملیات
+                                    انتخاب
                                 </button>
                                 <ul class="dropdown-menu" id="dropdown-menu-tasks">
                                     <li>
@@ -634,34 +684,19 @@
 
                                 </ul>
                             </div>
-
-
-
-                            <input id="task-name" disabled required type="text" name="task" class="form-control">
-
                         </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-success bp3-round" onclick="add_task_to_daily_report()" style="float: left"
-                                    type="button" id="btn-add-task" style="border: none">افزودن عملیات</button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                    <button class="btn btn-outline-success bp3-round" onclick="add_task_to_daily_report()" style="float: left;"
+                                    type="button" id="btn-add-task" style="border: none">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
 
 
 

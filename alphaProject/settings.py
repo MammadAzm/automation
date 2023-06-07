@@ -41,9 +41,12 @@ INSTALLED_APPS = [
     "automation",
 
     "bootstrap5",
+    "mathfilters",
+    "django_bootstrap_icons",
 ]
 
 MIDDLEWARE = [
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -70,6 +73,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = "alphaProject.wsgi.application"
 

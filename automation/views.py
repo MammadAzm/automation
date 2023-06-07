@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.core import serializers
 
@@ -95,7 +96,13 @@ def create_report_template(request):
         units = Unit.objects.all()
         tasks = TaskReport.objects.filter(dailyReport=report)
 
+        other = {
+            "weekday": report.get_weekday_display(),
+            "date": report.date.strftime('%Y/%m/%d'),
+        }
+
         context = {
+            "report": report,
             "positions": positions,
             "professions": professions,
             "machines": machines,
@@ -104,7 +111,9 @@ def create_report_template(request):
             "units": units,
             "tasks": tasks,
             "machine_types": MACHINE_TYPES,
+            "other":other,
         }
+
 
     return render(request, "daily-report.html", context=context)
 
@@ -426,7 +435,6 @@ def save_daily_report_to_db(request):
         contractors = {}
         tasks = {}
 
-
         for key, value in data.items():
             if "position" in key:
                 positions[key.split("_")[1]] = int(value[0])
@@ -606,12 +614,14 @@ def save_daily_report_to_db(request):
         for task, amount in tasks.items():
             if amount > 0:
                 tsk = Task.objects.get(unique_str=task)
-                tsk_rep = TaskReport(
+                parent = TaskReport.objects.filter(task=tsk).last()
+                tsk_rep = TaskReport.objects.create(
                     task=tsk,
+                    parent=parent,
                     dailyReport=report,
                     todayVolume=amount,
                 )
-                tsk_rep.update_percentage()
+                tsk_rep.update_percentage(False)
                 report.tasks.add(tsk_rep.task)
 
         report.cal_countPeople()
@@ -624,15 +634,23 @@ def save_daily_report_to_db(request):
 
 def del_daily_report_from_db(request):
     if request.method == "POST":
-        obj = DailyReport.objects.get(id=request.POST["id"])
-        obj.delete()
-        return redirect(to="/home/daily-reports")
+        rep = DailyReport.objects.get(id=request.POST["id"])
+
+        if rep.deletable:
+            for item in rep.taskreport_set.all():
+                item.update_percentage(True)
+            rep.delete()
+            return redirect(to="/home/daily-reports")
+        else:
+            raise PermissionDenied
     else:
         return -1
 
 
 def reports_daily(request):
     reports = DailyReport.objects.all()
+    for report in reports:
+        report.check_deletability()
 
     context = {
         "reports": reports,
@@ -654,6 +672,7 @@ def report_on_day(request, idd):
     other = {
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
+        # "doneVol":
     }
 
     context = {
@@ -804,4 +823,10 @@ def get_units(request):
         }
         return JsonResponse(context)
 
+def check_deletability(request):
+    if request.method == "POST":
+        idd = request.POST['id']
+        rep = DailyReport.objects.get(id=idd)
+
+        return HttpResponse(rep.deletable)
 

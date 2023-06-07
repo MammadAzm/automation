@@ -5,21 +5,26 @@
         <div class="row">
             {% for report in reports %}
                     <table class="table" id="table-{{ report.id }}">
-                        <thead class="table-dark">
+                        <thead class="">
                             <tr class="" style="">
                                 <th class="text-centred">گزارش</th>
-                                <th class="text-centred">{{ report.date|date:'Y-m-d' }}</th>
+                                <th class="text-centred">{{ report.date|date:'Y/m/d' }}</th>
                                 <th class="text-centred">پروژه</th>
                                 <th class="text-centred">{{ report.project_name }}</th>
                                 <th class="text-centred">
 <!--                                        <div></div>-->
 <!--                                    </th>-->
 <!--                                    <th class="text-centred">-->
-                                    <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger p-1 fs-18"
-                                                            style="float: left" onclick="del_report('{{ report.id }}')">حذف</button>
+
                                     <a style="float: left" href="{{ report.id }}" class="mx-2">
                                         <button type="button" class="btn btn-sm btn-success p-1 fs-18">مشاهده</button>
                                     </a>
+
+                                    <a>
+                                        <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger p-1 fs-18"
+                                                disabled style="float: left" onclick="del_report('{{ report.id }}')">حذف</button>
+                                    </a>
+
                                 </th>
                             </tr>
                         </thead>
@@ -36,7 +41,9 @@
 
 
 
-
+<script>
+    iter_reports();
+</script>
 
 {% endblock %}
 

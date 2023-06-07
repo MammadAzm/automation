@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block content %}
 
@@ -7,14 +7,16 @@
     <div class="row">
 
         <div class="col">
-            <table class="table" id="table-position" style="font-size: 13px">
+            <table class="table table-bordered border-dark" id="table-position" style="font-size: 13px">
 
-                <thead class="table-dark">
+                <thead class="">
                     <tr class="">
                         <th class="" >
                             سمت
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                         </th>
                     </tr>
                 </thead>
@@ -23,8 +25,10 @@
                     <tr  id="{{position.name}}">
                         <td>
                             {{ position.name }}
-                            <span class="badge rounded-pill bg-danger"
-                                style="float: left; color: black; " onclick="del_position('{{ position.name }}', true)">-</span>
+                            <span class="badge rounded-pill"
+                                style="float: left; color: black; " onclick="del_position('{{ position.name }}', true)">
+                                <img src="{% static 'icons/patch-minus.svg' %}">
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -32,13 +36,15 @@
         </div>
 
         <div class="col">
-            <table class="table" id="table-profession" style="font-size: 13px">
-                <thead class="table-dark">
+            <table class="table table-bordered border-dark" id="table-profession" style="font-size: 13px">
+                <thead class="">
                     <tr class="">
                             <th class="" >
                                 تخصص
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                             </th>
                     </tr>
                 </thead>
@@ -47,8 +53,10 @@
                     <tr id="{{profession.name}}">
                         <td class="">
                             {{ profession.name }}
-                            <span class="badge rounded-pill bg-danger"
-                                style="float: left; color: black" onclick="del_profession('{{ profession.name }}', true)">-</span>
+                            <span class="badge rounded-pill"
+                                style="float: left; color: black" onclick="del_profession('{{ profession.name }}', true)">
+                                <img src="{% static 'icons/patch-minus.svg' %}">
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -56,13 +64,15 @@
         </div>
 
         <div class="col">
-            <table class="table" id="table-machine" style="font-size: 13px">
-                <thead class="table-dark">
+            <table class="table table-bordered border-dark" id="table-machine" style="font-size: 13px">
+                <thead class="">
                     <tr class="">
                             <th class="" >
                                 ماشین آلات
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                             </th>
                     </tr>
                 </thead>
@@ -71,8 +81,10 @@
                     <tr id="{{ machine.name }}">
                         <td class="">
                             {{ machine.name }}
-                            <span class="badge rounded-pill bg-danger"
-                                style="float: left; color: black" onclick="del_machine('{{ machine.name }}', true)">-</span>
+                            <span class="badge rounded-pill"
+                                style="float: left; color: black" onclick="del_machine('{{ machine.name }}', true)">
+                                <img src="{% static 'icons/patch-minus.svg' %}">
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -80,13 +92,15 @@
         </div>
 
         <div class="col">
-            <table class="table" id="table-material" style="font-size: 13px">
-                <thead class="table-dark">
+            <table class="table table-bordered border-dark" id="table-material" style="font-size: 13px">
+                <thead class="">
                     <tr class="">
                             <th class="" >
                                 مصالح
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                             </th>
                     </tr>
                 </thead>
@@ -95,27 +109,27 @@
                     <tr id="{{ material.name }}">
                         <td class="">
                             {{ material.name }}
-                            <span class="badge rounded-pill bg-danger"
-                                style="float: left; color: black" onclick="del_material('{{ material.name }}', true)">-</span>
+                            <span class="badge rounded-pill"
+                                style="float: left; color: black" onclick="del_material('{{ material.name }}', true)">
+                                <img src="{% static 'icons/patch-minus.svg' %}">
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
 
-    </div>
-
-    <div class="row">
-
         <div class="col">
-            <table class="table" id="table-contractor" style="font-size: 13px">
+            <table class="table table-bordered border-dark" id="table-contractor" style="font-size: 13px">
 
-                <thead class="table-dark">
+                <thead class="">
                     <tr class="">
                         <th class="" >
                             پیمانکار
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                         </th>
                     </tr>
                 </thead>
@@ -124,8 +138,10 @@
                     <tr  id="{{contractor.name}}">
                         <td>
                             {{ contractor.name }}
-                            <span class="badge rounded-pill bg-danger"
-                                style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">-</span>
+                            <span class="badge rounded-pill"
+                                style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">
+                                <img src="{% static 'icons/patch-minus.svg' %}">
+                            </span>
                         </td>
                     </tr>
                 {% endfor %}
@@ -133,14 +149,16 @@
         </div>
 
         <div class="col">
-            <table class="table" id="table-equipe" style="font-size: 13px">
+            <table class="table table-bordered border-dark" id="table-equipe" style="font-size: 13px">
 
-                <thead class="table-dark">
+                <thead class="">
                     <tr class="">
                         <th class="" >
                             اکیپ
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                         </th>
                     </tr>
                 </thead>
@@ -151,64 +169,10 @@
                         <tr  id="{{ equipe.profession }}-{{ equipe.contractor }}">
                             <td>
                                 {{ equipe.profession }}-{{ equipe.contractor }}
-                                <span class="badge rounded-pill bg-danger"
-                                    style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">-</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col">
-            <table class="table" id="table-zone" style="font-size: 13px">
-
-                <thead class="table-dark">
-                    <tr class="">
-                        <th class="" >
-                            زون
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">+</span>
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for zone in zones %}
-                        <tr  id="{{ zone }}">
-                            <td>
-                                {{ zone }}
-                                <span class="badge rounded-pill bg-danger"
-                                    style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">-</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="col">
-            <table class="table" id="table-unit" hidden style="font-size: 13px">
-
-                <thead class="table-dark">
-                    <tr class="">
-                        <th class="" >
-                            واحد
-<!--                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"-->
-<!--                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">+</span>-->
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for unit in units %}
-                        <tr  id="{{ unit }}">
-                            <td>
-                                {{ unit }}
-<!--                                <span class="badge rounded-pill bg-danger"-->
-<!--                                    style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">-</span>-->
+                                <span class="badge rounded-pill"
+                                    style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">
+                                    <img src="{% static 'icons/patch-minus.svg' %}">
+                                </span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -220,21 +184,55 @@
 
     <div class="row">
 
-        <div class="col">
-            <table class="table" id="table-task" style="font-size: 13px">
+        <div class="col-2">
+            <table class="table table-bordered border-dark" id="table-zone" style="font-size: 13px">
 
-                <thead class="table-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            موقعیت
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for zone in zones %}
+                        <tr  id="{{ zone }}">
+                            <td>
+                                {{ zone }}
+                                <span class="badge rounded-pill"
+                                    style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">
+                                    <img src="{% static 'icons/patch-minus.svg' %}">
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col">
+            <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
+
+                <thead class="">
                     <tr class="">
                         <th class="" >
                             شرح عملیات
-                                <span class="badge rounded-pill bg-warning" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">+</span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                         </th>
                         <th class="" >
                             اکیپ
                         </th>
                         <th class="" >
-                            زون
+                            موقعیت
                         </th>
                         <th class="" >
                             واحد
@@ -251,8 +249,10 @@
                         <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
                             <td>
                                 {{ task.name }}
-                                <span class="badge rounded-pill bg-danger"
-                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">-</span>
+                                <span class="badge rounded-pill"
+                                    style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">
+                                    <img src="{% static 'icons/patch-minus.svg' %}">
+                                </span>
                             </td>
 
                             <td>
@@ -277,6 +277,38 @@
         </div>
 
     </div>
+
+    <div class="row" hidden>
+        <div class="col">
+            <table class="table table-bordered border-dark" id="table-unit" style="font-size: 13px">
+
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            واحد
+<!--                                <span class="badge rounded-pill" style="float: left; color: black"-->
+<!--                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
+                                        <img{% static 'icons/plus-circle.svg' %}</span>-->
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for unit in units %}
+                        <tr  id="{{ unit }}">
+                            <td>
+                                {{ unit }}
+<!--                                <span class="badge rounded-pill"-->
+<!--                                    style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
+<img{% static 'icons/patch-minus.svg' %}}</span>-->
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
@@ -294,14 +326,15 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input required type="text" name="position" class="form-control" placeholder="نام سمت">
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon1" style="border: none">افزودن سمت</button>
                     </div>
-                </form>
+
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon1">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -322,14 +355,15 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input required type="text" name="profession" class="form-control" placeholder="نام تخصص">
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon2" style="border: none">افزودن تخصص</button>
                     </div>
-                </form>
+
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon2">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -357,14 +391,16 @@
                                 <option value="{{ type.0 }}">{{ type.1 }}</option>
                             {% endfor %}
                         </select>
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon3" style="border: none">افزودن ماشین</button>
+
                     </div>
-                </form>
+
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon3">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -385,19 +421,14 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input required type="text" name="material" class="form-control" placeholder="نام مصالح">
-<!--                        <select class="form-select" id="machineType" name="machineType">-->
-<!--                            {% for type in machine_types %}-->
-<!--                                <option value="{{ type.0 }}">{{ type.1 }}</option>-->
-<!--                            {% endfor %}-->
-<!--                        </select>-->
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon4" style="border: none">افزودن مصالح</button>
                     </div>
-                </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon4">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -418,15 +449,14 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input required type="text" name="contractor" class="form-control" placeholder="نام پیمانکار">
-
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon5" style="border: none">افزودن پیمانکار</button>
                     </div>
-                </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon5">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -446,7 +476,7 @@
                         <div class="input-group mb-3">
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"])'>
                                     انتخاب تخصص
                                 </button>
@@ -457,14 +487,11 @@
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-<!--                                    {% for profession in professions %}-->
-<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                    {% endfor %}-->
                                 </ul>
                             </div>
 
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                         id="dropdownMenuEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"])'>
                                     انتخاب پیمانکار
                                 </button>
@@ -475,9 +502,6 @@
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-<!--                                    {% for profession in professions %}-->
-<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                    {% endfor %}-->
                                 </ul>
                             </div>
 
@@ -490,8 +514,8 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_base_data()" style="float: left"
-                                    type="button" id="btn-add-profession" style="border: none">افزودن اکیپ</button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                                    type="button" id="btn-add-profession">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -504,23 +528,22 @@
 
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropZonesLabel" style="margin-right: auto">افزودن زون</h5>
+                <h5 class="modal-title" id="staticBackdropZonesLabel" style="margin-right: auto">افزودن موقعیت</h5>
             </div>
 
             <div class="modal-body">
                 <form action="/edit-db/add-zone" method="post">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="zone" class="form-control" placeholder="نام زون">
-
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon6" style="border: none">افزودن زون</button>
+                        <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت">
                     </div>
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon6">افزودن</button>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -541,16 +564,16 @@
                 <form action="/edit-db/add-unit" method="post">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="zone" class="form-control" placeholder="نام زون">
+                        <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت">
 
                         <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon6" style="border: none">افزودن زون</button>
+                                type="submit" id="button-addon6" style="border: none">افزودن موقعیت</button>
                     </div>
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -577,7 +600,7 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                     id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task")'>
                                 انتخاب اکیپ
                             </button>
@@ -598,9 +621,9 @@
 
                          <div class="input-group mb-3">
                             <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                     id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone")'>
-                                انتخاب زون
+                                انتخاب موقعیت
                             </button>
                             <ul class="dropdown-menu" id="dropdown-menu-zones">
                                 <li>
@@ -614,12 +637,12 @@
 <!--                                    {% endfor %}-->
                             </ul>
                         </div>
-                            <input required disabled type="text" name="zone-name" id="zone-name" class="form-control" placeholder="زون">
+                            <input required disabled type="text" name="zone-name" id="zone-name" class="form-control" placeholder="موقعیت">
                         </div>
 
                          <div class="input-group mb-3">
                              <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                                     id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit")'>
                                 انتخاب واحد
                             </button>
@@ -645,8 +668,8 @@
 
             <div class="modal-footer">
                 <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data()"
-                                type="submit" id="button-addon7" >افزودن عملیات</button>
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >انصراف</button>
+                                type="submit" id="button-addon7" >افزودن</button>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>

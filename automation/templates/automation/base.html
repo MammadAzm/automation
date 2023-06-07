@@ -10,6 +10,7 @@
 <!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
     <script src="{% static 'js/funcs.js' %}"></script>
     <script src="{% static 'js/jquery.js' %}"></script>
+<!--    <script src="{% static 'js/jdatepicker.js' %}"></script>-->
 
     <script>
         $(document).ready( function () {
@@ -19,6 +20,12 @@
                 search_material();
                 search_equipes();
                 search_equipe();
+                // jDatePicker('date', {
+                //     headerColor: '#222',
+                //     bodyColor: '#fff',
+                //
+                //     dariMonth: false,
+                // });
             }
         )
     </script>
@@ -26,51 +33,62 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-
-
 </head>
 
 <body>
 
 <nav class="navbar navbar-light bg-light">
-  <div class="container-fluid">
+    <div class="container-fluid">
       <div>
-          <a href="/home/" class=""><button type="button" class="btn btn-dark onhover" style="font-size: 13px">بازگشت به خانه</button></a>
-          <a href="/home/add-base-data/"><button type="button" class="btn btn-dark onhover" style="font-size: 13px">ویرایش اطلاعات پایه</button></a>
-          <a href="/home/create-report/"><button type="button" class="btn btn-dark onhover" style="font-size: 13px">ایجاد گزارش روزانه</button></a>
-          <a href="/home/daily-reports/"><button type="button" class="btn btn-dark onhover" style="font-size: 13px">آرشیو گزارشات</button></a>
+          <a href="/#" class=""><button type="button" class="btn-color onhover" style="font-size: 15px">خانه</button></a>
+          <a href="/home/" class=""><button type="button" class="btn-color onhover" style="font-size: 15px; background-color: darkblue; color: white" id="peyvast">پیوست</button></a>
+          <a href="/home/add-base-data/"><button type="button" class=" btn-color onhover" style="font-size: 15px">اطلاعات پایه</button></a>
+          <a href="/home/create-report/"><button type="button" class=" btn-color onhover" style="font-size: 15px">گزارش روزانه</button></a>
+          <a href="/home/daily-reports/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آرشیو گزارشات</button></a>
       </div>
-      <h1 class="navbar-brand" style="font-size: 13px">سامانه اتوماسیون</h1>
-  </div>
+      <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">شرکت کیان پولاد سده - کاردان (نسخه آزمایشی)</h1>
+    </div>
 </nav>
 
 
 {% block content %}
-
 <div class="container-fluid" style="padding: 5%">
-    <div class="row" >
-        <a href="/home/create-report/" class="navbar-brand ">
-            <div class="p-1 row hover" style="margin-bottom: 2%;">
-                <div class="p-3 border bg-light " style="text-align: center; border-radius: 10px;">
-                    ایجاد گزارش
-                </div>
-            </div>
-        </a>
-        <a href="/home/daily-reports/" class="navbar-brand ">
-            <div class="p-1 row hover" style="margin-bottom: 2%;">
-                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">
-                    آرشیو گزارشات
-                </div>
-            </div>
-        </a>
-        <a href="/home/add-base-data" class="navbar-brand">
-            <div class="p-1 row hover">
-                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">
-                    ویرایش اطلاعات پایه
-                </div>
-            </div>
-        </a>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--    <div class="row" >-->
+<!--        <a href="/home/create-report/" class="navbar-brand ">-->
+<!--            <div class="p-1 row hover" style="margin-bottom: 2%;">-->
+<!--                <div class="p-3 border bg-light " style="text-align: center; border-radius: 10px;">-->
+<!--                    ایجاد گزارش-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </a>-->
+<!--        <a href="/home/daily-reports/" class="navbar-brand ">-->
+<!--            <div class="p-1 row hover" style="margin-bottom: 2%;">-->
+<!--                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">-->
+<!--                    آرشیو گزارشات-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </a>-->
+<!--        <a href="/home/add-base-data" class="navbar-brand">-->
+<!--            <div class="p-1 row hover">-->
+<!--                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">-->
+<!--                    ویرایش اطلاعات پایه-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </a>-->
+<!--    </div>-->
 </div>
 
 {% endblock %}
