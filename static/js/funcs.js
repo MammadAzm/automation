@@ -1063,22 +1063,27 @@ function add_task_to_base_data() {
     del_task(taskName, equipeName, zoneName, taskVol, unitName, true);
     });
     descr.innerHTML = taskName;
+    descr.style.width = "35%";
     descr.appendChild(span)
 
     let equipeCell = document.createElement('td', );
     equipeCell.className = ""
+    equipeCell.style.width = "26%";
     equipeCell.innerHTML = equipeName;
 
     let zoneCell = document.createElement('td', );
     zoneCell.className = ""
+    zoneCell.style.width = "13%";
     zoneCell.innerHTML = zoneName;
 
     let unitCell = document.createElement('td', );
     unitCell.className = ""
+    unitCell.style.width = "13%";
     unitCell.innerHTML = unitName;
 
     let volCell = document.createElement('td', );
     volCell.className = ""
+    volCell.style.width = "13%";
     volCell.innerHTML = taskVol;
 
     newRow.appendChild(descr);

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+      ::-webkit-scrollbar {
+        width: 8px; /* width of the scrollbar */
+      }
+
+      /* Style for the thumb */
+      ::-webkit-scrollbar-thumb {
+        background-color: #ff6a0e; /* color of the thumb */
+        border-radius: 6px; /* roundness of the thumb */
+      }
+
+      /* Style for the track */
+      ::-webkit-scrollbar-track {
+        background-color: aqua; /* color of the track */
+      }
+        .table-container {
+        height: 200px;
+        overflow-y: scroll;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      td , th {
+        width: 600px;
+      }
+
+      thead {
+        background-color: aqua;
+        display: block;
+        position: sticky;
+        top: 0;
+      }
+
+      tbody {
+        display: block;
+      }
+
+      tbody td,
+      thead th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+    </style>
+
+</head>
+<body style="padding : 50px">
+
+    <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+                <th>Header 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Row 1, Cell 1</td>
+                <td>Row 1, Cell 2</td>
+                <td>Row 1, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+              <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+              </tr>
+
+              <!-- more rows... -->
+            </tbody>
+          </table>
+        </div>
+
+
+</body>
+</html>
