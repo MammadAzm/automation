@@ -10,7 +10,9 @@
 <!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
     <script src="{% static 'js/funcs.js' %}"></script>
     <script src="{% static 'js/jquery.js' %}"></script>
-<!--    <script src="{% static 'js/jdatepicker.js' %}"></script>-->
+
+    <link type="text/css" rel="stylesheet" href="{% static 'css/jalalidatepicker.min.css' %}" />
+    <script type="text/javascript" src="{% static 'js/jalalidatepicker.min.js' %}"></script>
 
     <script>
         $(document).ready( function () {
@@ -20,12 +22,11 @@
                 search_material();
                 search_equipes();
                 search_equipe();
-                // jDatePicker('date', {
-                //     headerColor: '#222',
-                //     bodyColor: '#fff',
-                //
-                //     dariMonth: false,
-                // });
+
+                jalaliDatepicker.startWatch({
+                    time: true,
+                    hideAfterChange: true,
+                });
             }
         )
     </script>
@@ -40,8 +41,8 @@
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
       <div>
-          <a href="/#" class=""><button type="button" class="btn-color onhover" style="font-size: 15px">خانه</button></a>
-          <a href="/home/" class=""><button type="button" class="btn-color onhover" style="font-size: 15px; background-color: darkblue; color: white" id="peyvast">پیوست</button></a>
+          <a href="/home" class=""><button type="button" class="btn-color onhover" style="font-size: 15px">خانه</button></a>
+          <a href="/#" class=""><button type="button" class="btn-color onhover" style="font-size: 15px; background-color: darkblue; color: white" id="peyvast">پیوست</button></a>
           <a href="/home/add-base-data/"><button type="button" class=" btn-color onhover" style="font-size: 15px">اطلاعات پایه</button></a>
           <a href="/home/create-report/"><button type="button" class=" btn-color onhover" style="font-size: 15px">گزارش روزانه</button></a>
           <a href="/home/daily-reports/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آرشیو گزارشات</button></a>

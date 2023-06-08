@@ -10,46 +10,88 @@
         <div class="row">
 
             <div class="row">
-<!--                <table class="table table-bordered border-dark" id="table-header" style="font-size: 13px;">-->
-<!--                    <thead class="">-->
-<!--                        <tr>-->
-<!--                            <th>پروژه</th>-->
-<!--                            <th class="table-light">-->
-<!--                                <input id="project_name" value="{{ report.project_name }}" required type="text" name="project_name" placeholder="پروژه"-->
-<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
-<!--                            </th>-->
-<!--                            <th>شماره قرارداد</th>-->
-<!--                            <th class="table-light">-->
-<!--                                <input id="contract_no" value="{{ report.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد"-->
-<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
-<!--                            </th>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <th>کارفرما</th>-->
-<!--                            <th class="table-light">-->
-<!--                                <input id="employer" value="{{ report.employer }}" required type="text" name="employer" placeholder="کارفرما"-->
-<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
-<!--                            </th>-->
-<!--                            <th>پیمانکار</th>-->
-<!--                            <th class="table-light">-->
-<!--                                <input id="employee" value="{{ report.employee }}" required type="text" name="employee" placeholder="پیمانکار"-->
-<!--                                style="outline: none; border: none; background-color: #f8f9fa">-->
-<!--                            </th>-->
-<!--                        </tr>-->
-<!--                        <tr>-->
-<!--                            <th>تاریخ</th>-->
-<!--                            <th class="table-light">-->
-<!--&lt;!&ndash;                                <input id="date" value="{{ other.date }}" required type="text" name="date" placeholder="تاریخ"&ndash;&gt;-->
-<!--&lt;!&ndash;                                style="outline: none; border: none; background-color: #f8f9fa">&ndash;&gt;-->
-<!--                                <input required id="date" name="data"/>-->
-<!--                            </th>-->
+                <div class="col-2 h-75">
+                    <img class="h-100 mx-auto" src="{% static 'logo/jpc.jpg' %}" style="max-width: 100%; display: block;">
+                </div>
 
-<!--                        </tr>-->
-<!--                    </thead>-->
-<!--                </table>-->
+                <div class="col-8">
+                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 13px;">
+                        <thead class="">
+                            <tr>
+                                <th>پروژه</th>
+                                <th class="table-light">
+                                    <input id="project_name" value="{{ report.project_name }}" required type="text" name="project_name" placeholder="پروژه"
+                                    style="outline: none; border: none; background-color: #f8f9fa">
+                                </th>
+                                <th>شماره قرارداد</th>
+                                <th class="table-light">
+                                    <input id="contract_no" value="{{ report.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد"
+                                    style="outline: none; border: none; background-color: #f8f9fa">
+                                </th>
+                                <th>مشاور</th>
+                                <th class="table-light">
+                                    <input id="consultor_name" value="{{ report.consultor_name }}" required type="text" name="consultor_name" placeholder="مشاور"
+                                    style="outline: none; border: none; background-color: #f8f9fa">
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th>کارفرما</th>
+                                <th class="table-light">
+                                    <input id="employer" value="{{ report.employer }}" required type="text" name="employer" placeholder="کارفرما"
+                                    style="outline: none; border: none; background-color: #f8f9fa">
+                                </th>
+                                <th>پیمانکار</th>
+                                <th class="table-light">
+                                    <input id="employee" value="{{ report.employee }}" required type="text" name="employee" placeholder="پیمانکار"
+                                    style="outline: none; border: none; background-color: #f8f9fa">
+                                </th>
+
+                                <th>تاریخ</th>
+                                <th class="table-light">
+                                    <input required name="date" id="date" class="bg-light" placeholder="تاریخ" data-jdp>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th>میزان گرد و غبار</th>
+                                <th class="table-light">
+                                    <input id="dust_value" value="{{ report.dust_value }}" required type="number" name="dust_value" placeholder=""
+                                    style="border-radius: 0" class="small-input-integer bg-light" step="10" min="0">
+                                </th>
+
+                                <th>بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
+                                <th class="table-light">
+                                    <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_max }}" name="maxTemp"
+                                    style="border-radius: 0" step="1">
+                                    &nbsp; || &nbsp;
+                                    <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_min }}" name="minTemp"
+                                    style="border-radius: 0" step="1">
+                                </th>
+
+                                <th>وضعیت جوی</th>
+                                <th class="table-light">
+                                    <select required id="weather_status" name="weather_status" value="{{ report.weather }}" class="bg-light">
+                                        <option class="bg-light" value="" disabled selected hidden>انتخاب</option>
+                                        <option class="bg-light" value="1">آفتابی</option>
+                                        <option class="bg-light" value="2">ابری</option>
+                                        <option class="bg-light" value="3">بارانی</option>
+                                        <option class="bg-light" value="4">برفی</option>
+                                    </select>
+
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="col-2  h-75">
+                    <img class="h-100 mx-auto" src="{% static 'logo/jpc.jpg' %}" style="max-width: 100%; display: block;">
+                </div>
+
             </div>
 
-            <div class="col-6">
+            <div style="margin-top: -30px" class="col-6 ">
 
                 <div class="row ">
 
@@ -318,11 +360,11 @@
 
             </div>
 
-            <div class="col-6 ">
+            <div style="margin-top: -30px" class="col-6 ">
                 <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
                     <thead class="">
                         <tr class="">
-                            <th class="" style="width: 26%">
+                            <th class="" style="width: 35%">
                                 <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
                                         data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                     <img src="{% static 'icons/plus-circle.svg' %}"/>
@@ -332,22 +374,22 @@
                             <th class="" style="width: 17%">
                                 اکیپ
                             </th>
-                            <th class="" style="width: 8%">
+                            <th class="" style="width: 7%">
                                 موقعیت
                             </th>
-                            <th class="" >
+                            <th class="text-centred" style="width: 7%">
                                 امروز
                             </th>
-                            <th class="text-centred" >
+                            <th class="text-centred" style="width: 9%">
                                 تا دیروز
                             </th>
-                            <th class="text-centred" >
+                            <th class="text-centred" style="width: 5%">
                                 کل
                             </th>
-                            <th class="text-centred" >
+                            <th class="text-centred" style="width: 8%">
                                 درصد
                             </th>
-                            <th class="text-centred" style="width: 10%">
+                            <th class="text-centred" style="width: 9% ">
                                 واحد
                             </th>
                         </tr>

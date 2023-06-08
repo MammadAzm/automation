@@ -503,14 +503,23 @@ def save_daily_report_to_db(request):
         # print(contractors)
         # print(tasks)
 
+        # print(data)
+        # print(data['date'])
         # return HttpResponse(1)
 
         report = DailyReport.objects.create(
-            project_name="پروژه آلفا",
-            employer="کارفرما",
-            employee="پیمانکار",
-            contract_number="123456789",
+            project_name=data['project_name'][0],
+            employer=data["employer"][0],
+            employee=data["employee"][0],
+            contract_number=data["contract_no"][0],
+            date=jdatetime.datetime.strptime(data['date'][0], format="%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S"),
+            temperature_min=data["minTemp"][0],
+            temperature_max=data["maxTemp"][0],
+            weather=data["weather_status"][0],
+            dust_value=data["dust_value"][0],
+            consultor_name=data["consultor_name"][0],
         )
+        report.set_weekday()
 
         for position, count in positions.items():
             if count > 0:
@@ -670,6 +679,7 @@ def report_on_day(request, idd):
     equipes = EquipeCount.objects.filter(dailyReport=report)
     tasks = TaskReport.objects.filter(dailyReport=report)
     other = {
+        "weather": report.get_weather_display(),
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
         # "doneVol":

@@ -275,11 +275,15 @@ class DailyReport(models.Model):
 
     date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
+
+    date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #
-    # temperature_min = models.DecimalField(max_digits=5, decimal_places=2)
-    # temperature_max = models.DecimalField(max_digits=5, decimal_places=2)
+    temperature_min = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)
+    temperature_max = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)
     #
-    # weather = models.IntegerField(choices=WEATHER_CHOICES)
+    weather = models.IntegerField(choices=WEATHER_CHOICES, default=0)
+    dust_value = models.IntegerField(default=0)
+    consultor_name = models.CharField(max_length=250, default="Consultor Project")
     # ------------------------------------------------
     # ---------------------Body-----------------------
     positions = models.ManyToManyField(Position, through='PositionCount')
@@ -309,12 +313,16 @@ class DailyReport(models.Model):
 
     deletable = models.BooleanField(default=1)
 
+    def set_weekday(self):
+        self.weekday = jdatetime.datetime.strptime(self.date, format="%Y-%m-%d %H:%M:%S").weekday()
+        self.save()
+
     def check_deletability(self):
         now = jdatetime.datetime.now()
         now = jdatetime.datetime(now.year, now.month, now.day,
                                  now.hour, now.minute, now.second,)
-        date = jdatetime.datetime(self.date.year, self.date.month, self.date.day,
-                                  self.date.hour, self.date.minute, self.date.second,)
+        date = jdatetime.datetime(self.date_created.year, self.date_created.month, self.date_created.day,
+                                  self.date_created.hour, self.date_created.minute, self.date_created.second,)
 
         bound = jdatetime.timedelta(0, 0, 1, 0, 0, 0,)
         if now - date < bound:

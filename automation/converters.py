@@ -9,10 +9,11 @@ WEEKDAY_CHOICES = [
     ]
 
 WEATHER_CHOICES = [
-        (1, "Sunny"),
-        (2, "Cloudy"),
-        (3, "Rainy"),
-        (4, "Snowy"),
+        (0, "تعیین نشده"),
+        (1, "آفتابی"),
+        (2, "ابری"),
+        (3, "بارانی"),
+        (4, "برفی"),
 ]
 
 MACHINE_TYPES = [
