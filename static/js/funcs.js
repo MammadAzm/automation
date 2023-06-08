@@ -993,7 +993,7 @@ function add_equipe_to_base_data() {
     cell1.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'right',
+        float: 'left',
         color: 'black',
     });
     span.className = "badge rounded-pill";
@@ -1053,7 +1053,7 @@ function add_task_to_base_data() {
     descr.className = "";
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'right',
+        float: 'left',
         color: 'black',
     });
     span.className = "badge rounded-pill";
