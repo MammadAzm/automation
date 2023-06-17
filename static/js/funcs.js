@@ -931,6 +931,21 @@ function add_machine_to_daily_report() {
     cell1.innerHTML = val;
     cell1.appendChild(span)
 
+    let cell02 = document.createElement('td', );
+    cell02.className = "";
+    let input0 = document.createElement('input', );
+    input0.style.borderRadius = "0"
+    input0.style.textAlign = "center"
+    input0.required = true;
+    input0.className = "small-input-integer";
+    input0.type = "number";
+    input0.id = "machine_"+val+"_workHours";
+    input0.name = "machine_"+val+"_workHours";
+    input0.min = '0';
+    input0.value = '0';
+
+    cell02.appendChild(input0)
+
     let cell2 = document.createElement('td', );
     cell2.className = "";
     let input = document.createElement('input', );
@@ -991,6 +1006,7 @@ function add_machine_to_daily_report() {
     cell4.appendChild(select)
 
     newRow.appendChild(cell1);
+    newRow.appendChild(cell02);
     newRow.appendChild(cell2);
     newRow.appendChild(cell3);
     newRow.appendChild(cell4);

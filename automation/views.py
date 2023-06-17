@@ -683,14 +683,15 @@ def save_daily_report_to_db(request):
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
                 mach = Machine.objects.get(name=machine)
-                provider = MachineProvider.objects.get(name=count[2])
+                provider = MachineProvider.objects.get(name=count[3])
                 obj = MachineCount.objects.create(
                     machine=mach,
                     dailyReport=report,
-                    activeCount=count[0],
-                    inactiveCount=count[1],
+                    activeCount=count[1],
+                    inactiveCount=count[2],
+                    workHours=count[0],
                     provider=provider,
-                    totalCount=sum(count[:2]),
+                    totalCount=sum(count[1:3]),
                 )
                 report.machines.add(obj.machine)
 

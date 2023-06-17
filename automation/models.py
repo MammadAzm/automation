@@ -76,6 +76,8 @@ class MachineCount(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
+    workHours = models.PositiveIntegerField(default=0.0)
+
     activeCount = models.PositiveIntegerField(default=0)
     inactiveCount = models.PositiveIntegerField(default=0)
     totalCount = models.PositiveIntegerField(default=0)
