@@ -20,8 +20,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-position" style="font-size: 13px;">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-position" style="font-size: 11px;">
                     <thead class="" hidden>
                         <tr class="" >
                             <th class="" >
@@ -64,8 +64,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-profession" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-profession" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                                 <th class="" >
@@ -107,8 +107,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-machine" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                                 <th class="" >
@@ -151,8 +151,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-material" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-material" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                                 <th class="" >
@@ -194,8 +194,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-contractor" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-contractor" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                             <th class="" >
@@ -238,8 +238,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-equipe" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-equipe" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                             <th class="" >
@@ -288,8 +288,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-zone" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-zone" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                             <th class="" >
@@ -320,6 +320,138 @@
             </div>
         </div>
 
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            تامین کننده مصالح
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropMaterialProviders">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-materialprovider" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                                تامین کننده
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropMaterialProviders">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for provider in materialproviders %}
+                            <tr  id="{{ provider }}">
+                                <td>
+                                    {{ provider }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_materialprovider('{{ provider }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            تامین کننده ماشین آلات
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-machineprovider" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                                تامین کننده
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for provider in machineproviders %}
+                            <tr  id="{{ provider }}">
+                                <td>
+                                    {{ provider }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_machineprovider('{{ provider }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            واحد
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-unit" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                                واحد
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for unit in units %}
+                            <tr  id="{{ unit }}">
+                                <td>
+                                    {{ unit }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
+    <div class="row  mb-3">
+        
         <div class="col">
             <table class="table table-bordered border-dark">
                 <thead class="">
@@ -346,8 +478,8 @@
                     </tr>
                 </thead>
             </table>
-            <div style="height: 300px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                             <th class="" style="width: 35%" >
@@ -406,40 +538,6 @@
             </div>
         </div>
 
-    </div>
-
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
-
-    <div class="row" hidden>
-        <div class="col">
-            <table class="table table-bordered border-dark" id="table-unit" style="font-size: 13px">
-
-                <thead class="">
-                    <tr class="">
-                        <th class="" >
-                            واحد
-<!--                                <span class="badge rounded-pill" style="float: left; color: black"-->
-<!--                                    data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
-                                        <img{% static 'icons/plus-circle.svg' %}</span>-->
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for unit in units %}
-                        <tr  id="{{ unit }}">
-                            <td>
-                                {{ unit }}
-<!--                                <span class="badge rounded-pill"-->
-<!--                                    style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
-<img{% static 'icons/patch-minus.svg' %}}</span>-->
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
@@ -683,37 +781,6 @@
     </div>
 </div>
 
-<!--
-<div class="modal fade" id="staticBackdropUnits" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropUnitsLabel" style="margin-right: auto">افزودن واحد</h5>
-            </div>
-
-            <div class="modal-body">
-                <form action="/edit-db/add-unit" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-3">
-                        <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت">
-
-                        <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon6" style="border: none">افزودن موقعیت</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
-            </div>
-
-        </div>
-    </div>
-</div>
--->
-
 <div class="modal fade" id="staticBackdropTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -803,6 +870,93 @@
                 <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data()"
                                 type="submit" id="button-addon7" >افزودن</button>
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropUnits" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropUnitsLabel" style="margin-right: auto">افزودن واحد</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-unit" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="unit" class="form-control" placeholder="نام واحد">
+
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon8">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropMaterialProviders" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropMaterialProvidersLabel" style="margin-right: auto">افزودن تامین کننده</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-materialprovider" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="materialprovider" class="form-control" placeholder="نام تامین کننده مصالح">
+
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon9">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropMachineProviders" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropMachineProvidersLabel" style="margin-right: auto">افزودن تامین کننده</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-machineprovider" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="machineprovider" class="form-control" placeholder="نام تامین کننده ماشین">
+
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon9">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
         </div>

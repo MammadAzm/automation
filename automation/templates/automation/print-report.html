@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="col-8">
-                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 13px;">
+                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
                     <thead class="">
                         <tr>
                             <th>پروژه</th>
@@ -55,7 +55,7 @@
                 <div class="row" style="margin-bottom: 0; padding-bottom: 0;">
 
                     <div class="col-3" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 13px;">
+                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 11px;">
                             <thead class="">
                                 <tr>
                                     <th style="width: 85%">سمت</th>
@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="col-8 me-2" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-profession" style="font-size: 13px">
+                        <table class="table table-bordered border-dark" id="table-profession" style="font-size: 11px">
                             <thead class="">
                                 <tr>
                                     <th style="width: 30%">تخصص</th>
@@ -100,7 +100,7 @@
                 <div class="row my-0" style="margin-bottom: 0; padding-bottom: 0">
 
                     <div class="col-4" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="positionCount" style="font-size: 13px;">
+                        <table class="table table-bordered border-dark" id="positionCount" style="font-size: 11px;">
                             <thead class="">
                             <tr>
                                 <th style="width: 75%">تعداد کل</th>
@@ -111,7 +111,7 @@
                     </div>
 
                     <div class="col-7 me-2" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="professionCount" style="font-size: 13px">
+                        <table class="table table-bordered border-dark" id="professionCount" style="font-size: 11px">
                             <thead class="">
                                 <tr>
                                     <th style="width: 75%" colspan="5">تعداد کل</th>
@@ -126,7 +126,7 @@
                 <div class="row" style="margin-top: -15px;">
                     <div class="col-4" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 13px">
+                            <thead class="" style="font-size: 11px">
                                 <tr>
                                     <th>تعداد کل نفرات</th>
                                 </tr>
@@ -136,7 +136,7 @@
 
                     <div class="col-7 me-2" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 13px">
+                            <thead class="" style="font-size: 11px">
                                 <tr>
                                     <th style="text-align: left; padding-left: 40px">{{ report.countPeople }}</th>
                                 </tr>
@@ -148,13 +148,14 @@
                 <div class="row">
 
                     <div class="col-5" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 13px">
+                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
                             <thead class="">
                                 <tr>
                                     <th style="width: 60%">ماشین</th>
                                     <th style="text-align: center">فعال</th>
                                     <th style="text-align: center">غیرفعال</th>
                                     <th style="text-align: center">کل</th>
+                                    <th style="text-align: center">تامین</th>
                                 </tr>
                             </thead>
                             {% for machine in machines %}
@@ -163,18 +164,20 @@
                                     <td style="text-align: center">{{ machine.activeCount }}</td>
                                     <td style="text-align: center">{{ machine.inactiveCount }}</td>
                                     <td style="text-align: center">{{ machine.totalCount }}</td>
+                                    <td style="text-align: center">{{ machine.provider }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
                     </div>
 
                     <div class="col-6 me-2" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 13px">
+                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 11px">
                             <thead class="">
                                 <tr>
                                     <th>مصالح</th>
                                     <th style="text-align: center">مقدار</th>
                                     <th style="text-align: center">واحد</th>
+                                    <th style="text-align: center">تامین</th>
                                 </tr>
                             </thead>
                             {% for material in materials %}
@@ -182,6 +185,7 @@
                                     <td>{{ material }}</td>
                                     <td style="text-align: center">{{ material.amount }}</td>
                                     <td style="text-align: center">{{ material.unit }}</td>
+                                    <td style="text-align: center">{{ material.provider }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
@@ -192,7 +196,7 @@
 
 
             <div class="col-7 " style=" margin-top: -30px">
-                <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
+                <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
 
                 <thead class="">
                     <tr class="">

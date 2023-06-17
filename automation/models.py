@@ -65,6 +65,13 @@ class Machine(models.Model):
         return self.name
 
 
+class MachineProvider(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class MachineCount(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
@@ -72,6 +79,8 @@ class MachineCount(models.Model):
     activeCount = models.PositiveIntegerField(default=0)
     inactiveCount = models.PositiveIntegerField(default=0)
     totalCount = models.PositiveIntegerField(default=0)
+
+    provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         unique_together = ('dailyReport', 'machine',)
@@ -95,12 +104,20 @@ class Material(models.Model):
         return self.name
 
 
+class MaterialProvider(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class MaterialCount(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     amount = models.FloatField(default=0.0,)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    provider = models.ForeignKey(MaterialProvider, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.material.name

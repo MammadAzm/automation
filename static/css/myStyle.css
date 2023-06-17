@@ -93,3 +93,29 @@ td {
 #peyvast:hover{
     box-shadow: 0 1px 10px 2px blue;
 }
+
+.shortcut-btn {
+    /*background-color: orangered;*/
+    background-color: #ff9d00;
+    /*background-color: darkorange;*/
+    padding: 5px;
+    font-family: "B Nazanin";
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+details {
+    text-align: center;
+}
+
+details > summary {
+    list-style-type: '▶️';
+}
+
+details[open] > summary {
+    list-style-type: '🔽️';
+}
+
+details:focus {
+    outline: none;
+}

@@ -1,3 +1,325 @@
+function search_base_machine() {
+    let dropdownItems = $('#dropdown-menu-base-machines').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-machine').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-machine").dispatchEvent(event);
+      $('#base-machine-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-machine').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_profession() {
+    let dropdownItems = $('#dropdown-menu-base-professions').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-profession').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-profession").dispatchEvent(event);
+      $('#base-profession-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-profession').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_contractor() {
+    let dropdownItems = $('#dropdown-menu-base-contractors').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-contractor').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-contractor").dispatchEvent(event);
+      $('#base-contractor-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-contractor').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_equipes() {
+    // for create report page
+    let dropdownItems = $('#dropdown-menu-base-equipes-professions').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-equipe-profession').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-equipe-profession").dispatchEvent(event);
+      $('#base-equipe-profession-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-equipe-profession').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_position() {
+    let dropdownItems = $('#dropdown-menu-base-positions').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-position').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-position").dispatchEvent(event);
+      $('#base-position-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-position').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_material() {
+    let dropdownItems = $('#dropdown-menu-base-materials').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-position').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-material").dispatchEvent(event);
+      $('#base-material-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-material').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_equipe_task() {
+    let dropdownItems = $('#dropdown-menu-base-tasks').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-task').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-task").dispatchEvent(event);
+      $('#base-equipetask-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-task').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_tasks() {
+    let dropdownItems = $('#dropdown-menu-base-tasks').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-task').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-task").dispatchEvent(event);
+      $('#base-task-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-task').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_zone_task() {
+    let dropdownItems = $('#dropdown-menu-base-zones').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-zone').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-zone").dispatchEvent(event);
+      $('#base-zone-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-zone').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_unit_task() {
+    let dropdownItems = $('#dropdown-menu-base-units').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-unit').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-unit").dispatchEvent(event);
+      $('#base-unit-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-unit').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_base_equipe(type) {
+    // for base data page
+
+    let dropdownItems = $('#dropdown-menu-base-equipes-'+type+'s').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-base-equipe-'+type).val("");
+      let event = new Event('keyup');
+      document.getElementById("search-base-equipe-" + type).dispatchEvent(event);
+      $('#base-equipe-'+type+'-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-base-equipe-' + type).on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
 function del_profession(prof, db) {
     if (db) {
         $.ajax({
@@ -136,7 +458,6 @@ function del_zone(zone, db) {
 
 }
 
-/*
 function del_unit(unit, db) {
     if (db) {
         $.ajax({
@@ -159,7 +480,52 @@ function del_unit(unit, db) {
     }
 
 }
-*/
+
+function del_materialprovider(materialprovider, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-materialprovider',
+            data: {
+            'materialprovider': materialprovider,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(materialprovider)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(materialprovider)
+        obj.remove()
+    }
+
+}
+
+function del_machineprovider(machineprovider, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-machineprovider',
+            data: {
+            'machineprovider': machineprovider,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(machineprovider)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(machineprovider)
+        obj.remove()
+    }
+
+}
 
 function del_equipe(prof, cont, db) {
     if (db) {
@@ -594,9 +960,40 @@ function add_machine_to_daily_report() {
     input.value = '0';
     cell3.appendChild(input)
 
+    let cell4 = document.createElement('td', );
+    cell4.className = "";
+    let select = document.createElement('select',)
+    select.required = true;
+    select.className = "form-select";
+    select.id = "machine_"+val+"_provider";
+    select.name = "machine_"+val+"_provider";
+    select.style.fontSize = '11px';
+    select.style.textAlign = 'left  ';
+    select.style.padding = '0';
+    select.style.paddingLeft = '15%';
+
+    let option = document.createElement('option',)
+    option.value = ""
+    option.innerHTML = "انتخاب"
+    option.disabled = true
+    option.hidden = true
+    option.selected = true
+    select.appendChild(option)
+
+    fetch_machineproviders(function (providers) {
+        providers.forEach(provider => {
+            let option = document.createElement('option',)
+            option.value = provider.name
+            option.innerHTML = provider.name
+            select.appendChild(option)
+        })
+    })
+    cell4.appendChild(select)
+
     newRow.appendChild(cell1);
     newRow.appendChild(cell2);
     newRow.appendChild(cell3);
+    newRow.appendChild(cell4);
 
     table.querySelector('tbody').appendChild(newRow);
 
@@ -676,12 +1073,43 @@ function add_material_to_daily_report() {
             select.appendChild(option)
         })
     })
-
     cell3.appendChild(select)
+
+    let cell4 = document.createElement('td', );
+    cell4.className = "";
+    let select2 = document.createElement('select',)
+    select2.required = true;
+    select2.className = "form-select";
+    select2.id = "material_"+val+"_provider";
+    select2.name = "material_"+val+"_provider";
+    select2.style.fontSize = '11px';
+    select2.style.textAlign = 'left  ';
+    select2.style.padding = '0';
+    select2.style.paddingLeft = '15%';
+
+    option = document.createElement('option',)
+    option.value = ""
+    option.innerHTML = "انتخاب"
+    option.disabled = true
+    option.hidden = true
+    option.selected = true
+    select2.appendChild(option)
+
+    fetch_materialproviders(function (materialproviders) {
+        materialproviders.forEach(materialprovider => {
+            let option = document.createElement('option',)
+            option.value = materialprovider.name
+            option.innerHTML = materialprovider.name
+            select2.appendChild(option)
+        })
+    })
+
+    cell4.appendChild(select2)
 
     newRow.appendChild(cell1);
     newRow.appendChild(cell2);
     newRow.appendChild(cell3);
+    newRow.appendChild(cell4);
 
     table.querySelector('tbody').appendChild(newRow);
 
@@ -972,257 +1400,404 @@ function add_task_to_daily_report() {
 
 }
 
-function add_equipe_to_base_data() {
-    let valProf = document.getElementById("equipe-profession-name").value
-    document.getElementById("equipe-profession-name").value = "";
+function add_equipe_to_base_data(shortcut=null) {
+    if (shortcut) {
+        let valProf = document.getElementById("base-equipe-profession-name").value
+        let valCont = document.getElementById("base-equipe-contractor-name").value
 
-    let valCont = document.getElementById("equipe-contractor-name").value
-    document.getElementById("equipe-contractor-name").value = "";
-    if (!valProf) {
-        return 0
-    } else if (!valCont) {
-        return 0
-    }
-
-    let table = document.getElementById("table-equipe")
-
-    let newRow = document.createElement('tr');
-    newRow.id = valProf + "-" + valCont;
-
-    let cell1 = document.createElement('td', );
-    cell1.className = "";
-    let span = document.createElement('span', );
-    Object.assign(span.style, {
-        float: 'left',
-        color: 'black',
-    });
-    span.className = "badge rounded-pill";
-    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-    span.style.marginLeft = "5pt"
-    span.addEventListener('click', function() {
-    del_equipe(valProf, valCont,true);
-    });
-    cell1.innerHTML = valProf + "-" + valCont;
-    cell1.appendChild(span)
-    newRow.appendChild(cell1);
-
-     $.ajax({
-            type: 'POST',
-            url: '/edit-db/add-equipe',
-            data: {
-            'profession': valProf,
-            'contractor': valCont,
-            },
-            beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-            },
-            success: function(response) {
-                if (response == "True") {
-                    table.querySelector('tbody').appendChild(newRow);
-                }
-            }
-        });
-
-}
-
-function add_task_to_base_data() {
-    let taskName = document.getElementById("task-name").value
-    document.getElementById("task-name").value = "";
-
-    let equipeName = document.getElementById("equipetask-name").value
-    document.getElementById("equipetask-name").value = "";
-
-    let zoneName = document.getElementById("zone-name").value
-    document.getElementById("zone-name").value = "";
-
-    let taskVol = document.getElementById("task-volume").value
-    document.getElementById("task-volume").value = "";
-
-    let unitName = document.getElementById("unit-name").value
-    document.getElementById("unit-name").value = "";
-
-    if ( !taskName || !equipeName || !zoneName || !taskVol || !unitName ) {
-        return 0
-    }
-    let table = document.getElementById("table-task")
-
-    let newRow = document.createElement('tr');
-    newRow.id = taskName + "-" + equipeName + "-" + zoneName;
-
-    let descr = document.createElement('td', );
-    descr.className = "";
-    let span = document.createElement('span', );
-    Object.assign(span.style, {
-        float: 'left',
-        color: 'black',
-    });
-    span.className = "badge rounded-pill";
-    span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-    span.style.marginLeft = "5pt"
-    span.addEventListener('click', function() {
-    del_task(taskName, equipeName, zoneName, taskVol, unitName, true);
-    });
-    descr.innerHTML = taskName;
-    descr.style.width = "35%";
-    descr.appendChild(span)
-
-    let equipeCell = document.createElement('td', );
-    equipeCell.className = ""
-    equipeCell.style.width = "26%";
-    equipeCell.innerHTML = equipeName;
-
-    let zoneCell = document.createElement('td', );
-    zoneCell.className = ""
-    zoneCell.style.width = "13%";
-    zoneCell.innerHTML = zoneName;
-
-    let unitCell = document.createElement('td', );
-    unitCell.className = ""
-    unitCell.style.width = "13%";
-    unitCell.innerHTML = unitName;
-
-    let volCell = document.createElement('td', );
-    volCell.className = ""
-    volCell.style.width = "13%";
-    volCell.innerHTML = taskVol;
-
-    newRow.appendChild(descr);
-    newRow.appendChild(equipeCell);
-    newRow.appendChild(zoneCell);
-    newRow.appendChild(unitCell);
-    newRow.appendChild(volCell);
-     $.ajax({
-            type: 'POST',
-            url: '/edit-db/add-task',
-            data: {
-            'taskName': taskName,
-            'equipeName': equipeName,
-            'zoneName': zoneName,
-            'unitName': unitName,
-            'taskVol': taskVol,
-            },
-            beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-            },
-            success: function(response) {
-                if (response == "True") {
-                    table.querySelector('tbody').appendChild(newRow);
-                }
-            }
-        });
-}
-
-function fetch_options(type){
-    let typetype = false;
-    if (type[0] == "equipe"){
-        if (type[1] == "profession") {
-            type = "profession"
-            typetype = "equipes-profession"
-        } else {
-            type = "contractor"
-            typetype = "equipes-contractor"
+        if (!valProf) {
+            return 0
+        } else if (!valCont) {
+            return 0
         }
+
+        document.getElementById("base-equipe-profession-name").value = "";
+        document.getElementById("base-equipe-contractor-name").value = "";
+
+         $.ajax({
+                type: 'POST',
+                url: '/edit-db/add-equipe',
+                data: {
+                'profession': valProf,
+                'contractor': valCont,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    if (response == "True") {
+                        alert("عملیات با موفقیت انجام شد")
+                    }
+                }
+            });
     } else {
-        typetype = type;
-    }
+        let valProf = document.getElementById("equipe-profession-name").value
+        document.getElementById("equipe-profession-name").value = "";
 
-    let menu = document.getElementById("dropdown-menu-" + typetype + "s")
-    let options = menu.querySelectorAll('.dropdown-item');
-    options.forEach(option => {
-      option.remove()
-    });
-
-    let table = document.getElementById("table-" + type)
-    let tbody = table.getElementsByTagName("tbody")[0]
-    let rows = tbody.getElementsByTagName("tr")
-    let innerHTMLs = []
-    for (let i = 0; i < rows.length; i++) {
-        let item = rows[i].getElementsByTagName("td")[0]
-        item = item.textContent.replace("-" , "").trim()
-        innerHTMLs.push(item);
-    }
-    if (typetype.includes("equipe")) {
-        let opts = innerHTMLs
-        for (let i = 0; i < opts.length; i++) {
-
-            let item = opts[i].replace(/-/g, "") .trim()
-            let li = document.createElement("li")
-            let a = document.createElement("a")
-            a.className = "dropdown-item";
-            a.innerHTML = item;
-
-            li.appendChild(a);
-            menu.appendChild(li);
+        let valCont = document.getElementById("equipe-contractor-name").value
+        document.getElementById("equipe-contractor-name").value = "";
+        if (!valProf) {
+            return 0
+        } else if (!valCont) {
+            return 0
         }
 
-        if (type=="profession") {
-           search_equipe(type);
-        } else if (type=="contractor") {
-            search_equipe(type);
+        let table = document.getElementById("table-equipe")
+
+        let newRow = document.createElement('tr');
+        newRow.id = valProf + "-" + valCont;
+
+        let cell1 = document.createElement('td', );
+        cell1.className = "";
+        let span = document.createElement('span', );
+        Object.assign(span.style, {
+            float: 'left',
+            color: 'black',
+        });
+        span.className = "badge rounded-pill";
+        span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+        span.style.marginLeft = "5pt"
+        span.addEventListener('click', function() {
+        del_equipe(valProf, valCont,true);
+        });
+        cell1.innerHTML = valProf + "-" + valCont;
+        cell1.appendChild(span)
+        newRow.appendChild(cell1);
+
+         $.ajax({
+                type: 'POST',
+                url: '/edit-db/add-equipe',
+                data: {
+                'profession': valProf,
+                'contractor': valCont,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    if (response == "True") {
+                        table.querySelector('tbody').appendChild(newRow);
+                    }
+                }
+            });
+    }
+
+}
+
+function add_task_to_base_data(shortcut=null) {
+    if (shortcut) {
+        let taskName = document.getElementById("base-task-name").value
+        let equipeName = document.getElementById("base-equipetask-name").value
+        let zoneName = document.getElementById("base-zone-name").value
+        let taskVol = document.getElementById("base-task-volume").value
+        let unitName = document.getElementById("base-unit-name").value
+        if ( !taskName || !equipeName || !zoneName || !taskVol || !unitName ) {
+            return 0
         }
 
-    } else if ( type == "zone" || type == "unit" ){
-            let opts = innerHTMLs
-        for (let i = 0; i < opts.length; i++) {
+        document.getElementById("base-task-name").value = "";
+        document.getElementById("base-equipetask-name").value = "";
+        document.getElementById("base-zone-name").value = "";
+        document.getElementById("base-task-volume").value = "";
 
-            let item = opts[i]
-            let li = document.createElement("li")
-            let a = document.createElement("a")
-            a.className = "dropdown-item";
-            a.innerHTML = item;
+         $.ajax({
+                type: 'POST',
+                url: '/edit-db/add-task',
+                data: {
+                'taskName': taskName,
+                'equipeName': equipeName,
+                'zoneName': zoneName,
+                'unitName': unitName,
+                'taskVol': taskVol,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    if (response == "True") {
+                        alert("عملیات با موفقیت انجام شد")
+                    }
+                }
+            });
+    } else {
+        let taskName = document.getElementById("task-name").value
+        document.getElementById("task-name").value = "";
 
-            li.appendChild(a);
-            menu.appendChild(li);
-            if (type == "zone"){
-                search_zone_task();
+        let equipeName = document.getElementById("equipetask-name").value
+        document.getElementById("equipetask-name").value = "";
+
+        let zoneName = document.getElementById("zone-name").value
+        document.getElementById("zone-name").value = "";
+
+        let taskVol = document.getElementById("task-volume").value
+        document.getElementById("task-volume").value = "";
+
+        let unitName = document.getElementById("unit-name").value
+        document.getElementById("unit-name").value = "";
+
+        if ( !taskName || !equipeName || !zoneName || !taskVol || !unitName ) {
+            return 0
+        }
+        let table = document.getElementById("table-task")
+
+        let newRow = document.createElement('tr');
+        newRow.id = taskName + "-" + equipeName + "-" + zoneName;
+
+        let descr = document.createElement('td', );
+        descr.className = "";
+        let span = document.createElement('span', );
+        Object.assign(span.style, {
+            float: 'left',
+            color: 'black',
+        });
+        span.className = "badge rounded-pill";
+        span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+        span.style.marginLeft = "5pt"
+        span.addEventListener('click', function() {
+        del_task(taskName, equipeName, zoneName, taskVol, unitName, true);
+        });
+        descr.innerHTML = taskName;
+        descr.style.width = "35%";
+        descr.appendChild(span)
+
+        let equipeCell = document.createElement('td', );
+        equipeCell.className = ""
+        equipeCell.style.width = "26%";
+        equipeCell.innerHTML = equipeName;
+
+        let zoneCell = document.createElement('td', );
+        zoneCell.className = ""
+        zoneCell.style.width = "13%";
+        zoneCell.innerHTML = zoneName;
+
+        let unitCell = document.createElement('td', );
+        unitCell.className = ""
+        unitCell.style.width = "13%";
+        unitCell.innerHTML = unitName;
+
+        let volCell = document.createElement('td', );
+        volCell.className = ""
+        volCell.style.width = "13%";
+        volCell.innerHTML = taskVol;
+
+        newRow.appendChild(descr);
+        newRow.appendChild(equipeCell);
+        newRow.appendChild(zoneCell);
+        newRow.appendChild(unitCell);
+        newRow.appendChild(volCell);
+         $.ajax({
+                type: 'POST',
+                url: '/edit-db/add-task',
+                data: {
+                'taskName': taskName,
+                'equipeName': equipeName,
+                'zoneName': zoneName,
+                'unitName': unitName,
+                'taskVol': taskVol,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    if (response == "True") {
+                        table.querySelector('tbody').appendChild(newRow);
+                    }
+                }
+            });
+    }
+
+}
+
+function fetch_options(type, shortcut=null){
+    if (shortcut) {
+        let typetype = false;
+        if (type[0] == "equipe"){
+            if (type[1] == "profession") {
+                type = "profession"
+                typetype = "base-equipes-profession"
             } else {
-                search_unit_task();
+                type = "contractor"
+                typetype = "base-equipes-contractor"
             }
-
+        } else {
+            typetype = "base-"+type;
         }
-    } else {
+        let menu = document.getElementById("dropdown-menu-" + typetype + "s")
+        let options = menu.querySelectorAll('.dropdown-item');
+        options.forEach(option => {
+          option.remove()
+        });
+        let innerHTMLs = []
+
         options = JSON.stringify(
             {
-            'options': innerHTMLs,
+                'options': innerHTMLs,
             }
         )
         $.ajax({
-        type: 'POST',
-        url: '/edit-db/get-options/'+type,
-        data: {
-        'options': options,
-        },
-        beforeSend: function(xhr, settings) {
-        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-        },
-        success: function(response) {
-            let opts = response[type]
-            opts = JSON.parse(opts)
+            type: 'POST',
+            url: '/edit-db/get-options/' + type,
+            data: {
+                'options': options,
+            },
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function (response) {
+                let opts = response[type]
+                opts = JSON.parse(opts)
+                for (let i = 0; i < opts.length; i++) {
+                    let li = document.createElement("li")
+                    let a = document.createElement("a")
+                    a.className = "dropdown-item";
+                    a.innerHTML = opts[i].name;
+                    li.appendChild(a);
+                    menu.appendChild(li);
+                }
+
+                if (typetype.includes("equipe")) {
+                    if (type=="profession") {
+                       search_base_equipe(type);
+                    } else if (type=="contractor") {
+                        search_base_equipe(type);
+                    }
+                } else if ( type == "zone" || type == "unit" ) {
+                    if (type == "zone"){
+                        search_base_zone_task();
+                    } else {
+                        search_base_unit_task();
+                    }
+                }
+
+                if (type == "position") {
+                    search_base_position();
+                } else if (type == "profession") {
+                    search_base_profession();
+                } else if (type == "machine") {
+                    search_base_machine();
+                } else if (type == "material") {
+                    search_base_material();
+                } else if (type == "task") {
+                    search_base_equipe_task();
+                } else if (type == "zone") {
+                    search_base_zone_task();
+                }
+            }
+        })
+
+    } else {
+        let typetype = false;
+        if (type[0] == "equipe"){
+            if (type[1] == "profession") {
+                type = "profession"
+                typetype = "equipes-profession"
+            } else {
+                type = "contractor"
+                typetype = "equipes-contractor"
+            }
+        } else {
+            typetype = type;
+        }
+
+        let menu = document.getElementById("dropdown-menu-" + typetype + "s")
+        let options = menu.querySelectorAll('.dropdown-item');
+        options.forEach(option => {
+          option.remove()
+        });
+
+        let table = document.getElementById("table-" + type)
+        let tbody = table.getElementsByTagName("tbody")[0]
+        let rows = tbody.getElementsByTagName("tr")
+        let innerHTMLs = []
+        for (let i = 0; i < rows.length; i++) {
+            let item = rows[i].getElementsByTagName("td")[0]
+            item = item.textContent.replace("-" , "").trim()
+            innerHTMLs.push(item);
+        }
+        if (typetype.includes("equipe")) {
+            let opts = innerHTMLs
             for (let i = 0; i < opts.length; i++) {
+
+                let item = opts[i].replace(/-/g, "") .trim()
                 let li = document.createElement("li")
                 let a = document.createElement("a")
                 a.className = "dropdown-item";
-                a.innerHTML = opts[i].name;
+                a.innerHTML = item;
+
                 li.appendChild(a);
                 menu.appendChild(li);
             }
 
-            if (type=="position") {
-               search_position();
-            } else if (type=="profession") {
-                search_profession();
-            } else if (type=="machine") {
-                search_machine();
-            } else if (type=="material") {
-                search_material();
-            } else if (type=="task") {
-                search_equipe_task();
-            } else if (type=="zone") {
-                search_zone_task();
+            if (type=="profession") {
+               search_equipe(type);
+            } else if (type=="contractor") {
+                search_equipe(type);
             }
+
+        } else if ( type == "zone" || type == "unit" ){
+                let opts = innerHTMLs
+            for (let i = 0; i < opts.length; i++) {
+
+                let item = opts[i]
+                let li = document.createElement("li")
+                let a = document.createElement("a")
+                a.className = "dropdown-item";
+                a.innerHTML = item;
+
+                li.appendChild(a);
+                menu.appendChild(li);
+                if (type == "zone"){
+                    search_zone_task();
+                } else {
+                    search_unit_task();
+                }
+
+            }
+        } else {
+            options = JSON.stringify(
+                {
+                'options': innerHTMLs,
+                }
+            )
+            $.ajax({
+            type: 'POST',
+            url: '/edit-db/get-options/'+type,
+            data: {
+            'options': options,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let opts = response[type]
+                opts = JSON.parse(opts)
+                for (let i = 0; i < opts.length; i++) {
+                    let li = document.createElement("li")
+                    let a = document.createElement("a")
+                    a.className = "dropdown-item";
+                    a.innerHTML = opts[i].name;
+                    li.appendChild(a);
+                    menu.appendChild(li);
+                }
+
+                if (type=="position") {
+                   search_position();
+                } else if (type=="profession") {
+                    search_profession();
+                } else if (type=="machine") {
+                    search_machine();
+                } else if (type=="material") {
+                    search_material();
+                } else if (type=="task") {
+                    search_equipe_task();
+                } else if (type=="zone") {
+                    search_zone_task();
+                }
+            }
+        });
         }
-    });
     }
+
 
 }
 
@@ -1379,6 +1954,34 @@ function fetch_units(callback) {
     });
 }
 
+function fetch_materialproviders(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-materialproviders/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["materialproviders"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_machineproviders(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-machineproviders/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["machineproviders"])
+
+            callback(opts)
+        }
+    });
+}
+
 function toggle_requirement(toggleID, conditionID) {
     let select = document.getElementById(toggleID)
     let input = document.getElementById(conditionID)
@@ -1413,4 +2016,119 @@ function iter_reports() {
 
         }
     });
+}
+
+function shortcut_add(which, ) {
+    if (which == "position") {
+        let value = document.getElementById("shortcut_position").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_position").value = ""
+
+    } else if (which == "profession") {
+        let value = document.getElementById("shortcut_profession").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_profession").value = ""
+    }
+    else if (which == "machine") {
+        let value = document.getElementById("shortcut_machine").value
+        let type = document.getElementById("shortcut_machineType").value
+        shotcut_add_to_base(which, value, type);
+        document.getElementById("shortcut_machine").value = ""
+    }
+    else if (which == "material") {
+        let value = document.getElementById("shortcut_material").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_material").value = ""
+    }
+    else if (which == "contractor") {
+        let value = document.getElementById("shortcut_contractor").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_contractor").value = ""
+    }
+    else if (which == "zone") {
+        let value = document.getElementById("shortcut_zone").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_zone").value = ""
+    }
+    else if (which == "unit") {
+        let value = document.getElementById("shortcut_unit").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_unit").value = ""
+    }
+    else if (which == "materialprovider") {
+        let value = document.getElementById("shortcut_materialprovider").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_materialprovider").value = ""
+    }
+    else if (which == "machineprovider") {
+        let value = document.getElementById("shortcut_machineprovider").value
+        shotcut_add_to_base(which, value);
+        document.getElementById("shortcut_machineprovider").value = ""
+    }
+    else if (which == "") {
+
+    }
+    else if (which == "") {
+
+    }
+
+}
+
+function shotcut_add_to_base(which, value, type=null) {
+    if (!value) {
+        return 0
+    } else if (!type && which == "machine")  {
+        return 0
+    }
+
+    $.ajax({
+            type: 'POST',
+            url: '/edit-db/shortcut-add',
+            data: {
+            "which": which,
+            "value": value,
+            'type': type,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    alert("با موفقیت اضافه شد");
+                } else {
+                    alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
+                }
+            }
+        });
+
+}
+
+
+function shotcut_add_to_base_2(which, value, type=null) {
+    if (!value) {
+        return 0
+    } else if (!type && which == "machine")  {
+        return 0
+    }
+
+    $.ajax({
+            type: 'POST',
+            url: '/edit-db/shortcut-add',
+            data: {
+            "which": which,
+            "value": value,
+            'type': type,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    alert("با موفقیت اضافه شد");
+                } else {
+                    alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
+                }
+            }
+        });
+
 }

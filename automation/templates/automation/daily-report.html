@@ -6,7 +6,34 @@
 
 <form action="/edit-db/save-daily-report" method="post" id="report-form">
     {% csrf_token %}
-    <div class="container-xxl px-4" style="margin-top: 0.5%">
+
+<!--    <details open class="bg-light">-->
+<!--        <summary>-->
+<!--            افزودن اطلاعات پایه-->
+<!--        </summary>-->
+<!--        <div>-->
+<!--            <nav class="navbar navbar-light bg-light">-->
+<!--                <div class="container-fluid">-->
+<!--                    <div class="mx-auto">-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBasePositions">سمت</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseProfessions">تخصص</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachines">ماشین آلات</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterials">مصالح</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseContractors">پیمانکار</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">اکیپ</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">موقعیت</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterialProviders">تامین کننده مصالح</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachineProviders">تامین کننده ماشین</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">واحد</button>-->
+<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">عملیات</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </nav>-->
+<!--        </div>-->
+
+<!--    </details>-->
+
+    <div class="container-xxl px-4 " style="margin-top: 0.5%">
         <div class="row">
 
             <div class="row">
@@ -15,7 +42,7 @@
                 </div>
 
                 <div class="col-8">
-                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 13px;">
+                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
                         <thead class="">
                             <tr>
                                 <th>پروژه</th>
@@ -91,17 +118,17 @@
 
             </div>
 
-            <div style="margin-top: -30px" class="col-6 ">
+            <div class="col-5" style="margin-top: -30px">
 
-                <div class="row ">
+                <div class="row">
 
                     <div class="col-4 " style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 13px;">
+                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 11px;">
 
                             <thead class="">
                                 <tr class="">
                                     <th class="" style="width: 75%">
-                                        <span class="badge rounded-pill" style="color: black; margin-left: 5pt;"
+                                        <span class="badge rounded-pill" style="color: black; margin-left: 0pt;"
                                         data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
                                             <img src="{% static 'icons/plus-circle.svg' %}"/>
                                         </span>
@@ -117,7 +144,7 @@
                                 <tr id="{{ position }}">
                                     <td class="" style="font-family: 'B Nazanin';font-weight: bold; ">
                                         <span class="badge rounded-pill"
-                                            style="color: black; margin-left: 5pt;" onclick="del_position('{{ position }}', false)">
+                                            style="color: black; margin-left: 0pt;" onclick="del_position('{{ position }}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ position }}
@@ -137,11 +164,11 @@
                     </div>
 
                     <div class="col-7  me-2 " style="padding: 0; margin: 0">
-                        <table class="table table-bordered border-dark" id="table-equipes-profession" style="font-size: 13px;">
+                        <table class="table table-bordered border-dark" id="table-equipes-profession" style="font-size: 11px; width: 110% ">
                             <thead class="">
                                 <tr class="">
                                         <th class="" style="width: 40%">
-                                            <span class="badge rounded-pill" style="margin-left: 5pt; color: black;"
+                                            <span class="badge rounded-pill" style="margin-left: 0pt; color: black;"
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
                                                 <img src="{% static 'icons/plus-circle.svg' %}"/>
                                             </span>
@@ -160,7 +187,7 @@
 
                                     <td class="">
                                         <span class="badge rounded-pill"
-                                            style="margin-left: 5pt; color: black" onclick="del_profession('{{ equipe }}', false)">
+                                            style="margin-left: 0pt; color: black" onclick="del_profession('{{ equipe }}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ equipe.profession }}{{ equipe.equipe.profession }}
@@ -200,25 +227,33 @@
 
                 </div>
 
+            </div>
+
+            <div class="col-7 " style="margin-top: -30px;">
+
                 <div class="row">
 
-                    <div class="col-5" style="padding: 0; margin: 0">
-                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 13px">
+                    <div class="col-5 me-5" style="padding: 0; margin: 0">
+                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
                             <thead class="">
                                 <tr class="">
-                                    <th class="" style="width: 60%">
-                                        <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
+                                    <th class="" style="width: 35%">
+                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
                                             <img src="{% static 'icons/plus-circle.svg' %}"/>
                                         </span>
                                         ماشین
                                     </th>
-                                    <th class="">
+                                    <th class="" style="width: 18%">
                                         فعال
                                     </th>
 
-                                    <th class="">
+                                    <th class="" style="width: 18%">
                                         غیرفعال
+                                    </th>
+
+                                    <th class="" style="width: 29%; text-align: center">
+                                        تامین کننده
                                     </th>
                                 </tr>
                             </thead>
@@ -227,7 +262,7 @@
                                 <tr id="{{ machine }}">
                                     <td class="">
                                         <span class="badge rounded-pill"
-                                            style="margin-left: 5pt; color: black" onclick="del_machine('{{ machine }}', false)">
+                                            style="margin-left: 0pt; color: black" onclick="del_machine('{{ machine }}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ machine }}
@@ -248,7 +283,31 @@
                                         {% else %}
                                             <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="0"
                                         {% endif %}
+                                    </td>
 
+                                    <td class="">
+
+                                        <select class="form-select" name="machine_{{ machine }}_provider" id="{{ machine }}_provider_options"
+                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+
+                                            {% if machine.provider %}
+
+                                            {% else %}
+                                                <option selected disabled hidden value="" >انتخاب</option>
+                                            {% endif %}
+
+
+                                            {% for provider in machineproviders %}
+
+                                                {% if machine.provider == provider %}
+                                                    <option value="{{ provider.name }}" selected name="">{{ provider.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ provider.name }}" name="">{{ provider.name }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </select>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -257,21 +316,24 @@
                     </div>
 
                     <div class="col-6 me-2" style="padding: 0; margin: 0">
-                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 13px">
+                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 11px">
                             <thead class="">
                                 <tr class="">
-                                    <th class="" >
-                                        <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
+                                    <th class="" style="width: 30%;">
+                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">
                                             <img src="{% static 'icons/plus-circle.svg' %}"/>
                                         </span>
                                         مصالح
                                     </th>
-                                    <th class="">
+                                    <th class="" style="width: 10%; text-align: center">
                                         مقدار
                                     </th>
-                                    <th class="">
+                                    <th class="" style="width: 16%; text-align: center">
                                         واحد
+                                    </th>
+                                    <th class="" style="width: 16%; text-align: center">
+                                        تامین کننده
                                     </th>
                                 </tr>
                             </thead>
@@ -280,17 +342,15 @@
                                 <tr id="{{ material }}">
                                     <td class="">
                                         <span class="badge rounded-pill"
-                                            style="margin-left: 5pt; color: black" onclick="del_material('{{ material }}', false)">
+                                            style="margin-left: 0pt; color: black" onclick="del_material('{{ material }}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ material }}
                                     </td>
-                                    <td class="">
+                                    <td class="" style="text-align: center">
                                         {% if material.amount %}
                                             <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
                                                    name="material_{{ material }}_count" min="0" value="{{ material.amount }}">
-
-
                                     </td>
                                     <td class="">
                                         <select required class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
@@ -350,6 +410,32 @@
 
                                         {% endif %}
 
+                                    <td class="">
+
+                                        <select class="form-select" name="material_{{ material }}_provider" id="{{ material }}_provider_options"
+                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+
+                                            {% if material.provider %}
+
+                                            {% else %}
+                                                <option selected disabled hidden value="" >انتخاب</option>
+                                            {% endif %}
+
+
+                                            {% for provider in materialproviders %}
+
+                                                {% if material.provider == provider %}
+                                                    <option value="{{ provider.name }}" selected name="">{{ provider.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ provider.name }}" name="">{{ provider.name }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        </select>
+                                    </td>
+
+
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -359,98 +445,99 @@
                 </div>
 
             </div>
-
-            <div style="margin-top: -30px" class="col-6 ">
-                <table class="table table-bordered border-dark" id="table-task" style="font-size: 13px">
-                    <thead class="">
-                        <tr class="">
-                            <th class="" style="width: 35%">
-                                <span class="badge rounded-pill" style="margin-left: 5pt; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                    <img src="{% static 'icons/plus-circle.svg' %}"/>
-                                </span>
-                                شرح عملیات
-                            </th>
-                            <th class="" style="width: 17%">
-                                اکیپ
-                            </th>
-                            <th class="" style="width: 7%">
-                                موقعیت
-                            </th>
-                            <th class="text-centred" style="width: 7%">
-                                امروز
-                            </th>
-                            <th class="text-centred" style="width: 9%">
-                                تا دیروز
-                            </th>
-                            <th class="text-centred" style="width: 5%">
-                                کل
-                            </th>
-                            <th class="text-centred" style="width: 8%">
-                                درصد
-                            </th>
-                            <th class="text-centred" style="width: 9% ">
-                                واحد
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for task in tasks %}
-                            <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
-                                <td>
-                                    <span class="badge rounded-pill"
-                                        style="margin-left: 5pt; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', false)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                    </span>
-                                    {{ task.task.name }}
-                                    {{ task.name }}
-                                </td>
-
-                                <td>
-                                    {{ task.task.equipe }}
-                                    {{ task.equipe.name }}
-                                </td>
-
-                                <td>
-                                    {{ task.task.zone }}
-                                    {{ task.zone }}
-                                </td>
-
-                                <td>
-                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}{{ task.unique_str }}_today"
-                                           name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="0" type="number">
-                                </td>
-
-                                <td class="text-centred">
-                                    {{ task.task.doneVolume }}
-                                    {{ task.doneVolume }}
-                                </td>
-
-                                <td class="text-centred">
-                                    {{ task.task.totalVolume }}
-                                    {{ task.totalVolume }}
-                                </td>
-
-                                <td class="text-centred">
-                                    {{ task.task.donePercentage|floatformat:2 }}
-                                    {{ task.donePercentage|floatformat:2 }}%
-                                </td>
-
-                                <td class="text-centred">
-                                    {{ task.task.unit }}
-                                    {{ task.unit }}
-                                </td>
-
-
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
         </div>
 
+        <div class="row">
+            <div class="col-11">
+                <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px;">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 35%">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    شرح عملیات
+                                </th>
+                                <th class="" style="width: 17%">
+                                    اکیپ
+                                </th>
+                                <th class="" style="width: 7%">
+                                    موقعیت
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    امروز
+                                </th>
+                                <th class="text-centred" style="width: 9%">
+                                    تا دیروز
+                                </th>
+                                <th class="text-centred" style="width: 5%">
+                                    کل
+                                </th>
+                                <th class="text-centred" style="width: 8%">
+                                    درصد
+                                </th>
+                                <th class="text-centred" style="width: 9% ">
+                                    واحد
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for task in tasks %}
+                                <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 0pt; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
+                                        {{ task.task.name }}
+                                        {{ task.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ task.task.equipe }}
+                                        {{ task.equipe.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ task.task.zone }}
+                                        {{ task.zone }}
+                                    </td>
+
+                                    <td>
+                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}{{ task.unique_str }}_today"
+                                               name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="0" type="number">
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.doneVolume }}
+                                        {{ task.doneVolume }}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.totalVolume }}
+                                        {{ task.totalVolume }}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.donePercentage|floatformat:2 }}
+                                        {{ task.donePercentage|floatformat:2 }}%
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.unit }}
+                                        {{ task.unit }}
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+        </div>
 
         <div class="row">
 
@@ -478,6 +565,7 @@
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
                     <h5 class="modal-title" id="staticBackdropProfessionsLabel" style="margin-right: auto">افزودن تخصص</h5>
+
                 </div>
 
                 <div class="modal-body">
@@ -514,7 +602,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
         <div class="modal-dialog">
@@ -553,6 +640,10 @@
                 </div>
 
                 <div class="modal-footer">
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachines">+ ماشین آلات</button>
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachineProviders">+ تامین کننده</button>
+
                     <button class="btn btn-outline-success bp3-round" onclick="add_machine_to_daily_report()"
                                     type="button" id="btn-add-machine">افزودن</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
@@ -561,7 +652,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="staticBackdropPositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"   >
         <div class="modal-dialog">
@@ -599,6 +689,9 @@
                 </div>
 
                 <div class="modal-footer">
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 285px" data-bs-toggle="modal" data-bs-target="#staticBackdropBasePositions">+ سمت</button>
+
                     <button class="btn btn-outline-success bp3-round" onclick="add_position_to_daily_report()"
                                     type="button" id="btn-add-position">افزودن</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
@@ -607,7 +700,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="staticBackdropMaterials" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
@@ -646,6 +738,10 @@
                 </div>
 
                 <div class="modal-footer">
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterials">+ مصالح</button>
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 190px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterialProviders">+ تامین کننده</button>
+
                     <button class="btn btn-outline-success bp3-round" onclick="add_material_to_daily_report()"
                                     type="button" id="btn-add-material">افزودن</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
@@ -655,13 +751,13 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="staticBackdropEquipes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
 
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+
                     <h5 class="modal-title" id="staticBackdropEquipesLabel" style="margin-right: auto">افزودن اکیپ</h5>
                 </div>
 
@@ -689,15 +785,18 @@
                 </div>
 
                 <div class="modal-footer">
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 180px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>
+
                     <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_daily_report()" style="float: left;"
                                     type="button" id="btn-add-equipe" style="border: none">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks" >برو به شرح ها</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="staticBackdropTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog">
@@ -731,6 +830,10 @@
                 </div>
 
                 <div class="modal-footer">
+
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ عملیات</button>
+
                     <button class="btn btn-outline-success bp3-round" onclick="add_task_to_daily_report()" style="float: left;"
                                     type="button" id="btn-add-task" style="border: none">افزودن</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
@@ -738,6 +841,440 @@
 
             </div>
         </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="modal fade " id="staticBackdropBasePositions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropBasePositionsLabel" style="margin-right: auto">افزودن سمت</h5>
+                </div>
+
+                <div class="modal-body">
+<!--                    <form action="/edit-db/add-position" method="post">-->
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input required type="text" name="position" class="form-control" placeholder="نام سمت" id="shortcut_position">
+                        </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('position', )"
+                                    type="submit" id="button-addon1">افزودن</button>
+<!--                    </form>-->
+                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"  data-bs-dismiss="modal" data-bs-target="#staticBackdropPositions">تکمیل</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseProfessions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseProfessionsLabel" style="margin-right: auto">افزودن تخصص</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-profession" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="profession" class="form-control" placeholder="نام تخصص" id="shortcut_profession">
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('profession')"
+                                type="submit" id="button-addon2">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseMachinesLabel" style="margin-right: auto">افزودن ماشین</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-machine" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="machine" class="form-control" placeholder="نام ماشین" id="shortcut_machine">
+                        <select required class="form-select" id="shortcut_machineType" name="machineType"
+                            style="text-align: right;">
+                            <option selected disabled hidden value="" >انتخاب</option>
+                            {% for type in machine_types %}
+                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('machine')"
+                                type="submit" id="button-addon3">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal"  data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseMaterials" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseMaterialsLabel" style="margin-right: auto">افزودن مصالح</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-material" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="material" class="form-control" placeholder="نام مصالح" id="shortcut_material">
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('material')"
+                                type="submit" id="button-addon4">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseContractors" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseContractorsLabel" style="margin-right: auto">افزودن پیمانکار</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-contractor" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="contractor" class="form-control" placeholder="نام پیمانکار" id="shortcut_contractor">
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('contractor')"
+                                type="submit" id="button-addon5">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseZones" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseZonesLabel" style="margin-right: auto">افزودن موقعیت</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-zone" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت" id="shortcut_zone">
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('zone')"
+                                type="submit" id="button-addon6">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseUnits" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseUnitsLabel" style="margin-right: auto">افزودن واحد</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-unit" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="unit" class="form-control" placeholder="نام واحد" id="shortcut_unit">
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('unit')"
+                                type="submit" id="button-addon8">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseMaterialProviders" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseMaterialProvidersLabel" style="margin-right: auto">افزودن تامین کننده</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-materialprovider" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="materialprovider" class="form-control" placeholder="نام تامین کننده مصالح" id="shortcut_materialprovider">
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('materialprovider')"
+                                type="submit" id="button-addon9">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseMachineProviders" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseMachineProvidersLabel" style="margin-right: auto">افزودن تامین کننده</h5>
+            </div>
+
+            <div class="modal-body">
+<!--                <form action="/edit-db/add-machineprovider" method="post">-->
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="machineprovider" class="form-control" placeholder="نام تامین کننده ماشین" id="shortcut_machineprovider">
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('machineprovider')"
+                                type="submit" id="button-addon10">افزودن</button>
+<!--                </form>-->
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMachines" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="staticBackdropBaseEquipes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropBaseEquipesLabel" style="margin-right: auto">افزودن اکیپ</h5>
+                </div>
+
+                <div class="modal-body">
+                        <div class="input-group mb-3">
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuBaseEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"], true)'>
+                                    انتخاب تخصص
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-professions">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-base-equipe-profession">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuBaseEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"], true)'>
+                                    انتخاب پیمانکار
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-contractors">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-base-equipe-contractor">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                </ul>
+                            </div>
+
+                            <input id="base-equipe-profession-name" disabled required type="text" name="equipe" class="form-control">
+                            <input id="base-equipe-contractor-name" disabled required type="text" name="equipe" class="form-control">
+
+                        </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; " data-bs-toggle="modal" data-bs-target="#staticBackdropBaseProfessions">+ تخصص</button>
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 65px; " data-bs-toggle="modal" data-bs-target="#staticBackdropBaseContractors">+ پیمانکار</button>
+
+                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_base_data(true)" style="float: left"
+                                    type="button">افزودن</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropEquipes" data-bs-toggle="modal">برو به اکیپ ها</button>
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseTasks" data-bs-toggle="modal">برو به شرح ها</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-task" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3 ">
+                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام عملیات">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task", true)'>
+                                انتخاب اکیپ
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-base-tasks">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-task">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+    <!--                                    {% for profession in professions %}-->
+    <!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+    <!--                                    {% endfor %}-->
+                            </ul>
+                        </div>
+                            <input required disabled type="text" name="equipetask-name" id="base-equipetask-name" class="form-control" placeholder="اکیپ">
+                        </div>
+
+                         <div class="input-group mb-3">
+                            <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone", true)'>
+                                انتخاب موقعیت
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-base-zones">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-zone">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+    <!--                                    {% for profession in professions %}-->
+    <!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+    <!--                                    {% endfor %}-->
+                            </ul>
+                        </div>
+                            <input required disabled type="text" name="zone-name" id="base-zone-name" class="form-control" placeholder="موقعیت">
+                        </div>
+
+                         <div class="input-group mb-3">
+                             <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit", true)'>
+                                انتخاب واحد
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-base-units">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-unit">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+<!--                                        {% for profession in professions %}-->
+<!--                                            <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                        {% endfor %}-->
+                            </ul>
+                        </div>
+                             <input required  type="number"  name="task-name" id="base-task-volume" class="form-control" placeholder="مقدار">
+                             <input required disabled type="text" name="zone-name" id="base-unit-name" class="form-control" placeholder="واحد">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>
+                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">+ موقعیت</button>
+                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">+ واحد</button>
+
+                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data(true)"
+                                type="submit" id="button-addon7" >افزودن</button>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">تکمیل</button>
+            </div>
+
+        </div>
+    </div>
     </div>
 
 

@@ -8,10 +8,9 @@ from .models import *
 from .converters import *
 import jdatetime
 import json
-# Create your views here.
 
 
-# TODO : Bug Fix ; error raises for adding already existing objects
+# TODO : Bug Fix ; error raises for adding already existing objects to base data
 
 
 def home(request):
@@ -28,6 +27,8 @@ def add_base_data_template(request):
     zones = Zone.objects.all()
     tasks = Task.objects.all()
     units = Unit.objects.all()
+    materialproviders = MaterialProvider.objects.all()
+    machineproviders = MachineProvider.objects.all()
 
     if not professions.exists():
         professions = []
@@ -47,6 +48,10 @@ def add_base_data_template(request):
         tasks = []
     if not units.exists():
         units = []
+    if not materialproviders.exists():
+        materialproviders = []
+    if not machineproviders.exists():
+        machineproviders = []
 
     context = {
         "positions": positions,
@@ -58,6 +63,8 @@ def add_base_data_template(request):
         "zones": zones,
         "tasks": tasks,
         "units": units,
+        "materialproviders": materialproviders,
+        "machineproviders": machineproviders,
         "machine_types": MACHINE_TYPES,
     }
 
@@ -73,6 +80,8 @@ def create_report_template(request):
         materials = Material.objects.all()
         equipes = Equipe.objects.all()
         units = Unit.objects.all()
+        materialproviders = MaterialProvider.objects.all()
+        machineproviders = MachineProvider.objects.all()
         tasks = Task.objects.all()
 
         context = {
@@ -82,6 +91,8 @@ def create_report_template(request):
             "materials": materials,
             "equipes": equipes,
             "units": units,
+            "materialproviders": materialproviders,
+            "machineproviders": machineproviders,
             "tasks": tasks,
             "machine_types": MACHINE_TYPES,
         }
@@ -94,6 +105,8 @@ def create_report_template(request):
         materials = MaterialCount.objects.filter(dailyReport=report)
         equipes = EquipeCount.objects.filter(dailyReport=report)
         units = Unit.objects.all()
+        materialproviders = MaterialProvider.objects.all()
+        machineproviders = MachineProvider.objects.all()
         tasks = TaskReport.objects.filter(dailyReport=report)
 
         other = {
@@ -109,11 +122,12 @@ def create_report_template(request):
             "materials": materials,
             "equipes": equipes,
             "units": units,
+            "materialproviders": materialproviders,
+            "machineproviders": machineproviders,
             "tasks": tasks,
             "machine_types": MACHINE_TYPES,
-            "other":other,
+            "other": other,
         }
-
 
     return render(request, "daily-report.html", context=context)
 
@@ -124,6 +138,50 @@ def add_position_to_db(request):
         position = request.POST.get("position")
 
         new_position = Position.objects.create(name=position)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_unit_to_db(request):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        unit = request.POST.get("unit")
+        new_unit = Unit.objects.create(name=unit)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_materialprovider_to_db(request):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        materialprovider = request.POST.get("materialprovider")
+
+        new_materialprovider = MaterialProvider.objects.create(name=materialprovider)
+
+        return redirect(redirect_url)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+def add_machineprovider_to_db(request):
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        machineprovider = request.POST.get("machineprovider")
+
+        new_machineprovider = MachineProvider.objects.create(name=machineprovider)
 
         return redirect(redirect_url)
 
@@ -273,6 +331,39 @@ def add_equipe_to_db(request,):
     return HttpResponse("Problem")
 
 
+def shortcut_add(request,):
+    if request.method == "POST":
+        which = request.POST.get("which")
+        value = request.POST.get("value")
+        type = request.POST.get("type")
+
+        if which == "position":
+            new_obj = Position.objects.create(name=value)
+        elif which == "profession":
+            new_obj = Profession.objects.create(name=value)
+        elif which == "machine":
+            new_obj = Machine.objects.create(name=value, type=type)
+        elif which == "material":
+            new_obj = Material.objects.create(name=value)
+        elif which == "contractor":
+            new_obj = Contractor.objects.create(name=value)
+        elif which == "zone":
+            new_obj = Zone.objects.create(name=value)
+        elif which == "unit":
+            new_obj = Unit.objects.create(name=value)
+        elif which == "materialprovider":
+            new_obj = MaterialProvider.objects.create(name=value)
+        elif which == "machineprovider":
+            new_obj = MachineProvider.objects.create(name=value)
+
+        return HttpResponse(True)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(False)
+
+
 def del_position_from_db(request):
     if request.method == "POST":
         name = request.POST.get("position")
@@ -367,6 +458,36 @@ def del_unit_from_db(request):
     if request.method == "POST":
         name = request.POST.get("unit")
         obj = Unit.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_materialprovider_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("materialprovider")
+        obj = MaterialProvider.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_machineprovider_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("machineprovider")
+        obj = MachineProvider.objects.get(name=name)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -483,15 +604,21 @@ def save_daily_report_to_db(request):
 
             elif "machine" in key:
                 if key.split("_")[1] in machines.keys():
-                    machines[key.split("_")[1]].append(int(value[0]))
+                    print(key)
+                    if "provider" in key:
+                        machines[key.split("_")[1]].append(value[0])
+                    else:
+                        machines[key.split("_")[1]].append(int(value[0]))
                 else:
                     machines[key.split("_")[1]] = []
                     machines[key.split("_")[1]].append(int(value[0]))
             elif "material" in key:
                 if "count" in key:
-                    materials[key.split("_")[1]] = [float(value[0]), None]
+                    materials[key.split("_")[1]] = [float(value[0]), None, None]
                 elif "unit" in key:
                     materials[key.split("_")[1]][1] = value[0]
+                elif "provider" in key:
+                    materials[key.split("_")[1]][2] = value[0]
             elif "task" in key:
                 tasks[key.split("_")[1]] = float(value[0])
 
@@ -505,6 +632,7 @@ def save_daily_report_to_db(request):
 
         # print(data)
         # print(data['date'])
+        # print(materials.items())
         # return HttpResponse(1)
 
         report = DailyReport.objects.create(
@@ -555,13 +683,14 @@ def save_daily_report_to_db(request):
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
                 mach = Machine.objects.get(name=machine)
-
+                provider = MachineProvider.objects.get(name=count[2])
                 obj = MachineCount.objects.create(
                     machine=mach,
                     dailyReport=report,
                     activeCount=count[0],
                     inactiveCount=count[1],
-                    totalCount=sum(count),
+                    provider=provider,
+                    totalCount=sum(count[:2]),
                 )
                 report.machines.add(obj.machine)
 
@@ -574,11 +703,13 @@ def save_daily_report_to_db(request):
 
                 mat = Material.objects.get(name=material)
                 unit = Unit.objects.get(name=amount[1])
+                materialprovider = MaterialProvider.objects.get(name=amount[2])
                 obj = MaterialCount.objects.create(
                     material=mat,
                     dailyReport=report,
                     amount=amount[0],
                     unit=unit,
+                    provider=materialprovider,
                 )
                 report.materials.add(obj.material)
             else:
@@ -708,6 +839,8 @@ def get_options(request, typee):
             pass
         if typee == "profession":
             data = Profession.objects.exclude(name__in=data).all()
+        elif typee == "unit":
+            data = Unit.objects.exclude(name__in=data).all()
         elif typee == "position":
             data = Position.objects.exclude(name__in=data).all()
         elif typee == "machine":
@@ -832,6 +965,33 @@ def get_units(request):
             "units": data
         }
         return JsonResponse(context)
+
+
+def get_materialproviders(request):
+    if request.method == "GET":
+        materialproviders = MaterialProvider.objects.all()
+        if materialproviders.exists():
+            data = json.dumps(list(materialproviders.values()))
+        else:
+            data = "[]"
+        context = {
+            "materialproviders": data
+        }
+        return JsonResponse(context)
+
+
+def get_machineproviders(request):
+    if request.method == "GET":
+        machineproviders = MachineProvider.objects.all()
+        if machineproviders.exists():
+            data = json.dumps(list(machineproviders.values()))
+        else:
+            data = "[]"
+        context = {
+            "machineproviders": data
+        }
+        return JsonResponse(context)
+
 
 def check_deletability(request):
     if request.method == "POST":
