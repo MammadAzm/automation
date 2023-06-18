@@ -277,7 +277,7 @@ class TaskReport(models.Model):
             self.save()
 
     def __str__(self):
-        return self.task
+        return self.task.unique_str
 
     class Meta:
         unique_together = ('dailyReport', 'task')

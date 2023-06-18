@@ -30,6 +30,7 @@ urlpatterns = [
     path("home/create-report/", create_report_template),
     path("home/daily-reports/", reports_daily),
     path("home/daily-reports/<idd>", report_on_day),
+    path("home/daily-reports/compact/<idd>", compact_report_on_day),
 
     # Edit DB paths
     path("edit-db/add-position", add_position_to_db),

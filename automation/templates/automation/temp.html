@@ -1,58 +1,56 @@
-<!--<div class="modal fade" id="staticBackdropBaseEquipes" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">-->
-<!--        <div class="modal-dialog">-->
-<!--            <div class="modal-content">-->
+                <tbody>
+                    {% for task in tasks %}
+                        <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
+                            <td>
+                                {{ task.task.name }}
+                            </td>
 
-<!--                <div class="modal-header">-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>-->
-<!--                    <h5 class="modal-title" id="staticBackdropBaseEquipesLabel" style="margin-right: auto">افزودن اکیپ</h5>-->
-<!--                </div>-->
+<!--                            <td>-->
+<!--                                {{ task.task.equipe }}-->
+<!--                            </td>-->
 
-<!--                <div class="modal-body">-->
-<!--                        <div class="input-group mb-3">-->
+<!--                            <td>-->
+<!--                                {{ task.task.zone }}-->
+<!--                            </td>-->
 
-<!--                            <div class="dropdown">-->
-<!--                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                        id="dropdownMenuBaseEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"], true)'>-->
-<!--                                    انتخاب تخصص-->
-<!--                                </button>-->
-<!--                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-professions">-->
-<!--                                    <li>-->
-<!--                                        <div class="input-group px-2 mb-3">-->
-<!--                                            <input type="text" class="form-control" placeholder="جستجو" id="search-base-equipe-profession">-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li><hr class="dropdown-divider"></li>-->
-<!--                                </ul>-->
-<!--                            </div>-->
+                            <td class="text-centred">
+                                {{ task.todayVolume }}
+                            </td>
 
-<!--                            <div class="dropdown">-->
-<!--                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                        id="dropdownMenuBaseEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"])'>-->
-<!--                                    انتخاب پیمانکار-->
-<!--                                </button>-->
-<!--                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-contractors">-->
-<!--                                    <li>-->
-<!--                                        <div class="input-group px-2 mb-3">-->
-<!--                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-contractor">-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li><hr class="dropdown-divider"></li>-->
-<!--                                </ul>-->
-<!--                            </div>-->
+                            <td class="text-centred">
+                                {{ task.preDoneVolume }}
+                            </td>
 
-<!--                            <input id="base-equipe-profession-name" disabled required type="text" name="equipe" class="form-control">-->
-<!--                            <input id="base-equipe-contractor-name" disabled required type="text" name="equipe" class="form-control">-->
+<!--                            <td class="text-centred">-->
+<!--                                {{ task.task.totalVolume }}-->
+<!--                            </td>-->
 
-<!--                        </div>-->
+<!--                            <td class="text-centred">-->
+<!--&lt;!&ndash;                                {{ task.task.donePercentage|floatformat:2 }} %&ndash;&gt;-->
+<!--                                {{ task.preDonePercentage|floatformat:2 }} %-->
+<!--                            </td>-->
 
-<!--                </div>-->
 
-<!--                <div class="modal-footer">-->
-<!--                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_base_data()" style="float: left"-->
-<!--                                    type="button">افزودن</button>-->
-<!--                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>-->
-<!--                </div>-->
+                            {% for item in other.rows %}
+                                {% if item.0 == task.id %}
 
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+                                    <td class="text-centred">
+                                        {{ item.2|floatformat:2 }}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ item.1|floatformat:2 }} %
+                                    </td>
+
+                                {% endif %}
+                            {% endfor %}
+
+
+                            <td class="text-centred">
+                                {{ task.task.unit }}
+                            </td>
+
+
+                        </tr>
+                    {% endfor %}
+                </tbody>

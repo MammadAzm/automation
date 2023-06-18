@@ -151,22 +151,22 @@
                         <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
                             <thead class="">
                                 <tr>
-                                    <th style="width: 60%">ماشین</th>
-                                    <th style="text-align: center">کارکرد</th>
+                                    <th style="width: 40%">ماشین</th>
+<!--                                    <th style="text-align: center">کارکرد</th>-->
                                     <th style="text-align: center">فعال</th>
                                     <th style="text-align: center">غیرفعال</th>
                                     <th style="text-align: center">کل</th>
-                                    <th style="text-align: center">تامین</th>
+<!--                                    <th style="text-align: center">تامین</th>-->
                                 </tr>
                             </thead>
                             {% for machine in machines %}
                                 <tr>
                                     <td>{{ machine }}</td>
-                                    <td style="text-align: center">{{ machine.workHours }}</td>
+<!--                                    <td style="text-align: center">{{ machine.workHours }}</td>-->
                                     <td style="text-align: center">{{ machine.activeCount }}</td>
                                     <td style="text-align: center">{{ machine.inactiveCount }}</td>
                                     <td style="text-align: center">{{ machine.totalCount }}</td>
-                                    <td style="text-align: center">{{ machine.provider }}</td>
+<!--                                    <td style="text-align: center">{{ machine.provider }}</td>-->
                                 </tr>
                             {% endfor %}
                         </table>
@@ -179,7 +179,7 @@
                                     <th>مصالح</th>
                                     <th style="text-align: center">مقدار</th>
                                     <th style="text-align: center">واحد</th>
-                                    <th style="text-align: center">تامین</th>
+<!--                                    <th style="text-align: center">تامین</th>-->
                                 </tr>
                             </thead>
                             {% for material in materials %}
@@ -187,7 +187,7 @@
                                     <td>{{ material }}</td>
                                     <td style="text-align: center">{{ material.amount }}</td>
                                     <td style="text-align: center">{{ material.unit }}</td>
-                                    <td style="text-align: center">{{ material.provider }}</td>
+<!--                                    <td style="text-align: center">{{ material.provider }}</td>-->
                                 </tr>
                             {% endfor %}
                         </table>
@@ -205,31 +205,28 @@
                         <th class="" style="width: 30%; vertical-align: middle;">
                             شرح عملیات
                         </th>
-                        <th class="" style="width: 13%; vertical-align: middle;" >
-                            اکیپ
-                        </th>
-                        <th class="" style="width: 8%; vertical-align: middle;" >
-                            موقعیت
-                        </th>
+<!--                        <th class="" style="width: 13%; vertical-align: middle;" >-->
+<!--                            اکیپ-->
+<!--                        </th>-->
+<!--                        <th class="" style="width: 8%; vertical-align: middle;" >-->
+<!--                            موقعیت-->
+<!--                        </th>-->
                         <th class="text-centred" >
                             امروز
                         </th>
                         <th class="text-centred" >
                             تا دیروز
                         </th>
-                        <th class="text-centred" style="width: 8%">
-                            کل موقعیت
+                        <th class="text-centred" style="width: 12%">
+                            مقدار کل
                         </th>
-                        <th class="text-centred" style="width: 8%" >
-                             درصد موقعیت
+<!--                        <th class="text-centred" >-->
+<!--                             درصد موقعیت-->
+<!--                        </th>-->
+                        <th class="text-centred" >
+                             درصد پیشرفت
                         </th>
-                        <th class="text-centred" style="width: 8%">
-                             کل آیتم
-                        </th>
-                        <th class="text-centred" style="width: 8%">
-                             درصد کل
-                        </th>
-                        <th class="text-centred" style="width: 8%">
+                        <th class="text-centred" style="width: 7%">
                             واحد
                         </th>
                     </tr>
@@ -238,17 +235,17 @@
                 <tbody>
                     {% for task in tasks %}
                         <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
-                            <td style="vertical-align: middle;">
+                            <td>
                                 {{ task.task.name }}
                             </td>
 
-                            <td style="vertical-align: middle;">
-                                {{ task.task.equipe }}
-                            </td>
+<!--                            <td>-->
+<!--                                {{ task.task.equipe }}-->
+<!--                            </td>-->
 
-                            <td style="vertical-align: middle;">
-                                {{ task.task.zone }}
-                            </td>
+<!--                            <td>-->
+<!--                                {{ task.task.zone }}-->
+<!--                            </td>-->
 
                             <td class="text-centred">
                                 {{ task.todayVolume }}
@@ -258,13 +255,15 @@
                                 {{ task.preDoneVolume }}
                             </td>
 
-                            <td class="text-centred">
-                                {{ task.task.totalVolume }}
-                            </td>
+<!--                            <td class="text-centred">-->
+<!--                                {{ task.task.totalVolume }}-->
+<!--                            </td>-->
 
-                            <td class="text-centred">
-                                {{ task.task.donePercentage|floatformat:2 }} %
-                            </td>
+<!--                            <td class="text-centred">-->
+<!--&lt;!&ndash;                                {{ task.task.donePercentage|floatformat:2 }} %&ndash;&gt;-->
+<!--                                {{ task.preDonePercentage|floatformat:2 }} %-->
+<!--                            </td>-->
+
 
                             {% for item in other.entire_items %}
                                 {% if item.0 == task.id %}
@@ -279,6 +278,7 @@
 
                                 {% endif %}
                             {% endfor %}
+
 
                             <td class="text-centred">
                                 {{ task.task.unit }}

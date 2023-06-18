@@ -810,11 +810,26 @@ def report_on_day(request, idd):
     materials = MaterialCount.objects.filter(dailyReport=report)
     equipes = EquipeCount.objects.filter(dailyReport=report)
     tasks = TaskReport.objects.filter(dailyReport=report)
+
+    done_task_zone = []
+
+    for task in tasks:
+        ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
+        objs = Task.objects.filter(equipe__id__in=ids)
+        entire_item_vol = 0
+        entire_item_done = 0
+        for obj in objs:
+            entire_item_vol += obj.totalVolume
+            entire_item_done += obj.doneVolume
+
+        done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
+
+
     other = {
         "weather": report.get_weather_display(),
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
-        # "doneVol":
+        "entire_items": done_task_zone,
     }
 
     context = {
@@ -828,6 +843,51 @@ def report_on_day(request, idd):
         "other": other,
     }
     return render(request, "print-report.html", context=context)
+
+
+def compact_report_on_day(request, idd):
+    # report = DailyReport.objects.get(id=idd)
+    report = get_object_or_404(DailyReport, pk=idd)
+
+    positions = PositionCount.objects.filter(dailyReport=report)
+    professions = ProfessionCount.objects.filter(dailyReport=report)
+    machines = MachineCount.objects.filter(dailyReport=report)
+    materials = MaterialCount.objects.filter(dailyReport=report)
+    equipes = EquipeCount.objects.filter(dailyReport=report)
+    tasks = TaskReport.objects.filter(dailyReport=report)
+
+    done_task_zone = []
+    items = tasks.__dict__
+    for task in tasks:
+        ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
+        objs = Task.objects.filter(equipe__id__in=ids)
+        entire_item_vol = 0
+        entire_item_done = 0
+        for obj in objs:
+            entire_item_vol += obj.totalVolume
+            entire_item_done += obj.doneVolume
+
+        done_task_zone.append([task.id, entire_item_done/entire_item_vol*100, entire_item_vol])
+
+
+    other = {
+        "weather": report.get_weather_display(),
+        "weekday": report.get_weekday_display(),
+        "date": report.date.strftime('%Y/%m/%d'),
+        "entire_items": done_task_zone,
+    }
+
+    context = {
+        "report": report,
+        "positions": positions,
+        "professions": professions,
+        "machines": machines,
+        "materials": materials,
+        "equipes": equipes,
+        "tasks": tasks,
+        "other": other,
+    }
+    return render(request, "print-short-report.html", context=context)
 
 
 def get_options(request, typee):
