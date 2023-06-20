@@ -202,10 +202,10 @@
 
                 <thead class="">
                     <tr class="">
-                        <th class="" style="width: 30%; vertical-align: middle;">
+                        <th class="" style="width: 22%; vertical-align: middle;">
                             شرح عملیات
                         </th>
-                        <th class="" style="width: 13%; vertical-align: middle;" >
+                        <th class="" style="width: 14%; vertical-align: middle;" >
                             اکیپ
                         </th>
                         <th class="" style="width: 8%; vertical-align: middle;" >
@@ -231,6 +231,12 @@
                         </th>
                         <th class="text-centred" style="width: 8%">
                             واحد
+                        </th>
+                        <th class="text-centred" style="width: 8%">
+                            شروع
+                        </th>
+                        <th class="text-centred" style="width: 8%">
+                            پایان
                         </th>
                     </tr>
                 </thead>
@@ -282,6 +288,23 @@
 
                             <td class="text-centred">
                                 {{ task.task.unit }}
+                            </td>
+
+                            <td class="text-centred">
+                                {% if task.task.start_date|date:"Y/m/d" %}
+                                    {{ task.task.start_date|date:"Y/m/d" }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td class="text-centred">
+                                {% if task.task.completion_date|date:"Y/m/d" %}
+                                    {{ task.task.completion_date|date:"Y/m/d" }}
+                                {% else %}
+                                    -
+                                {% endif %}
+
                             </td>
 
 

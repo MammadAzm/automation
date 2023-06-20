@@ -207,11 +207,59 @@ class Task(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     doneVolume = models.FloatField(default=0.0,)
     donePercentage = models.FloatField(default=0.0,)
+    started = models.BooleanField(default=False,)
+    completed = models.BooleanField(default=False,)
+    start_date = models.DateField(null=True, blank=True)
+    completion_date = models.DateField(null=True, blank=True)
     # preDoneVolume = models.FloatField(default=0.0,)
 
-    def update_percentage(self):
+    def check_completion(self):
+        if self.donePercentage < 100:
+            self.completed = False
+            self.completion_date = None
+            self.save()
+
+    def reset(self):
+        self.started = False
+        self.completed = False
+        self.completion_date = None
+        self.start_date = None
+        self.doneVolume = 0
+        self.donePercentage = 0
+
+        self.save()
+
+    def complete(self, date):
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.completed = True
+        self.completion_date = jdatetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    def start(self, date):
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.started = True
+        self.start_date = jdatetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
         self.save()
+
+        if not self.donePercentage < 100:
+            self.complete(date=date)
+
+        elif self.donePercentage <= 0.0:
+            self.reset()
 
     def set_unique(self):
         self.unique_str = self.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
@@ -260,21 +308,23 @@ class TaskReport(models.Model):
             child.update_children(parent)
     '''
 
-    def update_percentage(self, reverse):
+    def update_percentage(self, reverse, date=None):
         if not reverse:
             self.task.preDoneVolume = self.task.doneVolume
             self.preDoneVolume = self.task.doneVolume
             self.preDonePercentage = self.preDoneVolume / self.task.totalVolume *100
             self.task.doneVolume += self.todayVolume
 
-            self.task.update_percentage()
+            self.task.update_percentage(date=date)
             self.save()
 
         else:
             self.task.doneVolume -= self.todayVolume
-            self.task.update_percentage()
+            self.task.update_percentage(date=date)
 
             self.save()
+
+            self.task.check_completion()
 
     def __str__(self):
         return self.task.unique_str

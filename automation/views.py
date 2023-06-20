@@ -755,6 +755,10 @@ def save_daily_report_to_db(request):
         for task, amount in tasks.items():
             if amount > 0:
                 tsk = Task.objects.get(unique_str=task)
+
+                if not tsk.started:
+                    tsk.start(date=report.date)
+
                 parent = TaskReport.objects.filter(task=tsk).last()
                 tsk_rep = TaskReport.objects.create(
                     task=tsk,
@@ -762,7 +766,7 @@ def save_daily_report_to_db(request):
                     dailyReport=report,
                     todayVolume=amount,
                 )
-                tsk_rep.update_percentage(False)
+                tsk_rep.update_percentage(False, date=report.date)
                 report.tasks.add(tsk_rep.task)
 
         report.cal_countPeople()
@@ -779,7 +783,7 @@ def del_daily_report_from_db(request):
 
         if rep.deletable:
             for item in rep.taskreport_set.all():
-                item.update_percentage(True)
+                item.update_percentage(True, date=rep.date)
             rep.delete()
             return redirect(to="/home/daily-reports")
         else:
