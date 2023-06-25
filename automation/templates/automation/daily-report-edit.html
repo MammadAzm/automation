@@ -1,38 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load mathfilters %}
 
 {% block content %}
 
-<form action="/edit-db/save-daily-report" method="post" id="report-form" onsubmit="return confirmZeroValues()">
+<form action="/edit-db/save-edit-daily-report" method="post" id="report-form" onsubmit="return confirmZeroValues()">
     {% csrf_token %}
-
-<!--    <details open class="bg-light">-->
-<!--        <summary>-->
-<!--            افزودن اطلاعات پایه-->
-<!--        </summary>-->
-<!--        <div>-->
-<!--            <nav class="navbar navbar-light bg-light">-->
-<!--                <div class="container-fluid">-->
-<!--                    <div class="mx-auto">-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBasePositions">سمت</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseProfessions">تخصص</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachines">ماشین آلات</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterials">مصالح</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseContractors">پیمانکار</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">اکیپ</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">موقعیت</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterialProviders">تامین کننده مصالح</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachineProviders">تامین کننده ماشین</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">واحد</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">عملیات</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </nav>-->
-<!--        </div>-->
-
-<!--    </details>-->
-
+    <input type="checkbox" hidden readonly name="template">
+    <input type="text" hidden readonly name="report_id" value="{{ report.id }}">
     <div class="container-xxl px-4 " style="margin-top: 0.5%">
         <div class="row">
 
@@ -76,7 +51,7 @@
 
                                 <th>تاریخ</th>
                                 <th class="table-light">
-                                    <input required name="date" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
+                                    <input required name="date" id="date" value="{{ other.date }}" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
                                 </th>
                             </tr>
 
@@ -522,22 +497,21 @@
 
                                         <td>
                                             <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}{{ task.unique_str }}_today"
-                                                   name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="0" type="number">
+                                                   name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="{{ task.todayVolume }}" type="number">
                                         </td>
 
                                         <td class="text-centred">
-                                            {{ task.task.doneVolume }}
-                                            {{ task.doneVolume }}
+                                            {{ task.task.doneVolume|sub:task.todayVolume }}
                                         </td>
 
                                         <td class="text-centred">
                                             {{ task.task.totalVolume }}
-                                            {{ task.totalVolume }}
                                         </td>
 
                                         <td class="text-centred">
-                                            {{ task.task.donePercentage|floatformat:2 }}
-                                            {{ task.donePercentage|floatformat:2 }}%
+
+                                            {{ task.task.donePercentage }}
+<!--                                            {{ task.todayVolume|div:task.task.totalVolume }}%-->
                                         </td>
 
                                         <td class="text-centred">

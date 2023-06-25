@@ -99,7 +99,7 @@
 
                 <div class="row my-0" style="margin-bottom: 0; padding-bottom: 0">
 
-                    <div class="col-4" style="padding: 0; margin: 0;">
+                    <div class="col-3" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" id="positionCount" style="font-size: 11px;">
                             <thead class="">
                             <tr>
@@ -110,7 +110,7 @@
                         </table>
                     </div>
 
-                    <div class="col-7 me-2" style="padding: 0; margin: 0;">
+                    <div class="col-8 me-2" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" id="professionCount" style="font-size: 11px">
                             <thead class="">
                                 <tr>
@@ -123,27 +123,29 @@
 
                 </div>
 
-                <div class="row" style="margin-top: -15px;">
-                    <div class="col-4" style="padding: 0; margin: 0;">
+                <div class="row" style="margin-top: -15px; padding-left: 38px">
+                    <div class="" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 11px">
+                            <thead class="" style="font-size: 11px;">
                                 <tr>
-                                    <th>تعداد کل نفرات</th>
+                                    <th style="width: 82%;">جمع کل</th>
+                                    <th style="text-align: left; text-align: center">{{ report.countPeople }}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
 
-                    <div class="col-7 me-2" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 11px">
-                                <tr>
-                                    <th style="text-align: left; padding-left: 40px">{{ report.countPeople }}</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+<!--                    <div class="col-8" style="padding: 0; margin: 0;">-->
+<!--                        <table class="table table-bordered border-dark" style="margin-top: 0;">-->
+<!--                            <thead class="" style="font-size: 11px">-->
+<!--                                <tr>-->
+<!--                                    <th style="text-align: left; padding-left: 40px">{{ report.countPeople }}</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                        </table>-->
+<!--                    </div>-->
                 </div>
+
 
                 <div class="row">
 
@@ -236,7 +238,7 @@
                     {% for task in tasks %}
                         <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
                             <td>
-                                {{ task.task.name }}
+                                {{ task.name }}
                             </td>
 
 <!--                            <td>-->
@@ -255,33 +257,33 @@
                                 {{ task.preDoneVolume }}
                             </td>
 
-<!--                            <td class="text-centred">-->
-<!--                                {{ task.task.totalVolume }}-->
-<!--                            </td>-->
+                            <td class="text-centred">
+                                {{ task.entire_item_vol }}
+                            </td>
 
-<!--                            <td class="text-centred">-->
-<!--&lt;!&ndash;                                {{ task.task.donePercentage|floatformat:2 }} %&ndash;&gt;-->
-<!--                                {{ task.preDonePercentage|floatformat:2 }} %-->
-<!--                            </td>-->
+                            <td class="text-centred">
+<!--                                {{ task.task.donePercentage|floatformat:2 }} %-->
+                                {{ task.entire_item_done_percent|floatformat:2 }} %
+                            </td>
 
 
-                            {% for item in other.entire_items %}
-                                {% if item.0 == task.id %}
+<!--                            {% for item in other.entire_items %}-->
+<!--                                {% if item.0 == task.id %}-->
 
-                                    <td class="text-centred">
-                                        {{ item.2|floatformat:2 }}
-                                    </td>
+<!--                                    <td class="text-centred">-->
+<!--                                        {{ item.2|floatformat:2 }}-->
+<!--                                    </td>-->
 
-                                    <td class="text-centred">
-                                        {{ item.1|floatformat:2 }} %
-                                    </td>
+<!--                                    <td class="text-centred">-->
+<!--                                        {{ item.1|floatformat:2 }} %-->
+<!--                                    </td>-->
 
-                                {% endif %}
-                            {% endfor %}
+<!--                                {% endif %}-->
+<!--                            {% endfor %}-->
 
 
                             <td class="text-centred">
-                                {{ task.task.unit }}
+                                {{ task.unit }}
                             </td>
 
 

@@ -99,22 +99,22 @@
 
                 <div class="row my-0" style="margin-bottom: 0; padding-bottom: 0">
 
-                    <div class="col-4" style="padding: 0; margin: 0;">
+                    <div class="col-3" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" id="positionCount" style="font-size: 11px;">
                             <thead class="">
                             <tr>
-                                <th style="width: 75%">تعداد کل</th>
+                                <th style="width: 75%">جمع ستادی</th>
                                 <th style="text-align: center">{{ report.countPositions }}</th>
                             </tr>
                             </thead>
                         </table>
                     </div>
 
-                    <div class="col-7 me-2" style="padding: 0; margin: 0;">
+                    <div class="col-8 me-2" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" id="professionCount" style="font-size: 11px">
                             <thead class="">
                                 <tr>
-                                    <th style="width: 75%" colspan="5">تعداد کل</th>
+                                    <th style="width: 75%" colspan="5">جمع اجرایی</th>
                                     <th style="text-align: center">{{ report.countProfessions }}</th>
                                 </tr>
                             </thead>
@@ -123,26 +123,27 @@
 
                 </div>
 
-                <div class="row" style="margin-top: -15px;">
-                    <div class="col-4" style="padding: 0; margin: 0;">
+                <div class="row" style="margin-top: -15px; padding-left: 38px">
+                    <div class="" style="padding: 0; margin: 0;">
                         <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 11px">
+                            <thead class="" style="font-size: 11px;">
                                 <tr>
-                                    <th>تعداد کل نفرات</th>
+                                    <th style="width: 82%;">جمع کل</th>
+                                    <th style="text-align: left; text-align: center">{{ report.countPeople }}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
 
-                    <div class="col-7 me-2" style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" style="margin-top: 0;">
-                            <thead class="" style="font-size: 11px">
-                                <tr>
-                                    <th style="text-align: left; padding-left: 40px">{{ report.countPeople }}</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+<!--                    <div class="col-8" style="padding: 0; margin: 0;">-->
+<!--                        <table class="table table-bordered border-dark" style="margin-top: 0;">-->
+<!--                            <thead class="" style="font-size: 11px">-->
+<!--                                <tr>-->
+<!--                                    <th style="text-align: left; padding-left: 40px">{{ report.countPeople }}</th>-->
+<!--                                </tr>-->
+<!--                            </thead>-->
+<!--                        </table>-->
+<!--                    </div>-->
                 </div>
 
                 <div class="row">

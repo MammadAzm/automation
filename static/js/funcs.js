@@ -1956,6 +1956,25 @@ function del_report(reportID){
 
 }
 
+function edit_report(reportID){
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/edit-daily-report/',
+        data: {
+            "template" : true,
+            "id" : reportID,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            // location.reload(true);
+            iter_reports();
+        }
+    });
+
+}
+
 function fetch_units(callback) {
     $.ajax({
         type: 'GET',
@@ -2028,6 +2047,28 @@ function iter_reports() {
                 btn.disabled = false;
             } else {
                 btn.disabled = true;
+            }
+
+        }
+    });
+
+    let btns2 = document.querySelectorAll('.btn-primary')
+    let btn2 = btns2[btns2.length - 1]
+    console.log(btn2.id)
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/check-editability/',
+        data: {
+            "id" : btn2.id,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            if (response=="True") {
+                btn2.disabled = false;
+            } else {
+                btn2.disabled = true;
             }
 
         }
@@ -2119,7 +2160,6 @@ function shotcut_add_to_base(which, value, type=null) {
 
 }
 
-
 function shotcut_add_to_base_2(which, value, type=null) {
     if (!value) {
         return 0
@@ -2145,6 +2185,50 @@ function shotcut_add_to_base_2(which, value, type=null) {
                     alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
                 }
             }
-        });
+    });
 
+}
+
+function check_report_date() {
+    let date = document.getElementById("date")
+
+    $.ajax({
+            type: 'POST',
+            url: '/home/daily-reports/check-existence',
+            data: {
+            "date": date.value,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    alert("برای تاریخ " + date.value.split(" ")[0] + " قبلا گزارشی ثبت شده است. به آرشیو گزارشات مراجعه فرمایید.");
+                    date.value = ""
+                } else {
+                    // alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
+                }
+            }
+    });
+
+}
+
+function confirmZeroValues() {
+    const fields = document.querySelectorAll('input[type="number"]');
+
+    for (let i = 0; i < fields.length; i++) {
+      if (fields[i].value === "0") {
+          fields[i].style.borderColor = "red"
+      }
+    }
+    for (let i = 0; i < fields.length; i++) {
+      if (fields[i].value === "0") {
+          console.log("waiting...")
+      }
+    }
+    const confirmed = confirm("مواردی که با کادر قرمز نشان داده میشوند، مقداردهی 0 شده اند. تایید میکنید؟");
+    if (!confirmed) {
+      return false;
+    }
+    return true;
 }

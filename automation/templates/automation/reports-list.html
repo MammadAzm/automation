@@ -25,8 +25,18 @@
                                     </a>
 
                                     <a>
-                                        <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger p-1 fs-18"
+                                        <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger fs-18 me-2"
                                                 disabled style="float: left" onclick="del_report('{{ report.id }}')">حذف</button>
+                                    </a>
+
+                                    <a>
+                                        <form action="/edit-db/edit-daily-report/" method="post">
+                                            {% csrf_token %}
+                                            <input type="checkbox" checked hidden readonly name="template">
+                                            <input type="text" hidden readonly name="id" value="{{ report.id }}">
+                                            <button id="{{ report.id }}" type="submit" class="btn btn-sm btn-primary fs-18"
+                                                     disabled style="float: left" >ویرایش</button>
+                                        </form>
                                     </a>
 
                                 </th>

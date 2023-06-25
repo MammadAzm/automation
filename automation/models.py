@@ -343,9 +343,11 @@ class DailyReport(models.Model):
                                        default="123456789")
 
     date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    short_date = models.DateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
 
     date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    date_edited = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #
     temperature_min = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)
     temperature_max = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)
@@ -381,9 +383,12 @@ class DailyReport(models.Model):
     tasks = models.ManyToManyField(Task, through="TaskReport")
 
     deletable = models.BooleanField(default=1)
+    editable = models.BooleanField(default=1)
+    edited = models.BooleanField(default=0)
 
     def set_weekday(self):
         self.weekday = jdatetime.datetime.strptime(self.date, format="%Y-%m-%d %H:%M:%S").weekday()
+        self.short_date = self.date.split(" ")[0]
         self.save()
 
     def check_deletability(self):
@@ -393,12 +398,14 @@ class DailyReport(models.Model):
         date = jdatetime.datetime(self.date_created.year, self.date_created.month, self.date_created.day,
                                   self.date_created.hour, self.date_created.minute, self.date_created.second,)
 
-        bound = jdatetime.timedelta(0, 0, 1, 0, 0, 0,)
-        if now - date < bound:
+        bound = jdatetime.timedelta(1, 0, 0, 0, 0, 0,)
+        if now - date > bound:
             self.deletable = 0
+            self.editable = 0
             self.save()
         else:
             self.deletable = 1
+            self.editable = 1
             self.save()
 
     def cal_countPeople(self):

@@ -72,7 +72,6 @@ def add_base_data_template(request):
 
 
 def create_report_template(request):
-
     if DailyReport.objects.all().count() == 0:
         positions = Position.objects.all()
         professions = Profession.objects.all()
@@ -604,7 +603,6 @@ def save_daily_report_to_db(request):
 
             elif "machine" in key:
                 if key.split("_")[1] in machines.keys():
-                    print(key)
                     if "provider" in key:
                         machines[key.split("_")[1]].append(value[0])
                     else:
@@ -792,6 +790,292 @@ def del_daily_report_from_db(request):
         return -1
 
 
+def edit_daily_report_in_db(request):
+    if request.method == "POST":
+        if request.POST.get("template"):
+            report = DailyReport.objects.get(id=request.POST["id"])
+
+            if report.editable:
+
+                positions = PositionCount.objects.filter(dailyReport=report)
+                professions = ProfessionCount.objects.filter(dailyReport=report)
+                machines = MachineCount.objects.filter(dailyReport=report)
+                materials = MaterialCount.objects.filter(dailyReport=report)
+                equipes = EquipeCount.objects.filter(dailyReport=report)
+                units = Unit.objects.all()
+                materialproviders = MaterialProvider.objects.all()
+                machineproviders = MachineProvider.objects.all()
+                tasks = TaskReport.objects.filter(dailyReport=report)
+
+                other = {
+                    "weekday": report.get_weekday_display(),
+                    "date": report.date.strftime('%Y/%m/%d'),
+                }
+
+                context = {
+                    "report": report,
+                    "positions": positions,
+                    "professions": professions,
+                    "machines": machines,
+                    "materials": materials,
+                    "equipes": equipes,
+                    "units": units,
+                    "materialproviders": materialproviders,
+                    "machineproviders": machineproviders,
+                    "tasks": tasks,
+                    "machine_types": MACHINE_TYPES,
+                    "other": other,
+                }
+                return render(request, "daily-report-edit.html", context=context)
+
+            else:
+                raise PermissionDenied
+
+        else:
+            data = dict(request.POST)
+
+            positions = {}
+            professions = {}
+            machines = {}
+            materials = {}
+            equipes = {}
+            contractors = {}
+            tasks = {}
+
+            for key, value in data.items():
+                if "position" in key:
+                    positions[key.split("_")[1]] = int(value[0])
+                elif "profession" in key:
+                    prof = key.split("_")[2].split("-")[0]
+                    if key.split("_")[2].split("-")[0] in professions.keys():
+                        if "Semi" in key.split("_")[3]:
+                            professions[prof][1] += int(value[0])
+                        elif "Non" in key.split("_")[3]:
+                            professions[prof][2] += int(value[0])
+                        else:
+                            professions[prof][0] += int(value[0])
+
+                    else:
+                        professions[prof] = [0, 0, 0]
+                        if "Semi" in key.split("_")[3]:
+                            professions[prof][1] += int(value[0])
+                        elif "Non" in key.split("_")[3]:
+                            professions[prof][2] += int(value[0])
+                        else:
+                            professions[prof][0] += int(value[0])
+
+                    cont = key.split("_")[2].split("-")[1]
+                    if key.split("_")[2].split("-")[1] in contractors.keys():
+                        if "Semi" in key.split("_")[3]:
+                            contractors[cont][1] += int(value[0])
+                        elif "Non" in key.split("_")[3]:
+                            contractors[cont][2] += int(value[0])
+                        else:
+                            contractors[cont][0] += int(value[0])
+
+                    else:
+                        contractors[cont] = [0, 0, 0]
+                        if "Semi" in key.split("_")[3]:
+                            contractors[cont][1] += int(value[0])
+                        elif "Non" in key.split("_")[3]:
+                            contractors[cont][2] += int(value[0])
+                        else:
+                            contractors[cont][0] += int(value[0])
+
+                    if key.split("_")[2] in equipes.keys():
+                        equipes[key.split("_")[2]].append(int(value[0]))
+                    else:
+                        equipes[key.split("_")[2]] = []
+                        equipes[key.split("_")[2]].append(int(value[0]))
+
+                elif "machine" in key:
+                    if key.split("_")[1] in machines.keys():
+                        if "provider" in key:
+                            machines[key.split("_")[1]].append(value[0])
+                        else:
+                            machines[key.split("_")[1]].append(int(value[0]))
+                    else:
+                        machines[key.split("_")[1]] = []
+                        machines[key.split("_")[1]].append(int(value[0]))
+                elif "material" in key:
+                    if "count" in key:
+                        materials[key.split("_")[1]] = [float(value[0]), None, None]
+                    elif "unit" in key:
+                        materials[key.split("_")[1]][1] = value[0]
+                    elif "provider" in key:
+                        materials[key.split("_")[1]][2] = value[0]
+                elif "task" in key:
+                    tasks[key.split("_")[1]] = float(value[0])
+
+
+            report = DailyReport.objects.get(id=request.POST.get("report_id"))
+            ID = report.id
+            DATE_CREATED = report.date_created
+
+            if report.deletable and report.editable:
+                for item in report.taskreport_set.all():
+                    item.update_percentage(True, date=report.date)
+                report.delete()
+            else:
+                raise PermissionDenied
+
+            report = DailyReport.objects.create(
+                id=ID,
+                project_name=data['project_name'][0],
+                employer=data["employer"][0],
+                employee=data["employee"][0],
+                contract_number=data["contract_no"][0],
+                date=jdatetime.datetime.strptime(data['date'][0], format="%Y/%m/%d").strftime(
+                    "%Y-%m-%d %H:%M:%S"),
+                temperature_min=data["minTemp"][0],
+                temperature_max=data["maxTemp"][0],
+                weather=data["weather_status"][0],
+                dust_value=data["dust_value"][0],
+                consultor_name=data["consultor_name"][0],
+                date_created=DATE_CREATED,
+                edited=True,
+            )
+            report.set_weekday()
+
+            report.project_name = data['project_name'][0]
+            report.employer = data["employer"][0]
+            report.employee = data["employee"][0]
+            report.contract_number = data["contract_no"][0]
+            # report.date =
+            report.temperature_min = data["minTemp"][0]
+            report.temperature_max = data["maxTemp"][0]
+            report.weather = data["weather_status"][0]
+            report.dust_value = data["dust_value"][0]
+            report.consultor_name = data["consultor_name"][0]
+            report.save()
+            report.set_weekday()
+
+            for position, count in positions.items():
+                if count > 0:
+                    pos = Position.objects.get(name=position)
+                    obj = PositionCount.objects.create(
+                        position=pos,
+                        dailyReport=report,
+                        count=count,
+                    )
+                    report.positions.add(obj.position)
+                else:
+                    continue
+
+            for profession, count in professions.items():
+                if sum(count) > 0:
+                    prof = Profession.objects.get(name=profession)
+                    obj = ProfessionCount.objects.create(
+                        profession=prof,
+                        dailyReport=report,
+                        countExpert=count[0],
+                        countSemiExpert=count[1],
+                        countNonExpert=count[2],
+                    )
+                    obj.cal_countTotal()
+
+                    report.professions.add(obj.profession)
+
+                else:
+                    continue
+
+            for machine, count in machines.items():
+                if count[0] > 0 or count[1] > 0:
+                    machine = machine.strip()
+                    # machine = machine.split("-")[1].strip()
+                    mach = Machine.objects.get(name=machine)
+                    provider = MachineProvider.objects.get(name=count[3])
+                    obj = MachineCount.objects.create(
+                        machine=mach,
+                        dailyReport=report,
+                        activeCount=count[1],
+                        inactiveCount=count[2],
+                        workHours=count[0],
+                        provider=provider,
+                        totalCount=sum(count[1:3]),
+                    )
+                    report.machines.add(obj.machine)
+
+                else:
+                    continue
+
+            for material, amount in materials.items():
+                if amount[0] > 0:
+                    material = material.strip()
+
+                    mat = Material.objects.get(name=material)
+                    unit = Unit.objects.get(name=amount[1])
+                    materialprovider = MaterialProvider.objects.get(name=amount[2])
+                    obj = MaterialCount.objects.create(
+                        material=mat,
+                        dailyReport=report,
+                        amount=amount[0],
+                        unit=unit,
+                        provider=materialprovider,
+                    )
+                    report.materials.add(obj.material)
+                else:
+                    continue
+
+            for contractor, count in contractors.items():
+                if sum(count) > 0:
+                    cont = Contractor.objects.get(name=contractor)
+                    obj = ContractorCount.objects.create(
+                        contractor=cont,
+                        dailyReport=report,
+                        countExpert=count[0],
+                        countSemiExpert=count[1],
+                        countNonExpert=count[2],
+                    )
+                    obj.cal_countTotal()
+
+                    report.contractors.add(obj.contractor)
+                else:
+                    continue
+
+            for equipe, count in equipes.items():
+                if sum(count) > 0:
+                    prof, cont = equipe.split("-")
+                    equ = Equipe.objects.get(
+                        profession=Profession.objects.get(name=prof),
+                        contractor=Contractor.objects.get(name=cont),
+                    )
+                    obj = EquipeCount.objects.create(
+                        equipe=equ,
+                        dailyReport=report,
+                        countExpert=count[0],
+                        countSemiExpert=count[1],
+                        countNonExpert=count[2],
+                    )
+                    obj.cal_countTotal()
+
+                    report.equipes.add(obj.equipe)
+                else:
+                    continue
+
+            for task, amount in tasks.items():
+                if amount > 0:
+                    tsk = Task.objects.get(unique_str=task)
+
+                    if not tsk.started:
+                        tsk.start(date=report.date)
+
+                    parent = TaskReport.objects.filter(task=tsk).last()
+                    tsk_rep = TaskReport.objects.create(
+                        task=tsk,
+                        parent=parent,
+                        dailyReport=report,
+                        todayVolume=amount,
+                    )
+                    tsk_rep.update_percentage(False, date=report.date)
+                    report.tasks.add(tsk_rep.task)
+
+            report.cal_countPeople()
+            report.cal_countMachines()
+
+            return redirect(to="/home/daily-reports")
+
+
 def reports_daily(request):
     reports = DailyReport.objects.all()
     for report in reports:
@@ -859,26 +1143,48 @@ def compact_report_on_day(request, idd):
     materials = MaterialCount.objects.filter(dailyReport=report)
     equipes = EquipeCount.objects.filter(dailyReport=report)
     tasks = TaskReport.objects.filter(dailyReport=report)
+    # tasks = TaskReport.objects.all()
 
-    done_task_zone = []
-    items = tasks.__dict__
+    # done_task_zone = []
+
+    tsks = {}
     for task in tasks:
-        ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
-        objs = Task.objects.filter(equipe__id__in=ids)
-        entire_item_vol = 0
-        entire_item_done = 0
-        for obj in objs:
-            entire_item_vol += obj.totalVolume
-            entire_item_done += obj.doneVolume
+        if task.task.equipe.profession in tsks.keys():
+            tsks[task.task.equipe.profession]['todayVolume'] += task.todayVolume
+            tsks[task.task.equipe.profession]['preDoneVolume'] += task.preDoneVolume
+            tsks[task.task.equipe.profession]['entire_item_vol'] += task.task.totalVolume
+            tsks[task.task.equipe.profession]['entire_item_done'] += task.task.doneVolume
 
-        done_task_zone.append([task.id, entire_item_done/entire_item_vol*100, entire_item_vol])
+            tsks[task.task.equipe.profession]['entire_item_done_percent'] = tsks[task.task.equipe.profession]['entire_item_done']/tsks[task.task.equipe.profession]['entire_item_vol']*100
+
+        else:
+            tsks[task.task.equipe.profession] = {
+                'name': task.task.equipe.profession,
+                'todayVolume': task.todayVolume,
+                'preDoneVolume': task.preDoneVolume,
+                'entire_item_vol': task.task.totalVolume,
+                'entire_item_done': task.task.doneVolume,
+                'entire_item_done_percent': 0.0,
+                'unit': task.task.unit,
+            }
+
+    # for task in tasks:
+    #     ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
+    #     objs = Task.objects.filter(equipe__id__in=ids)
+    #     entire_item_vol = 0
+    #     entire_item_done = 0
+    #     for obj in objs:
+    #         entire_item_vol += obj.totalVolume
+    #         entire_item_done += obj.doneVolume
+    #
+    #     done_task_zone.append([task.id, entire_item_done/entire_item_vol*100, entire_item_vol])
 
 
     other = {
         "weather": report.get_weather_display(),
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
-        "entire_items": done_task_zone,
+        # "entire_items": done_task_zone,
     }
 
     context = {
@@ -888,7 +1194,7 @@ def compact_report_on_day(request, idd):
         "machines": machines,
         "materials": materials,
         "equipes": equipes,
-        "tasks": tasks,
+        "tasks": tsks.values(),
         "other": other,
     }
     return render(request, "print-short-report.html", context=context)
@@ -1065,3 +1371,24 @@ def check_deletability(request):
 
         return HttpResponse(rep.deletable)
 
+
+def check_editability(request):
+    if request.method == "POST":
+        idd = request.POST['id']
+        rep = DailyReport.objects.get(id=idd)
+
+        return HttpResponse(rep.editable)
+
+
+def check_dailyreport_existence(request):
+    if request.method == "POST":
+
+        date = request.POST.get("date")
+        date, time = date.split(" ")
+        date = date.replace("/", "-")
+
+        report = get_object_or_404(DailyReport, short_date=date)
+        if report:
+            return HttpResponse(True)
+
+        # ("%Y-%m-%d %H:%M:%S")

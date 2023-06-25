@@ -29,8 +29,9 @@ urlpatterns = [
     path("home/add-base-data/", add_base_data_template),
     path("home/create-report/", create_report_template),
     path("home/daily-reports/", reports_daily),
-    path("home/daily-reports/<idd>", report_on_day),
+    path("home/daily-reports/<int:idd>", report_on_day),
     path("home/daily-reports/compact/<idd>", compact_report_on_day),
+    path("home/daily-reports/check-existence", check_dailyreport_existence),
 
     # Edit DB paths
     path("edit-db/add-position", add_position_to_db),
@@ -48,7 +49,9 @@ urlpatterns = [
     path("edit-db/shortcut-add", shortcut_add),
 
     path("edit-db/save-daily-report", save_daily_report_to_db),
+    path("edit-db/save-edit-daily-report", edit_daily_report_in_db),
     path("edit-db/del-daily-report/", del_daily_report_from_db),
+    path("edit-db/edit-daily-report/", edit_daily_report_in_db),
 
     path("edit-db/del-position", del_position_from_db),
     path("edit-db/del-profession", del_profession_from_db),
@@ -69,6 +72,7 @@ urlpatterns = [
     path("edit-db/get-materialproviders/", get_materialproviders),
     path("edit-db/get-machineproviders/", get_machineproviders),
     path("edit-db/check-deletability/", check_deletability),
+    path("edit-db/check-editability/", check_editability),
 
     # path("edit-db/add-machine-to-daily-report", add_machine_to_daily_report),
 ]
