@@ -1329,7 +1329,7 @@ function add_task_to_daily_report() {
             });
             span.className = "badge rounded-pill";
             span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-    span.style.marginLeft = "5pt"
+            span.style.marginLeft = "5pt"
             span.addEventListener('click', function() {
             del_task(obj.name, obj.equipe, obj.zone, obj.totalVolume, obj.unit, false);
             });
@@ -1355,13 +1355,24 @@ function add_task_to_daily_report() {
             input.name = "task_"+val+"_today";
             input.min = '0';
             input.value = '0';
+            input.addEventListener('keyup', function() {
+                let target = document.getElementById('live_total_done_'+'task_'+val+'_today')
+                target.innerHTML = parseFloat(input.value) + parseFloat(document.getElementById('doneVolume_'+'task_'+val+'_today').innerHTML)
+            });
             cell4.className = "";
             cell4.appendChild(input)
 
             let cell5 = document.createElement('td', );
             cell5.className = "";
             cell5.style.textAlign = "center"
+            cell5.id = 'doneVolume_'+'task_'+val+'_today'
             cell5.innerHTML = obj.doneVolume.toFixed(2);
+
+            let cell5_1 = document.createElement('td', );
+            cell5_1.className = "";
+            cell5_1.style.textAlign = "center"
+            cell5_1.id = 'live_total_done_'+'task_'+val+'_today'
+
 
             let cell6 = document.createElement('td', );
             cell6.className = "";
@@ -1384,6 +1395,7 @@ function add_task_to_daily_report() {
             newRow.appendChild(cell3);
             newRow.appendChild(cell4);
             newRow.appendChild(cell5);
+            newRow.appendChild(cell5_1);
             newRow.appendChild(cell6);
             newRow.appendChild(cell7);
             newRow.appendChild(cell8);
@@ -2231,4 +2243,9 @@ function confirmZeroValues() {
       return false;
     }
     return true;
+}
+
+function update_live_total_done(live) {
+    let target = document.getElementById('live_total_done_'+live)
+    target.innerHTML = parseFloat(document.getElementById(live).value) + parseFloat(document.getElementById('doneVolume_'+live).innerHTML)
 }
