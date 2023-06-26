@@ -85,7 +85,7 @@ class MachineCount(models.Model):
     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        unique_together = ('dailyReport', 'machine',)
+        unique_together = ('dailyReport', 'machine', 'provider')
 
     def __str__(self):
         # TODO : add dailyReport.date to the returning string of the object
@@ -120,6 +120,9 @@ class MaterialCount(models.Model):
     amount = models.FloatField(default=0.0,)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     provider = models.ForeignKey(MaterialProvider, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('dailyReport', 'material', 'provider')
 
     def __str__(self):
         return self.material.name

@@ -696,6 +696,37 @@ function search_equipes() {
     });
 }
 
+function search_providers(type) {
+    // for create report page
+
+    let dropdownItems = $('#dropdown-menu-' + type + 's').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-'+type).val("");
+      let event = new Event('keyup');
+      document.getElementById("search-"+type).dispatchEvent(event);
+      $('#'+type+'-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-'+type).on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
 function search_position() {
     let dropdownItems = $('#dropdown-menu-positions').find('a');
 
@@ -903,11 +934,30 @@ function search_equipe(type) {
 
 function add_machine_to_daily_report() {
     let val = document.getElementById("machine-name").value;
-    document.getElementById("machine-name").value = "";
     if (!val) {
         return 0
     }
+    let valP = document.getElementById("machineprovider-name").value;
+    if (!valP) {
+        return 0
+    }
+
+    document.getElementById("machine-name").value = "";
+    document.getElementById("machineprovider-name").value = "";
+
     let table = document.getElementById("table-machine");
+    let tbody = table.getElementsByTagName("tbody")[0];
+
+    let rows = tbody.getElementsByTagName("tr")
+    for (let i = 0; i < rows.length; i++) {
+        let name = rows[i].getElementsByTagName("td")[0].innerText
+        let prov = rows[i].getElementsByTagName("td")[4].innerText
+
+        if (name.trim() === val.trim() && prov.trim() === valP.trim()) {
+            alert("این ماشین قبلا به جدول اضافه شده است")
+            return 0
+        }
+    }
 
     let newRow = document.createElement('tr');
     newRow.id = val;
@@ -939,8 +989,8 @@ function add_machine_to_daily_report() {
     input0.required = true;
     input0.className = "small-input-integer";
     input0.type = "number";
-    input0.id = "machine_"+val+"_workHours";
-    input0.name = "machine_"+val+"_workHours";
+    input0.id = "machine_"+val+"_"+valP+"_workHours";
+    input0.name = "machine_"+val+"_"+valP+"_workHours";
     input0.min = '0';
     input0.value = '0';
 
@@ -954,8 +1004,8 @@ function add_machine_to_daily_report() {
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
-    input.id = "machine_"+val+"_activeCount";
-    input.name = "machine_"+val+"_activeCount";
+    input.id = "machine_"+val+"_"+valP+"_activeCount";
+    input.name = "machine_"+val+"_"+valP+"_activeCount";
     input.min = '0';
     input.value = '0';
 
@@ -969,8 +1019,8 @@ function add_machine_to_daily_report() {
     input.required = true;
     input.className = "small-input-integer";
     input.type = "number";
-    input.id = "machine_"+val+"_inactiveCount";
-    input.name = "machine_"+val+"_inactiveCount";
+    input.id = "machine_"+val+"_"+valP+"_inactiveCount";
+    input.name = "machine_"+val+"_"+valP+"_inactiveCount";
     input.min = '0';
     input.value = '0';
     cell3.appendChild(input)
@@ -980,29 +1030,19 @@ function add_machine_to_daily_report() {
     let select = document.createElement('select',)
     select.required = true;
     select.className = "form-select";
-    select.id = "machine_"+val+"_provider";
-    select.name = "machine_"+val+"_provider";
+    select.id = "machine_"+val+"_"+valP+"_provider";
+    select.name = "machine_"+val+"_"+valP+"_provider";
     select.style.fontSize = '11px';
     select.style.textAlign = 'left  ';
     select.style.padding = '0';
     select.style.paddingLeft = '15%';
 
     let option = document.createElement('option',)
-    option.value = ""
-    option.innerHTML = "انتخاب"
-    option.disabled = true
-    option.hidden = true
+    option.value = valP
+    option.innerHTML = valP
     option.selected = true
     select.appendChild(option)
 
-    fetch_machineproviders(function (providers) {
-        providers.forEach(provider => {
-            let option = document.createElement('option',)
-            option.value = provider.name
-            option.innerHTML = provider.name
-            select.appendChild(option)
-        })
-    })
     cell4.appendChild(select)
 
     newRow.appendChild(cell1);
@@ -1017,11 +1057,32 @@ function add_machine_to_daily_report() {
 
 function add_material_to_daily_report() {
     let val = document.getElementById("material-name").value;
-    document.getElementById("material-name").value = "";
     if (!val) {
         return 0
     }
+    let valP = document.getElementById("materialprovider-name").value;
+    if (!valP) {
+        return 0
+    }
+
+    document.getElementById("material-name").value = "";
+    document.getElementById("materialprovider-name").value = "";
+
+
     let table = document.getElementById("table-material");
+    let tbody = table.getElementsByTagName("tbody")[0];
+
+    let rows = tbody.getElementsByTagName("tr")
+    for (let i = 0; i < rows.length; i++) {
+        let name = rows[i].getElementsByTagName("td")[0].innerText
+        let prov = rows[i].getElementsByTagName("td")[3].innerText
+
+        if (name.trim() === val.trim() && prov.trim() === valP.trim()) {
+            alert("این مصالح قبلا به جدول اضافه شده است")
+            return 0
+        }
+    }
+
 
     let newRow = document.createElement('tr');
     newRow.id = val;
@@ -1051,8 +1112,8 @@ function add_material_to_daily_report() {
     input.required = true;
     input.className = "small-input-integer w-75";
     input.type = "number";
-    input.id = "material_"+val+"_count";
-    input.name = "material_"+val+"_count";
+    input.id = "material_"+val+"_"+valP+"_count";
+    input.name = "material_"+val+"_"+valP+"_count";
     input.min = '0';
     input.value = '0';
 
@@ -1061,8 +1122,8 @@ function add_material_to_daily_report() {
     let select = document.createElement('select',)
     select.required = true;
     select.className = "form-select";
-    select.id = "material_"+val+"_unit";
-    select.name = "material_"+val+"_unit";
+    select.id = "material_"+val+"_"+valP+"_unit";
+    select.name = "material_"+val+"_"+valP+"_unit";
     select.style.fontSize = '11px';
     select.style.textAlign = 'left  ';
     select.style.padding = '0';
@@ -1096,29 +1157,27 @@ function add_material_to_daily_report() {
     let select2 = document.createElement('select',)
     select2.required = true;
     select2.className = "form-select";
-    select2.id = "material_"+val+"_provider";
-    select2.name = "material_"+val+"_provider";
+    select2.id = "material_"+val+"_"+valP+"_provider";
+    select2.name = "material_"+val+"_"+valP+"_provider";
     select2.style.fontSize = '11px';
     select2.style.textAlign = 'left  ';
     select2.style.padding = '0';
     select2.style.paddingLeft = '15%';
 
     option = document.createElement('option',)
-    option.value = ""
-    option.innerHTML = "انتخاب"
-    option.disabled = true
-    option.hidden = true
+    option.value = valP
+    option.innerHTML = valP
     option.selected = true
     select2.appendChild(option)
 
-    fetch_materialproviders(function (materialproviders) {
-        materialproviders.forEach(materialprovider => {
-            let option = document.createElement('option',)
-            option.value = materialprovider.name
-            option.innerHTML = materialprovider.name
-            select2.appendChild(option)
-        })
-    })
+    // fetch_materialproviders(function (materialproviders) {
+    //     materialproviders.forEach(materialprovider => {
+    //         let option = document.createElement('option',)
+    //         option.value = materialprovider.name
+    //         option.innerHTML = materialprovider.name
+    //         select2.appendChild(option)
+    //     })
+    // })
 
     cell4.appendChild(select2)
 
@@ -1887,6 +1946,62 @@ function fetch_equipes(){
 
             search_equipes();
 
+        }
+    });
+
+
+}
+
+function fetch_providers(type){
+
+    let menu = document.getElementById("dropdown-menu-"+type+"s")
+
+    let options = menu.querySelectorAll('.dropdown-item');
+    options.forEach(option => {
+      option.remove()
+    });
+
+
+    // let table = document.getElementById("table-equipes-profession")
+    // let tbody = table.getElementsByTagName("tbody")[0]
+    // let rows = tbody.getElementsByTagName("tr")
+
+    let innerHTMLs = []
+
+    // for (let i = 0; i < rows.length; i++) {
+    //     let prof = rows[i].getElementsByTagName("td")[0]
+    //     let cont = rows[i].getElementsByTagName("td")[1]
+    //
+    //     innerHTMLs.push(prof.textContent + "-" + cont.textContent);
+    // }
+
+    options = JSON.stringify(
+        {
+        'options': innerHTMLs,
+        }
+    )
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/get-options/'+type,
+        data: {
+        'options': options,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            let opts = JSON.parse(response[type])
+            opts.forEach(function (opt){
+                let li = document.createElement("li")
+                let a = document.createElement("a")
+                a.className = "dropdown-item";
+                a.innerHTML = opt.name;
+
+                li.appendChild(a);
+                menu.appendChild(li);
+            })
+
+            search_providers(type);
         }
     });
 

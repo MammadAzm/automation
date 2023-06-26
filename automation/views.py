@@ -555,6 +555,7 @@ def save_daily_report_to_db(request):
         contractors = {}
         tasks = {}
 
+        print(data.items())
         for key, value in data.items():
             if "position" in key:
                 positions[key.split("_")[1]] = int(value[0])
@@ -602,21 +603,22 @@ def save_daily_report_to_db(request):
                     equipes[key.split("_")[2]].append(int(value[0]))
 
             elif "machine" in key:
-                if key.split("_")[1] in machines.keys():
+                if f"{key.split('_')[1]}_{key.split('_')[2]}" in machines.keys():
                     if "provider" in key:
-                        machines[key.split("_")[1]].append(value[0])
+                        machines[f"{key.split('_')[1]}_{key.split('_')[2]}"].append(value[0])
                     else:
-                        machines[key.split("_")[1]].append(int(value[0]))
+                        machines[f"{key.split('_')[1]}_{key.split('_')[2]}"].append(int(value[0]))
                 else:
-                    machines[key.split("_")[1]] = []
-                    machines[key.split("_")[1]].append(int(value[0]))
+                    machines[f"{key.split('_')[1]}_{key.split('_')[2]}"] = []
+                    machines[f"{key.split('_')[1]}_{key.split('_')[2]}"].append(int(value[0]))
+
             elif "material" in key:
                 if "count" in key:
-                    materials[key.split("_")[1]] = [float(value[0]), None, None]
+                    materials[f"{key.split('_')[1]}_{key.split('_')[2]}"] = [float(value[0]), None, None]
                 elif "unit" in key:
-                    materials[key.split("_")[1]][1] = value[0]
+                    materials[f"{key.split('_')[1]}_{key.split('_')[2]}"][1] = value[0]
                 elif "provider" in key:
-                    materials[key.split("_")[1]][2] = value[0]
+                    materials[f"{key.split('_')[1]}_{key.split('_')[2]}"][2] = value[0]
             elif "task" in key:
                 tasks[key.split("_")[1]] = float(value[0])
 
@@ -677,6 +679,7 @@ def save_daily_report_to_db(request):
                 continue
 
         for machine, count in machines.items():
+            machine = machine.split("_")[0]
             if count[0] > 0 or count[1] > 0:
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
@@ -697,6 +700,7 @@ def save_daily_report_to_db(request):
                 continue
 
         for material, amount in materials.items():
+            material = material.split("_")[0]
             if amount[0] > 0:
                 material = material.strip()
 
@@ -1210,6 +1214,11 @@ def get_options(request, typee):
             pass
         if typee == "profession":
             data = Profession.objects.exclude(name__in=data).all()
+        elif "provider" in typee:
+            if "machineprovider" == typee:
+                data = MachineProvider.objects.all()
+            elif "materialprovider" == typee:
+                data = MaterialProvider.objects.all()
         elif typee == "unit":
             data = Unit.objects.exclude(name__in=data).all()
         elif typee == "position":

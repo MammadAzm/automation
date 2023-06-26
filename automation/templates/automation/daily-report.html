@@ -274,53 +274,38 @@
 
                                     <td class="">
                                         {% if machine.workHours %}
-                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{ machine }}_workHours" name="machine_{{ machine }}_workHours" min="0" value="{{ machine.workHours }}">
+                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{ machine }}_{{ machine.provider }}_workHours" name="machine_{{ machine }}_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
                                         {% else %}
-                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_workHours" name="machine_{{ machine }}_workHours" min="0" value="0"
+                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_workHours" name="machine_{{ machine }}_{{ machine.provider }}_workHours" min="0" value="0"
                                         {% endif %}
 
                                     </td>
 
                                     <td class="">
                                         {% if machine.activeCount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="{{ machine.activeCount }}">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_activeCount" name="machine_{{ machine }}_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
                                         {% else %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_activeCount" name="machine_{{ machine }}_activeCount" min="0" value="0"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_activeCount" name="machine_{{ machine }}_{{ machine.provider }}_activeCount" min="0" value="0"
                                         {% endif %}
 
                                     </td>
 
                                     <td class="">
                                         {% if machine.inactiveCount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_inactiveCount" name="machine_{{ machine }}_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
                                         {% else %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_inactiveCount" name="machine_{{ machine }}_inactiveCount" min="0" value="0"
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_inactiveCount" name="machine_{{ machine }}_{{ machine.provider }}_inactiveCount" min="0" value="0"
                                         {% endif %}
                                     </td>
 
                                     <td class="">
-
-                                        <select class="form-select" name="machine_{{ machine }}_provider" id="{{ machine }}_provider_options"
-                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
-
-                                            {% if machine.provider %}
-
-                                            {% else %}
-                                                <option selected disabled hidden value="" >انتخاب</option>
-                                            {% endif %}
-
-
-                                            {% for provider in machineproviders %}
-
-                                                {% if machine.provider == provider %}
-                                                    <option value="{{ provider.name }}" selected name="">{{ provider.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ provider.name }}" name="">{{ provider.name }}</option>
-                                                {% endif %}
-
-                                            {% endfor %}
-
+                                        <select required class="form-select" name="machine_{{ machine }}_{{ machine.provider }}_provider"
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
+                                            <option value="{{ machine.provider }}" >
+                                                {{ machine.provider }}
+                                            </option>
                                         </select>
+
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -362,11 +347,12 @@
                                     </td>
                                     <td class="" style="text-align: center">
                                         {% if material.amount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ material }}_count" step="0.1"
-                                                   name="material_{{ material }}_count" min="0" value="{{ material.amount }}">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
+                                                   name="material_{{ material }}_{{ material.provider }}_count" min="0" value="{{ material.amount }}">
                                     </td>
                                     <td class="">
-                                        <select required class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
+
+                                        <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
                                             style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
 
                                             {% if material.amount %}
@@ -390,15 +376,15 @@
 
                                         {% else %}
 
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_count" step="0.1"
-                                                   name="material_{{ material }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
+                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
+                                                   name="material_{{ material }}_{{ material.provider }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
 
 
                                     </td>
 
                                     <td class="">
 
-                                        <select class="form-select" name="material_{{ material }}_unit" id="{{ material }}_unit_options"
+                                        <select class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
                                             style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
 
                                             {% if material.amount %}
@@ -424,27 +410,11 @@
                                         {% endif %}
 
                                     <td class="">
-
-                                        <select class="form-select" name="material_{{ material }}_provider" id="{{ material }}_provider_options"
-                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
-
-                                            {% if material.provider %}
-
-                                            {% else %}
-                                                <option selected disabled hidden value="" >انتخاب</option>
-                                            {% endif %}
-
-
-                                            {% for provider in materialproviders %}
-
-                                                {% if material.provider == provider %}
-                                                    <option value="{{ provider.name }}" selected name="">{{ provider.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ provider.name }}" name="">{{ provider.name }}</option>
-                                                {% endif %}
-
-                                            {% endfor %}
-
+                                        <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_provider"
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
+                                            <option name="{{ material }}_{{ material.provider }}_provider_options" id="{{ material }}_{{ material.provider }}_provider_options">
+                                                {{ material.provider }}
+                                            </option>
                                         </select>
                                     </td>
 
@@ -638,11 +608,12 @@
                 <div class="modal-body">
                         <div class="input-group mb-3">
                             <input id="machine-name" disabled required type="text" name="machine" class="form-control" placeholder="ماشین">
+                            <input id="machineprovider-name" disabled required type="text" name="machine" class="form-control" placeholder="تامین">
 
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_options("machine")' >
-                                    انتخاب
+                                        id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_providers("machine")' >
+                                    ماشین
                                 </button>
 
                                 <ul class="dropdown-menu" id="dropdown-menu-machines" aria-labelledby="dropdownMenuMachines">
@@ -654,6 +625,27 @@
                                     <li><hr class="dropdown-divider"></li>
                                     {% for machine in machines %}
                                         <li><a class="dropdown-item">{{ machine }}</a></li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
+                                        id="dropdownMenuMachinesProviders" data-bs-toggle="dropdown" onclick='fetch_providers("machineprovider")' >
+                                    تامین
+                                </button>
+
+                                <ul class="dropdown-menu" id="dropdown-menu-machineproviders" aria-labelledby="dropdownMenuMachinesProviders">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-machineprovider">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for provider in machineproviders %}
+                                        <li><a class="dropdown-item">{{ provider }}</a></li>
                                     {% endfor %}
 
 
@@ -736,10 +728,11 @@
                 <div class="modal-body">
                         <div class="input-group mb-3">
                             <input id="material-name" disabled required type="text" name="material" class="form-control" placeholder="مصالح">
+                            <input id="materialprovider-name" disabled required type="text" name="material" class="form-control" placeholder="تامین">
 
                             <div class="dropdown">
                                 <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuMaterials" data-bs-toggle="dropdown" onclick='fetch_options("material")' >
+                                        id="dropdownMenuMaterials" data-bs-toggle="dropdown" onclick='fetch_providers("material")' >
                                     انتخاب
                                 </button>
 
@@ -747,6 +740,27 @@
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-material">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% for material in materials %}
+                                        <li><a class="dropdown-item">{{ material }}</a></li>
+                                    {% endfor %}
+
+
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
+                                        id="dropdownMenuMaterialsProviders" data-bs-toggle="dropdown" onclick='fetch_providers("materialprovider")' >
+                                    انتخاب
+                                </button>
+
+                                <ul class="dropdown-menu" id="dropdown-menu-materialproviders" aria-labelledby="dropdownMenuMaterialsProviders">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-materialprovider">
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
