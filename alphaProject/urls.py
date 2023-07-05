@@ -27,6 +27,9 @@ urlpatterns = [
 
     # Main Paths
     path("home/add-base-data/", add_base_data_template),
+
+    path("home/add-base-data/operation-break", operation_break_template),
+
     path("home/create-report/", create_report_template),
     path("home/daily-reports/", reports_daily),
     path("home/daily-reports/<int:idd>", report_on_day),
@@ -64,6 +67,13 @@ urlpatterns = [
     path("edit-db/del-task", del_task_from_db),
     path("edit-db/del-materialprovider", del_materialprovider_from_db),
     path("edit-db/del-machineprovider", del_machineprovider_from_db),
+
+
+    path("edit-db/add-suboperation", add_suboperation_to_db),
+    path("edit-db/add-operation", add_operation_to_db),
+    path("edit-db/del-operation", del_operation_from_db),
+    path("edit-db/del-suboperation", del_suboperation_from_db),
+
 
     path("edit-db/get-options/<typee>", get_options),
     path("edit-db/get-tasks", get_tasks),

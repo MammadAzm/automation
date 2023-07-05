@@ -27,8 +27,13 @@ def add_base_data_template(request):
     zones = Zone.objects.all()
     tasks = Task.objects.all()
     units = Unit.objects.all()
+
     materialproviders = MaterialProvider.objects.all()
     machineproviders = MachineProvider.objects.all()
+
+    operations = Operation.objects.all()
+
+
 
     if not professions.exists():
         professions = []
@@ -52,6 +57,8 @@ def add_base_data_template(request):
         materialproviders = []
     if not machineproviders.exists():
         machineproviders = []
+    if not operations.exists():
+        operations = []
 
     context = {
         "positions": positions,
@@ -65,10 +72,29 @@ def add_base_data_template(request):
         "units": units,
         "materialproviders": materialproviders,
         "machineproviders": machineproviders,
+        "operations": operations,
+
         "machine_types": MACHINE_TYPES,
     }
 
     return render(request, "modify-base-data.html", context=context)
+
+
+def operation_break_template(request):
+    operations = Operation.objects.all()
+    units = Unit.objects.all()
+
+    if not operations.exists():
+        operations = []
+    if not units.exists():
+        units = []
+
+    context = {
+        "operations": operations,
+        "units": units,
+    }
+
+    return render(request, "operation-breaks.html", context=context)
 
 
 def create_report_template(request):
@@ -461,6 +487,92 @@ def del_unit_from_db(request):
         obj.delete()
         # objCount.delete()
         return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_operation_from_db(request):
+    if request.method == "POST":
+        name = request.POST.get("operation")
+        obj = Operation.objects.get(name=name)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def del_suboperation_from_db(request):
+    if request.method == "POST":
+        suboperation = request.POST.get("suboperation")
+        operation = request.POST.get("operation")
+        obj = SubOperation.objects.get(name=suboperation, parent=operation)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        Operation.objects.get(id=operation).update_assignedWeight()
+        # objCount.delete()
+        return HttpResponse(True)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def add_suboperation_to_db(request):
+    if request.method == "POST":
+        operation_id = request.POST.get("operation-id")
+        name = request.POST.get("name")
+        unit_name = request.POST.get("unit").strip()
+        amount = request.POST.get("amount")
+        weight = request.POST.get("weight")
+
+        operation = Operation.objects.get(id=operation_id)
+        unit = Unit.objects.get(name=unit_name)
+
+        new_obj = SubOperation.objects.create(
+            name=name,
+            unit=unit,
+            parent=operation,
+            weight=weight,
+            amount=amount,
+        )
+
+        operation.suboperations.add(new_obj)
+
+        operation.update_assignedWeight()
+
+
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def add_operation_to_db(request):
+    if request.method == "POST":
+        name = request.POST.get("operation")
+        unit_name = request.POST.get("unit-name").strip()
+        amount = request.POST.get("amount")
+
+        operation = Operation.objects.create(
+            name=name,
+            unit=Unit.objects.get(name=unit_name),
+            amount=amount,
+        )
+        operation.update_assignedWeight()
+
+
+        return HttpResponse(operation.id)
 
     elif request.method == "GET":
         pass

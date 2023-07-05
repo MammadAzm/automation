@@ -7,36 +7,45 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/myStyle.css' %}">
 
-<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
     <script src="{% static 'js/funcs.js' %}"></script>
     <script src="{% static 'js/jquery.js' %}"></script>
 
     <link type="text/css" rel="stylesheet" href="{% static 'css/jalalidatepicker.min.css' %}" />
     <script type="text/javascript" src="{% static 'js/jalalidatepicker.min.js' %}"></script>
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <!-- Include jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include the Select2 JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
     <script>
         $(document).ready( function () {
-                search_machine();
-                search_profession();
-                search_position();
-                search_material();
-                search_equipes();
-                search_equipe();
 
-                search_base_machine();
-                search_base_profession();
-                search_base_position();
-                search_base_material();
-                search_base_equipes();
-                search_base_equipe();
-                search_base_contractor();
+            submitForm('suboperation-form');
 
-                jalaliDatepicker.startWatch({
-                    time: true,
-                    hideAfterChange: true,
-                });
-            }
-        )
+            search_machine();
+            search_profession();
+            search_position();
+            search_material();
+            search_equipes();
+            search_equipe();
+
+            search_base_machine();
+            search_base_profession();
+            search_base_position();
+            search_base_material();
+            search_base_equipes();
+            search_base_equipe();
+            search_base_contractor();
+
+            jalaliDatepicker.startWatch({
+                time: true,
+                hideAfterChange: true,
+            });
+        })
     </script>
 
     {% load bootstrap5 %}
@@ -97,6 +106,19 @@
 <!--    <a class="text-dark navbar-brand" style="text-decoration: none; font-size: 15px;">این یک نوار اطلاعات ثابت است</a>-->
 <!--  </div>-->
 <!--</footer>-->
+
+
+
+
+
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        $('.select2').select2({-->
+<!--            dropdownParent: $("#unit-box")-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
 
 </body>
 </html>

@@ -1,16 +1,46 @@
-<table>
-  <tr>
-    <td rowspan="2">Cell 1</td>
-    <td>Cell 2</td>
-    <td>Cell 3</td>
-  </tr>
-  <tr>
-    <td>Cell 4</td>
-    <td>Cell 5</td>
-  </tr>
-  <tr>
-    <td>Cell 6</td>
-    <td>Cell 7</td>
-    <td>Cell 8</td>
-  </tr>
-</table>
+<div class="modal fade " id="staticBackdropOperations" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropOperationsLabel" style="margin-right: auto">افزودن سمت</h5>
+            </div>
+
+            <div class="modal-body">
+                <form action="/edit-db/add-operation" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" name="operation" class="form-control" placeholder="نام سمت">
+                    </div>
+
+                    <div class="input-group mb-3">
+                         <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuUnits" data-bs-toggle="dropdown" onclick='fetch_options("unit")'>
+                                انتخاب واحد
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-units">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-unit">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            </ul>
+                        </div>
+                         <input required disabled type="text" name="unit-name" id="unit-name" class="form-control" placeholder="واحد">
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon1">افزودن</button>
+                </form>
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>

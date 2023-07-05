@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from jdatetime import datetime
 import jdatetime
 from .converters import *
@@ -9,13 +9,6 @@ from .converters import *
 
 
 class Position(models.Model):
-    name = models.CharField(max_length=250, unique=True,)
-
-    def __str__(self):
-        return self.name
-
-
-class Profession(models.Model):
     name = models.CharField(max_length=250, unique=True,)
 
     def __str__(self):
@@ -32,6 +25,13 @@ class PositionCount(models.Model):
 
     def __str__(self):
         return self.position.name
+
+
+class Profession(models.Model):
+    name = models.CharField(max_length=250, unique=True,)
+
+    def __str__(self):
+        return self.name
 
 
 class ProfessionCount(models.Model):
@@ -401,7 +401,8 @@ class DailyReport(models.Model):
         date = jdatetime.datetime(self.date_created.year, self.date_created.month, self.date_created.day,
                                   self.date_created.hour, self.date_created.minute, self.date_created.second,)
 
-        bound = jdatetime.timedelta(1, 0, 0, 0, 0, 0,)
+        bound = jdatetime.timedelta(1, 0, 0, 0, 0, 0,)*100
+        # bound = jdatetime.timedelta(0, 0, 1, 0, 0, 0,)
         if now - date > bound:
             self.deletable = 0
             self.editable = 0
@@ -436,3 +437,114 @@ class DailyReport(models.Model):
 
     def __str__(self):
         return self.project_name
+
+
+class Operation(models.Model):
+    name = models.CharField(max_length=250, unique=True,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="operation_unit")
+
+    amount = models.FloatField(default=0.0, )
+    assignedAmount = models.FloatField(default=0.0,)
+    freeAmount = models.FloatField(default=0.0,)
+    doneAmount = models.FloatField(default=0.0,)
+
+    assignedWeight = models.FloatField(default=0.0, )
+    freeWeight = models.FloatField(default=100.0, )
+    fullyBroken = models.BooleanField(default=False)
+
+    fullyAssigned = models.BooleanField(default=False)
+    fullyDone = models.BooleanField(default=False)
+
+    suboperations = models.ManyToManyField('SubOperation', related_name='operations', null=True, blank=True)
+
+    def update_assignedWeight(self):
+        broken = 0.0
+        for subopr in self.suboperations.all():
+            broken += subopr.weight
+
+        self.assignedWeight = broken
+        self.freeWeight = 100 - broken
+
+        if 100 - broken > 0:
+            self.fullyBroken = False
+        else:
+            self.fullyBroken = True
+
+        self.save()
+
+
+    def set_fully_assignment(self):
+        if not self.assignedAmount < self.amount:
+            self.fullyAssigned = True
+        else:
+            self.fullyAssigned = False
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+
+class SubOperation(models.Model):
+    name = models.CharField(max_length=250,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    parent = models.ForeignKey(Operation, on_delete=models.CASCADE, )
+
+    weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(100.0)], default=0.0)
+
+    amount = models.FloatField(default=0.0,)
+    doneAmount = models.FloatField(default=0.0,)
+
+    class Meta:
+        unique_together = ('name', 'parent')
+
+    def __str__(self):
+        return self.parent.name + " | " + self.name
+
+
+
+
+# class OperationPlusSubs(models.Model):
+#     name = models.CharField(max_length=250, unique=True,)
+#     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+#
+#     amount = models.FloatField(default=0.0, )
+#     assignedAmount = models.FloatField(default=0.0, )
+#     doneAmount = models.FloatField(default=0.0, )
+#
+#     fullyAssigned = models.BooleanField(default=False)
+#     fullyDone = models.BooleanField(default=False)
+#
+#
+#
+#     def set_fully_assignment(self):
+#         if not self.assignedAmount < self.amount:
+#             self.fullyAssigned = True
+#         else:
+#             self.fullyAssigned = False
+#         self.save()
+#
+#     def __str__(self):
+#         return self.name
+
+
+# class OperationBreak(models.Model):
+#     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
+#     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+#
+#     amount = models.FloatField(default=0.0,)
+#     doneAmount = models.FloatField(default=0.0,)
+#
+#     def __str__(self):
+#         return self.operation.name + " | " + self.zone.name
+#
+#
+# class Item(models.Model):
+#     operation = models.ForeignKey(OperationBreak, on_delete=models.CASCADE)
+#     suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE)
+#
+#     amount = models.FloatField(default=0.0, )
+#     doneAmount = models.FloatField(default=0.0, )
+#
+#     def __str__(self):
+#         return self.operation + " | " + self.suboperation + " | " + self.zone

@@ -481,6 +481,29 @@ function del_unit(unit, db) {
 
 }
 
+function del_operation(operation, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-operation',
+            data: {
+            'operation': operation,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(operation)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(operation)
+        obj.remove()
+    }
+
+}
+
 function del_materialprovider(materialprovider, db) {
     if (db) {
         $.ajax({
@@ -887,6 +910,35 @@ function search_unit_task() {
     });
     // Add event listener to the search input
     $('#search-unit').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_unit_operation() {
+    let dropdownItems = $('#dropdown-menu-unitforoperations').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-unitforoperation').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-unitforoperation").dispatchEvent(event);
+      $('#unitforoperation-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-unitforoperation').on('keyup', function() {
       let searchText = $(this).val().toLowerCase();
 
       // Loop through each dropdown item and hide/show based on search text
@@ -1791,7 +1843,9 @@ function fetch_options(type, shortcut=null){
         options.forEach(option => {
           option.remove()
         });
-
+        if (type === "unitforoperation") {
+            type = "unit"
+        }
         let table = document.getElementById("table-" + type)
         let tbody = table.getElementsByTagName("tbody")[0]
         let rows = tbody.getElementsByTagName("tr")
@@ -1837,6 +1891,7 @@ function fetch_options(type, shortcut=null){
                     search_zone_task();
                 } else {
                     search_unit_task();
+                    search_unit_operation();
                 }
 
             }
@@ -2363,4 +2418,198 @@ function confirmZeroValues() {
 function update_live_total_done(live) {
     let target = document.getElementById('live_total_done_'+live)
     target.innerHTML = parseFloat(document.getElementById(live).value) + parseFloat(document.getElementById('doneVolume_'+live).innerHTML)
+}
+
+function submitForm(ID, type) {
+    if (type === "suboperation") {
+        var target = "form-" + ID
+    } else if (type === "operation") {
+        var target = "add-operation"
+    }
+    $('#'+target).submit(function(event) {
+        // Prevent form submission
+        event.preventDefault();
+
+        // Collect form data
+        var formData = new FormData(this);
+
+        // Send AJAX request
+        $.ajax({
+        url: '/edit-db/add-' + type,
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            alert("با موفقیت افزوده شد.")
+
+            if ( type === "suboperation" ) {
+                let table = document.getElementById("table-" + ID)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = "suboperation-" + document.getElementById('suboperation-name-' + ID).value + "-" + ID;
+
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerHTML = document.getElementById('suboperation-name-' + ID).value;
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.style.marginLeft = "5pt"
+                span.addEventListener('click', function () {
+                    del_suboperation(
+                        document.getElementById('suboperation-name-' + ID).value,
+                        ID,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.innerHTML = document.getElementById('select2-' + document.getElementById('suboperation-operation-' + ID).value).value
+
+                let cell3 = document.createElement('td',);
+                cell3.className = "";
+                cell3.innerHTML = document.getElementById('suboperation-amount-' + ID).value;
+
+                let cell4 = document.createElement('td',);
+                cell4.className = "weights-" + ID;
+                cell4.innerHTML = document.getElementById('suboperation-weight-' + ID).value;
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell4)
+                newRow.appendChild(cell3)
+                newRow.appendChild(cell2)
+
+                tbody.appendChild(newRow)
+
+                let weights = document.getElementsByClassName("weights-" + ID)
+                let sum = 0.0
+                for (let i = 0; i < weights.length; i++) {
+                    sum += parseFloat(weights[i].innerText.trim())
+                }
+                let cell = document.getElementById(
+                    "suboperation-weight-" + ID
+                )
+                cell.max = 100 - sum
+            } else if ( type === "operation" ) {
+                let table = document.getElementById("table-operation")
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = document.getElementById("operation-name").value;
+
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_operation(
+                        document.getElementById("operation-name").value,
+                        true
+                    );
+                });
+
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/list-task.svg" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"/>';
+                span2.setAttribute('data-bs-toggle', 'modal');
+                span2.setAttribute('data-bs-target', '#staticBackdropSubOperations-'+response);
+
+
+
+
+                cell1.innerText = document.getElementById("operation-name").value;
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
+
+
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.innerHTML = document.getElementById("unitforoperation-name").value
+
+                let cell3 = document.createElement('td',);
+                cell3.className = "";
+                cell3.innerHTML = document.getElementById("unitforoperation-amount").value
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell2)
+                newRow.appendChild(cell3)
+
+                tbody.appendChild(newRow)
+
+
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)
+          // console.error(error);
+        }
+        });
+    });
+}
+
+
+function del_suboperation(sub, opr, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-suboperation',
+            data: {
+            "suboperation": sub,
+            "operation": opr,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    let id = "suboperation-" + sub + "-" + opr
+                    let row = document.getElementById(id)
+                    row.remove();
+                    alert(" با موفقیت حذف شد");
+
+                    let weights = document.getElementsByClassName("weights-"+opr)
+
+                    let sum = 0.0
+                    for (let i=0; i < weights.length; i++) {
+                        sum += parseFloat(weights[i].innerText.trim())
+                    }
+                    let cell = document.getElementById(
+                        "suboperation-weight-" + opr
+                    )
+                    cell.max = 100 - sum
+
+                } else {
+                    alert("مشکلی در حذف بوجود آمده است.");
+                }
+            }
+        });
+    } else {
+
+    }
 }
