@@ -4,9 +4,8 @@
 {% block content %}
 
 <div class="container" style="margin-top: 0.5%">
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
-    <a href="operation-break"><button type="button" class=" btn-color onhover" >شکست عملیات</button></a>
+<!--    <a href="operation-break"><button type="button" class=" btn-color onhover" >شکست عملیات</button></a>-->
 
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
@@ -453,8 +452,6 @@
         </div>
 
 
-
-
         <div class="col-4">
             <table class="table table-bordered border-dark" style="font-size: 11px">
                 <thead class="">
@@ -523,9 +520,6 @@
                 </table>
             </div>
         </div>
-
-
-
 
     </div>
 
@@ -621,9 +615,6 @@
 
     </div>
 
-<!--    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>-->
-
-<!--    <a href="operation-break"><button>شکست عملیات</button></a>-->
 </div>
 
 
@@ -1083,7 +1074,7 @@
                                 <li><hr class="dropdown-divider"></li>
                             </ul>
                         </div>
-                        <input required readonly type="text" name="unit-name" id="unitforoperation-name" class="form-control" placeholder="واحد">
+                        <input readonly required type="text" name="unit-name" id="unitforoperation-name" class="form-control" placeholder="واحد">
                         <input required  type="number" name="amount" id="unitforoperation-amount" class="form-control" placeholder="مقدار کل">
                     </div>
                     <button class="btn btn-outline-success bp3-round w-100"
@@ -1098,7 +1089,6 @@
         </div>
     </div>
 </div>
-
 
 {% for operation in operations %}
     <div class="modal fade" id="staticBackdropSubOperations-{{ operation.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -1144,7 +1134,6 @@
                                     <th style="width: 20%;">
                                         واحد
                                     </th>
-
                                 </tr>
                             </thead>
 
@@ -1176,56 +1165,57 @@
                                     </tr>
                                 {% endfor %}
                             </tbody>
+                        </table>
 
-                            <form id="form-{{ operation.id }}">
-                                <div class="input-group mb-3">
-                                    <table class="" style="font-size: 11px;">
-                                        <thead class="" style="">
-                                            <input hidden value="{{ operation.id }}" name="operation-id" id="suboperation-operation-{{ operation.id }}">
+                        <form id="form-{{ operation.id }}">
+                            <div class="input-group mb-3">
+                                <table class="" style="font-size: 11px;">
+                                    <thead class="" style="">
+                                        <input hidden value="{{ operation.id }}" name="operation-id" id="suboperation-operation-{{ operation.id }}">
 
-                                            <th style="width: 187px; background-color: white; border: solid black 1px">
-                                                <input required type="text" name="name" style="outline: none; background-color: white;
-                                                 border: none; width: 100%; padding: 3px"
-                                                       id="suboperation-name-{{ operation.id }}"
-                                                       class="" placeholder="نام زیرعملیات">
-                                            </th>
+                                        <th style="width: 187px; background-color: white; border: solid black 1px">
+                                            <input required type="text" name="name" style="outline: none; background-color: white;
+                                             border: none; width: 100%; padding: 3px"
+                                                   id="suboperation-name-{{ operation.id }}"
+                                                   class="" placeholder="نام زیرعملیات">
+                                        </th>
 
-                                            <th style="width: 93px; background-color: white; border: solid black 1px">
-                                                <input required type="number" name="weight" style="outline: none; background-color: white;
-                                                   border: none; width: 100%; padding: 3px"
-                                                   class="" placeholder="وزن %" max="{{ operation.freeWeight }}" min="0" id="suboperation-weight-{{ operation.id }}">
-                                            </th>
+                                        <th style="width: 93px; background-color: white; border: solid black 1px">
+                                            <input required type="number" name="weight" style="outline: none; background-color: white;
+                                               border: none; width: 100%; padding: 3px"
+                                               class="" placeholder="وزن %" max="{{ operation.freeWeight }}" min="0" id="suboperation-weight-{{ operation.id }}">
+                                        </th>
 
 
-                                            <th style="width: 93px; background-color: white; border: solid black 1px">
-                                                <input required type="number" name="amount" style="outline: none; background-color: white;
-                                                border: none; width: 100%; padding: 3px"
-                                                   class="" placeholder="مقدار" id="suboperation-amount-{{ operation.id }}">
-                                            </th>
-                                        </thead>
-                                    </table>
+                                        <th style="width: 93px; background-color: white; border: solid black 1px">
+                                            <input required type="number" name="amount" style="outline: none; background-color: white;
+                                            border: none; width: 100%; padding: 3px"
+                                               class="" placeholder="مقدار" id="suboperation-amount-{{ operation.id }}">
+                                        </th>
+                                    </thead>
+                                </table>
 
-                                    <div id="unit-box-{{ operation.id }}" style="width: 90px;">
-                                        <select required class="select2" id="select2-{{ operation.id }}"
-                                                name="unit" style="width: 90px; border: solid black" onclick="findselect2('{{ operation.id }}')">
-                                            <option disabled selected value="" style="background-color: red">
-                                                انتخاب
+                                <div id="unit-box-{{ operation.id }}" style="width: 90px;">
+                                    <select required class="select2" id="select2-{{ operation.id }}"
+                                            name="unit" style="width: 90px; border: solid black" onclick="">
+                                        <option disabled selected value="">
+                                            انتخاب
+                                        </option>
+                                        {% for unit in units %}
+                                            <option value="{{ unit }}">
+                                                {{ unit }}
                                             </option>
-                                            {% for unit in units %}
-                                                <option value="{{ unit }}">
-                                                    {{ unit }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
+                                        {% endfor %}
+                                    </select>
                                 </div>
 
-                                <button class="btn btn-outline-success bp3-round w-100"
-                                                type="submit" id="button-addon11">افزودن</button>
-                            </form>
+                            </div>
 
-                        </table>
+                            <button class="btn btn-outline-success bp3-round w-100"
+                                            type="submit" id="button-addon11">افزودن</button>
+                        </form>
+
+
                     </div>
 
                     <div class="modal-footer">

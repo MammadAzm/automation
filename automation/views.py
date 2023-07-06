@@ -497,6 +497,7 @@ def del_unit_from_db(request):
 def del_operation_from_db(request):
     if request.method == "POST":
         name = request.POST.get("operation")
+
         obj = Operation.objects.get(name=name)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
