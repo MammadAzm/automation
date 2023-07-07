@@ -1,6 +1,135 @@
-<select>
-  <option value="" disabled selected style="display:none;">Please select an option</option>
-  <option value="option1">Option 1</option>
-  <option value="option2">Option 2</option>
-  <option value="option3">Option 3</option>
-</select>
+<div class="modal fade" id="staticBackdropZoneOperations-{{ operation.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropZoneOperationsLabel-{{ operation.id }}" style="margin-right: auto">زیرعملیات های {{ operation }}</h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="input-group mb-3">
+                        <table class="table table-bordered border-dark" id="table-{{ operation.id }}" style="font-size: 11px">
+                            <thead class="">
+                                <tr class="">
+                                    <th class=""  colspan="2" style="text-align: center">
+                                        {{ operation }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ operation.amount }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ operation.unit }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead class="">
+                                <tr class="">
+                                    <th class="" >
+                                        شرح زیرعملیات
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        وزن %
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        مقدار
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        واحد
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for zoneoperation in operation.zoneoperations.all %}
+                                    <tr id="zoneoperation-{{ zoneoperation.name }}-{{ operation.id }}">
+                                        <td>
+                                            {{ zoneoperation.name }}
+
+                                            <span class="badge rounded-pill"
+                                                style="float: right; color: black; " onclick="del_zoneoperation('{{ zoneoperation.name }}', '{{ operation.id }}', true)">
+                                                <img src="{% static 'icons/patch-minus.svg' %}">
+                                            </span>
+
+                                        </td>
+
+                                        <td class="weights-{{operation.id}}">
+                                            {{ zoneoperation.weight }}
+                                        </td>
+
+                                        <td>
+                                            {{ zoneoperation.amount }}
+                                        </td>
+
+                                        <td>
+                                            {{ zoneoperation.unit }}
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <form id="form-{{ operation.id }}">
+                            <div class="input-group mb-3">
+                                <table class="" style="font-size: 11px;">
+                                    <thead class="" style="">
+                                        <input hidden value="{{ operation.id }}" name="operation-id" id="zoneoperation-operation-{{ operation.id }}">
+
+                                        <th style="width: 187px; background-color: white; border: solid black 1px">
+                                            <input required type="text" name="name" style="outline: none; background-color: white;
+                                             border: none; width: 100%; padding: 3px"
+                                                   id="zoneoperation-name-{{ operation.id }}"
+                                                   class="" placeholder="نام زیرعملیات">
+                                        </th>
+
+                                        <th style="width: 93px; background-color: white; border: solid black 1px">
+                                            <input required type="number" name="weight" style="outline: none; background-color: white;
+                                               border: none; width: 100%; padding: 3px"
+                                               class="" placeholder="وزن %" max="{{ operation.freeWeight }}" min="0" id="zoneoperation-weight-{{ operation.id }}">
+                                        </th>
+
+
+                                        <th style="width: 93px; background-color: white; border: solid black 1px">
+                                            <input required type="number" name="amount" style="outline: none; background-color: white;
+                                            border: none; width: 100%; padding: 3px"
+                                               class="" placeholder="مقدار" id="zoneoperation-amount-{{ operation.id }}">
+                                        </th>
+                                    </thead>
+                                </table>
+
+                                <div id="unit-box-{{ operation.id }}" style="width: 90px;">
+                                    <select required class="select2" id="select2-{{ operation.id }}"
+                                            name="unit" style="width: 90px; border: solid black" onclick="">
+                                        <option disabled selected value="">
+                                            انتخاب
+                                        </option>
+                                        {% for unit in units %}
+                                            <option value="{{ unit }}">
+                                                {{ unit }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <button class="btn btn-outline-success bp3-round w-100"
+                                            type="zonemit" id="button-addon11">افزودن</button>
+                        </form>
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-warning w-100" data-bs-dismiss="modal" >تکمیل</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>

@@ -527,6 +527,26 @@ def del_suboperation_from_db(request):
     return HttpResponse(-1)
 
 
+def del_zoneoperation_from_db(request):
+    if request.method == "POST":
+        zone = request.POST.get("zoneoperation")
+        zone = Zone.objects.get(name=zone)
+
+        operation = request.POST.get("operation")
+
+        obj = ZoneOperation.objects.get(zone=zone, operation=operation)
+        obj.delete()
+
+        Operation.objects.get(id=operation).update_assignedAmount()
+
+        return HttpResponse(True)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
 def add_suboperation_to_db(request):
     if request.method == "POST":
         operation_id = request.POST.get("operation-id")
@@ -571,9 +591,37 @@ def add_operation_to_db(request):
             amount=amount,
         )
         operation.update_assignedWeight()
+        operation.update_assignedAmount()
 
 
         return HttpResponse(operation.id)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+def add_zoneoperation_to_db(request):
+    if request.method == "POST":
+        operation_id = request.POST.get("operation-id")
+        zone = request.POST.get("zone").strip()
+        amount = request.POST.get("amount")
+
+        operation = Operation.objects.get(id=operation_id)
+
+        zone_operation = ZoneOperation.objects.create(
+            operation=operation,
+            zone=Zone.objects.get(name=zone),
+            unit=operation.unit,
+            amount=amount,
+        )
+
+        operation.zones.add(zone_operation)
+        operation.update_assignedAmount()
+
+
+        return HttpResponse(zone_operation.id)
 
     elif request.method == "GET":
         pass
@@ -1456,6 +1504,19 @@ def get_units(request):
             data = "[]"
         context = {
             "units": data
+        }
+        return JsonResponse(context)
+
+
+def get_zones(request):
+    if request.method == "GET":
+        zones = Zone.objects.all()
+        if zones.exists():
+            data = json.dumps(list(zones.values()))
+        else:
+            data = "[]"
+        context = {
+            "zones": data
         }
         return JsonResponse(context)
 

@@ -71,14 +71,17 @@ urlpatterns = [
 
     path("edit-db/add-suboperation", add_suboperation_to_db),
     path("edit-db/add-operation", add_operation_to_db),
+    path("edit-db/add-zoneoperation", add_zoneoperation_to_db),
     path("edit-db/del-operation", del_operation_from_db),
     path("edit-db/del-suboperation", del_suboperation_from_db),
+    path("edit-db/del-zoneoperation", del_zoneoperation_from_db),
 
 
     path("edit-db/get-options/<typee>", get_options),
     path("edit-db/get-tasks", get_tasks),
     path("edit-db/get-task", get_task),
     path("edit-db/get-units/", get_units),
+    path("edit-db/get-zones/", get_zones),
     path("edit-db/get-materialproviders/", get_materialproviders),
     path("edit-db/get-machineproviders/", get_machineproviders),
     path("edit-db/check-deletability/", check_deletability),

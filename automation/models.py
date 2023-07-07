@@ -456,6 +456,22 @@ class Operation(models.Model):
     fullyDone = models.BooleanField(default=False)
 
     suboperations = models.ManyToManyField('SubOperation', related_name='operations', null=True, blank=True)
+    zones = models.ManyToManyField('ZoneOperation', related_name='zones', null=True, blank=True)
+
+    def update_assignedAmount(self):
+        assigned = 0.0
+        for zone in self.zones.all():
+            assigned += zone.amount
+
+        self.assignedAmount = assigned
+        self.freeAmount = float(self.amount) - assigned
+
+        if float(self.amount) - assigned > 0:
+            self.fullyAssigned = False
+        else:
+            self.fullyAssigned = True
+
+        self.save()
 
     def update_assignedWeight(self):
         broken = 0.0
@@ -474,7 +490,7 @@ class Operation(models.Model):
 
 
     def set_fully_assignment(self):
-        if not self.assignedAmount < self.amount:
+        if not self.assignedAmount < float(self.amount):
             self.fullyAssigned = True
         else:
             self.fullyAssigned = False
@@ -502,30 +518,19 @@ class SubOperation(models.Model):
         return self.parent.name + " | " + self.name
 
 
+class ZoneOperation(models.Model):
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
+    amount = models.FloatField(default=0.0, )
+    doneAmount = models.FloatField(default=0.0, )
 
-# class OperationPlusSubs(models.Model):
-#     name = models.CharField(max_length=250, unique=True,)
-#     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-#
-#     amount = models.FloatField(default=0.0, )
-#     assignedAmount = models.FloatField(default=0.0, )
-#     doneAmount = models.FloatField(default=0.0, )
-#
-#     fullyAssigned = models.BooleanField(default=False)
-#     fullyDone = models.BooleanField(default=False)
-#
-#
-#
-#     def set_fully_assignment(self):
-#         if not self.assignedAmount < self.amount:
-#             self.fullyAssigned = True
-#         else:
-#             self.fullyAssigned = False
-#         self.save()
-#
-#     def __str__(self):
-#         return self.name
+    class Meta:
+        unique_together = ('operation', 'zone')
+
+    def __str__(self):
+        return self.operation.name + " | " + self.zone.name
 
 
 # class OperationBreak(models.Model):

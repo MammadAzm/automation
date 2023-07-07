@@ -493,7 +493,9 @@ function del_operation(operation, db) {
             xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function(response) {
+                alert("با موفقیت حذف شد")
                 let obj = document.getElementById(operation)
+
                 obj.remove()
                 }
         });
@@ -2171,6 +2173,20 @@ function fetch_units(callback) {
     });
 }
 
+function fetch_zones(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-zones/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["zones"])
+
+            callback(opts)
+        }
+    });
+}
+
 function fetch_materialproviders(callback) {
     $.ajax({
         type: 'GET',
@@ -2259,48 +2275,48 @@ function iter_reports() {
 function shortcut_add(which, ) {
     if (which == "position") {
         let value = document.getElementById("shortcut_position").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_position").value = ""
 
     } else if (which == "profession") {
         let value = document.getElementById("shortcut_profession").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_profession").value = ""
     }
     else if (which == "machine") {
         let value = document.getElementById("shortcut_machine").value
         let type = document.getElementById("shortcut_machineType").value
-        shotcut_add_to_base(which, value, type);
+        shortcut_add_to_base(which, value, type);
         document.getElementById("shortcut_machine").value = ""
     }
     else if (which == "material") {
         let value = document.getElementById("shortcut_material").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_material").value = ""
     }
     else if (which == "contractor") {
         let value = document.getElementById("shortcut_contractor").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_contractor").value = ""
     }
     else if (which == "zone") {
         let value = document.getElementById("shortcut_zone").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_zone").value = ""
     }
     else if (which == "unit") {
         let value = document.getElementById("shortcut_unit").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_unit").value = ""
     }
     else if (which == "materialprovider") {
         let value = document.getElementById("shortcut_materialprovider").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_materialprovider").value = ""
     }
     else if (which == "machineprovider") {
         let value = document.getElementById("shortcut_machineprovider").value
-        shotcut_add_to_base(which, value);
+        shortcut_add_to_base(which, value);
         document.getElementById("shortcut_machineprovider").value = ""
     }
     else if (which == "") {
@@ -2312,7 +2328,7 @@ function shortcut_add(which, ) {
 
 }
 
-function shotcut_add_to_base(which, value, type=null) {
+function shortcut_add_to_base(which, value, type=null) {
     if (!value) {
         return 0
     } else if (!type && which == "machine")  {
@@ -2341,7 +2357,7 @@ function shotcut_add_to_base(which, value, type=null) {
 
 }
 
-function shotcut_add_to_base_2(which, value, type=null) {
+function shortcut_add_to_base_2(which, value, type=null) {
     if (!value) {
         return 0
     } else if (!type && which == "machine")  {
@@ -2428,6 +2444,8 @@ function submitForm(ID, type) {
         var target = "form-" + ID
     } else if (type === "operation") {
         var target = "add-operation"
+    } else if (type === "zoneoperation") {
+        var target = "form-zone-" + ID
     }
     $('#'+target).submit(function(event) {
         // Prevent form submission
@@ -2509,7 +2527,8 @@ function submitForm(ID, type) {
                     "suboperation-weight-" + ID
                 )
                 cell.max = 100 - sum
-            } else if ( type === "operation" ) {
+            }
+            else if ( type === "operation" ) {
                 let table = document.getElementById("table-operation")
                 let tbody = table.querySelector("tbody")
 
@@ -2544,13 +2563,29 @@ function submitForm(ID, type) {
                 span2.setAttribute('data-bs-toggle', 'modal');
                 span2.setAttribute('data-bs-target', '#staticBackdropSubOperations-'+response);
 
-
-
+                let span3 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span3.className = "badge rounded-pill";
+                span3.innerHTML = '<img src="/static/icons/grid-1x2.svg"/>';
+                span3.setAttribute('data-bs-toggle', 'modal');
+                span3.setAttribute('data-bs-target', '#staticBackdropZoneOperations-'+response);
 
                 cell1.innerText = document.getElementById("operation-name").value;
 
                 cell1.appendChild(span)
-                cell1.appendChild(span2)
+                let temp = document.createElement('div')
+                temp.style.display = "inline-block"
+                Object.assign(temp.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                temp.appendChild(span2)
+                temp.appendChild(span3)
+                cell1.appendChild(temp)
+                // cell1.appendChild()
 
 
                 let cell2 = document.createElement('td',);
@@ -2568,11 +2603,80 @@ function submitForm(ID, type) {
                 tbody.appendChild(newRow)
 
                 createModal(
+                    'suboperation',
                     response,
                     document.getElementById("operation-name").value,
                     document.getElementById("unitforoperation-amount").value,
                     document.getElementById("unitforoperation-name").value,
                 )
+
+                createModal(
+                    'zoneoperation',
+                    response,
+                    document.getElementById("operation-name").value,
+                    document.getElementById("unitforoperation-amount").value,
+                    document.getElementById("unitforoperation-name").value,
+                )
+            }
+            else if (type === "zoneoperation") {
+                let table = document.getElementById("table-zone-" + ID)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = "zoneoperation-" + document.getElementById('select2-zone-' + ID).value + "-" + ID;
+
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerHTML = document.getElementById('select2-zone-' + ID).value;
+                cell1.setAttribute('colspan', '2')
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.style.marginLeft = "5pt"
+                let val = document.getElementById('select2-zone-' + ID).value
+                span.addEventListener('click', function () {
+                    del_zoneoperation(
+                        val,
+                        ID,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+
+                // let cell2 = document.createElement('td',);
+                // cell2.className = "";
+                // cell2.innerHTML = document.getElementById('select2-' + document.getElementById('suboperation-operation-' + ID).value).value
+
+                let cell3 = document.createElement('td',);
+                cell3.className = "amounts-" + ID;
+                cell3.innerHTML = document.getElementById('zoneoperation-amount-' + ID).value;
+
+                let cell4 = document.createElement('td',);
+                cell4.className = ""
+                cell4.innerHTML = document.getElementById("total-unit-" + ID).innerText.trim();
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell3)
+                newRow.appendChild(cell4)
+
+                tbody.appendChild(newRow)
+
+                let amounts = document.getElementsByClassName("amounts-" + ID)
+                let sum = 0.0
+                for (let i = 0; i < amounts.length; i++) {
+                    sum += parseFloat(amounts[i].innerText.trim())
+                }
+                let cell = document.getElementById(
+                    "zoneoperation-amount-" + ID
+                )
+                cell.max = parseFloat(document.getElementById("total-amount-"+ID).innerText) - sum
             }
         },
         error: function(xhr, status, error) {
@@ -2623,262 +2727,552 @@ function del_suboperation(sub, opr, db) {
     }
 }
 
-function createModal(ID, opr_name, opr_amount, opr_unit) {
-    let container = document.getElementById("main-container")
+function del_zoneoperation(zone, opr, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-zoneoperation',
+            data: {
+            "zoneoperation": zone,
+            "operation": opr,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                if (response == "True") {
+                    let id = "zoneoperation-" + zone + "-" + opr
+                    let row = document.getElementById(id)
+                    row.remove();
 
-    let div_modal = document.createElement("div")
-    div_modal.className = "modal fade"
-    div_modal.id = "staticBackdropSubOperations-"+ID
-    div_modal.setAttribute("data-bs-backdrop", "static")
-    div_modal.setAttribute("data-bs-keyboard", "false")
-    div_modal.setAttribute("tabindex", "-1")
+                    alert(" با موفقیت حذف شد");
 
-    let div_modal_dialog = document.createElement("div")
-    div_modal_dialog.className = "modal-dialog"
+                    let amounts = document.getElementsByClassName("amounts-"+opr)
 
-    let div_modal_content = document.createElement("div")
-    div_modal_content.className = "modal-content"
+                    let sum = 0.0
+                    for (let i=0; i < amounts.length; i++) {
+                        sum += parseFloat(amounts[i].innerText.trim())
+                    }
+                    let cell = document.getElementById(
+                        "zoneoperation-amount-" + opr
+                    )
+                    cell.max = parseFloat(document.getElementById("total-amount-"+opr).innerText) - sum
 
-    let div_modal_header = document.createElement("div")
-    div_modal_header.className = "modal-header"
+                } else {
+                    alert("مشکلی در حذف بوجود آمده است.");
+                }
+            }
+        });
+    } else {
 
-    let close_modal = document.createElement("button")
-    close_modal.className = "btn-close"
-    close_modal.setAttribute("data-bs-dismiss", "modal")
-    close_modal.setAttribute("aria-label", "Close")
-
-    let modal_title = document.createElement("h5")
-    modal_title.className = "modal-title"
-    modal_title.id = "staticBackdropSubOperationsLabel-"+ID
-    modal_title.style.marginRight = "auto"
-    modal_title.innerText = "زیرعملیات های " + opr_name
-
-    let div_modal_body = document.createElement("div")
-    div_modal_body.className = "modal-body"
-
-    let div_input_group_01 = document.createElement("div")
-    div_input_group_01.className = "input-group mb-3"
-
-    let table = document.createElement("table")
-    table.className = "table table-bordered border-dark"
-    table.id = "table-" + ID
-    table.style.fontSize = "11px"
-
-    let thead01 = document.createElement("thead")
-    thead01.className = ""
-    let thead01_row = document.createElement("tr")
-    let thead01_row_td01 = document.createElement("th")
-    let thead01_row_td02 = document.createElement("th")
-    let thead01_row_td03 = document.createElement("th")
-    thead01_row_td01.style.textAlign = "center"
-    thead01_row_td02.style.textAlign = "center"
-    thead01_row_td03.style.textAlign = "center"
-
-    thead01_row_td01.setAttribute("colspan", "2")
-    thead01_row_td02.setAttribute("colspan", "1")
-    thead01_row_td03.setAttribute("colspan", "1")
-
-    thead01_row_td01.innerText = opr_name
-    thead01_row_td02.innerText = opr_amount
-    thead01_row_td03.innerText = opr_unit
+    }
+}
 
 
 
-    let thead02 = document.createElement("thead")
-    thead02.className = ""
-    let thead02_row = document.createElement("tr")
-    let thead02_row_td01 = document.createElement("th")
-    let thead02_row_td02 = document.createElement("th")
-    let thead02_row_td03 = document.createElement("th")
-    let thead02_row_td04 = document.createElement("th")
-    thead02_row_td02.style.width = "20%"
-    thead02_row_td03.style.width = "20%"
-    thead02_row_td04.style.width = "20%"
+function createModal(type, ID, opr_name, opr_amount, opr_unit) {
+    if (type === 'suboperation') {
+        let container = document.getElementById("main-container")
 
-    thead02_row_td01.innerText = "شرح زیرعملیات"
-    thead02_row_td02.innerText = "وزن %"
-    thead02_row_td03.innerText = "مقدار"
-    thead02_row_td04.innerText = "واحد"
+        let div_modal = document.createElement("div")
+        div_modal.className = "modal fade"
+        div_modal.id = "staticBackdropSubOperations-"+ID
+        div_modal.setAttribute("data-bs-backdrop", "static")
+        div_modal.setAttribute("data-bs-keyboard", "false")
+        div_modal.setAttribute("tabindex", "-1")
 
+        let div_modal_dialog = document.createElement("div")
+        div_modal_dialog.className = "modal-dialog"
 
+        let div_modal_content = document.createElement("div")
+        div_modal_content.className = "modal-content"
 
-    let tbody = document.createElement("tbody")
-    // let temp = document.createElement("tr")
-    // tbody.appendChild(temp)
+        let div_modal_header = document.createElement("div")
+        div_modal_header.className = "modal-header"
 
-    let form = document.createElement("form")
-    form.id = "form-"+ID
+        let close_modal = document.createElement("button")
+        close_modal.className = "btn-close"
+        close_modal.setAttribute("data-bs-dismiss", "modal")
+        close_modal.setAttribute("aria-label", "Close")
 
-    let div_input_group_02 = document.createElement("div")
-    div_input_group_02.className = "input-group mb-3"
+        let modal_title = document.createElement("h5")
+        modal_title.className = "modal-title"
+        modal_title.id = "staticBackdropSubOperationsLabel-"+ID
+        modal_title.style.marginRight = "auto"
+        modal_title.innerText = "زیرعملیات های " + opr_name
 
-    let table_form = document.createElement("table")
-    table_form.style.fontSize = "11px"
+        let div_modal_body = document.createElement("div")
+        div_modal_body.className = "modal-body"
 
-    let thead_form =  document.createElement("thead")
+        let div_input_group_01 = document.createElement("div")
+        div_input_group_01.className = "input-group mb-3"
 
-    let input_id = document.createElement("input")
-    input_id.hidden = true
-    input_id.value = ID
-    input_id.name = "operation-id"
-    input_id.id = "suboperation-operation-" + ID
-    input_id.required = true
+        let table = document.createElement("table")
+        table.className = "table table-bordered border-dark"
+        table.id = "table-" + ID
+        table.style.fontSize = "11px"
 
-    let th01 = document.createElement("th")
-    th01.style = "width: 187px; background-color: white; border: solid black 1px;"
+        let thead01 = document.createElement("thead")
+        thead01.className = ""
+        let thead01_row = document.createElement("tr")
+        let thead01_row_td01 = document.createElement("th")
+        let thead01_row_td02 = document.createElement("th")
+        let thead01_row_td03 = document.createElement("th")
+        thead01_row_td01.style.textAlign = "center"
+        thead01_row_td02.style.textAlign = "center"
+        thead01_row_td03.style.textAlign = "center"
 
-    let input_subopr_name = document.createElement("input")
-    input_subopr_name.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-    input_subopr_name.id = "suboperation-name-" + ID
-    input_subopr_name.placeholder = "نام زیرعملیات"
-    input_subopr_name.name = "name"
-    input_subopr_name.required = true
+        thead01_row_td01.setAttribute("colspan", "2")
+        thead01_row_td02.setAttribute("colspan", "1")
+        thead01_row_td03.setAttribute("colspan", "1")
 
-
-    let th02 = document.createElement("th")
-    th02.style = "width: 93px; background-color: white; border: solid black 1px;"
-
-    let input_subopr_weight = document.createElement("input")
-    input_subopr_weight.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-    input_subopr_weight.id = "suboperation-weight-" + ID
-    input_subopr_weight.placeholder = "وزن %"
-    input_subopr_weight.type = "number"
-    input_subopr_weight.name = "weight"
-    input_subopr_weight.min = "0"
-    input_subopr_weight.max = "100.0"
-    input_subopr_weight.required = true
-
-    let th03 = document.createElement("th")
-    th03.style = "width: 93px; background-color: white; border: solid black 1px;"
-
-    let input_subopr_amount = document.createElement("input")
-    input_subopr_amount.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-    input_subopr_amount.id = "suboperation-amount-" + ID
-    input_subopr_amount.placeholder = "مقدار"
-    input_subopr_amount.type = "number"
-    input_subopr_amount.required = true
-    input_subopr_amount.name = 'amount'
+        thead01_row_td01.innerText = opr_name
+        thead01_row_td02.innerText = opr_amount
+        thead01_row_td03.innerText = opr_unit
 
 
-    let div_unit_box = document.createElement("div")
-    div_unit_box.style = "width: 90px;"
-    div_unit_box.id = "unit-box-" + ID
 
-    let select_units = document.createElement('select')
-    select_units.required = true
-    select_units.className = "select2"
-    select_units.id = "select2-"+ ID
-    select_units.name = "unit"
-    select_units.style = "width: 90px; border: solid black"
-    // select_units.on('click', function() {
-    //     findselect2(ID);
-    // });
+        let thead02 = document.createElement("thead")
+        thead02.className = ""
+        let thead02_row = document.createElement("tr")
+        let thead02_row_td01 = document.createElement("th")
+        let thead02_row_td02 = document.createElement("th")
+        let thead02_row_td03 = document.createElement("th")
+        let thead02_row_td04 = document.createElement("th")
+        thead02_row_td02.style.width = "20%"
+        thead02_row_td03.style.width = "20%"
+        thead02_row_td04.style.width = "20%"
 
-    let choose_option = document.createElement('option')
-    choose_option.disabled = true
-    choose_option.selected = true
-    choose_option.value = ""
-    choose_option.innerText = "انتخاب"
+        thead02_row_td01.innerText = "شرح زیرعملیات"
+        thead02_row_td02.innerText = "وزن %"
+        thead02_row_td03.innerText = "مقدار"
+        thead02_row_td04.innerText = "واحد"
 
-    select_units.appendChild(choose_option)
-    fetch_units(function (units) {
-        units.forEach(unit => {
-            let option = document.createElement('option',)
-            option.value = unit.name
-            option.innerText = unit.name
-            select_units.appendChild(option)
+
+
+        let tbody = document.createElement("tbody")
+        // let temp = document.createElement("tr")
+        // tbody.appendChild(temp)
+
+        let form = document.createElement("form")
+        form.id = "form-"+ID
+
+        let div_input_group_02 = document.createElement("div")
+        div_input_group_02.className = "input-group mb-3"
+
+        let table_form = document.createElement("table")
+        table_form.style.fontSize = "11px"
+
+        let thead_form =  document.createElement("thead")
+
+        let input_id = document.createElement("input")
+        input_id.hidden = true
+        input_id.value = ID
+        input_id.name = "operation-id"
+        input_id.id = "suboperation-operation-" + ID
+        input_id.required = true
+
+        let th01 = document.createElement("th")
+        th01.style = "width: 187px; background-color: white; border: solid black 1px;"
+
+        let input_subopr_name = document.createElement("input")
+        input_subopr_name.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        input_subopr_name.id = "suboperation-name-" + ID
+        input_subopr_name.placeholder = "نام زیرعملیات"
+        input_subopr_name.name = "name"
+        input_subopr_name.required = true
+
+
+        let th02 = document.createElement("th")
+        th02.style = "width: 93px; background-color: white; border: solid black 1px;"
+
+        let input_subopr_weight = document.createElement("input")
+        input_subopr_weight.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        input_subopr_weight.id = "suboperation-weight-" + ID
+        input_subopr_weight.placeholder = "وزن %"
+        input_subopr_weight.type = "number"
+        input_subopr_weight.name = "weight"
+        input_subopr_weight.min = "0"
+        input_subopr_weight.max = "100.0"
+        input_subopr_weight.required = true
+
+        let th03 = document.createElement("th")
+        th03.style = "width: 93px; background-color: white; border: solid black 1px;"
+
+        let input_subopr_amount = document.createElement("input")
+        input_subopr_amount.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        input_subopr_amount.id = "suboperation-amount-" + ID
+        input_subopr_amount.placeholder = "مقدار"
+        input_subopr_amount.type = "number"
+        input_subopr_amount.required = true
+        input_subopr_amount.name = 'amount'
+
+
+        let div_unit_box = document.createElement("div")
+        div_unit_box.style = "width: 90px;"
+        div_unit_box.id = "unit-box-" + ID
+
+        let select_units = document.createElement('select')
+        select_units.required = true
+        select_units.className = "select2"
+        select_units.id = "select2-"+ ID
+        select_units.name = "unit"
+        select_units.style = "width: 90px; border: solid black"
+        // select_units.on('click', function() {
+        //     findselect2(ID);
+        // });
+
+        let choose_option = document.createElement('option')
+        choose_option.disabled = true
+        choose_option.selected = true
+        choose_option.value = ""
+        choose_option.innerText = "انتخاب"
+
+        select_units.appendChild(choose_option)
+        fetch_units(function (units) {
+            units.forEach(unit => {
+                let option = document.createElement('option',)
+                option.value = unit.name
+                option.innerText = unit.name
+                select_units.appendChild(option)
+            })
         })
-    })
-    div_unit_box.appendChild(select_units)
+        div_unit_box.appendChild(select_units)
 
-    let btn_submit = document.createElement("button")
-    btn_submit.className = "btn btn-outline-success bp3-round w-100"
-    btn_submit.type = "submit"
-    btn_submit.innerText = "افزودن"
+        let btn_submit = document.createElement("button")
+        btn_submit.className = "btn btn-outline-success bp3-round w-100"
+        btn_submit.type = "submit"
+        btn_submit.innerText = "افزودن"
 
-    let div_modal_footer = document.createElement("div")
-    div_modal_footer.className = "modal-footer"
+        let div_modal_footer = document.createElement("div")
+        div_modal_footer.className = "modal-footer"
 
-    let btn_cmplt = document.createElement("button")
-    btn_cmplt.type = "button"
-    btn_cmplt.className = "btn btn-outline-warning w-100"
-    btn_cmplt.setAttribute('data-bs-dismiss', 'modal')
-    btn_cmplt.innerText = "تکمیل"
+        let btn_cmplt = document.createElement("button")
+        btn_cmplt.type = "button"
+        btn_cmplt.className = "btn btn-outline-warning w-100"
+        btn_cmplt.setAttribute('data-bs-dismiss', 'modal')
+        btn_cmplt.innerText = "تکمیل"
 
-    // ==================================================
-    // --------------------------------------------------
-    thead01_row.appendChild(thead01_row_td01)
-    thead01_row.appendChild(thead01_row_td02)
-    thead01_row.appendChild(thead01_row_td03)
+        // ==================================================
+        // --------------------------------------------------
+        thead01_row.appendChild(thead01_row_td01)
+        thead01_row.appendChild(thead01_row_td02)
+        thead01_row.appendChild(thead01_row_td03)
 
-    thead01.appendChild(thead01_row)
-    // --------------------------------------------------
+        thead01.appendChild(thead01_row)
+        // --------------------------------------------------
 
-    // --------------------------------------------------
-    thead02_row.appendChild(thead02_row_td01)
-    thead02_row.appendChild(thead02_row_td02)
-    thead02_row.appendChild(thead02_row_td03)
-    thead02_row.appendChild(thead02_row_td04)
+        // --------------------------------------------------
+        thead02_row.appendChild(thead02_row_td01)
+        thead02_row.appendChild(thead02_row_td02)
+        thead02_row.appendChild(thead02_row_td03)
+        thead02_row.appendChild(thead02_row_td04)
 
-    thead02.appendChild(thead02_row)
-    // --------------------------------------------------
+        thead02.appendChild(thead02_row)
+        // --------------------------------------------------
 
-    // --------------------------------------------------
-    th01.appendChild(input_subopr_name)
-    th02.appendChild(input_subopr_weight)
-    th03.appendChild(input_subopr_amount)
+        // --------------------------------------------------
+        th01.appendChild(input_subopr_name)
+        th02.appendChild(input_subopr_weight)
+        th03.appendChild(input_subopr_amount)
 
-    thead_form.appendChild(input_id)
-    thead_form.appendChild(th01)
-    thead_form.appendChild(th02)
-    thead_form.appendChild(th03)
+        thead_form.appendChild(input_id)
+        thead_form.appendChild(th01)
+        thead_form.appendChild(th02)
+        thead_form.appendChild(th03)
 
-    table_form.appendChild(thead_form)
+        table_form.appendChild(thead_form)
 
-    div_input_group_02.appendChild(table_form)
-    div_input_group_02.appendChild(div_unit_box)
+        div_input_group_02.appendChild(table_form)
+        div_input_group_02.appendChild(div_unit_box)
 
-    form.appendChild(div_input_group_02)
-    form.appendChild(btn_submit)
-    // --------------------------------------------------
+        form.appendChild(div_input_group_02)
+        form.appendChild(btn_submit)
+        // --------------------------------------------------
 
-    // --------------------------------------------------
-    table.appendChild(thead01)
-    table.appendChild(thead02)
-    table.appendChild(tbody)
+        // --------------------------------------------------
+        table.appendChild(thead01)
+        table.appendChild(thead02)
+        table.appendChild(tbody)
 
-    div_input_group_01.appendChild(table)
-    div_input_group_01.appendChild(form)
-    // --------------------------------------------------
-    // ==========================================================
+        div_input_group_01.appendChild(table)
+        div_input_group_01.appendChild(form)
+        // --------------------------------------------------
+        // ==========================================================
 
-    // ==========================================================
-    div_modal_footer.appendChild(btn_cmplt)
-    // ==========================================================
+        // ==========================================================
+        div_modal_footer.appendChild(btn_cmplt)
+        // ==========================================================
 
-    // ==========================================================
-    div_modal_body.appendChild(div_input_group_01)
-    div_modal_body.appendChild(div_modal_footer)
-    // ==========================================================
+        // ==========================================================
+        div_modal_body.appendChild(div_input_group_01)
+        div_modal_body.appendChild(div_modal_footer)
+        // ==========================================================
 
-    // ==========================================================
-    div_modal_header.appendChild(close_modal)
-    div_modal_header.appendChild(modal_title)
+        // ==========================================================
+        div_modal_header.appendChild(close_modal)
+        div_modal_header.appendChild(modal_title)
 
-    div_modal_content.appendChild(div_modal_header)
-    div_modal_content.appendChild(div_modal_body)
-    // ==========================================================
+        div_modal_content.appendChild(div_modal_header)
+        div_modal_content.appendChild(div_modal_body)
+        // ==========================================================
 
-    // ==========================================================
-    div_modal_dialog.appendChild(div_modal_content)
-    div_modal.appendChild(div_modal_dialog)
-    container.appendChild(div_modal)
-    // ==========================================================
+        // ==========================================================
+        div_modal_dialog.appendChild(div_modal_content)
+        div_modal.appendChild(div_modal_dialog)
+        container.appendChild(div_modal)
+        // ==========================================================
 
-    $('#select2-'+ID).select2({
-        dropdownParent: $("#unit-box-"+ID)
-    });
+        $('#select2-'+ID).select2({
+            dropdownParent: $("#unit-box-"+ID)
+        });
 
-    submitForm(ID, 'suboperation')
+        submitForm(ID, 'suboperation')
+    } // *******************************************************************************
+    else if (type === 'zoneoperation') {
+        let container = document.getElementById("main-container")
+
+        let div_modal = document.createElement("div")
+        div_modal.className = "modal fade"
+        div_modal.id = "staticBackdropZoneOperations-"+ID
+        div_modal.setAttribute("data-bs-backdrop", "static")
+        div_modal.setAttribute("data-bs-keyboard", "false")
+        div_modal.setAttribute("tabindex", "-1")
+
+        let div_modal_dialog = document.createElement("div")
+        div_modal_dialog.className = "modal-dialog"
+
+        let div_modal_content = document.createElement("div")
+        div_modal_content.className = "modal-content"
+
+        let div_modal_header = document.createElement("div")
+        div_modal_header.className = "modal-header"
+
+        let close_modal = document.createElement("button")
+        close_modal.className = "btn-close"
+        close_modal.setAttribute("data-bs-dismiss", "modal")
+        close_modal.setAttribute("aria-label", "Close")
+
+        let modal_title = document.createElement("h5")
+        modal_title.className = "modal-title"
+        modal_title.id = "staticBackdropSubOperationsLabel-"+ID
+        modal_title.style.marginRight = "auto"
+        modal_title.innerText = "تقسیم " + opr_name + " در موقعیت ها"
+
+        let div_modal_body = document.createElement("div")
+        div_modal_body.className = "modal-body"
+
+        let div_input_group_01 = document.createElement("div")
+        div_input_group_01.className = "input-group mb-3"
+
+        let table = document.createElement("table")
+        table.className = "table table-bordered border-dark"
+        table.id = "table-zone-" + ID
+        table.style.fontSize = "11px"
+
+        let thead01 = document.createElement("thead")
+        thead01.className = ""
+        let thead01_row = document.createElement("tr")
+        let thead01_row_td01 = document.createElement("th")
+        let thead01_row_td02 = document.createElement("th")
+        let thead01_row_td03 = document.createElement("th")
+        thead01_row_td01.style.textAlign = "center"
+        thead01_row_td02.style.textAlign = "center"
+        thead01_row_td03.style.textAlign = "center"
+
+        thead01_row_td01.setAttribute("colspan", "2")
+        thead01_row_td02.setAttribute("colspan", "1")
+        thead01_row_td03.setAttribute("colspan", "1")
+
+        thead01_row_td01.innerText = opr_name
+        thead01_row_td02.innerText = opr_amount
+        thead01_row_td03.innerText = opr_unit
+
+        thead01_row_td02.id = "total-amount-" + ID
+        thead01_row_td03.id = "total-unit-" + ID
+
+
+
+        let thead02 = document.createElement("thead")
+        thead02.className = ""
+        let thead02_row = document.createElement("tr")
+        let thead02_row_td01 = document.createElement("th")
+        let thead02_row_td02 = document.createElement("th")
+        let thead02_row_td03 = document.createElement("th")
+        // let thead02_row_td04 = document.createElement("th")
+        thead02_row_td02.style.width = "20%"
+        thead02_row_td03.style.width = "20%"
+        // thead02_row_td04.style.width = "20%"
+
+        thead02_row_td01.colSpan = 2
+        thead02_row_td01.innerText = "موقعیت"
+        thead02_row_td02.innerText = "مقدار"
+        thead02_row_td03.innerText = "واحد"
+
+
+        let tbody = document.createElement("tbody")
+        // let temp = document.createElement("tr")
+        // tbody.appendChild(temp)
+
+        let form = document.createElement("form")
+        form.id = "form-zone-"+ID
+
+        let div_input_group_02 = document.createElement("div")
+        div_input_group_02.className = "input-group mb-3"
+
+        let table_form = document.createElement("table")
+        table_form.style.fontSize = "11px"
+
+        let thead_form =  document.createElement("thead")
+
+
+
+        let div_zone_box = document.createElement("div")
+        div_zone_box.style = "width: 280px;"
+        div_zone_box.id = "zone-box-" + ID
+
+        let select_zones = document.createElement('select')
+        select_zones.required = true
+        select_zones.className = "select2"
+        select_zones.id = "select2-zone-"+ ID
+        select_zones.name = "zone"
+        select_zones.style = "width: 280px; border: solid black"
+        // select_zones.on('click', function() {
+        //     findselect2(ID);
+        // });
+
+        let choose_option = document.createElement('option')
+        choose_option.disabled = true
+        choose_option.selected = true
+        choose_option.value = ""
+        choose_option.innerText = "انتخاب"
+
+        select_zones.appendChild(choose_option)
+        fetch_zones(function (zones) {
+            zones.forEach(zone => {
+                let option = document.createElement('option',)
+                option.value = zone.name
+                option.innerText = zone.name
+                select_zones.appendChild(option)
+            })
+        })
+        div_zone_box.appendChild(select_zones)
+
+        let input_id = document.createElement("input")
+        input_id.hidden = true
+        input_id.value = ID
+        input_id.name = "operation-id"
+        input_id.id = "zoneoperation-operation-" + ID
+        input_id.required = true
+
+        let th02 = document.createElement("th")
+        th02.style = "width: 93px; background-color: white; border: solid black 1px;"
+
+        let th03 = document.createElement("th")
+        th03.style = "width: 93px; background-color: white; border: solid black 1px;"
+        th03.innerText = opr_unit
+
+        let input_zoneopr_amount = document.createElement("input")
+        input_zoneopr_amount.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        input_zoneopr_amount.id = "zoneoperation-amount-" + ID
+        input_zoneopr_amount.placeholder = "مقدار"
+        input_zoneopr_amount.type = "number"
+        input_zoneopr_amount.required = true
+        input_zoneopr_amount.name = 'amount'
+
+
+
+        let btn_submit = document.createElement("button")
+        btn_submit.className = "btn btn-outline-success bp3-round w-100"
+        btn_submit.type = "submit"
+        btn_submit.innerText = "افزودن"
+
+        let div_modal_footer = document.createElement("div")
+        div_modal_footer.className = "modal-footer"
+
+        let btn_cmplt = document.createElement("button")
+        btn_cmplt.type = "button"
+        btn_cmplt.className = "btn btn-outline-warning w-100"
+        btn_cmplt.setAttribute('data-bs-dismiss', 'modal')
+        btn_cmplt.innerText = "تکمیل"
+
+        // ==================================================
+        // --------------------------------------------------
+        thead01_row.appendChild(thead01_row_td01)
+        thead01_row.appendChild(thead01_row_td02)
+        thead01_row.appendChild(thead01_row_td03)
+
+        thead01.appendChild(thead01_row)
+        // --------------------------------------------------
+
+        // --------------------------------------------------
+        thead02_row.appendChild(thead02_row_td01)
+        thead02_row.appendChild(thead02_row_td02)
+        thead02_row.appendChild(thead02_row_td03)
+        // thead02_row.appendChild(thead02_row_td04)
+
+        thead02.appendChild(thead02_row)
+        // --------------------------------------------------
+
+        // --------------------------------------------------
+        // th01.appendChild(input_zoneopr_name)
+        th02.appendChild(input_zoneopr_amount)
+
+        thead_form.appendChild(input_id)
+        // thead_form.appendChild(th01)
+        thead_form.appendChild(th02)
+        thead_form.appendChild(th03)
+
+        table_form.appendChild(thead_form)
+
+        div_input_group_02.appendChild(div_zone_box)
+        div_input_group_02.appendChild(table_form)
+
+
+        form.appendChild(div_input_group_02)
+        form.appendChild(btn_submit)
+        // --------------------------------------------------
+
+        // --------------------------------------------------
+        table.appendChild(thead01)
+        table.appendChild(thead02)
+        table.appendChild(tbody)
+
+        div_input_group_01.appendChild(table)
+        div_input_group_01.appendChild(form)
+        // --------------------------------------------------
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_footer.appendChild(btn_cmplt)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_body.appendChild(div_input_group_01)
+        div_modal_body.appendChild(div_modal_footer)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_header.appendChild(close_modal)
+        div_modal_header.appendChild(modal_title)
+
+        div_modal_content.appendChild(div_modal_header)
+        div_modal_content.appendChild(div_modal_body)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_dialog.appendChild(div_modal_content)
+        div_modal.appendChild(div_modal_dialog)
+        container.appendChild(div_modal)
+        // ==========================================================
+
+        $('#select2-zone-'+ID).select2({
+            dropdownParent: $("#zone-box-"+ID)
+        });
+
+        submitForm(ID, 'zoneoperation')
+    }
+
+
 
 }
