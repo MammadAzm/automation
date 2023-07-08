@@ -576,28 +576,27 @@ function del_equipe(prof, cont, db) {
 
 }
 
-function del_task(taskName, equipeName, zoneName, taskVol, unitName, db) {
+function del_task(taskOperation, taskSubOperation, equipeName, zoneName, db) {
     if (db) {
         $.ajax({
             type: 'POST',
             url: '/edit-db/del-task',
             data: {
-            'taskName': taskName,
+            'taskOperation': taskOperation,
+            'taskSubOperation': taskSubOperation,
             'equipeName': equipeName,
             'zoneName': zoneName,
-            'taskVol': taskVol,
-            'unitName': unitName,
             },
             beforeSend: function(xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function(response) {
-                let obj = document.getElementById(taskName+"-"+equipeName+"-"+zoneName)
+                let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
                 obj.remove()
                 }
         });
     } else {
-        let obj = document.getElementById(taskName+"-"+equipeName+"-"+zoneName)
+        let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
         obj.remove()
     }
 
@@ -908,7 +907,7 @@ function search_unit_task() {
       $('#search-unit').val("");
       let event = new Event('keyup');
       document.getElementById("search-unit").dispatchEvent(event);
-      $('#unit-name').val(selectedItemText);
+      $('#task-unit').val(selectedItemText);
     });
     // Add event listener to the search input
     $('#search-unit').on('keyup', function() {
@@ -1566,8 +1565,8 @@ function add_equipe_to_base_data(shortcut=null) {
                 xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
                 },
                 success: function(response) {
-                    if (response == "True") {
-                        alert("عملیات با موفقیت انجام شد")
+                    if (response == "True" || response == true) {
+                        alert("با موفقیت اضافه شد")
                     }
                 }
             });
@@ -1673,8 +1672,8 @@ function add_task_to_base_data(shortcut=null) {
         let taskVol = document.getElementById("task-volume").value
         document.getElementById("task-volume").value = "";
 
-        let unitName = document.getElementById("unit-name").value
-        document.getElementById("unit-name").value = "";
+        let unitName = document.getElementById("task-unit").value
+        document.getElementById("task-unit").value = "";
 
         if ( !taskName || !equipeName || !zoneName || !taskVol || !unitName ) {
             return 0
@@ -1826,7 +1825,8 @@ function fetch_options(type, shortcut=null){
             }
         })
 
-    } else {
+    }
+    else {
         let typetype = false;
         if (type[0] == "equipe"){
             if (type[1] == "profession") {
@@ -2173,6 +2173,68 @@ function fetch_units(callback) {
     });
 }
 
+function fetch_operations(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-operations/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["operations"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_all_equipes(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-all-equipes/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["equipes"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_suboperations(opr, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-suboperations/',
+        data: {
+            "operation": opr
+        },
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["suboperations"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_zoneoperations(opr, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-zoneoperations/',
+        data: {
+            "operation": opr
+        },
+        success: function(response) {
+            let opts = response
+            // opts = JSON.parse(opts["zoneoperations"])
+            opts = opts["zoneoperations"]
+
+            callback(opts)
+        }
+    });
+}
+
 function fetch_zones(callback) {
     $.ajax({
         type: 'GET',
@@ -2442,10 +2504,45 @@ function update_live_total_done(live) {
 function submitForm(ID, type) {
     if (type === "suboperation") {
         var target = "form-" + ID
-    } else if (type === "operation") {
+    }
+    else if (type === "operation") {
         var target = "add-operation"
-    } else if (type === "zoneoperation") {
+    }
+    else if (type === "zoneoperation") {
         var target = "form-zone-" + ID
+    }
+    else if (type === "task") {
+        var target = "form-task"
+    }
+    else if (type === "position") {
+        var target = "form-position"
+    }
+    else if (type === "profession") {
+        var target = "form-profession"
+    }
+    else if (type === "machine") {
+        var target = "form-machine"
+    }
+    else if (type === "material") {
+        var target = "form-material"
+    }
+    else if (type === "contractor") {
+        var target = "form-contractor"
+    }
+    else if (type === "equipe") {
+        var target = "form-equipe"
+    }
+    else if (type === "zone") {
+        var target = "form-zone"
+    }
+    else if (type === "materialprovider") {
+        var target = "form-materialprovider"
+    }
+    else if (type === "machineprovider") {
+        var target = "form-machineprovider"
+    }
+    else if (type === "unit") {
+        var target = "form-unit"
     }
     $('#'+target).submit(function(event) {
         // Prevent form submission
@@ -2466,8 +2563,6 @@ function submitForm(ID, type) {
         xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
         },
         success: function(response) {
-            alert("با موفقیت افزوده شد.")
-
             if ( type === "suboperation" ) {
                 let table = document.getElementById("table-" + ID)
                 let tbody = table.querySelector("tbody")
@@ -2590,10 +2685,12 @@ function submitForm(ID, type) {
 
                 let cell2 = document.createElement('td',);
                 cell2.className = "";
+                cell2.style.width = "20%"
                 cell2.innerHTML = document.getElementById("unitforoperation-name").value
 
                 let cell3 = document.createElement('td',);
                 cell3.className = "";
+                cell3.style.width = "20%"
                 cell3.innerHTML = document.getElementById("unitforoperation-amount").value
 
                 newRow.appendChild(cell1)
@@ -2617,6 +2714,28 @@ function submitForm(ID, type) {
                     document.getElementById("unitforoperation-amount").value,
                     document.getElementById("unitforoperation-name").value,
                 )
+
+                let selects = document.getElementsByTagName("select")
+                for (let i=0; i<selects.length; i++) {
+                    if (selects[i].id === "select2-operation") {
+                        let id = selects[i].id
+                        $("#"+id).empty().append(
+                            '<option value="" selected disabled>انتخاب عملیات اصلی</option>'
+                        )
+                        fetch_operations(function (operations) {
+                            operations.forEach(operation => {
+                                let option = document.createElement('option',)
+                                option.value = operation.name
+                                option.innerHTML = operation.name
+                                selects[i].appendChild(option)
+                            });
+                        });
+                        // $('#'+id).select2({
+                        //     dropdownParent: $("#equipe-box")
+                        // });
+                    }
+                }
+
             }
             else if (type === "zoneoperation") {
                 let table = document.getElementById("table-zone-" + ID)
@@ -2677,7 +2796,541 @@ function submitForm(ID, type) {
                     "zoneoperation-amount-" + ID
                 )
                 cell.max = parseFloat(document.getElementById("total-amount-"+ID).innerText) - sum
+
             }
+            else if (type === "task") {
+                if ( response === false) {
+                    alert(
+                        "این مورد قبلا ایجاد شده است"
+                    )
+                    return 0
+                }
+
+                let opr = document.getElementById("select2-operation").value;
+                let subopr = document.getElementById("select2-suboperation").value
+                let equipe = document.getElementById("select2-equipe").value
+                let zone = document.getElementById("select2-zoneoperation").value
+                let amount = document.getElementById("task-volume").value
+                let unit = document.getElementById("task-unit").value
+
+
+                let table = document.getElementById("table-task")
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = opr + "-" + subopr + "-" + equipe + "-" + zone ;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.style.width = "25%"
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                let val = opr + "-" + subopr + "-" + equipe + "-" + zone ;
+                span.addEventListener('click', function () {
+                    del_task(
+                        opr, subopr, equipe, zone,true
+                    );
+                });
+
+                // let span2 = document.createElement('span',);
+                // Object.assign(span2.style, {
+                //     float: 'right',
+                //     color: 'black',
+                // });
+                // span2.className = "badge rounded-pill";
+                // span2.innerHTML = '<img src="/static/icons/list-task.svg" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"/>';
+                // span2.setAttribute('data-bs-toggle', 'modal');
+                // span2.setAttribute('data-bs-target', '#staticBackdropSubOperations-'+response);
+                //
+                // let span3 = document.createElement('span',);
+                // Object.assign(span2.style, {
+                //     float: 'right',
+                //     color: 'black',
+                // });
+                // span3.className = "badge rounded-pill";
+                // span3.innerHTML = '<img src="/static/icons/grid-1x2.svg"/>';
+                // span3.setAttribute('data-bs-toggle', 'modal');
+                // span3.setAttribute('data-bs-target', '#staticBackdropZoneOperations-'+response);
+
+                cell1.innerText = opr
+
+                cell1.appendChild(span)
+                // let temp = document.createElement('div')
+                // temp.style.display = "inline-block"
+                // Object.assign(temp.style, {
+                //     float: 'right',
+                //     color: 'black',
+                // });
+                // temp.appendChild(span2)
+                // temp.appendChild(span3)
+                // cell1.appendChild(temp)
+                // cell1.appendChild()
+
+
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.style.width = "20%"
+                cell2.innerHTML = subopr
+
+                let cell3 = document.createElement('td',);
+                cell3.className = "";
+                cell3.style.width = "18%"
+                cell3.innerHTML = equipe
+
+                let cell4 = document.createElement('td',);
+                cell4.className = "";
+                cell4.style.width = "17%"
+                cell4.innerHTML = zone
+
+                let cell5 = document.createElement('td',);
+                cell5.className = "";
+                cell5.style.width = "10%"
+                cell5.innerHTML = amount
+
+                let cell6 = document.createElement('td',);
+                cell6.className = "";
+                cell6.style.width = "10%"
+                cell6.innerHTML = unit
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell2)
+                newRow.appendChild(cell3)
+                newRow.appendChild(cell4)
+                newRow.appendChild(cell6)
+                newRow.appendChild(cell5)
+
+                tbody.appendChild(newRow)
+
+                let select = document.getElementById("select2-equipe")
+                $("#select2-equipe").empty().append(
+                    '<option value="" selected disabled>انتخاب اکیپ</option>'
+                )
+                fetch_all_equipes(function (equipes) {
+                    equipes.forEach(equipe => {
+                        let option = document.createElement('option',)
+                        option.value = equipe.name
+                        option.innerHTML = equipe.name
+                        select.appendChild(option)
+                    })
+                })
+                $('#select2-equipe').select2({
+                    dropdownParent: $("#equipe-box")
+                });
+
+                let select2 = document.getElementById("select2-zoneoperation")
+                $("#select2-zoneoperation").empty().append(
+                    '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+                )
+                fetch_zoneoperations(opr, function (zoneoperations) {
+                    zoneoperations.forEach(zoneoperation => {
+                        let option = document.createElement('option',)
+                        option.value = zoneoperation.zone
+                        option.innerHTML = zoneoperation.zone
+                        select2.appendChild(option)
+                    })
+                })
+                $('#select2-zoneoperation').select2({
+                    dropdownParent: $("#zoneoperation-box")
+                });
+            }
+            else if (type === "position") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_position(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+
+
+            }
+            else if (type === "profession") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_profession(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "machine") {
+                let input = document.getElementById("input-" + type)
+                let machine = document.getElementById('machineType')
+                let value = input.value
+                let machineType = machine.value
+                input.value = ""
+                machine.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_machine(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "material") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_material(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "contractor") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_contractor(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "equipe") {
+                let prof = document.getElementById("equipe-profession-name")
+                let cont = document.getElementById("equipe-contractor-name")
+                let prof_value = prof.value
+                let cont_value = cont.value
+                prof.value = ""
+                cont.value = ""
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = prof_value + "-" + cont_value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = prof_value + "-" + cont_value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_equipe(
+                        prof_value,
+                        cont_value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+
+                let selects = document.getElementsByTagName("select")
+                for (let i=0; i<selects.length; i++) {
+                    if (selects[i].id === "select2-equipe") {
+                        let id = selects[i].id
+                        $("#"+id).empty().append(
+                            '<option value="" selected disabled>انتخاب اکیپ</option>'
+                        )
+                        fetch_all_equipes(function (equipes) {
+                            equipes.forEach(equipe => {
+                                let option = document.createElement('option',)
+                                option.value = equipe.name
+                                option.innerHTML = equipe.name
+                                selects[i].appendChild(option)
+                            });
+                        });
+                        // $('#'+id).select2({
+                        //     dropdownParent: $("#equipe-box")
+                        // });
+
+                    }
+                }
+            }
+            else if (type === "zone") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_zone(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+
+                let selects = document.getElementsByTagName("select")
+                for (let i=0; i<selects.length; i++) {
+                    if (selects[i].id.includes("select2-zone-")) {
+                        let id = selects[i].id
+                        $("#"+id).empty().append(
+                            '<option value="" selected disabled>انتخاب</option>'
+                        )
+                        fetch_zones(function (zones) {
+                            zones.forEach(zone => {
+                                let option = document.createElement('option',)
+                                option.value = zone.name
+                                option.innerHTML = zone.name
+                                selects[i].appendChild(option)
+                            });
+                        });
+                        // $('#'+id).select2({
+                        //     dropdownParent: $("#equipe-box")
+                        // });
+
+                    }
+                }
+            }
+            else if (type === "materialprovider") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_materialprovider(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "machineprovider") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_machineprovider(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "unit") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                span.addEventListener('click', function () {
+                    del_unit(
+                        value,
+                        true
+                    );
+                });
+                cell1.appendChild(span)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+
+
+            alert("با موفقیت افزوده شد")
         },
         error: function(xhr, status, error) {
             alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)
@@ -3272,7 +3925,117 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit) {
 
         submitForm(ID, 'zoneoperation')
     }
+}
 
+function handle_select(type) {
+    let select = document.getElementById("select2-"+type)
+    if ( type == "operation" ) {
+        $("#select2-"+type).empty().append(
+            '<option value="" selected disabled>انتخاب عملیات اصلی</option>'
+        )
+        fetch_operations(function (operations) {
+            operations.forEach(operation => {
+                let option = document.createElement('option',)
+                option.value = operation.name
+                option.innerHTML = operation.name
+                select.appendChild(option)
+            })
+        })
+        $('#select2-operation').select2({
+            dropdownParent: $("#operation-box")
+        });
+    }
+    else if ( type === "suboperation" ) {
+        $("#select2-"+type).empty().append(
+            '<option value="" selected disabled>انتخاب زیرعملیات</option>'
+        )
+        $("#select2-zoneoperation").empty().append(
+            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+        )
+        let subtype = document.getElementById("select2-operation").value
+        fetch_suboperations(subtype, function (operations) {
+            operations.forEach(operation => {
+                let option = document.createElement('option',)
+                option.value = operation.name
+                option.innerHTML = operation.name
+                select.appendChild(option)
+            })
+        })
 
+        $('#select2-suboperation').select2({
+            dropdownParent: $("#suboperation-box")
+        });
+    }
+    else if (type === "zoneoperation" ) {
+        $("#select2-"+type).empty().append(
+            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+        )
+        let subtype = document.getElementById("select2-operation").value
+        fetch_zoneoperations(subtype, function (zoneoperations) {
+            zoneoperations.forEach(zoneoperation => {
+                let option = document.createElement('option',)
+                option.value = zoneoperation.zone
+                option.innerHTML = zoneoperation.zone
+                select.appendChild(option)
+                document.getElementById("task-unit").value = zoneoperation.unit
+            })
+        })
+
+        $('#select2-zoneoperation').select2({
+            dropdownParent: $("#zoneoperation-box")
+        });
+
+    }
+    else if (type === "equipe") {
+        $("#select2-"+type).empty().append(
+            '<option value="" selected disabled>انتخاب اکیپ</option>'
+        )
+        fetch_all_equipes(function (equipes) {
+            equipes.forEach(equipe => {
+                let option = document.createElement('option',)
+                option.value = equipe.name
+                option.innerHTML = equipe.name
+                select.appendChild(option)
+            })
+        })
+        $('#select2-equipe').select2({
+            dropdownParent: $("#equipe-box")
+        });
+    }
+    else if ( type == "zone" ) {
+        $.ajax({
+            type: 'GET',
+            url: '/edit-db/get-freeAmount/',
+            data: {
+                "model": "zoneoperation",
+                "operation": document.getElementById('select2-operation').value,
+                "zone": document.getElementById('select2-zoneoperation').value,
+            },
+            success: function(response) {
+                let freeAmount = response
+                document.getElementById("task-volume").max = freeAmount
+                document.getElementById("task-volume").setAttribute(
+                    'placeholder', "حداکثر مقدار : " + freeAmount
+                )
+            }
+        });
+    }
+    else {
+        $('#select2-operation').select2({
+            dropdownParent: $("#operation-box")
+        });
+
+        $('#select2-suboperation').select2({
+            dropdownParent: $("#suboperation-box")
+        });
+
+        $('#select2-zoneoperation').select2({
+            dropdownParent: $("#zoneoperation-box")
+        });
+
+        $('#select2-equipe').select2({
+            dropdownParent: $("#equipe-box")
+        });
+    }
 
 }

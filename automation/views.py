@@ -32,6 +32,7 @@ def add_base_data_template(request):
     machineproviders = MachineProvider.objects.all()
 
     operations = Operation.objects.all()
+    suboperations = SubOperation.objects.all()
 
 
 
@@ -59,6 +60,8 @@ def add_base_data_template(request):
         machineproviders = []
     if not operations.exists():
         operations = []
+    if not suboperations.exists():
+        suboperations = []
 
     context = {
         "positions": positions,
@@ -73,6 +76,7 @@ def add_base_data_template(request):
         "materialproviders": materialproviders,
         "machineproviders": machineproviders,
         "operations": operations,
+        "suboperations": suboperations,
 
         "machine_types": MACHINE_TYPES,
     }
@@ -99,28 +103,29 @@ def operation_break_template(request):
 
 def create_report_template(request):
     if DailyReport.objects.all().count() == 0:
-        positions = Position.objects.all()
-        professions = Profession.objects.all()
-        machines = Machine.objects.all()
-        materials = Material.objects.all()
-        equipes = Equipe.objects.all()
-        units = Unit.objects.all()
-        materialproviders = MaterialProvider.objects.all()
-        machineproviders = MachineProvider.objects.all()
-        tasks = Task.objects.all()
+        # positions = Position.objects.all()
+        # professions = Profession.objects.all()
+        # machines = Machine.objects.all()
+        # materials = Material.objects.all()
+        # equipes = Equipe.objects.all()
+        # units = Unit.objects.all()
+        # materialproviders = MaterialProvider.objects.all()
+        # machineproviders = MachineProvider.objects.all()
+        # tasks = Task.objects.all()
 
-        context = {
-            "positions": positions,
-            "professions": professions,
-            "machines": machines,
-            "materials": materials,
-            "equipes": equipes,
-            "units": units,
-            "materialproviders": materialproviders,
-            "machineproviders": machineproviders,
-            "tasks": tasks,
-            "machine_types": MACHINE_TYPES,
-        }
+        # context = {
+        #     "positions": positions,
+        #     "professions": professions,
+        #     "machines": machines,
+        #     "materials": materials,
+        #     "equipes": equipes,
+        #     "units": units,
+        #     "materialproviders": materialproviders,
+        #     "machineproviders": machineproviders,
+        #     "tasks": tasks,
+        #     "machine_types": MACHINE_TYPES,
+        # }
+        context = {}
 
     else:
         report = DailyReport.objects.last()
@@ -164,7 +169,7 @@ def add_position_to_db(request):
 
         new_position = Position.objects.create(name=position)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -178,7 +183,7 @@ def add_unit_to_db(request):
         unit = request.POST.get("unit")
         new_unit = Unit.objects.create(name=unit)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -193,7 +198,7 @@ def add_materialprovider_to_db(request):
 
         new_materialprovider = MaterialProvider.objects.create(name=materialprovider)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -208,7 +213,7 @@ def add_machineprovider_to_db(request):
 
         new_machineprovider = MachineProvider.objects.create(name=machineprovider)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -224,7 +229,7 @@ def add_machine_to_db(request,):
 
         new_machine = Machine.objects.create(name=machine, type=type)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -240,7 +245,7 @@ def add_material_to_db(request,):
 
         new_material = Material.objects.create(name=material)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -255,7 +260,7 @@ def add_profession_to_db(request,):
 
         new_profession = Profession.objects.create(name=profession)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -270,7 +275,7 @@ def add_contractor_to_db(request,):
 
         new_contractor = Contractor.objects.create(name=contractor)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -285,7 +290,7 @@ def add_zone_to_db(request,):
 
         new_zone = Zone.objects.create(name=zone)
 
-        return redirect(redirect_url)
+        return JsonResponse(True, safe=False)
 
     elif request.method == "GET":
         pass
@@ -296,27 +301,50 @@ def add_zone_to_db(request,):
 def add_task_to_db(request,):
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
-        taskName = request.POST.get("taskName")
-        equipeName = request.POST.get("equipeName")
-        zoneName = request.POST.get("zoneName")
-        unitName = request.POST.get("unitName")
-        taskVol = request.POST.get("taskVol")
 
-        try:
-            new_task = Task.objects.create(
-                name=taskName,
-                equipe=Equipe.objects.get(name=equipeName),
+        operation = request.POST.get("operation")
+        suboperation = request.POST.get("suboperation")
+        zoneName = request.POST.get("zoneoperation")
+        equipeName = request.POST.get("equipe")
+        taskVol = request.POST.get("task-volume")
+        unitName = request.POST.get("unit")
+
+        zoneoperation = ZoneOperation.objects.get(
+                operation=Operation.objects.get(name=operation),
                 zone=Zone.objects.get(name=zoneName),
-                totalVolume=float(taskVol),
-                unit=Unit.objects.get(name=unitName),
-            )
-            new_task.set_unique()
-            new_task.update_percentage()
-            return HttpResponse(True)
+        )
+        # try:
+        new_task, new = Task.objects.get_or_create(
+            operation=zoneoperation,
+            suboperation=SubOperation.objects.get(
+                name=suboperation,
+                parent=Operation.objects.get(name=operation),
+            ),
+            equipe=Equipe.objects.get(name=equipeName),
+            zone=Zone.objects.get(name=zoneName),
+
+            defaults= {
+                'totalVolume': float(taskVol),
+                'unit': Unit.objects.get(name=unitName),
+            }
+        )
+
+        if not new:
+            return JsonResponse(False, safe=False)
+
+        new_task.set_unique()
+        new_task.update_percentage()
+
+        zoneoperation.tasks.add(new_task)
+        zoneoperation.update_assignedAmount()
+
+
+
+        return JsonResponse(True, safe=False)
             # return redirect(redirect_url)
 
-        except:
-            return HttpResponse(False)
+        # except:
+        #     return HttpResponse(False)
 
     elif request.method == "GET":
         pass
@@ -345,9 +373,10 @@ def add_equipe_to_db(request,):
         if new:
             obj.set_name()
             #obj.save()
-            return HttpResponse(True)
+            return JsonResponse(True, safe=False)
+
         else:
-            return HttpResponse(False)
+            return JsonResponse(False, safe=False)
         # return redirect(to=redirect_url)
 
     elif request.method == "GET":
@@ -616,6 +645,7 @@ def add_zoneoperation_to_db(request):
             unit=operation.unit,
             amount=amount,
         )
+        zone_operation.update_freeAmount()
 
         operation.zones.add(zone_operation)
         operation.update_assignedAmount()
@@ -680,20 +710,34 @@ def del_equipe_from_db(request):
 
 def del_task_from_db(request):
     if request.method == "POST":
-        taskName = request.POST.get("taskName")
+        taskOperation = request.POST.get("taskOperation")
+        taskSubOperation = request.POST.get("taskSubOperation")
         equipeName = request.POST.get("equipeName")
-        taskVol = request.POST.get("taskVol")
+        # taskVol = request.POST.get("taskVol")
         zoneName = request.POST.get("zoneName")
-        unitName = request.POST.get("unitName")
+        # unitName = request.POST.get("unitName")
+
+        operation = Operation.objects.get(name=taskOperation)
+        zoneoperation = ZoneOperation.objects.get(
+            operation=operation,
+            zone=Zone.objects.get(name=zoneName),
+        )
 
         obj = Task.objects.filter(
-            name=taskName,
+            operation=zoneoperation.id,
+            suboperation=SubOperation.objects.get(
+                name=taskSubOperation,
+                parent=Operation.objects.get(name=taskOperation),
+            ),
             equipe=Equipe.objects.get(name=equipeName),
             zone=Zone.objects.get(name=zoneName),
-            totalVolume=taskVol,
-            unit=Unit.objects.get(name=unitName),
         )
         obj.delete()
+
+        zoneoperation.update_assignedAmount()
+        zoneoperation.update_doneAmount()
+
+        operation.update_doneAmount()
 
         return HttpResponse(1)
 
@@ -716,7 +760,7 @@ def save_daily_report_to_db(request):
         contractors = {}
         tasks = {}
 
-        print(data.items())
+        # print(data.items())
         for key, value in data.items():
             if "position" in key:
                 positions[key.split("_")[1]] = int(value[0])
@@ -1506,6 +1550,89 @@ def get_units(request):
             "units": data
         }
         return JsonResponse(context)
+
+
+def get_operations(request):
+    if request.method == "GET":
+        operations = Operation.objects.all()
+        if operations.exists():
+            data = json.dumps(list(operations.values()))
+        else:
+            data = "[]"
+        context = {
+            "operations": data
+        }
+        return JsonResponse(context)
+
+
+def get_suboperations(request):
+    if request.method == "GET":
+        opr_name = request.GET.get("operation")
+        suboperations = SubOperation.objects.filter(
+            parent=Operation.objects.get(name=opr_name)
+        )
+        if suboperations.exists():
+            data = json.dumps(list(suboperations.values()))
+        else:
+            data = "[]"
+        context = {
+            "suboperations": data
+        }
+        return JsonResponse(context)
+
+
+def get_zoneoperations(request):
+    if request.method == "GET":
+        opr_name = request.GET.get("operation")
+        operation = Operation.objects.get(name=opr_name)
+        zoneoperations = operation.zones.all()
+        data = [
+            {
+                "operation": item.operation.name,
+                "zone": item.zone.name,
+                "unit": item.unit.name,
+            } for item in zoneoperations
+        ]
+        # zoneoperations = ZoneOperation.objects.filter(
+        #     operation=Operation.objects.get(name=opr_name)
+        # )
+        # if zoneoperations.exists():
+        #     data = json.dumps(list(zoneoperations.values()))
+        # else:
+        #     data = "[]"
+        context = {
+            "zoneoperations": data
+        }
+        return JsonResponse(context)
+
+
+def get_all_equipes(request):
+    if request.method == "GET":
+        equipes = Equipe.objects.all()
+        if equipes.exists():
+            data = json.dumps(list(equipes.values()))
+        else:
+            data = "[]"
+        context = {
+            "equipes": data
+        }
+        return JsonResponse(context)
+
+
+def get_freeAmount(request):
+    if request.method == "GET":
+        model = request.GET.get('model')
+        if model == "zoneoperation":
+            operation = request.GET.get('operation')
+            zone = request.GET.get('zone')
+
+            zoneoperation = ZoneOperation.objects.get(
+                operation=Operation.objects.get(name=operation,),
+                zone=Zone.objects.get(name=zone,),
+            )
+            freeAmount = zoneoperation.freeAmount
+
+            return HttpResponse(freeAmount)
 
 
 def get_zones(request):

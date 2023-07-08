@@ -201,13 +201,165 @@ class Zone(models.Model):
         return self.name
 
 
+class Operation(models.Model):
+    name = models.CharField(max_length=250, unique=True,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="operation_unit")
+
+    amount = models.FloatField(default=0.0, )
+    assignedAmount = models.FloatField(default=0.0,)
+    freeAmount = models.FloatField(default=0.0,)
+    doneAmount = models.FloatField(default=0.0,)
+
+    assignedWeight = models.FloatField(default=0.0, )
+    freeWeight = models.FloatField(default=100.0, )
+    fullyBroken = models.BooleanField(default=False)
+
+    fullyAssigned = models.BooleanField(default=False)
+    fullyDone = models.BooleanField(default=False)
+
+    suboperations = models.ManyToManyField('SubOperation', related_name='operations')
+    zones = models.ManyToManyField('ZoneOperation', related_name='zones')
+
+    def update_doneAmount(self, auto=True, amount=None, action=None):
+        if auto:
+            self.doneAmount = 0.0
+            for item in self.zones.all():
+                self.doneAmount += item.doneAmount
+
+        else:
+            if action == "+":
+                self.doneAmount += amount
+            elif action == "-":
+                self.doneAmount -= amount
+
+        self.save()
+
+    def update_assignedAmount(self):
+        assigned = 0.0
+        for zone in self.zones.all():
+            assigned += zone.amount
+
+        self.assignedAmount = assigned
+        self.freeAmount = float(self.amount) - assigned
+
+        if float(self.amount) - assigned > 0:
+            self.fullyAssigned = False
+        else:
+            self.fullyAssigned = True
+
+        self.save()
+
+    def update_assignedWeight(self):
+        broken = 0.0
+        for subopr in self.suboperations.all():
+            broken += subopr.weight
+
+        self.assignedWeight = broken
+        self.freeWeight = 100 - broken
+
+        if 100 - broken > 0:
+            self.fullyBroken = False
+        else:
+            self.fullyBroken = True
+
+        self.save()
+
+    def set_fully_assignment(self):
+        if not self.assignedAmount < float(self.amount):
+            self.fullyAssigned = True
+        else:
+            self.fullyAssigned = False
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+
+class SubOperation(models.Model):
+    name = models.CharField(max_length=250,)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    parent = models.ForeignKey(Operation, on_delete=models.CASCADE, )
+
+    weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(100.0)], default=0.0)
+
+    amount = models.FloatField(default=0.0,)
+    doneAmount = models.FloatField(default=0.0,)
+
+    class Meta:
+        unique_together = ('name', 'parent')
+
+    def __str__(self):
+        return self.parent.name + " | " + self.name
+
+
+class ZoneOperation(models.Model):
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    amount = models.FloatField(default=0.0, )
+    assignedAmount = models.FloatField(default=0.0, )
+    freeAmount = models.FloatField(default=0.0, )
+    doneAmount = models.FloatField(default=0.0, )
+
+    tasks = models.ManyToManyField('Task', related_name='tasks')
+
+    def update_freeAmount(self):
+        self.freeAmount = float(self.amount) - float(self.assignedAmount)
+        self.save()
+
+    def update_assignedAmount(self, auto=True, amount=None, action=None):
+        if auto:
+            self.assignedAmount = 0.0
+            for task in self.tasks.all():
+                self.assignedAmount += task.totalVolume
+
+            self.freeAmount = float(self.amount) - float(self.assignedAmount)
+
+        else:
+            if action == "+":
+                self.assignedAmount += amount
+            elif action == "-":
+                self.assignedAmount -= amount
+            self.freeAmount = float(self.amount) - float(self.assignedAmount)
+
+        self.save()
+
+    def update_doneAmount(self, auto=True, amount=None, action=None):
+        if auto:
+            self.doneAmount = 0.0
+            for task in self.tasks.all():
+                self.doneAmount += task.doneVolume
+
+        else:
+            if action == "+":
+                self.doneAmount += amount
+            elif action == "-":
+                self.doneAmount -= amount
+
+        self.save()
+
+    class Meta:
+        unique_together = ('operation', 'zone')
+
+    def __str__(self):
+        return self.operation.name + " | " + self.zone.name
+
+
 class Task(models.Model):
-    unique_str = models.CharField(max_length=250, unique=True)
-    name = models.CharField(max_length=250)
+    operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
+    suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE, null=True, blank=True)
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    totalVolume = models.FloatField(default=0.1,)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    unique_str = models.CharField(max_length=250, unique=True)
+    # name = models.CharField(max_length=250)
+    # equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    # zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    # unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    totalVolume = models.FloatField(default=0.1,)
     doneVolume = models.FloatField(default=0.0,)
     donePercentage = models.FloatField(default=0.0,)
     started = models.BooleanField(default=False,)
@@ -265,14 +417,14 @@ class Task(models.Model):
             self.reset()
 
     def set_unique(self):
-        self.unique_str = self.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        self.unique_str = self.operation.operation.name + "-" + self.suboperation.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
         self.save()
 
     class Meta:
-        unique_together = ('name', 'equipe', 'zone')
+        unique_together = ('operation', 'suboperation', 'equipe', 'zone')
 
     def __str__(self):
-        return self.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        return self.unique_str
 
 
 class TaskReport(models.Model):
@@ -439,98 +591,6 @@ class DailyReport(models.Model):
         return self.project_name
 
 
-class Operation(models.Model):
-    name = models.CharField(max_length=250, unique=True,)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="operation_unit")
-
-    amount = models.FloatField(default=0.0, )
-    assignedAmount = models.FloatField(default=0.0,)
-    freeAmount = models.FloatField(default=0.0,)
-    doneAmount = models.FloatField(default=0.0,)
-
-    assignedWeight = models.FloatField(default=0.0, )
-    freeWeight = models.FloatField(default=100.0, )
-    fullyBroken = models.BooleanField(default=False)
-
-    fullyAssigned = models.BooleanField(default=False)
-    fullyDone = models.BooleanField(default=False)
-
-    suboperations = models.ManyToManyField('SubOperation', related_name='operations', null=True, blank=True)
-    zones = models.ManyToManyField('ZoneOperation', related_name='zones', null=True, blank=True)
-
-    def update_assignedAmount(self):
-        assigned = 0.0
-        for zone in self.zones.all():
-            assigned += zone.amount
-
-        self.assignedAmount = assigned
-        self.freeAmount = float(self.amount) - assigned
-
-        if float(self.amount) - assigned > 0:
-            self.fullyAssigned = False
-        else:
-            self.fullyAssigned = True
-
-        self.save()
-
-    def update_assignedWeight(self):
-        broken = 0.0
-        for subopr in self.suboperations.all():
-            broken += subopr.weight
-
-        self.assignedWeight = broken
-        self.freeWeight = 100 - broken
-
-        if 100 - broken > 0:
-            self.fullyBroken = False
-        else:
-            self.fullyBroken = True
-
-        self.save()
-
-
-    def set_fully_assignment(self):
-        if not self.assignedAmount < float(self.amount):
-            self.fullyAssigned = True
-        else:
-            self.fullyAssigned = False
-        self.save()
-
-    def __str__(self):
-        return self.name
-
-
-class SubOperation(models.Model):
-    name = models.CharField(max_length=250,)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-
-    parent = models.ForeignKey(Operation, on_delete=models.CASCADE, )
-
-    weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(100.0)], default=0.0)
-
-    amount = models.FloatField(default=0.0,)
-    doneAmount = models.FloatField(default=0.0,)
-
-    class Meta:
-        unique_together = ('name', 'parent')
-
-    def __str__(self):
-        return self.parent.name + " | " + self.name
-
-
-class ZoneOperation(models.Model):
-    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-
-    amount = models.FloatField(default=0.0, )
-    doneAmount = models.FloatField(default=0.0, )
-
-    class Meta:
-        unique_together = ('operation', 'zone')
-
-    def __str__(self):
-        return self.operation.name + " | " + self.zone.name
 
 
 # class OperationBreak(models.Model):

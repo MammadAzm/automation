@@ -536,23 +536,26 @@
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
-                        <th class="" style="width: 35%">
+                        <th class="" style="width: 25%">
                              شرح عملیات
                             <span class="badge rounded-pill" style="float: left; color: black"
                                 data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                 <img src="{% static 'icons/plus-circle.svg' %}">
                             </span>
                         </th>
-                        <th class="" style="width: 26%" >
+                        <th class="" style="width: 20%" >
+                            شرح زیر عملیات
+                        </th>
+                        <th class="" style="width: 18%" >
                             اکیپ
                         </th>
-                        <th class="" style="width: 13%" >
+                        <th class="" style="width: 17%" >
                             موقعیت
                         </th>
-                        <th class="" style="width: 13%" >
+                        <th class="" style="width: 10%" >
                             واحد
                         </th>
-                        <th class="" style="width: 13%">
+                        <th class="" style="width: 10%">
                             مقدار کل
                         </th>
                     </tr>
@@ -562,23 +565,26 @@
                 <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
-                            <th class="" style="width: 35%" >
-                                شرح عملیات
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                        <img src="{% static 'icons/plus-circle.svg' %}">
-                                    </span>
+                            <th class="" style="width: 25%">
+                                 شرح عملیات
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                             </th>
-                            <th class="" style="width: 25%" >
+                            <th class="" style="width: 20%" >
+                                شرح زیر عملیات
+                            </th>
+                            <th class="" style="width: 18%" >
                                 اکیپ
                             </th>
-                            <th class="" style="width: 13%">
+                            <th class="" style="width: 17%" >
                                 موقعیت
                             </th>
-                            <th class="" style="width: 13%">
+                            <th class="" style="width: 10%" >
                                 واحد
                             </th>
-                            <th class="" style="width: 13%">
+                            <th class="" style="width: 10%">
                                 مقدار کل
                             </th>
                         </tr>
@@ -587,28 +593,32 @@
                     <tbody>
 
                         {% for task in tasks %}
-                            <tr  id="{{task.name}}-{{task.equipe}}-{{task.zone}}">
-                                <td style="width: 35%">
-                                    {{ task.name }}
+                            <tr  id="{{task.operation.operation.name}}-{{task.suboperation.name}}-{{task.equipe}}-{{task.zone}}">
+                                <td style="width: 25%">
+                                    {{ task.operation.operation }}
                                     <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_task('{{ task.name }}', '{{ task.equipe }}', '{{ task.zone }}', '{{ task.totalVolume }}', '{{ task.unit }}', true)">
+                                        style="float: left; color: black; " onclick="del_task('{{task.operation.operation.name}}', '{{task.suboperation.name}}', '{{ task.equipe }}', '{{ task.zone }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
                                     </span>
                                 </td>
 
-                                <td style="width: 26%">
+                                <td style="width: 20%">
+                                    {{ task.suboperation.name }}
+                                </td>
+
+                                <td style="width: 18%">
                                     {{ task.equipe }}
                                 </td>
 
-                                <td style="width: 13%">
+                                <td style="width: 17%">
                                     {{ task.zone }}
                                 </td>
 
-                                <td style="width: 13%">
+                                <td style="width: 10%">
                                     {{ task.unit }}
                                 </td>
 
-                                <td style="width: 13%">
+                                <td style="width: 10%">
                                     {{ task.totalVolume }}
                                 </td>
                             </tr>
@@ -633,18 +643,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-position" method="post">
+                <form id="form-position">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="position" class="form-control" placeholder="نام سمت">
+                        <input required type="text" id="input-position" name="position" class="form-control" placeholder="نام سمت">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon1">افزودن</button>
+                </form>
 
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon1">افزودن</button>
-                </form>
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -662,18 +672,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-profession" method="post">
+                <form id="form-profession">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="profession" class="form-control" placeholder="نام تخصص">
+                        <input required type="text" id="input-profession" name="profession" class="form-control" placeholder="نام تخصص">
                     </div>
-
-            </div>
-
-            <div class="modal-footer">
                 <button class="btn btn-outline-success bp3-round"
                                 type="submit" id="button-addon2">افزودن</button>
                 </form>
+            </div>
+
+            <div class="modal-footer">
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -691,10 +701,10 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-machine" method="post">
+                <form id="form-machine">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="machine" class="form-control" placeholder="نام ماشین">
+                        <input required type="text" id="input-machine" name="machine" class="form-control" placeholder="نام ماشین">
                         <select required class="form-select" id="machineType" name="machineType"
                             style="text-align: right;">
                             <option selected disabled hidden value="" >انتخاب</option>
@@ -704,13 +714,13 @@
                         </select>
 
                     </div>
-
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon3">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon3">افزودن</button>
-                </form>
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -728,17 +738,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-material" method="post">
+                <form id="form-material">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="material" class="form-control" placeholder="نام مصالح">
+                        <input required type="text" id="input-material" name="material" class="form-control" placeholder="نام مصالح">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon4">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon4">افزودن</button>
-                </form>
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -756,17 +767,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-contractor" method="post">
+                <form id="form-contractor">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="contractor" class="form-control" placeholder="نام پیمانکار">
+                        <input required id="input-contractor" type="text" name="contractor" class="form-control" placeholder="نام پیمانکار">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon5">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon5">افزودن</button>
-                </form>
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -784,48 +796,53 @@
                 </div>
 
                 <div class="modal-body">
-                        <div class="input-group mb-3">
 
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"])'>
-                                    انتخاب تخصص
-                                </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-equipes-professions">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-profession">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                </ul>
+                        <form id="form-equipe">
+                            <div class="input-group mb-3">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"])'>
+                                        انتخاب تخصص
+                                    </button>
+                                    <ul class="dropdown-menu" id="dropdown-menu-equipes-professions">
+                                        <li>
+                                            <div class="input-group px-2 mb-3">
+                                                <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-profession">
+                                            </div>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"])'>
+                                        انتخاب پیمانکار
+                                    </button>
+                                    <ul class="dropdown-menu" id="dropdown-menu-equipes-contractors">
+                                        <li>
+                                            <div class="input-group px-2 mb-3">
+                                                <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-contractor">
+                                            </div>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </ul>
+                                </div>
+
+                                <input id="equipe-profession-name" readonly required type="text" name="profession" class="form-control">
+                                <input id="equipe-contractor-name" readonly required type="text" name="contractor" class="form-control">
                             </div>
 
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"])'>
-                                    انتخاب پیمانکار
-                                </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-equipes-contractors">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-contractor">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-outline-success bp3-round" onclick=""
+                                type="submit" id="btn-add-profession">افزودن</button>
 
-                            <input id="equipe-profession-name" disabled required type="text" name="equipe" class="form-control">
-                            <input id="equipe-contractor-name" disabled required type="text" name="equipe" class="form-control">
+                        </form>
 
-                        </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-success bp3-round" onclick="add_equipe_to_base_data()" style="float: left"
-                                    type="button" id="btn-add-profession">افزودن</button>
+
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
@@ -843,18 +860,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-zone" method="post">
+                <form id="form-zone">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت">
+                        <input id="input-zone" required type="text" name="zone" class="form-control" placeholder="نام موقعیت">
                     </div>
-
-            </div>
-
-            <div class="modal-footer">
                 <button class="btn btn-outline-success bp3-round"
                                 type="submit" id="button-addon6">افزودن</button>
                 </form>
+            </div>
+
+            <div class="modal-footer">
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -868,88 +885,67 @@
 
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+                <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات اجرایی</h5>
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-task" method="post">
+                <form id="form-task">
                     {% csrf_token %}
                     <div class="input-group mb-3 ">
-                        <input required type="text" name="task-name" id="task-name" class="form-control" placeholder="نام عملیات">
+                        <div id="operation-box" style="width: 50%;">
+                            <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"
+                                    name="operation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب عملیات اصلی
+                                </option>
+                            </select>
+                        </div>
+
+                        <div id="suboperation-box" style="width: 50%;">
+                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"
+                                    name="suboperation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب زیرعملیات
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3 ">
+                        <div id="zoneoperation-box" style="width: 50%;">
+                            <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone')"
+                                    name="zoneoperation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب موقعیت عملیات
+                                </option>
+                            </select>
+                        </div>
+
+                        <div id="equipe-box" style="width: 50%;">
+                            <select required class="select2" id="select2-equipe"
+                                    name="equipe" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب اکبپ
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
 
                     <div class="input-group mb-3">
-                        <div class="input-group mb-3">
-                            <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task")'>
-                                انتخاب اکیپ
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-tasks">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-task">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-<!--                                    {% for profession in professions %}-->
-<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                    {% endfor %}-->
-                            </ul>
-                        </div>
-                            <input required disabled type="text" name="equipetask-name" id="equipetask-name" class="form-control" placeholder="اکیپ">
-                        </div>
 
-                         <div class="input-group mb-3">
-                            <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone")'>
-                                انتخاب موقعیت
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-zones">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-zone">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-<!--                                    {% for profession in professions %}-->
-<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                    {% endfor %}-->
-                            </ul>
-                        </div>
-                            <input required disabled type="text" name="zone-name" id="zone-name" class="form-control" placeholder="موقعیت">
-                        </div>
-
-                         <div class="input-group mb-3">
-                             <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit")'>
-                                    انتخاب واحد
-                                </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-units">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-unit">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <!--                                    {% for profession in professions %}-->
-                                <!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-                                <!--                                    {% endfor %}-->
-                                </ul>
-                            </div>
-                             <input required  type="number"  name="task-name" id="task-volume" class="form-control" placeholder="مقدار">
-                             <input required disabled type="text" name="zone-name" id="unit-name" class="form-control" placeholder="واحد">
-                        </div>
+                         <input required  type="number"  name="task-volume" id="task-volume" class="form-control" placeholder="مقدار">
+                         <input required readonly type="text" name="unit" id="task-unit" class="form-control" placeholder="واحد">
                     </div>
+
+                    <button class="btn btn-outline-success bp3-round" onclick=""
+                            type="submit" id="button-addon7" >افزودن</button>
 
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data()"
-                                type="submit" id="button-addon7" >افزودن</button>
+
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -967,18 +963,18 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-unit" method="post">
+                <form id="form-unit">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="unit" class="form-control" placeholder="نام واحد">
-
+                        <input id="input-unit" required type="text" name="unit" class="form-control" placeholder="نام واحد">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon8">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon8">افزودن</button>
-                </form>
+
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -996,18 +992,17 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-materialprovider" method="post">
+                <form id="form-materialprovider">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="materialprovider" class="form-control" placeholder="نام تامین کننده مصالح">
-
+                        <input id="input-materialprovider" required type="text" name="materialprovider" class="form-control" placeholder="نام تامین کننده مصالح">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon9">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon9">افزودن</button>
-                </form>
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -1025,18 +1020,17 @@
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-machineprovider" method="post">
+                <form id="form-machineprovider">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" name="machineprovider" class="form-control" placeholder="نام تامین کننده ماشین">
-
+                        <input id="input-machineprovider" required type="text" name="machineprovider" class="form-control" placeholder="نام تامین کننده ماشین">
                     </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon15">افزودن</button>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon9">افزودن</button>
-                </form>
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
             </div>
 
@@ -1389,7 +1383,26 @@
 {% endfor %}
 
 <script>
+    handle_select(type="operation")
+
+    handle_select(type="equipe")
+
+    handle_select(type=null)
+
+
+
     submitForm(null, 'operation')
+    submitForm(null, 'task')
+    submitForm(null, 'position')
+    submitForm(null, 'profession')
+    submitForm(null, 'machine')
+    submitForm(null, 'material')
+    submitForm(null, 'contractor')
+    submitForm(null, 'equipe')
+    submitForm(null, 'zone')
+    submitForm(null, 'materialprovider')
+    submitForm(null, 'machineprovider')
+    submitForm(null, 'unit')
 </script>
 
 

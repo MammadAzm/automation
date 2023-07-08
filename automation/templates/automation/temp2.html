@@ -1,46 +1,37 @@
-<div class="modal fade " id="staticBackdropOperations" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropOperationsLabel" style="margin-right: auto">افزودن سمت</h5>
-            </div>
 
-            <div class="modal-body">
-                <form action="/edit-db/add-operation" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-3">
-                        <input required type="text" name="operation" class="form-control" placeholder="نام سمت">
-                    </div>
 
-                    <div class="input-group mb-3">
-                         <div class="dropdown">
+
+
+                        <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuUnits" data-bs-toggle="dropdown" onclick='fetch_options("unit")'>
-                                انتخاب واحد
+                                    id="dropdownMenuOperations" data-bs-toggle="dropdown" onclick='fetch_operations()'>
+                                انتخاب اکیپ
                             </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-units">
+                            <ul class="dropdown-menu" id="dropdown-menu-tasks">
                                 <li>
                                     <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-unit">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-task">
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+<!--                                    {% for profession in professions %}-->
+<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
+<!--                                    {% endfor %}-->
                             </ul>
                         </div>
-                         <input required disabled type="text" name="unit-name" id="unit-name" class="form-control" placeholder="واحد">
-                    </div>
 
-            </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round"
-                                type="submit" id="button-addon1">افزودن</button>
-                </form>
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
-            </div>
-
-        </div>
-    </div>
-</div>
+                        <div id="zone-box-{{ operation.id }}" style="width: 280px;">
+                            <select required class="select2" id="select2-zone-{{ operation.id }}"
+                                    name="zone" style="width: 280px; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب
+                                </option>
+                                {% for zone in zones %}
+                                    <option value="{{ zone }}">
+                                        {{ zone }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
