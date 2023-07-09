@@ -2890,36 +2890,11 @@ function submitForm(ID, type) {
                 span2.setAttribute('data-bs-toggle', 'modal');
                 span2.setAttribute('data-bs-target', '#staticBackdropSubTasks-'+response);
 
-                // let span3 = document.createElement('span',);
-                // Object.assign(span2.style, {
-                //     float: 'right',
-                //     color: 'black',
-                // });
-                // span3.className = "badge rounded-pill";
-                // span3.innerHTML = '<img src="/static/icons/grid-1x2.svg"/>';
-                // span3.setAttribute('data-bs-toggle', 'modal');
-                // span3.setAttribute('data-bs-target', '#staticBackdropZoneOperations-'+response);
-
                 cell1.innerText = opr
 
                 cell1.appendChild(span)
                 cell1.appendChild(span2)
-                // let temp = document.createElement('div')
-                // temp.style.display = "inline-block"
-                // Object.assign(temp.style, {
-                //     float: 'right',
-                //     color: 'black',
-                // });
-                // temp.appendChild(span2)
-                // temp.appendChild(span3)
-                // cell1.appendChild(temp)
 
-
-
-                // let cell2 = document.createElement('td',);
-                // cell2.className = "";
-                // cell2.style.width = "20%"
-                // cell2.innerHTML = subopr
 
                 let cell3 = document.createElement('td',);
                 cell3.className = "";
@@ -4089,101 +4064,8 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         thead02_row_td04.innerText = "واحد"
 
 
-
         let tbody = document.createElement("tbody")
-        // let temp = document.createElement("tr")
-        // tbody.appendChild(temp)
 
-        // let form = document.createElement("form")
-        // form.id = "form-"+ID
-
-        // let div_input_group_02 = document.createElement("div")
-        // div_input_group_02.className = "input-group mb-3"
-        //
-        // let table_form = document.createElement("table")
-        // table_form.style.fontSize = "11px"
-        //
-        // let thead_form =  document.createElement("thead")
-        //
-        // let input_id = document.createElement("input")
-        // input_id.hidden = true
-        // input_id.value = ID
-        // input_id.name = "operation-id"
-        // input_id.id = "suboperation-operation-" + ID
-        // input_id.required = true
-        //
-        // let th01 = document.createElement("th")
-        // th01.style = "width: 187px; background-color: white; border: solid black 1px;"
-        //
-        // let input_subopr_name = document.createElement("input")
-        // input_subopr_name.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-        // input_subopr_name.id = "suboperation-name-" + ID
-        // input_subopr_name.placeholder = "نام زیرعملیات"
-        // input_subopr_name.name = "name"
-        // input_subopr_name.required = true
-        //
-        //
-        // let th02 = document.createElement("th")
-        // th02.style = "width: 93px; background-color: white; border: solid black 1px;"
-        //
-        // let input_subopr_weight = document.createElement("input")
-        // input_subopr_weight.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-        // input_subopr_weight.id = "suboperation-weight-" + ID
-        // input_subopr_weight.placeholder = "وزن %"
-        // input_subopr_weight.type = "number"
-        // input_subopr_weight.name = "weight"
-        // input_subopr_weight.min = "0"
-        // input_subopr_weight.max = "100.0"
-        // input_subopr_weight.required = true
-        //
-        // let th03 = document.createElement("th")
-        // th03.style = "width: 93px; background-color: white; border: solid black 1px;"
-        //
-        // let input_subopr_amount = document.createElement("input")
-        // input_subopr_amount.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
-        // input_subopr_amount.id = "suboperation-amount-" + ID
-        // input_subopr_amount.placeholder = "مقدار"
-        // input_subopr_amount.type = "number"
-        // input_subopr_amount.required = true
-        // input_subopr_amount.name = 'amount'
-        //
-        //
-        // let div_unit_box = document.createElement("div")
-        // div_unit_box.style = "width: 90px;"
-        // div_unit_box.id = "unit-box-" + ID
-        //
-        // let select_units = document.createElement('select')
-        // select_units.required = true
-        // select_units.className = "select2"
-        // select_units.id = "select2-"+ ID
-        // select_units.name = "unit"
-        // select_units.style = "width: 90px; border: solid black"
-        // // select_units.on('click', function() {
-        // //     findselect2(ID);
-        // // });
-        //
-        // let choose_option = document.createElement('option')
-        // choose_option.disabled = true
-        // choose_option.selected = true
-        // choose_option.value = ""
-        // choose_option.innerText = "انتخاب"
-        //
-        // select_units.appendChild(choose_option)
-        // fetch_units(function (units) {
-        //     units.forEach(unit => {
-        //         let option = document.createElement('option',)
-        //         option.value = unit.name
-        //         option.innerText = unit.name
-        //         select_units.appendChild(option)
-        //     })
-        // })
-        // div_unit_box.appendChild(select_units)
-        //
-        // let btn_submit = document.createElement("button")
-        // btn_submit.className = "btn btn-outline-success bp3-round w-100"
-        // btn_submit.type = "submit"
-        // btn_submit.innerText = "افزودن"
-        //
         let div_modal_footer = document.createElement("div")
         div_modal_footer.className = "modal-footer"
 
@@ -4339,43 +4221,43 @@ function handle_select(type) {
             dropdownParent: $("#operation-box")
         });
     }
-    // else if ( type === "suboperation" ) {
-    //     $("#select2-"+type).empty().append(
-    //         '<option value="" selected disabled>انتخاب زیرعملیات</option>'
-    //     )
-    //     $("#select2-zoneoperation").empty().append(
-    //         '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
-    //     )
-    //     let subtype = document.getElementById("select2-operation").value
-    //     fetch_suboperations(subtype, function (operations) {
-    //         operations.forEach(operation => {
-    //             let option = document.createElement('option',)
-    //             option.value = operation.name
-    //             option.innerHTML = operation.name
-    //             select.appendChild(option)
-    //         })
-    //     })
-    //
-    //     $('#select2-suboperation').select2({
-    //         dropdownParent: $("#suboperation-box")
-    //     });
-    //
-    //
-    //     let select2 = document.getElementById("select2-zoneoperation")
-    //     fetch_zoneoperations(subtype, function (zoneoperations) {
-    //         zoneoperations.forEach(zoneoperation => {
-    //             let option = document.createElement('option',)
-    //             option.value = zoneoperation.zone
-    //             option.innerHTML = zoneoperation.zone
-    //             select2.appendChild(option)
-    //             document.getElementById("task-unit").value = zoneoperation.unit
-    //         })
-    //     })
-    //
-    //     $('#select2-zoneoperation').select2({
-    //         dropdownParent: $("#zoneoperation-box")
-    //     });
-    // }
+    else if ( type === "suboperation" ) {
+        $("#select2-"+type).empty().append(
+            '<option value="" selected disabled>انتخاب زیرعملیات</option>'
+        )
+        $("#select2-zoneoperation").empty().append(
+            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+        )
+        let subtype = document.getElementById("select2-operation").value
+        fetch_suboperations(subtype, function (operations) {
+            operations.forEach(operation => {
+                let option = document.createElement('option',)
+                option.value = operation.name
+                option.innerHTML = operation.name
+                select.appendChild(option)
+            })
+        })
+
+        $('#select2-suboperation').select2({
+            dropdownParent: $("#suboperation-box")
+        });
+
+
+        let select2 = document.getElementById("select2-zoneoperation")
+        fetch_zoneoperations(subtype, function (zoneoperations) {
+            zoneoperations.forEach(zoneoperation => {
+                let option = document.createElement('option',)
+                option.value = zoneoperation.zone
+                option.innerHTML = zoneoperation.zone
+                select2.appendChild(option)
+                document.getElementById("task-unit").value = zoneoperation.unit
+            })
+        })
+
+        $('#select2-zoneoperation').select2({
+            dropdownParent: $("#zoneoperation-box")
+        });
+    }
     else if (type === "zoneoperation" ) {
         $("#select2-"+type).empty().append(
             '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
