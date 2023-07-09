@@ -576,14 +576,14 @@ function del_equipe(prof, cont, db) {
 
 }
 
-function del_task(taskOperation, taskSubOperation, equipeName, zoneName, db) {
+function del_task(taskOperation, equipeName, zoneName, db) {
     if (db) {
         $.ajax({
             type: 'POST',
             url: '/edit-db/del-task',
             data: {
             'taskOperation': taskOperation,
-            'taskSubOperation': taskSubOperation,
+            // 'taskSubOperation': taskSubOperation,
             'equipeName': equipeName,
             'zoneName': zoneName,
             },
@@ -591,12 +591,12 @@ function del_task(taskOperation, taskSubOperation, equipeName, zoneName, db) {
             xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function(response) {
-                let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
+                let obj = document.getElementById(taskOperation+"-"+equipeName+"-"+zoneName)
                 obj.remove()
                 }
         });
     } else {
-        let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
+        let obj = document.getElementById(taskOperation+"-"+equipeName+"-"+zoneName)
         obj.remove()
     }
 
@@ -2514,6 +2514,9 @@ function submitForm(ID, type) {
     else if (type === "task") {
         var target = "form-task"
     }
+    else if (type === "task_in_report") {
+        var target = "form-task_in_report"
+    }
     else if (type === "position") {
         var target = "form-position"
     }
@@ -2550,6 +2553,46 @@ function submitForm(ID, type) {
 
         // Collect form data
         var formData = new FormData(this);
+
+        if (type === "task_in_report") {
+            let opr = formData.get("operation")
+            let subopr = formData.get("suboperation")
+            let zoneopr = formData.get("zoneoperation")
+            let equipe = formData.get("equipe")
+            let unit = formData.get("unit")
+
+            let select = document.getElementById("select2-equipe")
+            $("#select2-equipe").empty().append(
+                '<option value="" selected disabled>انتخاب اکیپ</option>'
+            )
+            fetch_all_equipes(function (equipes) {
+                equipes.forEach(equipe => {
+                    let option = document.createElement('option',)
+                    option.value = equipe.name
+                    option.innerHTML = equipe.name
+                    select.appendChild(option)
+                })
+            })
+            $('#select2-equipe').select2({
+                dropdownParent: $("#equipe-box")
+            });
+
+            let select2 = document.getElementById("select2-zoneoperation")
+            $("#select2-zoneoperation").empty().append(
+                '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+            )
+            fetch_zoneoperations(opr, function (zoneoperations) {
+                zoneoperations.forEach(zoneoperation => {
+                    let option = document.createElement('option',)
+                    option.value = zoneoperation.zone
+                    option.innerHTML = zoneoperation.zone
+                    select2.appendChild(option)
+                })
+            })
+            $('#select2-zoneoperation').select2({
+                dropdownParent: $("#zoneoperation-box")
+            });
+        }
 
         // Send AJAX request
         $.ajax({
@@ -2806,8 +2849,8 @@ function submitForm(ID, type) {
                     return 0
                 }
 
-                let opr = document.getElementById("select2-operation").value;
-                let subopr = document.getElementById("select2-suboperation").value
+                let opr = document.getElementById("select2-operation").value
+                // let subopr = document.getElementById("select2-suboperation").value
                 let equipe = document.getElementById("select2-equipe").value
                 let zone = document.getElementById("select2-zoneoperation").value
                 let amount = document.getElementById("task-volume").value
@@ -2818,11 +2861,11 @@ function submitForm(ID, type) {
                 let tbody = table.querySelector("tbody")
 
                 let newRow = document.createElement('tr');
-                newRow.id = opr + "-" + subopr + "-" + equipe + "-" + zone ;
+                newRow.id = opr + "-" + equipe + "-" + zone ;
 
                 let cell1 = document.createElement('td',);
                 cell1.className = "";
-                cell1.style.width = "25%"
+                cell1.style.width = "45%"
                 let span = document.createElement('span',);
                 Object.assign(span.style, {
                     float: 'left',
@@ -2830,23 +2873,23 @@ function submitForm(ID, type) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                let val = opr + "-" + subopr + "-" + equipe + "-" + zone ;
+                let val = opr + "-" + equipe + "-" + zone ;
                 span.addEventListener('click', function () {
                     del_task(
-                        opr, subopr, equipe, zone,true
+                        opr, equipe, zone,true
                     );
                 });
 
-                // let span2 = document.createElement('span',);
-                // Object.assign(span2.style, {
-                //     float: 'right',
-                //     color: 'black',
-                // });
-                // span2.className = "badge rounded-pill";
-                // span2.innerHTML = '<img src="/static/icons/list-task.svg" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"/>';
-                // span2.setAttribute('data-bs-toggle', 'modal');
-                // span2.setAttribute('data-bs-target', '#staticBackdropSubOperations-'+response);
-                //
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/list-task.svg" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);"/>';
+                span2.setAttribute('data-bs-toggle', 'modal');
+                span2.setAttribute('data-bs-target', '#staticBackdropSubTasks-'+response);
+
                 // let span3 = document.createElement('span',);
                 // Object.assign(span2.style, {
                 //     float: 'right',
@@ -2860,6 +2903,7 @@ function submitForm(ID, type) {
                 cell1.innerText = opr
 
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
                 // let temp = document.createElement('div')
                 // temp.style.display = "inline-block"
                 // Object.assign(temp.style, {
@@ -2869,13 +2913,13 @@ function submitForm(ID, type) {
                 // temp.appendChild(span2)
                 // temp.appendChild(span3)
                 // cell1.appendChild(temp)
-                // cell1.appendChild()
 
 
-                let cell2 = document.createElement('td',);
-                cell2.className = "";
-                cell2.style.width = "20%"
-                cell2.innerHTML = subopr
+
+                // let cell2 = document.createElement('td',);
+                // cell2.className = "";
+                // cell2.style.width = "20%"
+                // cell2.innerHTML = subopr
 
                 let cell3 = document.createElement('td',);
                 cell3.className = "";
@@ -2898,13 +2942,15 @@ function submitForm(ID, type) {
                 cell6.innerHTML = unit
 
                 newRow.appendChild(cell1)
-                newRow.appendChild(cell2)
+                // newRow.appendChild(cell2)
                 newRow.appendChild(cell3)
                 newRow.appendChild(cell4)
                 newRow.appendChild(cell6)
                 newRow.appendChild(cell5)
 
                 tbody.appendChild(newRow)
+
+                // handle_select('zone')
 
                 let select = document.getElementById("select2-equipe")
                 $("#select2-equipe").empty().append(
@@ -2937,6 +2983,24 @@ function submitForm(ID, type) {
                 $('#select2-zoneoperation').select2({
                     dropdownParent: $("#zoneoperation-box")
                 });
+
+                let temp = document.getElementById("task-volume")
+                temp.value = ""
+                temp.setAttribute('placeholder' , "مقدار")
+
+                createModal(
+                    "subtask",
+                    response,
+                    opr,
+                    amount,
+                    unit,
+                    zone,
+                    equipe,
+                )
+                equipe
+
+
+
             }
             else if (type === "position") {
                 let input = document.getElementById("input-" + type)
@@ -3423,7 +3487,7 @@ function del_zoneoperation(zone, opr, db) {
 
 
 
-function createModal(type, ID, opr_name, opr_amount, opr_unit) {
+function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe=null) {
     if (type === 'suboperation') {
         let container = document.getElementById("main-container")
 
@@ -3681,7 +3745,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit) {
         });
 
         submitForm(ID, 'suboperation')
-    } // *******************************************************************************
+    }
     else if (type === 'zoneoperation') {
         let container = document.getElementById("main-container")
 
@@ -3925,6 +3989,336 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit) {
 
         submitForm(ID, 'zoneoperation')
     }
+    else if (type === 'subtask') {
+        let container = document.getElementById("main-container")
+
+        let div_modal = document.createElement("div")
+        div_modal.className = "modal fade"
+        div_modal.id = "staticBackdropSubTasks-"+ID
+        div_modal.setAttribute("data-bs-backdrop", "static")
+        div_modal.setAttribute("data-bs-keyboard", "false")
+        div_modal.setAttribute("tabindex", "-1")
+
+        let div_modal_dialog = document.createElement("div")
+        div_modal_dialog.className = "modal-dialog modal-lg"
+
+        let div_modal_content = document.createElement("div")
+        div_modal_content.className = "modal-content"
+
+        let div_modal_header = document.createElement("div")
+        div_modal_header.className = "modal-header"
+
+        let close_modal = document.createElement("button")
+        close_modal.className = "btn-close"
+        close_modal.setAttribute("data-bs-dismiss", "modal")
+        close_modal.setAttribute("aria-label", "Close")
+
+        let modal_title = document.createElement("h5")
+        modal_title.className = "modal-title"
+        modal_title.id = "staticBackdropSubTaskLabel-"+ID
+        modal_title.style.marginRight = "auto"
+        modal_title.innerText = "زیر عملیات های " + opr_name + " در موقعیت " + null + " برای اکیپ " + null
+
+        let div_modal_body = document.createElement("div")
+        div_modal_body.className = "modal-body"
+
+        let div_input_group_01 = document.createElement("div")
+        div_input_group_01.className = "input-group mb-3"
+
+        let table = document.createElement("table")
+        table.className = "table table-bordered border-dark"
+        table.id = "table-" + ID
+        table.style.fontSize = "11px"
+
+        let thead01 = document.createElement("thead")
+        thead01.className = ""
+        let thead01_row = document.createElement("tr")
+        let thead01_row_td01 = document.createElement("th")
+        let thead01_row_td02 = document.createElement("th")
+        let thead01_row_td03 = document.createElement("th")
+        let thead01_row_td04 = document.createElement("th")
+        let thead01_row_td05 = document.createElement("th")
+        thead01_row_td01.style.textAlign = "center"
+        thead01_row_td02.style.textAlign = "center"
+        thead01_row_td03.style.textAlign = "center"
+        thead01_row_td04.style.textAlign = "center"
+        thead01_row_td05.style.textAlign = "center"
+
+        thead01_row_td01.innerText = "عملیات اصلی"
+        thead01_row_td02.innerText = "اکیپ"
+        thead01_row_td03.innerText = "موقعیت"
+        thead01_row_td04.innerText = "مقدار"
+        thead01_row_td05.innerText = "واحد"
+
+        let thead01_01 = document.createElement("thead")
+        thead01_01.className = "table-light"
+        let thead01_01_row = document.createElement("tr")
+        let thead01_01_row_td01 = document.createElement("th")
+        let thead01_01_row_td02 = document.createElement("th")
+        let thead01_01_row_td03 = document.createElement("th")
+        let thead01_01_row_td04 = document.createElement("th")
+        let thead01_01_row_td05 = document.createElement("th")
+        thead01_01_row_td01.style.textAlign = "center"
+        thead01_01_row_td02.style.textAlign = "center"
+        thead01_01_row_td03.style.textAlign = "center"
+        thead01_01_row_td04.style.textAlign = "center"
+        thead01_01_row_td05.style.textAlign = "center"
+
+        thead01_01_row_td01.innerText = opr_name
+        thead01_01_row_td02.innerText = equipe
+        thead01_01_row_td03.innerText = zone
+        thead01_01_row_td04.innerText = opr_amount
+        thead01_01_row_td05.innerText = opr_unit
+
+        let thead02 = document.createElement("thead")
+        thead02.className = ""
+        let thead02_row = document.createElement("tr")
+        let thead02_row_td01 = document.createElement("th")
+        let thead02_row_td02 = document.createElement("th")
+        let thead02_row_td03 = document.createElement("th")
+        let thead02_row_td04 = document.createElement("th")
+        thead02_row_td02.style.width = "20%"
+        thead02_row_td03.style.width = "20%"
+        thead02_row_td04.style.width = "20%"
+
+        thead02_row_td01.setAttribute('colspan', '2')
+
+        thead02_row_td01.innerText = "زیرعملیات ها"
+        thead02_row_td02.innerText = "وزن %"
+        thead02_row_td03.innerText = "مقدار"
+        thead02_row_td04.innerText = "واحد"
+
+
+
+        let tbody = document.createElement("tbody")
+        // let temp = document.createElement("tr")
+        // tbody.appendChild(temp)
+
+        // let form = document.createElement("form")
+        // form.id = "form-"+ID
+
+        // let div_input_group_02 = document.createElement("div")
+        // div_input_group_02.className = "input-group mb-3"
+        //
+        // let table_form = document.createElement("table")
+        // table_form.style.fontSize = "11px"
+        //
+        // let thead_form =  document.createElement("thead")
+        //
+        // let input_id = document.createElement("input")
+        // input_id.hidden = true
+        // input_id.value = ID
+        // input_id.name = "operation-id"
+        // input_id.id = "suboperation-operation-" + ID
+        // input_id.required = true
+        //
+        // let th01 = document.createElement("th")
+        // th01.style = "width: 187px; background-color: white; border: solid black 1px;"
+        //
+        // let input_subopr_name = document.createElement("input")
+        // input_subopr_name.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        // input_subopr_name.id = "suboperation-name-" + ID
+        // input_subopr_name.placeholder = "نام زیرعملیات"
+        // input_subopr_name.name = "name"
+        // input_subopr_name.required = true
+        //
+        //
+        // let th02 = document.createElement("th")
+        // th02.style = "width: 93px; background-color: white; border: solid black 1px;"
+        //
+        // let input_subopr_weight = document.createElement("input")
+        // input_subopr_weight.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        // input_subopr_weight.id = "suboperation-weight-" + ID
+        // input_subopr_weight.placeholder = "وزن %"
+        // input_subopr_weight.type = "number"
+        // input_subopr_weight.name = "weight"
+        // input_subopr_weight.min = "0"
+        // input_subopr_weight.max = "100.0"
+        // input_subopr_weight.required = true
+        //
+        // let th03 = document.createElement("th")
+        // th03.style = "width: 93px; background-color: white; border: solid black 1px;"
+        //
+        // let input_subopr_amount = document.createElement("input")
+        // input_subopr_amount.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
+        // input_subopr_amount.id = "suboperation-amount-" + ID
+        // input_subopr_amount.placeholder = "مقدار"
+        // input_subopr_amount.type = "number"
+        // input_subopr_amount.required = true
+        // input_subopr_amount.name = 'amount'
+        //
+        //
+        // let div_unit_box = document.createElement("div")
+        // div_unit_box.style = "width: 90px;"
+        // div_unit_box.id = "unit-box-" + ID
+        //
+        // let select_units = document.createElement('select')
+        // select_units.required = true
+        // select_units.className = "select2"
+        // select_units.id = "select2-"+ ID
+        // select_units.name = "unit"
+        // select_units.style = "width: 90px; border: solid black"
+        // // select_units.on('click', function() {
+        // //     findselect2(ID);
+        // // });
+        //
+        // let choose_option = document.createElement('option')
+        // choose_option.disabled = true
+        // choose_option.selected = true
+        // choose_option.value = ""
+        // choose_option.innerText = "انتخاب"
+        //
+        // select_units.appendChild(choose_option)
+        // fetch_units(function (units) {
+        //     units.forEach(unit => {
+        //         let option = document.createElement('option',)
+        //         option.value = unit.name
+        //         option.innerText = unit.name
+        //         select_units.appendChild(option)
+        //     })
+        // })
+        // div_unit_box.appendChild(select_units)
+        //
+        // let btn_submit = document.createElement("button")
+        // btn_submit.className = "btn btn-outline-success bp3-round w-100"
+        // btn_submit.type = "submit"
+        // btn_submit.innerText = "افزودن"
+        //
+        let div_modal_footer = document.createElement("div")
+        div_modal_footer.className = "modal-footer"
+
+        let btn_cmplt = document.createElement("button")
+        btn_cmplt.type = "button"
+        btn_cmplt.className = "btn btn-outline-warning w-100"
+        btn_cmplt.setAttribute('data-bs-dismiss', 'modal')
+        btn_cmplt.innerText = "تکمیل"
+
+        // ==================================================
+        // --------------------------------------------------
+        thead01_row.appendChild(thead01_row_td01)
+        thead01_row.appendChild(thead01_row_td02)
+        thead01_row.appendChild(thead01_row_td03)
+        thead01_row.appendChild(thead01_row_td04)
+        thead01_row.appendChild(thead01_row_td05)
+
+        thead01.appendChild(thead01_row)
+        // --------------------------------------------------
+        // --------------------------------------------------
+        thead01_01_row.appendChild(thead01_01_row_td01)
+        thead01_01_row.appendChild(thead01_01_row_td02)
+        thead01_01_row.appendChild(thead01_01_row_td03)
+        thead01_01_row.appendChild(thead01_01_row_td04)
+        thead01_01_row.appendChild(thead01_01_row_td05)
+
+        thead01_01.appendChild(thead01_01_row)
+        // --------------------------------------------------
+        // --------------------------------------------------
+        thead02_row.appendChild(thead02_row_td01)
+        thead02_row.appendChild(thead02_row_td02)
+        thead02_row.appendChild(thead02_row_td03)
+        thead02_row.appendChild(thead02_row_td04)
+
+        thead02.appendChild(thead02_row)
+        // --------------------------------------------------
+
+        // --------------------------------------------------
+        // th01.appendChild(input_subopr_name)
+        // th02.appendChild(input_subopr_weight)
+        // th03.appendChild(input_subopr_amount)
+        //
+        // thead_form.appendChild(input_id)
+        // thead_form.appendChild(th01)
+        // thead_form.appendChild(th02)
+        // thead_form.appendChild(th03)
+        //
+        // table_form.appendChild(thead_form)
+        //
+        // div_input_group_02.appendChild(table_form)
+        // div_input_group_02.appendChild(div_unit_box)
+        //
+        // form.appendChild(div_input_group_02)
+        // form.appendChild(btn_submit)
+        // --------------------------------------------------
+
+        // ==================================================
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/get-subtasks-of/' + ID + '/',
+            data: {
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                // let subtasks = JSON.parse(response['subtasks'])
+                let subtasks = response
+
+                for (let i=0; i<subtasks.length; i++) {
+
+                    let row = document.createElement("tr")
+                    let row_td01 = document.createElement("td")
+                    let row_td02 = document.createElement("td")
+                    let row_td03 = document.createElement("td")
+                    let row_td04 = document.createElement("td")
+
+                    row_td01.setAttribute('colspan', '2')
+
+                    row_td01.innerText = subtasks[i].foreigns.name
+                    row_td02.innerText = subtasks[i].foreigns.weight
+                    row_td03.innerText = subtasks[i].totalVolume
+                    row_td04.innerText = subtasks[i].foreigns.unit
+
+                    row.appendChild(row_td01)
+                    row.appendChild(row_td02)
+                    row.appendChild(row_td03)
+                    row.appendChild(row_td04)
+
+                    tbody.appendChild(row)
+
+                }
+
+            }
+        });
+        // --------------------------------------------------
+        table.appendChild(thead01)
+        table.appendChild(thead01_01)
+        table.appendChild(thead02)
+        table.appendChild(tbody)
+
+        div_input_group_01.appendChild(table)
+        // div_input_group_01.appendChild(form)
+        // --------------------------------------------------
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_footer.appendChild(btn_cmplt)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_body.appendChild(div_input_group_01)
+        div_modal_body.appendChild(div_modal_footer)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_header.appendChild(close_modal)
+        div_modal_header.appendChild(modal_title)
+
+        div_modal_content.appendChild(div_modal_header)
+        div_modal_content.appendChild(div_modal_body)
+        // ==========================================================
+
+        // ==========================================================
+        div_modal_dialog.appendChild(div_modal_content)
+        div_modal.appendChild(div_modal_dialog)
+        container.appendChild(div_modal)
+        // ==========================================================
+
+        // $('#select2-'+ID).select2({
+        //     dropdownParent: $("#unit-box-"+ID)
+        // });
+
+        // submitForm(ID, 'suboperation')
+    }
 }
 
 function handle_select(type) {
@@ -3945,27 +4339,43 @@ function handle_select(type) {
             dropdownParent: $("#operation-box")
         });
     }
-    else if ( type === "suboperation" ) {
-        $("#select2-"+type).empty().append(
-            '<option value="" selected disabled>انتخاب زیرعملیات</option>'
-        )
-        $("#select2-zoneoperation").empty().append(
-            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
-        )
-        let subtype = document.getElementById("select2-operation").value
-        fetch_suboperations(subtype, function (operations) {
-            operations.forEach(operation => {
-                let option = document.createElement('option',)
-                option.value = operation.name
-                option.innerHTML = operation.name
-                select.appendChild(option)
-            })
-        })
-
-        $('#select2-suboperation').select2({
-            dropdownParent: $("#suboperation-box")
-        });
-    }
+    // else if ( type === "suboperation" ) {
+    //     $("#select2-"+type).empty().append(
+    //         '<option value="" selected disabled>انتخاب زیرعملیات</option>'
+    //     )
+    //     $("#select2-zoneoperation").empty().append(
+    //         '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+    //     )
+    //     let subtype = document.getElementById("select2-operation").value
+    //     fetch_suboperations(subtype, function (operations) {
+    //         operations.forEach(operation => {
+    //             let option = document.createElement('option',)
+    //             option.value = operation.name
+    //             option.innerHTML = operation.name
+    //             select.appendChild(option)
+    //         })
+    //     })
+    //
+    //     $('#select2-suboperation').select2({
+    //         dropdownParent: $("#suboperation-box")
+    //     });
+    //
+    //
+    //     let select2 = document.getElementById("select2-zoneoperation")
+    //     fetch_zoneoperations(subtype, function (zoneoperations) {
+    //         zoneoperations.forEach(zoneoperation => {
+    //             let option = document.createElement('option',)
+    //             option.value = zoneoperation.zone
+    //             option.innerHTML = zoneoperation.zone
+    //             select2.appendChild(option)
+    //             document.getElementById("task-unit").value = zoneoperation.unit
+    //         })
+    //     })
+    //
+    //     $('#select2-zoneoperation').select2({
+    //         dropdownParent: $("#zoneoperation-box")
+    //     });
+    // }
     else if (type === "zoneoperation" ) {
         $("#select2-"+type).empty().append(
             '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
@@ -4002,7 +4412,7 @@ function handle_select(type) {
             dropdownParent: $("#equipe-box")
         });
     }
-    else if ( type == "zone" ) {
+    else if ( type === "zone" ) {
         $.ajax({
             type: 'GET',
             url: '/edit-db/get-freeAmount/',
@@ -4019,6 +4429,44 @@ function handle_select(type) {
                 )
             }
         });
+    }
+    else if ( type === "zone_in_report") {
+
+        let opr = document.getElementById('select2-operation').value
+        let subopr = document.getElementById('select2-suboperation').value
+        let zone = document.getElementById('select2-zoneoperation').value
+        $.ajax({
+            url: '/edit-db/get-equipes-in-report/',
+            type: 'POST',
+            data: {
+                'operation': opr,
+                'suboperation': subopr,
+                'zone': zone,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let tasks = JSON.parse(response['tasks'])
+                let select = document.getElementById("select2-equipe")
+
+                $("#select2-equipe").empty().append(
+                    '<option value="" selected disabled>انتخاب اکیپ</option>'
+                )
+                for (let i=0; i<tasks.length; i++) {
+                    let splitted = tasks[i].unique_str.split("-")
+
+                    let option = document.createElement("option")
+                    option.value = splitted[2] + "-" + splitted[3]
+                    option.innerText = splitted[2] + "-" + splitted[3]
+
+                    select.appendChild(option)
+                }
+
+            }
+        })
+
+
     }
     else {
         $('#select2-operation').select2({

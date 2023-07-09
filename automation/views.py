@@ -26,6 +26,7 @@ def add_base_data_template(request):
     equipes = Equipe.objects.all()
     zones = Zone.objects.all()
     tasks = Task.objects.all()
+    parentTasks = ParentTask.objects.all()
     units = Unit.objects.all()
 
     materialproviders = MaterialProvider.objects.all()
@@ -52,6 +53,8 @@ def add_base_data_template(request):
         zones = []
     if not tasks.exists():
         tasks = []
+    if not parentTasks.exists():
+        tasks = []
     if not units.exists():
         units = []
     if not materialproviders.exists():
@@ -72,6 +75,7 @@ def add_base_data_template(request):
         "equipes": equipes,
         "zones": zones,
         "tasks": tasks,
+        "parentTasks": parentTasks,
         "units": units,
         "materialproviders": materialproviders,
         "machineproviders": machineproviders,
@@ -125,7 +129,11 @@ def create_report_template(request):
         #     "tasks": tasks,
         #     "machine_types": MACHINE_TYPES,
         # }
-        context = {}
+
+        context = {
+
+            "machine_types": MACHINE_TYPES,
+        }
 
     else:
         report = DailyReport.objects.last()
@@ -303,28 +311,25 @@ def add_task_to_db(request,):
         redirect_url = request.META.get('HTTP_REFERER', '/')
 
         operation = request.POST.get("operation")
-        suboperation = request.POST.get("suboperation")
+        # suboperation = request.POST.get("suboperation")
         zoneName = request.POST.get("zoneoperation")
         equipeName = request.POST.get("equipe")
-        taskVol = request.POST.get("task-volume")
+        taskVol = float(request.POST.get("task-volume"))
         unitName = request.POST.get("unit")
 
+        operation = Operation.objects.get(name=operation)
         zoneoperation = ZoneOperation.objects.get(
-                operation=Operation.objects.get(name=operation),
+                operation=operation,
                 zone=Zone.objects.get(name=zoneName),
         )
-        # try:
-        new_task, new = Task.objects.get_or_create(
+
+        new_parent_task, new = ParentTask.objects.get_or_create(
             operation=zoneoperation,
-            suboperation=SubOperation.objects.get(
-                name=suboperation,
-                parent=Operation.objects.get(name=operation),
-            ),
             equipe=Equipe.objects.get(name=equipeName),
             zone=Zone.objects.get(name=zoneName),
 
-            defaults= {
-                'totalVolume': float(taskVol),
+            defaults={
+                'totalVolume': taskVol,
                 'unit': Unit.objects.get(name=unitName),
             }
         )
@@ -332,15 +337,42 @@ def add_task_to_db(request,):
         if not new:
             return JsonResponse(False, safe=False)
 
-        new_task.set_unique()
-        new_task.update_percentage()
+        new_parent_task.set_unique()
+        new_parent_task.update_percentage()
 
-        zoneoperation.tasks.add(new_task)
+        zoneoperation.parentTasks.add(new_parent_task)
         zoneoperation.update_assignedAmount()
 
+        for suboperation in operation.suboperations.all():
+            taskVol_for_subopr = (taskVol/zoneoperation.operation.amount) * suboperation.amount
+            new_task, new = Task.objects.get_or_create(
+                parent=new_parent_task,
+                operation=zoneoperation,
+                suboperation=SubOperation.objects.get(
+                    name=suboperation.name,
+                    parent=operation,
+                ),
+                equipe=Equipe.objects.get(name=equipeName),
+                zone=Zone.objects.get(name=zoneName),
 
+                defaults={
+                    'totalVolume': taskVol_for_subopr,
+                    'unit': suboperation.unit,
+                }
+            )
 
-        return JsonResponse(True, safe=False)
+            if not new:
+                return JsonResponse(False, safe=False)
+
+            new_task.set_unique()
+            new_task.update_percentage()
+
+            new_parent_task.subtasks.add(new_task)
+
+            zoneoperation.tasks.add(new_task)
+            zoneoperation.update_assignedAmount()
+
+        return JsonResponse(new_parent_task.id, safe=False)
             # return redirect(redirect_url)
 
         # except:
@@ -650,7 +682,6 @@ def add_zoneoperation_to_db(request):
         operation.zones.add(zone_operation)
         operation.update_assignedAmount()
 
-
         return HttpResponse(zone_operation.id)
 
     elif request.method == "GET":
@@ -711,7 +742,7 @@ def del_equipe_from_db(request):
 def del_task_from_db(request):
     if request.method == "POST":
         taskOperation = request.POST.get("taskOperation")
-        taskSubOperation = request.POST.get("taskSubOperation")
+        # taskSubOperation = request.POST.get("taskSubOperation")
         equipeName = request.POST.get("equipeName")
         # taskVol = request.POST.get("taskVol")
         zoneName = request.POST.get("zoneName")
@@ -723,12 +754,12 @@ def del_task_from_db(request):
             zone=Zone.objects.get(name=zoneName),
         )
 
-        obj = Task.objects.filter(
+        obj = ParentTask.objects.filter(
             operation=zoneoperation.id,
-            suboperation=SubOperation.objects.get(
-                name=taskSubOperation,
-                parent=Operation.objects.get(name=taskOperation),
-            ),
+            # suboperation=SubOperation.objects.get(
+            #     name=taskSubOperation,
+            #     parent=Operation.objects.get(name=taskOperation),
+            # ),
             equipe=Equipe.objects.get(name=equipeName),
             zone=Zone.objects.get(name=zoneName),
         )
@@ -1581,6 +1612,44 @@ def get_suboperations(request):
         return JsonResponse(context)
 
 
+def get_subtasks_of(request, ID):
+    if request.method == "POST":
+        subtasks = Task.objects.filter(
+            parent=ParentTask.objects.get(id=ID)
+        )
+        data = []
+        for subtask in subtasks:
+            foreign_key_fields = {
+                'name': subtask.suboperation.name,
+                'weight': subtask.suboperation.weight,
+                'unit': subtask.suboperation.unit.name,
+                # Add more fields as needed
+            }
+            instance_fields = {
+                'totalVolume': subtask.totalVolume,
+                'doneVolume': subtask.doneVolume,
+                'donePercentage': subtask.donePercentage,
+                'started': subtask.started,
+                'completed': subtask.completed,
+                'start_date': subtask.start_date,
+                'completion_date': subtask.completion_date,
+
+                # Add more fields as needed
+                'foreigns': foreign_key_fields
+            }
+            data.append(instance_fields)
+
+        # if subtasks.exists():
+        #     data = json.dumps(list(subtasks.values()))
+        # else:
+        #     data = "[]"
+        # context = {
+        #     "subtasks": data
+        # }
+
+        return JsonResponse(data, safe=False)
+
+
 def get_zoneoperations(request):
     if request.method == "GET":
         opr_name = request.GET.get("operation")
@@ -1615,6 +1684,34 @@ def get_all_equipes(request):
             data = "[]"
         context = {
             "equipes": data
+        }
+        return JsonResponse(context)
+
+
+def get_equipes_in_report(request):
+    if request.method == "POST":
+        operation = request.POST.get('operation')
+        suboperation = request.POST.get('suboperation')
+        zone = request.POST.get('zone')
+
+        tasks = Task.objects.filter(
+            operation=ZoneOperation.objects.get(
+                operation=Operation.objects.get(name=operation),
+                zone=Zone.objects.get(name=zone),
+            ),
+            suboperation=SubOperation.objects.get(
+                name=suboperation,
+                parent=Operation.objects.get(name=operation),
+            ),
+            zone=Zone.objects.get(name=zone),
+        )
+
+        if tasks.exists():
+            data = json.dumps(list(tasks.values()))
+        else:
+            data = "[]"
+        context = {
+            "tasks": data
         }
         return JsonResponse(context)
 

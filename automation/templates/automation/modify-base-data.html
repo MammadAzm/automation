@@ -536,16 +536,16 @@
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
-                        <th class="" style="width: 25%">
+                        <th class="" style="width: 45%">
                              شرح عملیات
                             <span class="badge rounded-pill" style="float: left; color: black"
                                 data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                 <img src="{% static 'icons/plus-circle.svg' %}">
                             </span>
                         </th>
-                        <th class="" style="width: 20%" >
-                            شرح زیر عملیات
-                        </th>
+<!--                        <th class="" style="width: 20%" >-->
+<!--                            شرح زیر عملیات-->
+<!--                        </th>-->
                         <th class="" style="width: 18%" >
                             اکیپ
                         </th>
@@ -563,63 +563,69 @@
             </table>
             <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
                 <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
-                    <thead class="" hidden>
-                        <tr class="">
-                            <th class="" style="width: 25%">
-                                 شرح عملیات
-                                <span class="badge rounded-pill" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                    <img src="{% static 'icons/plus-circle.svg' %}">
-                                </span>
-                            </th>
-                            <th class="" style="width: 20%" >
-                                شرح زیر عملیات
-                            </th>
-                            <th class="" style="width: 18%" >
-                                اکیپ
-                            </th>
-                            <th class="" style="width: 17%" >
-                                موقعیت
-                            </th>
-                            <th class="" style="width: 10%" >
-                                واحد
-                            </th>
-                            <th class="" style="width: 10%">
-                                مقدار کل
-                            </th>
-                        </tr>
-                    </thead>
+                    <thead hidden class="">
+                    <tr class="">
+                        <th class="" style="width: 45%">
+                             شرح عملیات
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+<!--                        <th class="" style="width: 20%" >-->
+<!--                            شرح زیر عملیات-->
+<!--                        </th>-->
+                        <th class="" style="width: 18%" >
+                            اکیپ
+                        </th>
+                        <th class="" style="width: 17%" >
+                            موقعیت
+                        </th>
+                        <th class="" style="width: 10%" >
+                            واحد
+                        </th>
+                        <th class="" style="width: 10%">
+                            مقدار کل
+                        </th>
+                    </tr>
+                </thead>
 
                     <tbody>
 
-                        {% for task in tasks %}
-                            <tr  id="{{task.operation.operation.name}}-{{task.suboperation.name}}-{{task.equipe}}-{{task.zone}}">
-                                <td style="width: 25%">
-                                    {{ task.operation.operation }}
+                        {% for parentTask in parentTasks %}
+                            <tr  id="{{parentTask.operation.operation.name}}-{{parentTask.equipe}}-{{parentTask.zone}}">
+                                <td style="width: 45%">
+                                    {{ parentTask.operation.operation }}
                                     <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_task('{{task.operation.operation.name}}', '{{task.suboperation.name}}', '{{ task.equipe }}', '{{ task.zone }}', true)">
+                                        style="float: left; color: black; " onclick="del_task('{{parentTask.operation.operation.name}}', '{{ parentTask.equipe }}', '{{ parentTask.zone }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+
+                                    <span class="badge rounded-pill"
+                                          style="float: right; color: black; " onclick=""
+                                          data-bs-toggle="modal" data-bs-target="#staticBackdropSubTasks-{{ parentTask.id }}">
+                                        <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
                                     </span>
                                 </td>
 
-                                <td style="width: 20%">
-                                    {{ task.suboperation.name }}
-                                </td>
+<!--                                <td style="width: 20%">-->
+<!--                                    {{ task.suboperation.name }}-->
+<!--                                </td>-->
 
                                 <td style="width: 18%">
-                                    {{ task.equipe }}
+                                    {{ parentTask.equipe }}
                                 </td>
 
                                 <td style="width: 17%">
-                                    {{ task.zone }}
+                                    {{ parentTask.zone }}
                                 </td>
 
                                 <td style="width: 10%">
-                                    {{ task.unit }}
+                                    {{ parentTask.unit }}
                                 </td>
 
                                 <td style="width: 10%">
-                                    {{ task.totalVolume }}
+                                    {{ parentTask.totalVolume }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -893,7 +899,8 @@
                     {% csrf_token %}
                     <div class="input-group mb-3 ">
                         <div id="operation-box" style="width: 50%;">
-                            <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"
+<!--                            <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"-->
+                            <select required class="select2" id="select2-operation" onchange="handle_select('zoneoperation')"
                                     name="operation" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
                                     انتخاب عملیات اصلی
@@ -901,17 +908,6 @@
                             </select>
                         </div>
 
-                        <div id="suboperation-box" style="width: 50%;">
-                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"
-                                    name="suboperation" style="width: 100%; border: solid black" onclick="">
-                                <option disabled selected value="">
-                                    انتخاب زیرعملیات
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="input-group mb-3 ">
                         <div id="zoneoperation-box" style="width: 50%;">
                             <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone')"
                                     name="zoneoperation" style="width: 100%; border: solid black" onclick="">
@@ -921,7 +917,20 @@
                             </select>
                         </div>
 
-                        <div id="equipe-box" style="width: 50%;">
+<!--                        <div id="suboperation-box" style="width: 50%;">-->
+<!--                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"-->
+<!--                                    name="suboperation" style="width: 100%; border: solid black" onclick="">-->
+<!--                                <option disabled selected value="">-->
+<!--                                    انتخاب زیرعملیات-->
+<!--                                </option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                    </div>
+
+                    <div class="input-group mb-3 ">
+
+
+                        <div id="equipe-box" style="width: 100%;">
                             <select required class="select2" id="select2-equipe"
                                     name="equipe" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
@@ -1380,6 +1389,128 @@
 
         submitForm("{{ operation.id }}", 'zoneoperation')
     </script>
+{% endfor %}
+
+
+{% for parentTask in parentTasks %}
+    <div class="modal fade" id="staticBackdropSubTasks-{{ parentTask.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropSubTasksLabel-{{ parentTask.id }}" style="margin-right: auto">
+                        زیرعملیات های {{ parentTask.operation.operation.name }} در موقعیت {{ parentTask.zone }} برای اکیپ {{ parentTask.equipe }}
+                    </h5>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="input-group mb-3">
+                        <table class="table table-bordered border-dark" id="table-{{ parentTask.id }}" style="font-size: 11px">
+                            <thead class="">
+                                <tr class="">
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        عملیات اصلی
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        اکیپ
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        موقعیت
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        مقدار
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        واحد
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <thead class="table-light">
+                                <tr class="">
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ parentTask.operation.operation.name }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ parentTask.equipe }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ parentTask.zone }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ parentTask.totalVolume }}
+                                    </th>
+                                    <th class=""  colspan="1" style="text-align: center">
+                                        {{ parentTask.unit }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead class="">
+                                <tr class="">
+                                    <th class="" colspan="2">
+                                        زیرعملیات ها
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        وزن %
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        مقدار
+                                    </th>
+
+                                    <th style="width: 20%;">
+                                        واحد
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for subTask in parentTask.subtasks.all %}
+                                    <tr id="subTask-{{ subTask.name }}-{{ parentTask.id }}">
+                                        <td colspan="2">
+                                            {{ subTask.suboperation.name }}
+
+<!--                                            <span class="badge rounded-pill"-->
+<!--                                                style="float: right; color: black; " onclick="del_subTask('{{ subTask.name }}', '{{ parentTask.id }}', true)">-->
+<!--                                                <img src="{% static 'icons/patch-minus.svg' %}">-->
+<!--                                            </span>-->
+
+                                        </td>
+
+                                        <td>
+                                            {{ subTask.suboperation.weight }}
+                                        </td>
+
+                                        <td>
+                                            {{ subTask.totalVolume }}
+                                        </td>
+
+                                        <td>
+                                            {{ subTask.unit }}
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-warning w-100" data-bs-dismiss="modal" >تکمیل</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endfor %}
 
 <script>

@@ -436,23 +436,26 @@
                     <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px;">
                             <thead class="">
                                 <tr class="">
-                                    <th class="" style="width: 35%">
+                                    <th class="" style="width: 20%">
                                         <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
                                                 data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                             <img src="{% static 'icons/plus-circle.svg' %}"/>
                                         </span>
-                                        شرح عملیات
+                                        شرح عملیات اصلی
                                     </th>
-                                    <th class="" style="width: 17%">
+                                    <th class="" style="width: 20%">
+                                        شرح عملیات اجرایی (زیرعملیات)
+                                    </th>
+                                    <th class="" style="width: 10%">
                                         اکیپ
                                     </th>
-                                    <th class="" style="width: 7%">
+                                    <th class="" style="width: 8%">
                                         موقعیت
                                     </th>
                                     <th class="text-centred" style="width: 7%">
                                         امروز
                                     </th>
-                                    <th class="text-centred" style="width: 9%">
+                                    <th class="text-centred" style="width: 10%">
                                         تا دیروز
                                     </th>
                                     <th class="text-centred" style="width: 5%">
@@ -461,10 +464,10 @@
                                     <th class="text-centred" style="width: 5%">
                                         کل
                                     </th>
-                                    <th class="text-centred" style="width: 8%">
+                                    <th class="text-centred" style="width: 5%">
                                         درصد
                                     </th>
-                                    <th class="text-centred" style="width: 9% ">
+                                    <th class="text-centred" style="width: 10% ">
                                         واحد
                                     </th>
                                 </tr>
@@ -476,11 +479,16 @@
                                     <tr  id="{{task.task.name}}-{{task.task.equipe}}-{{task.task.zone}}">
                                         <td>
                                             <span class="badge rounded-pill"
-                                                style="margin-left: 0pt; color: black; " onclick="del_task('{{ task.task.name }}', '{{ task.task.equipe }}', '{{ task.task.zone }}', '{{ task.task.totalVolume }}', '{{ task.task.unit }}', false)">
+                                                style="margin-left: 0pt; color: black; " onclick="del_task('{{ task.task.operation.name }}', '{{ task.task.suboperation.name }}', '{{ task.task.equipe }}', '{{ task.task.zone }}', false)">
                                                 <img src="{% static 'icons/patch-minus.svg' %}"/>
                                             </span>
-                                            {{ task.task.name }}
-                                            {{ task.name }}
+                                            {{ task.task.operation.name }}
+                                            {{ task.operation.name }}
+                                        </td>
+
+                                        <td>
+                                            {{ task.task.suboperation.name }}
+                                            {{ task.suboperation.name }}
                                         </td>
 
                                         <td>
@@ -845,24 +853,59 @@
                 </div>
 
                 <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <input id="task-name" disabled required type="text" name="task" class="form-control" placeholder="عملیات">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuTasks" data-bs-toggle="dropdown" onclick='fetch_tasks()'>
-                                    انتخاب
-                                </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-tasks">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-task">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
+                    <form id="form-task_in_report">
+                        {% csrf_token %}
+                        <div class="input-group mb-3 ">
+                            <div id="operation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"
+                                        name="operation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب عملیات اصلی
+                                    </option>
+                                </select>
+                            </div>
 
-                                </ul>
+                            <div id="suboperation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"
+                                        name="suboperation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب زیرعملیات
+                                    </option>
+                                </select>
                             </div>
                         </div>
+
+                        <div class="input-group mb-3 ">
+                            <div id="zoneoperation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone_in_report')"
+                                        name="zoneoperation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب موقعیت عملیات
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="equipe-box" style="width: 50%;">
+                                <select class="select2" id="select2-equipe"
+                                        name="equipe" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب اکبپ
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group mb-3">
+
+                             <input required  type="number"  name="task-volume" id="task-volume" class="form-control" placeholder="مقدار">
+                             <input required readonly type="text" name="unit" id="task-unit" class="form-control" placeholder="واحد">
+                        </div>
+
+                        <button class="btn btn-outline-success bp3-round" onclick=""
+                                type="submit" id="button-addon11" >افزودن</button>
+
+                    </form>
 
                 </div>
 
@@ -1315,6 +1358,15 @@
     </div>
 
 
+
+<script>
+    handle_select(type=null)
+    handle_select(type="operation")
+
+    submitForm(null, 'task_in_report')
+
+
+</script>
 
 {% endblock %}
 

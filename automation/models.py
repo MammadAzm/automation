@@ -304,6 +304,7 @@ class ZoneOperation(models.Model):
     doneAmount = models.FloatField(default=0.0, )
 
     tasks = models.ManyToManyField('Task', related_name='tasks')
+    parentTasks = models.ManyToManyField('ParentTask', related_name='tasks')
 
     def update_freeAmount(self):
         self.freeAmount = float(self.amount) - float(self.assignedAmount)
@@ -312,7 +313,7 @@ class ZoneOperation(models.Model):
     def update_assignedAmount(self, auto=True, amount=None, action=None):
         if auto:
             self.assignedAmount = 0.0
-            for task in self.tasks.all():
+            for task in self.parentTasks.all():
                 self.assignedAmount += task.totalVolume
 
             self.freeAmount = float(self.amount) - float(self.assignedAmount)
@@ -329,7 +330,7 @@ class ZoneOperation(models.Model):
     def update_doneAmount(self, auto=True, amount=None, action=None):
         if auto:
             self.doneAmount = 0.0
-            for task in self.tasks.all():
+            for task in self.parentTasks.all():
                 self.doneAmount += task.doneVolume
 
         else:
@@ -347,7 +348,86 @@ class ZoneOperation(models.Model):
         return self.operation.name + " | " + self.zone.name
 
 
+class ParentTask(models.Model):
+    operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
+    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    unique_str = models.CharField(max_length=250, unique=True)
+
+    totalVolume = models.FloatField(default=0.1, )
+    doneVolume = models.FloatField(default=0.0, )
+    donePercentage = models.FloatField(default=0.0, )
+    started = models.BooleanField(default=False, )
+    completed = models.BooleanField(default=False, )
+    start_date = models.DateField(null=True, blank=True)
+    completion_date = models.DateField(null=True, blank=True)
+
+    subtasks = models.ManyToManyField('Task', related_name='subtasks')
+
+    def check_completion(self):
+        if self.donePercentage < 100:
+            self.completed = False
+            self.completion_date = None
+            self.save()
+
+    def reset(self):
+        self.started = False
+        self.completed = False
+        self.completion_date = None
+        self.start_date = None
+        self.doneVolume = 0
+        self.donePercentage = 0
+
+        self.save()
+
+    def complete(self, date):
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.completed = True
+        self.completion_date = jdatetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    def start(self, date):
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.started = True
+        self.start_date = jdatetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    def update_percentage(self, date=None):
+        self.donePercentage = (self.doneVolume / self.totalVolume)*100
+        self.save()
+
+        if not self.donePercentage < 100:
+            self.complete(date=date)
+
+        elif self.donePercentage <= 0.0:
+            self.reset()
+
+    def set_unique(self):
+        self.unique_str = self.operation.operation.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        self.save()
+
+    class Meta:
+        unique_together = ('operation', 'equipe', 'zone')
+
+    def __str__(self):
+        return self.unique_str
+
+
+
 class Task(models.Model):
+    parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE, null=True, blank=True)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
     suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE, null=True, blank=True)
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
