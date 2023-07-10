@@ -1,37 +1,76 @@
+<div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات اجرایی</h5>
+            </div>
 
-
-
-
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuOperations" data-bs-toggle="dropdown" onclick='fetch_operations()'>
-                                انتخاب اکیپ
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-tasks">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-task">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-<!--                                    {% for profession in professions %}-->
-<!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                    {% endfor %}-->
-                            </ul>
-                        </div>
-
-
-                        <div id="zone-box-{{ operation.id }}" style="width: 280px;">
-                            <select required class="select2" id="select2-zone-{{ operation.id }}"
-                                    name="zone" style="width: 280px; border: solid black" onclick="">
+            <div class="modal-body">
+                <form id="form-task">
+                    {% csrf_token %}
+                    <div class="input-group mb-3 ">
+                        <div id="operation-box" style="width: 50%;">
+<!--                            <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"-->
+                            <select required class="select2" id="select2-operation" onchange="handle_select('zoneoperation')"
+                                    name="operation" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
-                                    انتخاب
+                                    انتخاب عملیات اصلی
                                 </option>
-                                {% for zone in zones %}
-                                    <option value="{{ zone }}">
-                                        {{ zone }}
-                                    </option>
-                                {% endfor %}
                             </select>
                         </div>
+
+                        <div id="zoneoperation-box" style="width: 50%;">
+                            <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone')"
+                                    name="zoneoperation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب موقعیت عملیات
+                                </option>
+                            </select>
+                        </div>
+
+<!--                        <div id="suboperation-box" style="width: 50%;">-->
+<!--                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"-->
+<!--                                    name="suboperation" style="width: 100%; border: solid black" onclick="">-->
+<!--                                <option disabled selected value="">-->
+<!--                                    انتخاب زیرعملیات-->
+<!--                                </option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                    </div>
+
+                    <div class="input-group mb-3 ">
+
+
+                        <div id="equipe-box" style="width: 100%;">
+                            <select required class="select2" id="select2-equipe"
+                                    name="equipe" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب اکبپ
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="input-group mb-3">
+
+                         <input required  type="number"  name="task-volume" id="task-volume" class="form-control" placeholder="مقدار">
+                         <input required readonly type="text" name="unit" id="task-unit" class="form-control" placeholder="واحد">
+                    </div>
+
+                    <button class="btn btn-outline-success bp3-round" onclick=""
+                            type="submit" id="button-addon7" >افزودن</button>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>

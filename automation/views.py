@@ -4,6 +4,9 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.core import serializers
 
+from django.core.serializers import serialize
+from django.db.models.query import QuerySet
+
 from .models import *
 from .converters import *
 import jdatetime
@@ -1004,6 +1007,7 @@ def save_daily_report_to_db(request):
                     dailyReport=report,
                     todayVolume=amount,
                 )
+
                 tsk_rep.update_percentage(False, date=report.date)
                 report.tasks.add(tsk_rep.task)
 
@@ -1650,6 +1654,64 @@ def get_subtasks_of(request, ID):
         return JsonResponse(data, safe=False)
 
 
+def get_subtask_in_report(request):
+    if request.method == "POST":
+        operation = request.POST.get("operation")
+        suboperation = request.POST.get("suboperation")
+        zone = request.POST.get("zone")
+        equipe = request.POST.get("equipe")
+
+
+        operation = Operation.objects.get(name=operation)
+        zone = Zone.objects.get(name=zone)
+        equipe = Equipe.objects.get(name=equipe)
+        suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+
+        zoneoperation = ZoneOperation.objects.get(operation=operation, zone=zone)
+
+        subtask = Task.objects.get(
+            operation=zoneoperation,
+            suboperation=suboperation,
+            equipe=equipe,
+            zone=zone,
+        )
+
+        data = []
+        operation_fields = {
+            'name': subtask.parent.operation.operation.name,
+            'totalVolume': subtask.parent.totalVolume,
+            'doneVolume': subtask.parent.doneVolume,
+            'donePercentage': subtask.parent.donePercentage,
+            # Add more fields as needed
+        }
+
+        suboperation_fields = {
+            'name': subtask.suboperation.name,
+        }
+
+        instance_fields = {
+            'equipe': subtask.equipe.name,
+            'unit': subtask.unit.name,
+            'zone': subtask.zone.name,
+            'totalVolume': subtask.totalVolume,
+            'doneVolume': subtask.doneVolume,
+            'donePercentage': subtask.donePercentage,
+            'started': subtask.started,
+            'completed': subtask.completed,
+            'start_date': subtask.start_date,
+            'completion_date': subtask.completion_date,
+            'freeVolume': subtask.totalVolume - subtask.doneVolume,
+
+            # Add more fields as needed
+            'operation': operation_fields,
+            'suboperation': suboperation_fields,
+        }
+
+        data.append(instance_fields)
+
+        return JsonResponse(data, safe=False)
+
+
 def get_zoneoperations(request):
     if request.method == "GET":
         opr_name = request.GET.get("operation")
@@ -1704,14 +1766,15 @@ def get_equipes_in_report(request):
                 parent=Operation.objects.get(name=operation),
             ),
             zone=Zone.objects.get(name=zone),
-        )
+        ).values_list('unique_str')
 
         if tasks.exists():
-            data = json.dumps(list(tasks.values()))
+            # data = json.dumps(list(tasks.values()))
+            data = [item[0] for item in list(tasks)]
         else:
-            data = "[]"
+            data = []
         context = {
-            "tasks": data
+            "tasks": data,
         }
         return JsonResponse(context)
 

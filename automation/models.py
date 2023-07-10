@@ -209,6 +209,7 @@ class Operation(models.Model):
     assignedAmount = models.FloatField(default=0.0,)
     freeAmount = models.FloatField(default=0.0,)
     doneAmount = models.FloatField(default=0.0,)
+    donePercentage = models.FloatField(default=0.0,)
 
     assignedWeight = models.FloatField(default=0.0, )
     freeWeight = models.FloatField(default=100.0, )
@@ -231,6 +232,13 @@ class Operation(models.Model):
                 self.doneAmount += amount
             elif action == "-":
                 self.doneAmount -= amount
+
+        self.save()
+
+        self.update_percentage()
+
+    def update_percentage(self):
+        self.donePercentage = self.doneAmount / self.amount * 100
 
         self.save()
 
@@ -286,6 +294,15 @@ class SubOperation(models.Model):
     amount = models.FloatField(default=0.0,)
     doneAmount = models.FloatField(default=0.0,)
 
+    def update_doneAmount(self, amount=None, action=None):
+        print("sub-operation updated")
+        if action == "+":
+            self.doneAmount += amount
+        elif action == "-":
+            self.doneAmount -= amount
+
+        self.save()
+
     class Meta:
         unique_together = ('name', 'parent')
 
@@ -302,6 +319,7 @@ class ZoneOperation(models.Model):
     assignedAmount = models.FloatField(default=0.0, )
     freeAmount = models.FloatField(default=0.0, )
     doneAmount = models.FloatField(default=0.0, )
+    donePercentage = models.FloatField(default=0.0, )
 
     tasks = models.ManyToManyField('Task', related_name='tasks')
     parentTasks = models.ManyToManyField('ParentTask', related_name='tasks')
@@ -340,6 +358,15 @@ class ZoneOperation(models.Model):
                 self.doneAmount -= amount
 
         self.save()
+
+        self.update_donePercentage()
+
+    def update_donePercentage(self):
+        self.donePercentage = self.doneAmount / self.amount * 100
+
+        self.save()
+
+        self.operation.update_doneAmount()
 
     class Meta:
         unique_together = ('operation', 'zone')
@@ -394,15 +421,24 @@ class ParentTask(models.Model):
         self.save()
 
     def start(self, date):
-        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        datee = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
         self.started = True
         self.start_date = jdatetime.datetime(
-            year=date.year,
-            month=date.month,
-            day=date.day,
+            year=datee.year,
+            month=datee.month,
+            day=datee.day,
         ).strftime("%Y-%m-%d")
 
         self.save()
+
+    def update_doneVolume(self, date=None):
+        self.doneVolume = 0
+        for subtask in self.subtasks.all():
+            self.doneVolume += subtask.doneVolume * subtask.suboperation.weight / 100
+
+        self.save()
+        self.update_percentage(date=date)
+        pass
 
     def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
@@ -414,6 +450,8 @@ class ParentTask(models.Model):
         elif self.donePercentage <= 0.0:
             self.reset()
 
+        self.operation.update_doneAmount()
+
     def set_unique(self):
         self.unique_str = self.operation.operation.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
         self.save()
@@ -423,7 +461,6 @@ class ParentTask(models.Model):
 
     def __str__(self):
         return self.unique_str
-
 
 
 class Task(models.Model):
@@ -476,19 +513,25 @@ class Task(models.Model):
         self.save()
 
     def start(self, date):
-        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        datee = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
         self.started = True
         self.start_date = jdatetime.datetime(
-            year=date.year,
-            month=date.month,
-            day=date.day,
+            year=datee.year,
+            month=datee.month,
+            day=datee.day,
         ).strftime("%Y-%m-%d")
 
         self.save()
 
+        if not self.parent.started:
+            self.parent.start(date=date)
+
+
     def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
         self.save()
+
+        self.parent.update_doneVolume(date=date)
 
         if not self.donePercentage < 100:
             self.complete(date=date)
@@ -547,17 +590,23 @@ class TaskReport(models.Model):
         if not reverse:
             self.task.preDoneVolume = self.task.doneVolume
             self.preDoneVolume = self.task.doneVolume
-            self.preDonePercentage = self.preDoneVolume / self.task.totalVolume *100
+            self.preDonePercentage = self.preDoneVolume / self.task.totalVolume * 100
             self.task.doneVolume += self.todayVolume
 
-            self.task.update_percentage(date=date)
             self.save()
+
+            self.task.update_percentage(date=date)
+
+            self.task.suboperation.update_doneAmount(amount=self.todayVolume, action="+")
 
         else:
             self.task.doneVolume -= self.todayVolume
-            self.task.update_percentage(date=date)
 
             self.save()
+
+            self.task.update_percentage(date=date)
+
+            self.task.suboperation.update_doneAmount(amount=self.todayVolume, action="-")
 
             self.task.check_completion()
 

@@ -1,3 +1,7 @@
+function print(entry) {
+    console.log(entry);
+}
+
 function search_base_machine() {
     let dropdownItems = $('#dropdown-menu-base-machines').find('a');
 
@@ -602,6 +606,32 @@ function del_task(taskOperation, equipeName, zoneName, db) {
 
 }
 
+function del_task_in_report(taskOperation, taskSubOperation, equipeName, zoneName, db=false) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-task-in-report',
+            data: {
+            'taskOperation': taskOperation,
+            'taskSubOperation': taskSubOperation,
+            'equipeName': equipeName,
+            'zoneName': zoneName,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
+        obj.remove()
+    }
+
+}
+
 function search_machine() {
     let dropdownItems = $('#dropdown-menu-machines').find('a');
 
@@ -925,8 +955,11 @@ function search_unit_task() {
     });
 }
 
-function search_unit_operation() {
-    let dropdownItems = $('#dropdown-menu-unitforoperations').find('a');
+function search_unit_operation(shortcut=null) {
+    if (shortcut) {
+        shortcut = "base-"
+    }
+    let dropdownItems = $('#dropdown-menu-'+shortcut+'unitforoperations').find('a');
 
     // Add event listener to the dropdown items
     dropdownItems.on('click', function() {
@@ -1762,8 +1795,14 @@ function fetch_options(type, shortcut=null){
         } else {
             typetype = "base-"+type;
         }
+
         let menu = document.getElementById("dropdown-menu-" + typetype + "s")
         let options = menu.querySelectorAll('.dropdown-item');
+
+        if (type === "unitforoperation") {
+            type = "unit"
+        }
+
         options.forEach(option => {
           option.remove()
         });
@@ -1821,7 +1860,10 @@ function fetch_options(type, shortcut=null){
                     search_base_equipe_task();
                 } else if (type == "zone") {
                     search_base_zone_task();
+                } else if (type === "unit") {
+                    search_unit_operation(shortcut=true)
                 }
+
             }
         })
 
@@ -2501,7 +2543,7 @@ function update_live_total_done(live) {
 
 
 
-function submitForm(ID, type) {
+function submitForm(ID, type, shortcut=null,) {
     if (type === "suboperation") {
         var target = "form-" + ID
     }
@@ -2513,6 +2555,10 @@ function submitForm(ID, type) {
     }
     else if (type === "task") {
         var target = "form-task"
+    }
+    else if (type === "task-shortcut") {
+        type = "task"
+        var target = "form-task-shortcut"
     }
     else if (type === "task_in_report") {
         var target = "form-task_in_report"
@@ -2562,20 +2608,51 @@ function submitForm(ID, type) {
             let unit = formData.get("unit")
 
             let select = document.getElementById("select2-equipe")
+
+            // $.ajax({
+            //     url: '/edit-db/get-equipes-in-report/',
+            //     type: 'POST',
+            //     data: {
+            //         'operation': opr,
+            //         'suboperation': subopr,
+            //         'zone': zoneopr,
+            //     },
+            //     beforeSend: function(xhr, settings) {
+            //     xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            //     },
+            //     success: function(response) {
+            //         let tasks = JSON.parse(response['tasks'])
+            //
+            //         $("#select2-equipe").empty().append(
+            //             '<option value="" selected disabled>انتخاب اکیپ</option>'
+            //         )
+            //         for (let i=0; i<tasks.length; i++) {
+            //             let splitted = tasks[i].unique_str.split("-")
+            //
+            //             let option = document.createElement("option")
+            //             option.value = splitted[2] + "-" + splitted[3]
+            //             option.innerText = splitted[2] + "-" + splitted[3]
+            //
+            //             select.appendChild(option)
+            //         }
+            //
+            //     }
+            // })
+
             $("#select2-equipe").empty().append(
                 '<option value="" selected disabled>انتخاب اکیپ</option>'
             )
-            fetch_all_equipes(function (equipes) {
-                equipes.forEach(equipe => {
-                    let option = document.createElement('option',)
-                    option.value = equipe.name
-                    option.innerHTML = equipe.name
-                    select.appendChild(option)
-                })
-            })
-            $('#select2-equipe').select2({
-                dropdownParent: $("#equipe-box")
-            });
+            // fetch_all_equipes(function (equipes) {
+            //     equipes.forEach(equipe => {
+            //         let option = document.createElement('option',)
+            //         option.value = equipe.name
+            //         option.innerHTML = equipe.name
+            //         select.appendChild(option)
+            //     })
+            // })
+            // $('#select2-equipe').select2({
+            //     dropdownParent: $("#equipe-box")
+            // });
 
             let select2 = document.getElementById("select2-zoneoperation")
             $("#select2-zoneoperation").empty().append(
@@ -2592,6 +2669,139 @@ function submitForm(ID, type) {
             $('#select2-zoneoperation').select2({
                 dropdownParent: $("#zoneoperation-box")
             });
+
+            if (
+                document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
+            ) {
+                alert('عملیات انتخابی در جدول وجود دارد')
+
+                return 0
+            }
+
+            $.ajax({
+                url: '/edit-db/get-subtask-in-report/',
+                type: 'POST',
+                data: {
+                    'operation': opr,
+                    'suboperation': subopr,
+                    'zone': zoneopr,
+                    'equipe': equipe,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    response = response[0]
+
+                    let table = document.getElementById("table-task")
+                    let tbody = table.querySelector("tbody")
+
+                    let newRow = document.createElement("tr")
+                    newRow.id =  opr + "-" + subopr + "-" + equipe + "-" + zoneopr
+
+                    for (let i=0; i<10; i++) {
+                        let td = document.createElement('td')
+                        switch (i) {
+                            case 0:
+                                td.innerText = response.operation.name
+
+                                let span = document.createElement('span',);
+                                Object.assign(span.style, {
+                                    float: 'right',
+                                    color: 'black',
+                                });
+                                span.className = "badge rounded-pill";
+                                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                                span.style.marginLeft = "5pt"
+                                span.addEventListener('click', function () {
+                                    del_task_in_report(
+                                        opr,
+                                        subopr,
+                                        equipe,
+                                        zoneopr,
+                                        false,
+                                    );
+                                });
+                                td.appendChild(span)
+                                newRow.appendChild(td)
+
+                                break;
+                            case 1:
+                                td.innerText = response.suboperation.name
+                                newRow.appendChild(td)
+
+                                break;
+                            case 2:
+                                td.innerText = response.equipe
+                                newRow.appendChild(td)
+
+                                break;
+                            case 3:
+                                td.innerText = response.zone
+                                newRow.appendChild(td)
+
+                                break;
+                            case 4:
+                                td.className = "text-centred"
+                                let input = document.createElement('input')
+                                input.required = true
+                                input.className = "small-input-integer"
+                                input.style = "border-radius: 0; text-align: center;"
+                                input.id = "task_"+newRow.id+"_today"
+                                input.name = "task_"+newRow.id+"_today"
+                                input.min = '0'
+                                input.max = response.freeVolume
+                                input.value = '0'
+                                input.type = 'number'
+                                input.addEventListener('keyup', function () {
+                                    update_live_total_done(
+                                        "task_"+newRow.id+"_today"
+                                    )
+                                })
+                                td.appendChild(input)
+                                newRow.appendChild(td)
+
+                                break;
+                            case 5:
+                                td.className = "text-centred"
+                                td.innerText = response.doneVolume
+                                td.id = "doneVolume_task_" + opr + "-" + subopr + "-" + equipe + "-" + zoneopr + "_today"
+                                newRow.appendChild(td)
+
+                                break;
+                            case 6:
+                                td.className = "text-centred"
+                                td.id = "live_total_done_task_" + opr + "-" + subopr + "-" + equipe + "-" + zoneopr + "_today"
+
+                                newRow.appendChild(td)
+
+                                break;
+                            case 7:
+                                td.className = "text-centred"
+                                td.innerText = response.totalVolume
+                                newRow.appendChild(td)
+
+                                break;
+                            case 8:
+                                td.className = "text-centred"
+                                td.innerText = response.donePercentage
+                                newRow.appendChild(td)
+
+                                break;
+                            case 9:
+                                td.className = "text-centred"
+                                td.innerText = response.unit
+                                newRow.appendChild(td)
+
+                                break;
+
+                        }
+                    }
+                    tbody.appendChild(newRow)
+                }
+            })
+
+            return 0
         }
 
         // Send AJAX request
@@ -2606,6 +2816,24 @@ function submitForm(ID, type) {
         xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
         },
         success: function(response) {
+
+            if (shortcut) {
+                alert("با موفقیت افزوده شد")
+                let form = document.getElementById(target);
+                for (const pair of formData.entries()) {
+                  // Get the input element by name
+                  const inputName = pair[0];
+                  const input = form.elements[inputName];
+
+                  // Reset the value of the input field
+                  input.value = '';
+                }
+
+                handle_select(type+"-shortcut")
+
+                return 0
+            }
+
             if ( type === "suboperation" ) {
                 let table = document.getElementById("table-" + ID)
                 let tbody = table.querySelector("tbody")
@@ -2849,6 +3077,57 @@ function submitForm(ID, type) {
                     return 0
                 }
 
+                if (target.includes("shortcut")) {
+
+                    alert("با موفقیت اضافه شد")
+
+                    let opr = document.getElementById("select2-operation-shortcut").value
+                    // let subopr = document.getElementById("select2-suboperation-shortcut").value
+                    let equipe = document.getElementById("select2-equipe-shortcut").value
+                    let zone = document.getElementById("select2-zoneoperation-shortcut").value
+                    let amount = document.getElementById("task-volume-shortcut").value
+                    let unit = document.getElementById("task-unit-shortcut").value
+
+                    let select = document.getElementById("select2-equipe-shortcut")
+                    $("#select2-equipe-shortcut").empty().append(
+                        '<option value="" selected disabled>انتخاب اکیپ</option>'
+                    )
+                    fetch_all_equipes(function (equipes) {
+                        equipes.forEach(equipe => {
+                            let option = document.createElement('option',)
+                            option.value = equipe.name
+                            option.innerHTML = equipe.name
+                            select.appendChild(option)
+                        })
+                    })
+                    $('#select2-equipe-shortcut').select2({
+                        dropdownParent: $("#equipe-box-shortcut")
+                    });
+
+                    let select2 = document.getElementById("select2-zoneoperation-shortcut")
+                    $("#select2-zoneoperation-shortcut").empty().append(
+                        '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+                    )
+                    fetch_zoneoperations(opr, function (zoneoperations) {
+                        zoneoperations.forEach(zoneoperation => {
+                            let option = document.createElement('option',)
+                            option.value = zoneoperation.zone
+                            option.innerHTML = zoneoperation.zone
+                            select2.appendChild(option)
+                        })
+                    })
+                    $('#select2-zoneoperation-shortcut').select2({
+                        dropdownParent: $("#zoneoperation-box-shortcut")
+                    });
+
+                    let temp = document.getElementById("task-volume-shortcut")
+                    temp.value = ""
+                    temp.setAttribute('placeholder' , "مقدار")
+
+
+                    return 0
+                }
+
                 let opr = document.getElementById("select2-operation").value
                 // let subopr = document.getElementById("select2-suboperation").value
                 let equipe = document.getElementById("select2-equipe").value
@@ -2972,7 +3251,6 @@ function submitForm(ID, type) {
                     zone,
                     equipe,
                 )
-                equipe
 
 
 
@@ -4204,9 +4482,21 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
 }
 
 function handle_select(type) {
-    let select = document.getElementById("select2-"+type)
-    if ( type == "operation" ) {
-        $("#select2-"+type).empty().append(
+
+    if (type) {
+        if (type.includes("shortcut")) {
+            var shortcut = "-shortcut"
+            type = type.split("-")[0]
+        } else {
+            var shortcut = ""
+        }
+    } else {
+        var shortcut = ""
+    }
+
+    let select = document.getElementById("select2-"+type+shortcut)
+    if ( type === "operation" ) {
+        $("#select2-"+type+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب عملیات اصلی</option>'
         )
         fetch_operations(function (operations) {
@@ -4217,18 +4507,18 @@ function handle_select(type) {
                 select.appendChild(option)
             })
         })
-        $('#select2-operation').select2({
-            dropdownParent: $("#operation-box")
+        $('#select2-operation'+shortcut).select2({
+            dropdownParent: $("#operation-box"+shortcut)
         });
     }
     else if ( type === "suboperation" ) {
-        $("#select2-"+type).empty().append(
+        $("#select2-"+type+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب زیرعملیات</option>'
         )
-        $("#select2-zoneoperation").empty().append(
+        $("#select2-zoneoperation+shortcut").empty().append(
             '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
         )
-        let subtype = document.getElementById("select2-operation").value
+        let subtype = document.getElementById("select2-operation"+shortcut).value
         fetch_suboperations(subtype, function (operations) {
             operations.forEach(operation => {
                 let option = document.createElement('option',)
@@ -4238,48 +4528,48 @@ function handle_select(type) {
             })
         })
 
-        $('#select2-suboperation').select2({
-            dropdownParent: $("#suboperation-box")
+        $('#select2-suboperation'+shortcut).select2({
+            dropdownParent: $("#suboperation-box"+shortcut)
         });
 
 
-        let select2 = document.getElementById("select2-zoneoperation")
+        let select2 = document.getElementById("select2-zoneoperation"+shortcut)
         fetch_zoneoperations(subtype, function (zoneoperations) {
             zoneoperations.forEach(zoneoperation => {
                 let option = document.createElement('option',)
                 option.value = zoneoperation.zone
                 option.innerHTML = zoneoperation.zone
                 select2.appendChild(option)
-                document.getElementById("task-unit").value = zoneoperation.unit
+                document.getElementById("task-unit"+shortcut).value = zoneoperation.unit
             })
         })
 
-        $('#select2-zoneoperation').select2({
-            dropdownParent: $("#zoneoperation-box")
+        $('#select2-zoneoperation'+shortcut).select2({
+            dropdownParent: $("#zoneoperation-box"+shortcut)
         });
     }
     else if (type === "zoneoperation" ) {
-        $("#select2-"+type).empty().append(
+        $("#select2-"+type+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
         )
-        let subtype = document.getElementById("select2-operation").value
+        let subtype = document.getElementById("select2-operation"+shortcut).value
         fetch_zoneoperations(subtype, function (zoneoperations) {
             zoneoperations.forEach(zoneoperation => {
                 let option = document.createElement('option',)
                 option.value = zoneoperation.zone
                 option.innerHTML = zoneoperation.zone
                 select.appendChild(option)
-                document.getElementById("task-unit").value = zoneoperation.unit
+                document.getElementById("task-unit"+shortcut).value = zoneoperation.unit
             })
         })
 
-        $('#select2-zoneoperation').select2({
-            dropdownParent: $("#zoneoperation-box")
+        $('#select2-zoneoperation'+shortcut).select2({
+            dropdownParent: $("#zoneoperation-box"+shortcut)
         });
 
     }
     else if (type === "equipe") {
-        $("#select2-"+type).empty().append(
+        $("#select2-"+type+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب اکیپ</option>'
         )
         fetch_all_equipes(function (equipes) {
@@ -4290,8 +4580,8 @@ function handle_select(type) {
                 select.appendChild(option)
             })
         })
-        $('#select2-equipe').select2({
-            dropdownParent: $("#equipe-box")
+        $('#select2-equipe'+shortcut).select2({
+            dropdownParent: $("#equipe-box"+shortcut)
         });
     }
     else if ( type === "zone" ) {
@@ -4300,13 +4590,13 @@ function handle_select(type) {
             url: '/edit-db/get-freeAmount/',
             data: {
                 "model": "zoneoperation",
-                "operation": document.getElementById('select2-operation').value,
-                "zone": document.getElementById('select2-zoneoperation').value,
+                "operation": document.getElementById('select2-operation'+shortcut).value,
+                "zone": document.getElementById('select2-zoneoperation'+shortcut).value,
             },
             success: function(response) {
                 let freeAmount = response
-                document.getElementById("task-volume").max = freeAmount
-                document.getElementById("task-volume").setAttribute(
+                document.getElementById("task-volume"+shortcut).max = freeAmount
+                document.getElementById("task-volume"+shortcut).setAttribute(
                     'placeholder', "حداکثر مقدار : " + freeAmount
                 )
             }
@@ -4314,9 +4604,9 @@ function handle_select(type) {
     }
     else if ( type === "zone_in_report") {
 
-        let opr = document.getElementById('select2-operation').value
-        let subopr = document.getElementById('select2-suboperation').value
-        let zone = document.getElementById('select2-zoneoperation').value
+        let opr = document.getElementById('select2-operation'+shortcut).value
+        let subopr = document.getElementById('select2-suboperation'+shortcut).value
+        let zone = document.getElementById('select2-zoneoperation'+shortcut).value
         $.ajax({
             url: '/edit-db/get-equipes-in-report/',
             type: 'POST',
@@ -4329,14 +4619,15 @@ function handle_select(type) {
             xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function(response) {
-                let tasks = JSON.parse(response['tasks'])
-                let select = document.getElementById("select2-equipe")
+                // let tasks = JSON.parse(response['tasks'])
+                let tasks = response['tasks']
+                let select = document.getElementById("select2-equipe"+shortcut)
 
-                $("#select2-equipe").empty().append(
+                $("#select2-equipe"+shortcut).empty().append(
                     '<option value="" selected disabled>انتخاب اکیپ</option>'
                 )
                 for (let i=0; i<tasks.length; i++) {
-                    let splitted = tasks[i].unique_str.split("-")
+                    let splitted = tasks[i].split("-")
 
                     let option = document.createElement("option")
                     option.value = splitted[2] + "-" + splitted[3]
@@ -4351,20 +4642,20 @@ function handle_select(type) {
 
     }
     else {
-        $('#select2-operation').select2({
-            dropdownParent: $("#operation-box")
+        $('#select2-operation'+shortcut).select2({
+            dropdownParent: $("#operation-box"+shortcut)
         });
 
-        $('#select2-suboperation').select2({
-            dropdownParent: $("#suboperation-box")
+        $('#select2-suboperation'+shortcut).select2({
+            dropdownParent: $("#suboperation-box"+shortcut)
         });
 
-        $('#select2-zoneoperation').select2({
-            dropdownParent: $("#zoneoperation-box")
+        $('#select2-zoneoperation'+shortcut).select2({
+            dropdownParent: $("#zoneoperation-box"+shortcut)
         });
 
-        $('#select2-equipe').select2({
-            dropdownParent: $("#equipe-box")
+        $('#select2-equipe'+shortcut).select2({
+            dropdownParent: $("#equipe-box"+shortcut)
         });
     }
 

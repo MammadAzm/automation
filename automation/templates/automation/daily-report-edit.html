@@ -409,108 +409,103 @@
             <div class="col-12">
                 <div class="row ps-4">
                     <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px;">
-                            <thead class="">
-                                <tr class="">
-                                    <th class="" style="width: 20%">
-                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
-                                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 22%">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    شرح عملیات اصلی
+                                </th>
+                                <th class="" style="width: 20%">
+                                    شرح عملیات اجرایی (زیرعملیات)
+                                </th>
+                                <th class="" style="width: 13%">
+                                    اکیپ
+                                </th>
+                                <th class="" style="width: 7%">
+                                    موقعیت
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    امروز
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    تا دیروز
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    جمع
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    کل
+                                </th>
+                                <th class="text-centred" style="width: 5%">
+                                    درصد
+                                </th>
+                                <th class="text-centred" style="width: 5% ">
+                                    واحد
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for task in tasks %}
+                                <tr  id="{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.task.equipe}}-{{task.task.zone}}">
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 0pt; color: black; " onclick="del_task_in_report('{{task.task.parent.operation.operation.name}}', '{{ task.task.suboperation.name }}', '{{ task.task.equipe }}', '{{ task.task.zone }}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
-                                        شرح عملیات اصلی
-                                    </th>
-                                    <th class="" style="width: 20%">
-                                        شرح عملیات اجرایی (زیرعملیات)
-                                    </th>
-                                    <th class="" style="width: 10%">
-                                        اکیپ
-                                    </th>
-                                    <th class="" style="width: 8%">
-                                        موقعیت
-                                    </th>
-                                    <th class="text-centred" style="width: 7%">
-                                        امروز
-                                    </th>
-                                    <th class="text-centred" style="width: 10%">
-                                        تا دیروز
-                                    </th>
-                                    <th class="text-centred" style="width: 5%">
-                                        جمع
-                                    </th>
-                                    <th class="text-centred" style="width: 5%">
-                                        کل
-                                    </th>
-                                    <th class="text-centred" style="width: 5%">
-                                        درصد
-                                    </th>
-                                    <th class="text-centred" style="width: 10% ">
-                                        واحد
-                                    </th>
+                                        {{ task.task.parent.operation.operation.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ task.task.suboperation.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ task.task.equipe }}
+                                    </td>
+
+                                    <td>
+                                        {{ task.task.zone }}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}_today"
+                                               name="task_{{ task.task.unique_str }}_today" min="0" type="number"
+                                               max="{{ task.task.totalVolume|sub:task.task.doneVolume }}"
+                                               value="{{ task.todayVolume }}"
+                                                onkeyup="update_live_total_done('task_{{ task.task.unique_str }}{{ task.unique_str }}_today')">
+                                    </td>
+
+                                    <td class="text-centred" id="doneVolume_task_{{ task.task.unique_str }}_today">
+                                        {{ task.task.doneVolume|sub:task.todayVolume }}
+                                    </td>
+
+                                    <td class="text-centred" id="live_total_done_task_{{ task.task.unique_str }}_today">
+
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.totalVolume }}
+                                    </td>
+
+                                    <td class="text-centred">
+<!--                                        {{ task.task.donePercentage|floatformat:2 }}%-->
+                                        {{ task.task.doneVolume|sub:task.todayVolume|div:task.task.totalVolume|mul:100 }}%
+                                    </td>
+
+                                    <td class="text-centred">
+                                        {{ task.task.unit }}
+                                    </td>
+
+
                                 </tr>
-                            </thead>
-
-                            <tbody>
-
-                                {% for task in tasks %}
-                                    <tr  id="{{task.task.name}}-{{task.task.equipe}}-{{task.task.zone}}">
-                                        <td>
-                                            <span class="badge rounded-pill"
-                                                style="margin-left: 0pt; color: black; " onclick="del_task('{{ task.task.operation.name }}', '{{ task.task.suboperation.name }}', '{{ task.task.equipe }}', '{{ task.task.zone }}', false)">
-                                                <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                            </span>
-                                            {{ task.task.operation.name }}
-                                            {{ task.operation.name }}
-                                        </td>
-
-                                        <td>
-                                            {{ task.task.suboperation.name }}
-                                            {{ task.suboperation.name }}
-                                        </td>
-
-                                        <td>
-                                            {{ task.task.equipe }}
-                                            {{ task.equipe.name }}
-                                        </td>
-
-                                        <td>
-                                            {{ task.task.zone }}
-                                            {{ task.zone }}
-                                        </td>
-
-                                        <td>
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}{{ task.unique_str }}_today"
-                                                   name="task_{{ task.task.unique_str }}{{ task.unique_str }}_today" min="0" value="0" type="number"
-                                                    onkeyup="update_live_total_done('task_{{ task.task.unique_str }}{{ task.unique_str }}_today')">
-                                        </td>
-
-                                        <td class="text-centred" id="doneVolume_task_{{ task.task.unique_str }}{{ task.unique_str }}_today">
-                                            {{ task.task.doneVolume }}
-                                            {{ task.doneVolume }}
-                                        </td>
-
-                                        <td class="text-centred" id="live_total_done_task_{{ task.task.unique_str }}{{ task.unique_str }}_today">
-
-                                        </td>
-
-                                        <td class="text-centred">
-                                            {{ task.task.totalVolume }}
-                                            {{ task.totalVolume }}
-                                        </td>
-
-                                        <td class="text-centred">
-                                            {{ task.task.donePercentage|floatformat:2 }}
-                                            {{ task.donePercentage|floatformat:2 }}%
-                                        </td>
-
-                                        <td class="text-centred">
-                                            {{ task.task.unit }}
-                                            {{ task.unit }}
-                                        </td>
-
-
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -828,24 +823,59 @@
                 </div>
 
                 <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <input id="task-name" disabled required type="text" name="task" class="form-control" placeholder="عملیات">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuTasks" data-bs-toggle="dropdown" onclick='fetch_tasks()'>
-                                    انتخاب
-                                </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-tasks">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-task">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
+                    <form id="form-task_in_report">
+                        {% csrf_token %}
+                        <div class="input-group mb-3 ">
+                            <div id="operation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"
+                                        name="operation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب عملیات اصلی
+                                    </option>
+                                </select>
+                            </div>
 
-                                </ul>
+                            <div id="suboperation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"
+                                        name="suboperation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب زیرعملیات
+                                    </option>
+                                </select>
                             </div>
                         </div>
+
+                        <div class="input-group mb-3 ">
+                            <div id="zoneoperation-box" style="width: 50%;">
+                                <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone_in_report')"
+                                        name="zoneoperation" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب موقعیت عملیات
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="equipe-box" style="width: 50%;">
+                                <select class="select2" id="select2-equipe" onselect=""
+                                        name="equipe" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب اکبپ
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group mb-3">
+
+                             <input hidden  type="number"  name="task-volume" id="task-volume" class="form-control" placeholder="مقدار">
+                             <input hidden readonly type="text" name="unit" id="task-unit" class="form-control" placeholder="واحد">
+                        </div>
+
+                        <button class="btn btn-outline-success bp3-round" onclick=""
+                                type="submit" id="button-addon11" >افزودن</button>
+
+                    </form>
 
                 </div>
 
@@ -854,8 +884,6 @@
 
                     <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ عملیات</button>
 
-                    <button class="btn btn-outline-success bp3-round" onclick="add_task_to_daily_report()" style="float: left;"
-                                    type="button" id="btn-add-task" style="border: none">افزودن</button>
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
@@ -1197,106 +1225,247 @@
         </div>
     </div>
 
+<!--    <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+
+<!--            <div class="modal-header">-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>-->
+<!--                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات</h5>-->
+<!--            </div>-->
+
+<!--            <div class="modal-body">-->
+<!--                <form action="/edit-db/add-task" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                    <div class="input-group mb-3 ">-->
+<!--                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام عملیات">-->
+<!--                    </div>-->
+
+<!--                    <div class="input-group mb-3">-->
+<!--                        <div class="input-group mb-3">-->
+<!--                            <div class="dropdown">-->
+<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
+<!--                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task", true)'>-->
+<!--                                انتخاب اکیپ-->
+<!--                            </button>-->
+<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-tasks">-->
+<!--                                <li>-->
+<!--                                    <div class="input-group px-2 mb-3">-->
+<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-task">-->
+<!--                                    </div>-->
+<!--                                </li>-->
+<!--                                <li><hr class="dropdown-divider"></li>-->
+<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
+<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
+<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                            <input required disabled type="text" name="equipetask-name" id="base-equipetask-name" class="form-control" placeholder="اکیپ">-->
+<!--                        </div>-->
+
+<!--                         <div class="input-group mb-3">-->
+<!--                            <div class="dropdown">-->
+<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
+<!--                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone", true)'>-->
+<!--                                انتخاب موقعیت-->
+<!--                            </button>-->
+<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-zones">-->
+<!--                                <li>-->
+<!--                                    <div class="input-group px-2 mb-3">-->
+<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-zone">-->
+<!--                                    </div>-->
+<!--                                </li>-->
+<!--                                <li><hr class="dropdown-divider"></li>-->
+<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
+<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
+<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                            <input required disabled type="text" name="zone-name" id="base-zone-name" class="form-control" placeholder="موقعیت">-->
+<!--                        </div>-->
+
+<!--                         <div class="input-group mb-3">-->
+<!--                             <div class="dropdown">-->
+<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
+<!--                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit", true)'>-->
+<!--                                انتخاب واحد-->
+<!--                            </button>-->
+<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-units">-->
+<!--                                <li>-->
+<!--                                    <div class="input-group px-2 mb-3">-->
+<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-unit">-->
+<!--                                    </div>-->
+<!--                                </li>-->
+<!--                                <li><hr class="dropdown-divider"></li>-->
+<!--&lt;!&ndash;                                        {% for profession in professions %}&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {% endfor %}&ndash;&gt;-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                             <input required  type="number"  name="task-name" id="base-task-volume" class="form-control" placeholder="مقدار">-->
+<!--                             <input required disabled type="text" name="zone-name" id="base-unit-name" class="form-control" placeholder="واحد">-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                </form>-->
+<!--            </div>-->
+
+<!--            <div class="modal-footer">-->
+
+<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>-->
+<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">+ موقعیت</button>-->
+<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">+ واحد</button>-->
+
+<!--                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data(true)"-->
+<!--                                type="submit" id="button-addon7" >افزودن</button>-->
+<!--                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">تکمیل</button>-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--    </div>-->
     <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات اجرایی</h5>
             </div>
 
             <div class="modal-body">
-                <form action="/edit-db/add-task" method="post">
+                <form id="form-task-shortcut">
                     {% csrf_token %}
                     <div class="input-group mb-3 ">
-                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام عملیات">
+                        <div id="operation-box-shortcut" style="width: 50%;">
+<!--                            <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"-->
+                            <select required class="select2" id="select2-operation-shortcut" onchange="handle_select('zoneoperation-shortcut')"
+                                    name="operation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب عملیات اصلی
+                                </option>
+                            </select>
+                        </div>
+
+                        <div id="zoneoperation-box-shortcut" style="width: 50%;">
+                            <select required class="select2" id="select2-zoneoperation-shortcut" onchange="handle_select('zone-shortcut')"
+                                    name="zoneoperation" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب موقعیت عملیات
+                                </option>
+                            </select>
+                        </div>
+
+<!--                        <div id="suboperation-box" style="width: 50%;">-->
+<!--                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"-->
+<!--                                    name="suboperation" style="width: 100%; border: solid black" onclick="">-->
+<!--                                <option disabled selected value="">-->
+<!--                                    انتخاب زیرعملیات-->
+<!--                                </option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                    </div>
+
+                    <div class="input-group mb-3 ">
+
+
+                        <div id="equipe-box-shortcut" style="width: 100%;">
+                            <select required class="select2" id="select2-equipe-shortcut"
+                                    name="equipe" style="width: 100%; border: solid black" onclick="">
+                                <option disabled selected value="">
+                                    انتخاب اکبپ
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
 
                     <div class="input-group mb-3">
-                        <div class="input-group mb-3">
-                            <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task", true)'>
-                                انتخاب اکیپ
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-base-tasks">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-task">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-    <!--                                    {% for profession in professions %}-->
-    <!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-    <!--                                    {% endfor %}-->
-                            </ul>
-                        </div>
-                            <input required disabled type="text" name="equipetask-name" id="base-equipetask-name" class="form-control" placeholder="اکیپ">
-                        </div>
 
-                         <div class="input-group mb-3">
-                            <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone", true)'>
-                                انتخاب موقعیت
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-base-zones">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-zone">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-    <!--                                    {% for profession in professions %}-->
-    <!--                                        <li><a class="dropdown-item">{{ profession }}</a></li>-->
-    <!--                                    {% endfor %}-->
-                            </ul>
-                        </div>
-                            <input required disabled type="text" name="zone-name" id="base-zone-name" class="form-control" placeholder="موقعیت">
-                        </div>
-
-                         <div class="input-group mb-3">
-                             <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit", true)'>
-                                انتخاب واحد
-                            </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-base-units">
-                                <li>
-                                    <div class="input-group px-2 mb-3">
-                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-unit">
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-<!--                                        {% for profession in professions %}-->
-<!--                                            <li><a class="dropdown-item">{{ profession }}</a></li>-->
-<!--                                        {% endfor %}-->
-                            </ul>
-                        </div>
-                             <input required  type="number"  name="task-name" id="base-task-volume" class="form-control" placeholder="مقدار">
-                             <input required disabled type="text" name="zone-name" id="base-unit-name" class="form-control" placeholder="واحد">
-                        </div>
+                         <input required  type="number"  name="task-volume" id="task-volume-shortcut" class="form-control" placeholder="مقدار">
+                         <input required readonly type="text" name="unit" id="task-unit-shortcut" class="form-control" placeholder="واحد">
                     </div>
+
+                    <button class="btn btn-outline-success bp3-round" onclick=""
+                            type="submit" id="button-addon7" >افزودن</button>
 
                 </form>
             </div>
 
             <div class="modal-footer">
 
-                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>
-                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">+ موقعیت</button>
-                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">+ واحد</button>
+                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">+ عملیات اصلی</button>
 
-                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data(true)"
-                                type="submit" id="button-addon7" >افزودن</button>
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">تکمیل</button>
+
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks" >تکمیل</button>
             </div>
 
         </div>
     </div>
+</div>
+
+    <div class="modal fade " id="staticBackdropOperations" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropOperationsLabel" style="margin-right: auto">افزودن عملیات اصلی</h5>
+                </div>
+
+                <div class="modal-body">
+                    <form id="add-operation">
+                        <div class="input-group mb-3">
+                            <input required type="text" name="operation" id="operation-name" class="form-control" placeholder="نام عملیات">
+                        </div>
+
+                        <div class="input-group mb-3">
+                             <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuUnits" data-bs-toggle="dropdown" onclick='fetch_options("unitforoperation", shortcut=true)'>
+                                    انتخاب واحد
+                                </button>
+                                <ul class="dropdown-menu" id="dropdown-menu-base-unitforoperations">
+                                    <li>
+                                        <div class="input-group px-2 mb-3">
+                                            <input type="text" class="form-control" placeholder="جستجو" id="search-unitforoperation">
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                </ul>
+                            </div>
+                            <input readonly required type="text" name="unit-name" id="unitforoperation-name" class="form-control" placeholder="واحد">
+                            <input required  type="number" name="amount" id="unitforoperation-amount" class="form-control" placeholder="مقدار کل">
+                        </div>
+                        <button class="btn btn-outline-success bp3-round w-100"
+                                type="submit" id="button-addon13">افزودن</button>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+
+
+
+                    <button type="button" class="btn btn-outline-warning w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks" >تکمیل</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
+
+<script>
+    handle_select(type=null)
+    handle_select(type="operation")
+    handle_select(type="operation-shortcut")
+    handle_select(type="equipe-shortcut")
+    handle_select(type="shortcut")
+
+    submitForm(null, 'task_in_report')
+    submitForm(null, 'task')
+    submitForm(null, 'task-shortcut')
+    submitForm(null, 'operation', shortcut=true)
+</script>
 
 
 {% endblock %}
