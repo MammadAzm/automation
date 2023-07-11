@@ -472,10 +472,6 @@ class Task(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
     unique_str = models.CharField(max_length=250, unique=True)
-    # name = models.CharField(max_length=250)
-    # equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
-    # zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    # unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     totalVolume = models.FloatField(default=0.1,)
     doneVolume = models.FloatField(default=0.0,)
     donePercentage = models.FloatField(default=0.0,)
@@ -483,7 +479,6 @@ class Task(models.Model):
     completed = models.BooleanField(default=False,)
     start_date = models.DateField(null=True, blank=True)
     completion_date = models.DateField(null=True, blank=True)
-    # preDoneVolume = models.FloatField(default=0.0,)
 
     def check_completion(self):
         if self.donePercentage < 100:
@@ -552,11 +547,14 @@ class Task(models.Model):
 
 class TaskReport(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     todayVolume = models.FloatField(default=0.0,)
     preDoneVolume = models.FloatField(default=0.0, )
     preDonePercentage = models.FloatField(default=0.0, )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     '''
     def update_children(self, parent=None):
@@ -585,6 +583,13 @@ class TaskReport(models.Model):
 
             child.update_children(parent)
     '''
+
+    def get_total_parent_values(self):
+        if self.parent is None:
+            return 0
+
+        return self.parent.get_total_parent_values() + self.parent.todayVolume
+
 
     def update_percentage(self, reverse, date=None):
         if not reverse:
@@ -630,6 +635,7 @@ class DailyReport(models.Model):
     short_date = models.DateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
 
+    created_at = models.DateTimeField(auto_now_add=True)
     date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     date_edited = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #

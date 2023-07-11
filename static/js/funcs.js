@@ -958,7 +958,10 @@ function search_unit_task() {
 function search_unit_operation(shortcut=null) {
     if (shortcut) {
         shortcut = "base-"
+    } else {
+        shortcut = ""
     }
+
     let dropdownItems = $('#dropdown-menu-'+shortcut+'unitforoperations').find('a');
 
     // Add event listener to the dropdown items
@@ -3648,6 +3651,7 @@ function submitForm(ID, type, shortcut=null,) {
 
 
             alert("با موفقیت افزوده شد")
+
         },
         error: function(xhr, status, error) {
             alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)

@@ -15,33 +15,33 @@
 
                 <div class="col-8">
                     <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
-                    <thead class="">
-                        <tr>
-                            <th>پروژه</th>
-                            <th class="table-light">{{ report.project_name }}</th>
-                            <th>شماره قرارداد</th>
-                            <th class="table-light">{{ report.contract_number }}</th>
-                            <th>مشاور</th>
-                            <th class="table-light">{{ report.consultor_name }}</th>
-                        </tr>
-                        <tr>
-                            <th>کارفرما</th>
-                            <th class="table-light">{{ report.employer }}</th>
-                            <th>پیمانکار</th>
-                            <th class="table-light">{{ report.employee }}</th>
-                            <th>تاریخ</th>
-                            <th class="table-light">{{ other.weekday }} - {{ other.date }}</th>
-                        </tr>
-                        <tr>
-                            <th>میزان گرد و غبار</th>
-                            <th class="table-light">{{ report.dust_value }}</th>
-                            <th>بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
-                            <th class="table-light">{{ report.temperature_max }} &nbsp; || &nbsp; {{ report.temperature_min }}</th>
-                            <th>وضعیت جوی</th>
-                            <th class="table-light">{{ other.weather }}</th>
-                        </tr>
-                    </thead>
-                </table>
+                        <thead class="">
+                            <tr>
+                                <th>پروژه</th>
+                                <th class="table-light">{{ report.project_name }}</th>
+                                <th>شماره قرارداد</th>
+                                <th class="table-light">{{ report.contract_number }}</th>
+                                <th>مشاور</th>
+                                <th class="table-light">{{ report.consultor_name }}</th>
+                            </tr>
+                            <tr>
+                                <th>کارفرما</th>
+                                <th class="table-light">{{ report.employer }}</th>
+                                <th>پیمانکار</th>
+                                <th class="table-light">{{ report.employee }}</th>
+                                <th>تاریخ</th>
+                                <th class="table-light">{{ other.weekday }} - {{ other.date }}</th>
+                            </tr>
+                            <tr>
+                                <th>میزان گرد و غبار</th>
+                                <th class="table-light">{{ report.dust_value }}</th>
+                                <th>بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
+                                <th class="table-light">{{ report.temperature_max }} &nbsp; || &nbsp; {{ report.temperature_min }}</th>
+                                <th>وضعیت جوی</th>
+                                <th class="table-light">{{ other.weather }}</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
 
                 <div class="col-2 h-75">
@@ -161,16 +161,18 @@
 <!--                                    <th style="text-align: center">تامین</th>-->
                                 </tr>
                             </thead>
-                            {% for machine in machines %}
-                                <tr>
-                                    <td>{{ machine }}</td>
-<!--                                    <td style="text-align: center">{{ machine.workHours }}</td>-->
-                                    <td style="text-align: center">{{ machine.activeCount }}</td>
-                                    <td style="text-align: center">{{ machine.inactiveCount }}</td>
-                                    <td style="text-align: center">{{ machine.totalCount }}</td>
-<!--                                    <td style="text-align: center">{{ machine.provider }}</td>-->
-                                </tr>
-                            {% endfor %}
+                            <tbody>
+                                {% for machine in machines %}
+                                    <tr>
+                                        <td>{{ machine }}</td>
+    <!--                                    <td style="text-align: center">{{ machine.workHours }}</td>-->
+                                        <td style="text-align: center">{{ machine.activeCount }}</td>
+                                        <td style="text-align: center">{{ machine.inactiveCount }}</td>
+                                        <td style="text-align: center">{{ machine.totalCount }}</td>
+    <!--                                    <td style="text-align: center">{{ machine.provider }}</td>-->
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
 
@@ -184,14 +186,16 @@
 <!--                                    <th style="text-align: center">تامین</th>-->
                                 </tr>
                             </thead>
-                            {% for material in materials %}
-                                <tr>
-                                    <td>{{ material }}</td>
-                                    <td style="text-align: center">{{ material.amount }}</td>
-                                    <td style="text-align: center">{{ material.unit }}</td>
-<!--                                    <td style="text-align: center">{{ material.provider }}</td>-->
-                                </tr>
-                            {% endfor %}
+                            <tbody>
+                                {% for material in materials %}
+                                    <tr>
+                                        <td>{{ material }}</td>
+                                        <td style="text-align: center">{{ material.amount }}</td>
+                                        <td style="text-align: center">{{ material.unit }}</td>
+    <!--                                    <td style="text-align: center">{{ material.provider }}</td>-->
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
                     </div>
 
@@ -205,7 +209,7 @@
                 <thead class="">
                     <tr class="">
                         <th class="" style="width: 30%; vertical-align: middle;">
-                            شرح عملیات
+                             شرح عملیات اصلی
                         </th>
 <!--                        <th class="" style="width: 13%; vertical-align: middle;" >-->
 <!--                            اکیپ-->
