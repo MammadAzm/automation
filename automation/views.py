@@ -1345,7 +1345,7 @@ def report_on_day(request, idd):
     tasks = TaskReport.objects.filter(dailyReport=report)
 
     done_task_zone = []
-
+    parentTaskPercents = {}
     for task in tasks:
         ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
         objs = Task.objects.filter(equipe__id__in=ids)
@@ -1357,12 +1357,19 @@ def report_on_day(request, idd):
 
         done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
 
+        if task.task.parent.id in parentTaskPercents.keys():
+            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.totalVolume * 100 + task.todayVolume / task.task.totalVolume * 100) * task.task.suboperation.weight / 100
+        else:
+            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.totalVolume*100 + task.todayVolume/task.task.totalVolume*100)*task.task.suboperation.weight/100
+
+    # [item for item in parentTaskPercents.items()]
 
     other = {
         "weather": report.get_weather_display(),
         "weekday": report.get_weekday_display(),
         "date": report.date.strftime('%Y/%m/%d'),
         "entire_items": done_task_zone,
+        "parentTaskPercents": parentTaskPercents,
     }
 
     context = {
