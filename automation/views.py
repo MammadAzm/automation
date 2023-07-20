@@ -8,12 +8,44 @@ from django.core.serializers import serialize
 from django.db.models.query import QuerySet
 
 from .models import *
-from .converters import *
+from .CONSTANTS import *
 import jdatetime
 import json
+from django.db.models import Q
+
+from itertools import groupby
+from operator import attrgetter
+from functools import reduce
+from operator import or_
+from django.db.models import F
+from operator import itemgetter
 
 
 # TODO : Bug Fix ; error raises for adding already existing objects to base data
+
+
+
+def get_attr(model, instance, level,):
+    if model == "operation":
+        if level == 1:
+            return getattr(getattr(instance, 'operation'), 'id')
+        elif level != 1:
+            # return instance['operation']
+            return model
+
+    elif model == "zone":
+        if level == 1:
+            return getattr(getattr(getattr(instance, 'task'), 'zone'), 'id')
+        elif level != 1:
+            # return instance['zone']
+            return model
+
+    elif model == "contractor":
+        if level == 1:
+            return getattr(getattr(getattr(getattr(instance, 'task'), 'equipe'), 'contractor'), 'id')
+        elif level != 1:
+            # return instance['contractor']
+            return model
 
 
 def home(request):
@@ -1007,9 +1039,12 @@ def save_daily_report_to_db(request):
                     parent=parent,
                     dailyReport=report,
                     todayVolume=amount,
+                    reportDate=report.date,
+                    parentTask=tsk.parent,
                 )
 
                 tsk_rep.update_percentage(False, date=report.date)
+                tsk_rep.update_filtering_fields()
                 report.tasks.add(tsk_rep.task)
 
         report.cal_countPeople()
@@ -1308,11 +1343,15 @@ def edit_daily_report_in_db(request):
                     parent = TaskReport.objects.filter(task=tsk).last()
                     tsk_rep = TaskReport.objects.create(
                         task=tsk,
+                        operation=tsk.operation.operation,
                         parent=parent,
                         dailyReport=report,
                         todayVolume=amount,
+                        reportDate=report.date,
+                        parentTask=tsk.parent,
                     )
                     tsk_rep.update_percentage(False, date=report.date)
+                    tsk_rep.update_filtering_fields()
                     report.tasks.add(tsk_rep.task)
 
             report.cal_countPeople()
@@ -1395,7 +1434,6 @@ def compact_report_on_day(request, idd):
     materials = MaterialCount.objects.filter(dailyReport=report)
     equipes = EquipeCount.objects.filter(dailyReport=report)
 
-
     tasks = TaskReport.objects.filter(dailyReport=report)
     operation_ids = TaskReport.objects.filter(dailyReport=report).values_list('operation', flat=True).distinct()
 
@@ -1425,7 +1463,6 @@ def compact_report_on_day(request, idd):
     for key, value in tsks.items():
         tsks[key]['entire_item_done'] = tsks[key]['todayVolume'] + tsks[key]['preDoneVolume']
         tsks[key]['entire_item_done_percent'] = tsks[key]['entire_item_done'] / tsks[key]['entire_item_vol'] * 100
-
 
     other = {
         "weather": report.get_weather_display(),
@@ -1864,3 +1901,250 @@ def check_dailyreport_existence(request):
             return HttpResponse(True)
 
         # ("%Y-%m-%d %H:%M:%S")
+
+
+def findOutputTarget(pivot_fields):
+    target = 0
+    # print(">>>>>>>>", pivot_fields)
+    for pivot in pivot_fields:
+        # print(">>>>", target, FILTERS_WEIGHTS[pivot])
+        target += FILTERS_WEIGHTS[pivot]
+
+    target = FILTERS_OUTPUT_PIVOT[target]
+
+    return target
+
+
+def group_queryset(queryset, pivot_fields, target):
+    if not pivot_fields:
+        return list(queryset)
+
+    pivot_field = pivot_fields[0]
+
+    grouped_results = {}
+    for key, group in groupby(queryset, key=lambda obj: getattr(obj, pivot_field)):
+
+        # Recursively group the remaining queryset for the next pivot fields
+        nested_results = group_queryset(group, pivot_fields[1:], target)
+
+        if type(nested_results) is list:
+            data = {
+                "totalVolume": 0,
+                "doneVolume": 0,
+                "donePercentage": 0,
+            }
+            cache_ids = []
+            for taskreport in nested_results:
+
+                instance = taskreport
+                for attribute in OUTPUT_TARGETS[target]["ID"]:
+                    instance = getattr(instance, attribute)
+
+                if instance not in cache_ids:
+                    instance_2 = taskreport
+                    for feature in OUTPUT_TARGETS[target]["VALUES"]["TOTALVOLUME"]:
+                        instance_2 = getattr(instance_2, feature)
+
+                    data["totalVolume"] += instance_2
+                    cache_ids.append(instance)
+                else:
+                    pass
+
+                data["doneVolume"] += (taskreport.todayVolume * taskreport.task.suboperation.weight / 100)
+                data["donePercentage"] = data["doneVolume"] / data["totalVolume"] * 100
+
+            for k in FILTER_KEY_NAMES[type(key)]:
+                key = getattr(key, k)
+            # print(">>> ", type(key), key)
+            grouped_results[key] = data
+        else:
+            for k in FILTER_KEY_NAMES[type(key)]:
+                key = getattr(key, k)
+            # print(">>> ", type(key), key)
+            grouped_results[key] = nested_results
+
+    return grouped_results
+
+
+def analyzer(request):
+    if request.method == "GET":
+
+        context = {
+            'context': False,
+        }
+        return render(request, 'analyzer.html', context=context)
+
+    elif request.method == "POST":
+        data = dict(request.POST)
+
+        query = {
+            "operation": None,
+            "zone": None,
+            "contractor": None,
+        }
+        query_formula = []
+
+        if data["analyze-type"][0] == "Ahjam":
+            for key in sorted(list(data.keys())):
+                if "priority" in key:
+                    priority, typee, _ = key.split("_")
+                    if '0' in data[key]:
+                        data[key] = 0
+                        objs = FILTERS[typee].objects.all()
+                    else:
+                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                    query[typee] = objs
+                    query_formula.append(typee)
+
+                elif "date-from" == key:
+                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("lower-date")
+
+                elif "date-through" == key:
+                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("upper-date")
+
+            if "operation" not in query_formula:
+                query_formula.append("operation")
+                query['operation'] = objs = Operation.objects.all()
+
+            priorities_values = []
+            requested_models = []
+            requested_instances = {}
+            for item in query_formula:
+                if "date" in item:
+                    continue
+                priorities_values.append(
+                    list(query[item].values_list('name', flat=True))
+                )
+                requested_models.append(item)
+                requested_instances[item] = list(query[item].values_list('id', flat=True))
+
+            priority_depth = len(priorities_values)
+
+            requested_models_persian = []
+            for item in requested_models:
+                requested_models_persian.append(MODELS_PERSIAN[item])
+
+            parentTasks = ParentTask.objects.all()
+            for model in requested_models:
+                q_filter = Q()
+
+                for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
+                    index = MODELS_PATH_TO_EXCLUDE[model]['models'].index(step)
+                    field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
+                    if field is not None:
+                        q_filter |= Q(**{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
+                        requested_instances[model] = step.objects.filter(q_filter).values_list('id', flat=True)
+
+                q_filter = Q()
+                field = getattr(ParentTask, f"{model}", None)
+                if field is not None:
+                    q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
+                    parentTasks = parentTasks.filter(q_filter)
+
+            parentTasks = parentTasks.all().values_list('id', flat=True)
+            taskReports = TaskReport.objects.filter(parentTask_id__in=parentTasks)
+
+            if "lower-date" in query_formula and "upper-date" in query_formula:
+                taskReports = taskReports.filter(
+                    reportDate__lt=query["upper-date"],
+                    reportDate__gt=query["lower-date"],
+                )
+                # print(">>>", type(query["lower-date"]), query["lower-date"])
+                dates_filters = {
+                    "lower": query["lower-date"].replace("-", "/"),
+                    "upper": query["upper-date"].replace("-", "/"),
+                }
+
+            # print(taskReports)
+
+            taskReports = taskReports.order_by(*requested_models)
+            target = findOutputTarget(requested_models)
+            tree = group_queryset(taskReports, requested_models, target=target)
+
+        elif data["analyze-type"][0] == "":
+            pass
+
+        elif data["analyze-type"][0] == "":
+            pass
+
+        # print(type(list(tree.keys())[0]))
+        # print(tree)
+        # print(dates_filters if 'dates_filters' in locals() else False, )
+        # print(priorities_values)
+
+        if len(list(tree.values())) > 0:
+            isRecord = True
+        else:
+            isRecord = False
+        context = {
+            'context': True,
+            'isRecord': isRecord,
+            'analyzeType': "احجام",
+            'priority_depths': priority_depth-1,
+            'priorities_values': priorities_values,
+            'priorityTypes': requested_models_persian,
+            'tree': tree,
+            'dates_filters': dates_filters if 'dates_filters' in locals() else False,
+        }
+        return render(request, 'analyzer.html', context=context)
+
+
+def get_options_in_priority(request):
+    if request.method == "POST":
+        priority = request.POST['priority']
+
+        if priority == "time":
+            pass
+        elif priority == "zone":
+            objs = Zone.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "operation":
+            objs = Operation.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "suboperation":
+            objs = SubOperation.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "contractor":
+            objs = Contractor.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "equipe":
+            objs = Contractor.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+    return JsonResponse(context)

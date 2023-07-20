@@ -22,8 +22,8 @@ from automation.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-
     path("home/", home),
+    path("home/analyzer/", analyzer, name="analyzer"),
 
     # Main Paths
     path("home/add-base-data/", add_base_data_template),
@@ -91,9 +91,14 @@ urlpatterns = [
     path("edit-db/get-freeAmount/", get_freeAmount),
     path("edit-db/get-zones/", get_zones),
     path("edit-db/get-materialproviders/", get_materialproviders),
+
     path("edit-db/get-machineproviders/", get_machineproviders),
     path("edit-db/check-deletability/", check_deletability),
     path("edit-db/check-editability/", check_editability),
 
-    # path("edit-db/add-machine-to-daily-report", add_machine_to_daily_report),
+
+    path("edit-db/get-options-in-priority/", get_options_in_priority),
+
+
+    path("analyzer/analyze/", analyzer),
 ]

@@ -1,3 +1,6 @@
+# from .models import *
+# from automation.models import *
+
 WEEKDAY_CHOICES = [
         (2, 'دوشنبه'),
         (3, 'سه شنبه'),
@@ -23,3 +26,5 @@ MACHINE_TYPES = [
         (3, "تراک"),
         (4, "ابزار"),
 ]
+
+

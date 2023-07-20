@@ -1,3 +1,15 @@
+const STRINGS_FROM_NUMBERS = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+}
+
 function print(entry) {
     console.log(entry);
 }
@@ -3742,8 +3754,6 @@ function del_zoneoperation(zone, opr, db) {
     }
 }
 
-
-
 function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe=null) {
     if (type === 'suboperation') {
         let container = document.getElementById("main-container")
@@ -4664,3 +4674,338 @@ function handle_select(type) {
     }
 
 }
+
+function analyzer_handle_select(type=null) {
+
+        $('#select2-analyze-type').select2({
+            dropdownParent: $("#select2-analyze-type-container")
+        });
+        $('#select2-formula-priority-one').select2({
+            dropdownParent: $("#select2-formula-priority-one-container")
+        });
+        $('#select2-formula-priority-two').select2({
+            dropdownParent: $("#select2-formula-priority-two-container")
+        });
+        $('#select2-formula-priority-three').select2({
+            dropdownParent: $("#select2-formula-priority-three-container")
+        });
+        $('#select2-formula-priority-four').select2({
+            dropdownParent: $("#select2-formula-priority-four-container")
+        });
+        $('#select2-formula-priority-five').select2({
+            dropdownParent: $("#select2-formula-priority-five-container")
+        });
+
+        $('#select2-filter-priority-one').select2({
+            dropdownParent: $("#select2-filter-priority-one-container")
+        });
+        $('#select2-filter-priority-two').select2({
+            dropdownParent: $("#select2-filter-priority-two-container")
+        });
+        $('#select2-filter-priority-three').select2({
+            dropdownParent: $("#select2-filter-priority-three-container")
+        });
+        $('#select2-filter-priority-four').select2({
+            dropdownParent: $("#select2-filter-priority-four-container")
+        });
+        $('#select2-filter-priority-five').select2({
+            dropdownParent: $("#select2-filter-priority-five-container")
+        });
+
+}
+
+function set_analyze_type() {
+    let select = document.getElementById("select2-analyze-type")
+
+    switch (select.value) {
+        case "volume":
+            document.getElementById("MachineWork-Box").hidden = true
+            document.getElementById("Material-Box").hidden = true
+            var container = document.getElementById("Ahjam-Box")
+            container.hidden = false
+
+            break;
+
+        case "machine":
+            hide_volume_filters();
+            document.getElementById("Ahjam-Box").hidden = true
+            document.getElementById("Material-Box").hidden = true
+            var container = document.getElementById("MachineWork-Box")
+            container.hidden = false
+
+            break;
+
+        case "material":
+            hide_volume_filters();
+            document.getElementById("MachineWork-Box").hidden = true
+            document.getElementById("Ahjam-Box").hidden = true
+            var container = document.getElementById("Material-Box")
+            container.hidden = false
+
+            break;
+
+    }
+}
+
+function handle_formula_priority(priority=null, ) {
+    clear_volume_filters();
+    hide_volume_filters();
+    var priorities = {
+        // "time" : "زمان",
+        "zone" : "موقعیت",
+        "operation" : "عملیات اصلی",
+        // "suboperation" : "عملیات اجرایی",
+        "equipe" : "پیمانکار",
+    }
+    var select_priorities = ["one", "two", "three", "four", "five"]
+
+    switch (priority) {
+        case 1:
+            var exclude = document.getElementById("select2-formula-priority-one").value
+            for (let i=1; i<select_priorities.length; i++) {
+               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                '<option value="" selected disabled>انتخاب اولویت</option>'
+                )
+            }
+            for (var key in priorities) {
+                if (key === exclude) {
+                    continue
+                } else {
+                    $("#select2-formula-priority-two").append(
+                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                    )
+                }
+            }
+            break;
+        case 2:
+            var exclude_01 = document.getElementById("select2-formula-priority-one").value
+            var exclude_02 = document.getElementById("select2-formula-priority-two").value
+            for (let i=2; i<select_priorities.length; i++) {
+               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                '<option value="" selected disabled>انتخاب اولویت</option>'
+                )
+            }
+            for (var key in priorities) {
+                if (key === exclude_01 || key === exclude_02) {
+                    continue
+                } else {
+                    $("#select2-formula-priority-three").append(
+                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                    )
+                }
+            }
+
+            break;
+        case 3:
+            var exclude_01 = document.getElementById("select2-formula-priority-one").value
+            var exclude_02 = document.getElementById("select2-formula-priority-two").value
+            var exclude_03 = document.getElementById("select2-formula-priority-three").value
+            for (let i=3; i<select_priorities.length; i++) {
+               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                '<option value="" selected disabled>انتخاب اولویت</option>'
+                )
+            }
+            for (var key in priorities) {
+                if (key === exclude_01 || key === exclude_02 || key === exclude_03) {
+                    continue
+                } else {
+                    $("#select2-formula-priority-four").append(
+                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                    )
+                }
+            }
+
+            break;
+        case 4:
+            var exclude_01 = document.getElementById("select2-formula-priority-one").value
+            var exclude_02 = document.getElementById("select2-formula-priority-two").value
+            var exclude_03 = document.getElementById("select2-formula-priority-three").value
+            var exclude_04 = document.getElementById("select2-formula-priority-four").value
+            for (let i=4; i<select_priorities.length; i++) {
+               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                '<option value="" selected disabled>انتخاب اولویت</option>'
+                )
+            }
+            for (var key in priorities) {
+                if (key === exclude_01 || key === exclude_02 || key === exclude_03 || key === exclude_04) {
+                    continue
+                } else {
+                    $("#select2-formula-priority-five").append(
+                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                    )
+              }
+            }
+
+            break;
+        case 5:
+
+            break;
+
+    }
+}
+
+function submitPriorityFormula() {
+    var pivots = {
+        // "time" : "زمان",
+        "zone" : "موقعیت",
+        "operation" : "عملیات اصلی",
+        // "suboperation" : "عملیات اجرایی",
+        "equipe" : "پیمانکار",
+    }
+    show_volume_filters()
+
+    let priorities = [
+        document.getElementById("select2-formula-priority-one").value,
+        document.getElementById("select2-formula-priority-two").value,
+        document.getElementById("select2-formula-priority-three").value,
+        document.getElementById("select2-formula-priority-four").value,
+        // document.getElementById("select2-formula-priority-five").value,
+    ]
+
+    for (let i=0; i<priorities.length; i++) {
+        if (pivots[priorities[i]]) {
+            document.getElementById(
+                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]
+            ).disabled = false
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"
+            ).disabled = false
+
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"
+            ).style.textDecoration = "none"
+
+            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label").innerText = i+1 + "- " + pivots[priorities[i]]
+
+            if (priorities[i] === "time") {
+                let selectID = "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]
+                $("#"+selectID).append(
+                    '<option value="0">همه موارد</option>'
+                )
+            }
+            else {
+                fetch_options_in_priority(priorities[i], "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1])
+                document.getElementById(
+                    "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]
+                ).name = i+1+"_"+priorities[i] + "_priority"
+            }
+
+
+        }
+        else {
+            document.getElementById(
+                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]
+            ).disabled = true
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"
+            ).disabled = true
+
+            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label").innerText = i+1 + "- " + "تعیین نشده"
+
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"
+            ).style.textDecoration = "line-through"
+
+        }
+
+    }
+
+}
+
+function hide_volume_filters() {
+    document.getElementById("Ahjam-Filter-Box").hidden = true
+}
+
+function show_volume_filters() {
+    document.getElementById("Ahjam-Filter-Box").hidden = false
+}
+
+function clear_volume_filters() {
+    var selects = document.getElementById("Ahjam-Filter-Box").querySelectorAll("select")
+    for (let i = 0; i < selects.length; i++) {
+        $("#"+selects[i].id).empty()
+    }
+}
+
+function fetch_options_in_priority(priority, selectID) {
+    $.ajax({
+        type: 'POST',
+        url: '/edit-db/get-options-in-priority/',
+        data: {
+        'priority': priority,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            let objs = JSON.parse(response[priority])
+            // $("#"+selectID).empty().append(
+            //     '<option value="" selected disabled>انتخاب اولویت</option>'
+            // )
+             $("#"+selectID).append(
+                '<option value="0">همه موارد</option>'
+            )
+            for (let i=0; i<objs.length; i++) {
+                $("#"+selectID).append(
+                    '<option value="'+objs[i].id+'">'+objs[i].name+'</option>'
+                )
+            }
+
+        }
+    });
+}
+
+function dateFilterSwitch() {
+    let switchKey = document.getElementById("customDateFilterSwitch")
+    if (switchKey.checked) {
+        document.getElementById("date-from").disabled = false
+        document.getElementById("date-through").disabled = false
+
+        document.getElementById("date-from").placeholder = "از تاریخ"
+        document.getElementById("date-through").placeholder = "تا تاریخ"
+    }
+    else {
+        document.getElementById("date-from").disabled = true
+        document.getElementById("date-through").disabled = true
+
+        document.getElementById("date-from").placeholder = "همیشه"
+        document.getElementById("date-through").placeholder = "همیشه"
+    }
+}
+
+function submitAnalyzer(type) {
+    if (type === "Ahjam") {
+        var target = "form-Ahjam"
+    }
+
+
+    $('#'+target).submit(function(event) {
+        // Prevent form submission
+        event.preventDefault();
+
+        // Collect form data
+        var formData = new FormData(this);
+        if (!formData.get("customDateFilterSwitch")) {
+            formData.append("customDateFilterSwitch", false)
+        }
+
+        $.ajax({
+            url: '/analyzer/analyze/',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function (response) {
+
+            }
+
+        })
+
+    })
+}
+
+

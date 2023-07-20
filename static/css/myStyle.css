@@ -132,13 +132,14 @@ details:focus {
     outline: none;
 }
 
-/*.input-table {*/
-/*    border: solid black 1px;*/
-/*    padding: 3px;*/
-/*    background-color: white;*/
-/*    width: 120px;*/
-/*    height: 25px;*/
-/*}*/
+.box {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-shadow: #bebebe 0 0 10px 0;
+    margin-bottom: 15px;
+}
 
-
+.floatLeft {
+    float: left;
+}
 

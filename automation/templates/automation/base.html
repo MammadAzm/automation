@@ -66,6 +66,7 @@
           <a href="/home/add-base-data/"><button type="button" class=" btn-color onhover" style="font-size: 15px">اطلاعات پایه</button></a>
           <a href="/home/create-report/"><button type="button" class=" btn-color onhover" style="font-size: 15px">گزارش روزانه</button></a>
           <a href="/home/daily-reports/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آرشیو گزارشات</button></a>
+          <a href="/home/analyzer/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آنالیز پروژه</button></a>
       </div>
       <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">شرکت کیان پولاد سده - کاردان (نسخه آزمایشی)</h1>
     </div>
@@ -73,37 +74,11 @@
 
 <div id="main-container">
 
-
     {% block content %}
-    <div class="container-fluid" style="padding: 5%">
-
-
-    <!--    <div class="row" >-->
-    <!--        <a href="/home/create-report/" class="navbar-brand ">-->
-    <!--            <div class="p-1 row hover" style="margin-bottom: 2%;">-->
-    <!--                <div class="p-3 border bg-light " style="text-align: center; border-radius: 10px;">-->
-    <!--                    ایجاد گزارش-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </a>-->
-    <!--        <a href="/home/daily-reports/" class="navbar-brand ">-->
-    <!--            <div class="p-1 row hover" style="margin-bottom: 2%;">-->
-    <!--                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">-->
-    <!--                    آرشیو گزارشات-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </a>-->
-    <!--        <a href="/home/add-base-data" class="navbar-brand">-->
-    <!--            <div class="p-1 row hover">-->
-    <!--                <div class="p-3 border bg-light" style="text-align: center; border-radius: 10px;">-->
-    <!--                    ویرایش اطلاعات پایه-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </a>-->
-    <!--    </div>-->
-    </div>
 
     {% endblock %}
+
+
 
 
     <!--<footer class="bg-light text-center" style="position: fixed; height: 25px; bottom: 0; width: 100%">-->
@@ -111,18 +86,6 @@
     <!--    <a class="text-dark navbar-brand" style="text-decoration: none; font-size: 15px;">این یک نوار اطلاعات ثابت است</a>-->
     <!--  </div>-->
     <!--</footer>-->
-
-
-
-
-
-    <!--<script>-->
-    <!--    $(document).ready(function() {-->
-    <!--        $('.select2').select2({-->
-    <!--            dropdownParent: $("#unit-box")-->
-    <!--        });-->
-    <!--    });-->
-    <!--</script>-->
 
 </div>
 

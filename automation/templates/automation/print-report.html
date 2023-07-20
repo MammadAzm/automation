@@ -286,7 +286,7 @@
 
                             <td class="text-centred">
                                 {% with pre=task.preDoneVolume|div:task.task.totalVolume|mul:100 cur=task.todayVolume|div:task.task.totalVolume|mul:100 %}
-                                    {{ cur|add:pre }} %
+                                    {{ cur|add:pre|floatformat:2 }} %
                                 {% endwith %}
 
                             </td>
@@ -300,7 +300,7 @@
                             </td>
 
                             <td class="text-centred">
-                                {{ other.parentTaskPercents|return_item:task.task.parent.id }} %
+                                {{ other.parentTaskPercents|return_item:task.task.parent.id|floatformat:2 }} %
                             </td>
                             <td class="text-centred">
                                 {{ task.task.operation.unit }}

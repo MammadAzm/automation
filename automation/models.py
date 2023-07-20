@@ -464,7 +464,7 @@ class ParentTask(models.Model):
 
 
 class Task(models.Model):
-    parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
     suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE, null=True, blank=True)
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
@@ -547,7 +547,7 @@ class Task(models.Model):
 
 class TaskReport(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)
+    parentTask = models.ForeignKey(ParentTask, on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     todayVolume = models.FloatField(default=0.0,)
@@ -556,40 +556,25 @@ class TaskReport(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    '''
-    def update_children(self, parent=None):
-        print("=========================")
-        print("AAAA")
-        children = TaskReport.objects.filter(parent=self)
-        if not parent:
-            parent = self.parent
-        for child in children:
-            print("New Child --------------")
-            child.parent = parent
-            child.save()
-            if child.parent:
-                child.task.doneVolume = child.parent.preDoneVolume + child.parent.todayVolume + child.todayVolume
-                print(f"Done Volume Total : {child.parent.preDoneVolume} + {child.parent.todayVolume} + {child.todayVolume} = ", child.task.doneVolume)
-            else:
-                child.task.doneVolume = 0.0
-            print(f"Done Volume Total : ", 0)
-            child.task.update_percentage()
-            print("Done Volume Total % : ", child.task.donePercentage)
-            child.preDoneVolume = child.task.doneVolume
-            child.preDonePercentage = child.preDoneVolume / child.task.totalVolume *100
-            child.save()
+    reportDate = models.DateTimeField()
 
-            parent = child
+    # Filtering required fields -------------------------------------------------------------------
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE, null=True, blank=True)
+    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE, null=True, blank=True)
 
-            child.update_children(parent)
-    '''
+    def update_filtering_fields(self):
+        self.operation = self.task.operation.operation
+        self.zone = self.task.zone
+        self.equipe = self.task.equipe
+
+        self.save()
 
     def get_total_parent_values(self):
         if self.parent is None:
             return 0
 
         return self.parent.get_total_parent_values() + self.parent.todayVolume
-
 
     def update_percentage(self, reverse, date=None):
         if not reverse:
@@ -725,26 +710,3 @@ class DailyReport(models.Model):
     def __str__(self):
         return self.project_name
 
-
-
-
-# class OperationBreak(models.Model):
-#     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
-#     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-#
-#     amount = models.FloatField(default=0.0,)
-#     doneAmount = models.FloatField(default=0.0,)
-#
-#     def __str__(self):
-#         return self.operation.name + " | " + self.zone.name
-#
-#
-# class Item(models.Model):
-#     operation = models.ForeignKey(OperationBreak, on_delete=models.CASCADE)
-#     suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE)
-#
-#     amount = models.FloatField(default=0.0, )
-#     doneAmount = models.FloatField(default=0.0, )
-#
-#     def __str__(self):
-#         return self.operation + " | " + self.suboperation + " | " + self.zone
