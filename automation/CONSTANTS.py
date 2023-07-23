@@ -5,6 +5,12 @@ FILTERS = {
         "operation": Operation,
         "contractor": Contractor,
         "equipe": Contractor,
+
+        "machine": Machine,
+        "machineProvider": MachineProvider,
+
+        "material": Material,
+        "materialProvider": MaterialProvider,
     }
 
 MODELS = {
@@ -17,6 +23,11 @@ MODELS_PERSIAN = {
     "equipe": "پیمانکار",
     "zone": "موقعیت",
     "operation": "عملیات",
+
+    "machine": "تجهیز",
+    "material": "مصالح",
+    "machineProvider": "تامین کننده",
+    "materialProvider": "تامین کننده",
 }
 
 MODELS_PATH_TO_EXCLUDE = {
@@ -35,13 +46,41 @@ MODELS_PATH_TO_EXCLUDE = {
     "zone": {
         "models": [],
         "attrs": [],
-    }
+    },
+
+
+    "machine": {
+        "models": [MachineCount],
+        "attrs": ['machine'],
+    },
+    "machineProvider": {
+        "models": [MachineCount],
+        "attrs": ['provider'],
+    },
+    "dailyReportMachine": {
+        "models": [MachineCount],
+        "attrs": ["dailyReport"],
+    },
+
+
+
+    # "material": {
+    #     "models": [Material,],
+    #     "attrs": ['name',],
+    # },
+    # "materialProvider": {
+    #     "models": [MaterialProvider,],
+    #     "attrs": ['name',],
+    # },
 }
 
 FILTER_KEY_NAMES = {
     type(Equipe()): ["contractor", "name"],
     type(Zone()): ["name"],
     type(Operation()): ["name"],
+
+    type(Machine()): ['name'],
+    type(MachineProvider()): ['name'],
 }
 
 
@@ -59,25 +98,33 @@ FILTERS_OUTPUT_PIVOT = {
 }
 
 OUTPUT_TARGETS = {
-        Operation: {
-            "CLASS": Operation,
-            "ID": ['operation', 'id'],
-            "VALUES": {
-                "TOTALVOLUME": ["operation", "amount"],
-            },
+    Operation: {
+        "CLASS": Operation,
+        "ID": ['operation', 'id'],
+        "VALUES": {
+            "TOTALVOLUME": ["operation", "amount"],
         },
-        ZoneOperation: {
-            "CLASS": ZoneOperation,
-            "ID": ["parentTask", "operation", "id"],
-            "VALUES": {
-                "TOTALVOLUME": ["parentTask", "operation", "amount"],
-            },
+    },
+    ZoneOperation: {
+        "CLASS": ZoneOperation,
+        "ID": ["parentTask", "operation", "id"],
+        "VALUES": {
+            "TOTALVOLUME": ["parentTask", "operation", "amount"],
         },
-        ParentTask: {
-            "CLASS": ParentTask,
-            "ID": ['parentTask', 'id'],
-            "VALUES": {
-                "TOTALVOLUME": ["parentTask", "totalVolume"],
-            },
+    },
+    ParentTask: {
+        "CLASS": ParentTask,
+        "ID": ['parentTask', 'id'],
+        "VALUES": {
+            "TOTALVOLUME": ["parentTask", "totalVolume"],
         },
+    },
+
+    MachineCount: {
+        "CLASS": MachineCount,
+        "ID": ['id'],
+        "VALUES": {
+            "WORKHOURS": ["workHours"],
+        },
+    },
 }

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "bootstrap5",
     "mathfilters",
     "django_bootstrap_icons",
+
+    'jalali_date',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +130,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# LANGUAGE_CODE = 'fa'
+# import locale
+# locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")

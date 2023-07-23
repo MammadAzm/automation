@@ -90,35 +90,10 @@ def getItemsOfDict(obj):
 register.filter("getItemsOfDict", getItemsOfDict)
 
 
-data = {
-    "A": {
-        "a": [1]*10,
-        "aa": [11]*10,
-        "aaa": [111]*10,
-        "aaaa": [1111]*10,
-    },
-    "B": {
-        "b": [2]*10,
-        "bb": [22]*10,
-        "bbb": [222]*10,
-        "bbbb": [2222]*10,
-    },
-    "C": {
-        "c": [3]*10,
-        "cc": [33]*10,
-        "ccc": [333]*10,
-        "cccc": [3333]*10,
-    },
-    "D": {
-        "d": [4]*10,
-        "dd": [44]*10,
-        "ddd": [444]*10,
-        "dddd": [4444]*10,
-    },
-    "E": {
-        "e": [5]*10,
-        "ee": [55]*10,
-        "eee": [555]*10,
-        "eeee": [5555]*10,
-    },
-}
+def equals(operand_01, operand_02):
+    return operand_01 == operand_02
+
+
+register.filter("equals", equals)
+
+

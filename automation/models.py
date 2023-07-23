@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator, MinValueValidator, MaxValueVa
 from jdatetime import datetime
 import jdatetime
 from .converters import *
+from django_jalali.db import models as jmodels
 
 
 # Create your models here.
@@ -388,8 +389,10 @@ class ParentTask(models.Model):
     donePercentage = models.FloatField(default=0.0, )
     started = models.BooleanField(default=False, )
     completed = models.BooleanField(default=False, )
-    start_date = models.DateField(null=True, blank=True)
-    completion_date = models.DateField(null=True, blank=True)
+    # start_date = models.DateField(null=True, blank=True)
+    # completion_date = models.DateField(null=True, blank=True)
+    start_date = jmodels.jDateField( null=True, blank=True)
+    completion_date = jmodels.jDateField( null=True, blank=True)
 
     subtasks = models.ManyToManyField('Task', related_name='subtasks')
 
@@ -477,8 +480,11 @@ class Task(models.Model):
     donePercentage = models.FloatField(default=0.0,)
     started = models.BooleanField(default=False,)
     completed = models.BooleanField(default=False,)
-    start_date = models.DateField(null=True, blank=True)
-    completion_date = models.DateField(null=True, blank=True)
+    # start_date = models.DateField(null=True, blank=True)
+    # completion_date = models.DateField(null=True, blank=True)
+
+    start_date = jmodels.jDateTimeField( null=True, blank=True)
+    completion_date = jmodels.jDateField( null=True, blank=True)
 
     def check_completion(self):
         if self.donePercentage < 100:
@@ -554,9 +560,12 @@ class TaskReport(models.Model):
     preDoneVolume = models.FloatField(default=0.0, )
     preDonePercentage = models.FloatField(default=0.0, )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    created_at = jmodels.jDateTimeField( auto_now_add=True)
 
-    reportDate = models.DateTimeField()
+    # reportDate = models.DateTimeField()
+    reportDate = jmodels.jDateTimeField()
+
 
     # Filtering required fields -------------------------------------------------------------------
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)
@@ -616,13 +625,22 @@ class DailyReport(models.Model):
                                        validators=[RegexValidator(r'^\d{1,10}$', 'Enter a valid number.')],
                                        default="123456789")
 
-    date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    short_date = models.DateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
+    # date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    date = jmodels.jDateTimeField( default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    # short_date = models.DateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
+    short_date = jmodels.jDateField( default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
+
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    date_edited = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    # created_at = models.DateTimeField(auto_now_add=True)
+    created_at = jmodels.jDateTimeField( auto_now_add=True)
+
+    # date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    date_created = jmodels.jDateTimeField( default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    # date_edited = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    date_edited = jmodels.jDateTimeField( default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #
     temperature_min = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)
     temperature_max = models.DecimalField(max_digits=3, decimal_places=0, default=00.0,)

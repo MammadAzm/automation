@@ -4680,6 +4680,10 @@ function analyzer_handle_select(type=null) {
         $('#select2-analyze-type').select2({
             dropdownParent: $("#select2-analyze-type-container")
         });
+
+        // =================================================================
+        // =================================================================
+
         $('#select2-formula-priority-one').select2({
             dropdownParent: $("#select2-formula-priority-one-container")
         });
@@ -4695,6 +4699,8 @@ function analyzer_handle_select(type=null) {
         $('#select2-formula-priority-five').select2({
             dropdownParent: $("#select2-formula-priority-five-container")
         });
+
+        // ---------------------------------------------------------------
 
         $('#select2-filter-priority-one').select2({
             dropdownParent: $("#select2-filter-priority-one-container")
@@ -4712,6 +4718,30 @@ function analyzer_handle_select(type=null) {
             dropdownParent: $("#select2-filter-priority-five-container")
         });
 
+        // =================================================================
+        // =================================================================
+
+        $('#select2-formula-priority-one-machine').select2({
+            dropdownParent: $("#select2-formula-priority-one-container-machine")
+        });
+        $('#select2-formula-priority-two-machine').select2({
+            dropdownParent: $("#select2-formula-priority-two-container-machine")
+        });
+
+        // ---------------------------------------------------------------
+
+        $('#select2-filter-priority-one-machine').select2({
+            dropdownParent: $("#select2-filter-priority-one-container-machine")
+        });
+        $('#select2-filter-priority-two-machine').select2({
+            dropdownParent: $("#select2-filter-priority-two-container-machine")
+        });
+
+        // =================================================================
+        // =================================================================
+
+
+
 }
 
 function set_analyze_type() {
@@ -4719,6 +4749,11 @@ function set_analyze_type() {
 
     switch (select.value) {
         case "volume":
+            hide_machine_material_filters("machine");
+            clear_machine_material_filters("machine");
+            // hide_machine_material_filters("material");
+            // clear_machine_material_filters("material");
+
             document.getElementById("MachineWork-Box").hidden = true
             document.getElementById("Material-Box").hidden = true
             var container = document.getElementById("Ahjam-Box")
@@ -4728,6 +4763,10 @@ function set_analyze_type() {
 
         case "machine":
             hide_volume_filters();
+            clear_volume_filters();
+            // hide_machine_material_filters("material");
+            // clear_machine_material_filters("material");
+
             document.getElementById("Ahjam-Box").hidden = true
             document.getElementById("Material-Box").hidden = true
             var container = document.getElementById("MachineWork-Box")
@@ -4737,6 +4776,10 @@ function set_analyze_type() {
 
         case "material":
             hide_volume_filters();
+            clear_volume_filters();
+            hide_machine_material_filters("machine");
+            clear_machine_material_filters("machine");
+
             document.getElementById("MachineWork-Box").hidden = true
             document.getElementById("Ahjam-Box").hidden = true
             var container = document.getElementById("Material-Box")
@@ -4747,104 +4790,160 @@ function set_analyze_type() {
     }
 }
 
-function handle_formula_priority(priority=null, ) {
-    clear_volume_filters();
-    hide_volume_filters();
-    var priorities = {
-        // "time" : "زمان",
-        "zone" : "موقعیت",
-        "operation" : "عملیات اصلی",
-        // "suboperation" : "عملیات اجرایی",
-        "equipe" : "پیمانکار",
+function handle_formula_priority(priority=null, nonVolume=null ) {
+
+    if (nonVolume) {
+        clear_machine_material_filters(type=nonVolume);
+        hide_machine_material_filters(type=nonVolume)
+
+        var priorities = {
+            "machine" : "تجهیز",
+            "material" : "مصالح",
+            "provider" : "تامین کننده",
+        }
+        var select_priorities = ["one", "two", "three", "four", "five"]
+
+        switch (priority) {
+            case 1:
+                var exclude = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                for (let i=1; i<select_priorities.length; i++) {
+                    let temp = '<option value="" selected disabled>انتخاب اولویت</option>'
+                   $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                         temp
+                    )
+                }
+                if (exclude === nonVolume) {
+                    $("#select2-formula-priority-two-"+nonVolume).append(
+                        '<option value="'+'provider'+'">'+priorities["provider"]+'</option>'
+                    )
+                }
+                else {
+                    $("#select2-formula-priority-two-"+nonVolume).append(
+                        '<option value="'+nonVolume+'">'+priorities[nonVolume]+'</option>'
+                    )
+                }
+
+                break;
+
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+
+        }
+
+        if ( nonVolume === "machine" ) {
+
+        }
+        else if ( nonVolume === "material" ) {
+
+        }
     }
-    var select_priorities = ["one", "two", "three", "four", "five"]
+    else {
+        clear_volume_filters();
+        hide_volume_filters();
+        var priorities = {
+            // "time" : "زمان",
+            "zone" : "موقعیت",
+            "operation" : "عملیات اصلی",
+            // "suboperation" : "عملیات اجرایی",
+            "equipe" : "پیمانکار",
+        }
+        var select_priorities = ["one", "two", "three", "four", "five"]
 
-    switch (priority) {
-        case 1:
-            var exclude = document.getElementById("select2-formula-priority-one").value
-            for (let i=1; i<select_priorities.length; i++) {
-               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
-                '<option value="" selected disabled>انتخاب اولویت</option>'
-                )
-            }
-            for (var key in priorities) {
-                if (key === exclude) {
-                    continue
-                } else {
-                    $("#select2-formula-priority-two").append(
-                        '<option value="'+key+'">'+priorities[key]+'</option>'
+        switch (priority) {
+            case 1:
+                var exclude = document.getElementById("select2-formula-priority-one").value
+                for (let i=1; i<select_priorities.length; i++) {
+                   $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                    '<option value="" selected disabled>انتخاب اولویت</option>'
                     )
                 }
-            }
-            break;
-        case 2:
-            var exclude_01 = document.getElementById("select2-formula-priority-one").value
-            var exclude_02 = document.getElementById("select2-formula-priority-two").value
-            for (let i=2; i<select_priorities.length; i++) {
-               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
-                '<option value="" selected disabled>انتخاب اولویت</option>'
-                )
-            }
-            for (var key in priorities) {
-                if (key === exclude_01 || key === exclude_02) {
-                    continue
-                } else {
-                    $("#select2-formula-priority-three").append(
-                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                for (var key in priorities) {
+                    if (key === exclude) {
+                        continue
+                    } else {
+                        $("#select2-formula-priority-two").append(
+                            '<option value="'+key+'">'+priorities[key]+'</option>'
+                        )
+                    }
+                }
+                break;
+            case 2:
+                var exclude_01 = document.getElementById("select2-formula-priority-one").value
+                var exclude_02 = document.getElementById("select2-formula-priority-two").value
+                for (let i=2; i<select_priorities.length; i++) {
+                   $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                    '<option value="" selected disabled>انتخاب اولویت</option>'
                     )
                 }
-            }
+                for (var key in priorities) {
+                    if (key === exclude_01 || key === exclude_02) {
+                        continue
+                    } else {
+                        $("#select2-formula-priority-three").append(
+                            '<option value="'+key+'">'+priorities[key]+'</option>'
+                        )
+                    }
+                }
 
-            break;
-        case 3:
-            var exclude_01 = document.getElementById("select2-formula-priority-one").value
-            var exclude_02 = document.getElementById("select2-formula-priority-two").value
-            var exclude_03 = document.getElementById("select2-formula-priority-three").value
-            for (let i=3; i<select_priorities.length; i++) {
-               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
-                '<option value="" selected disabled>انتخاب اولویت</option>'
-                )
-            }
-            for (var key in priorities) {
-                if (key === exclude_01 || key === exclude_02 || key === exclude_03) {
-                    continue
-                } else {
-                    $("#select2-formula-priority-four").append(
-                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                break;
+            case 3:
+                var exclude_01 = document.getElementById("select2-formula-priority-one").value
+                var exclude_02 = document.getElementById("select2-formula-priority-two").value
+                var exclude_03 = document.getElementById("select2-formula-priority-three").value
+                for (let i=3; i<select_priorities.length; i++) {
+                   $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                    '<option value="" selected disabled>انتخاب اولویت</option>'
                     )
                 }
-            }
+                for (var key in priorities) {
+                    if (key === exclude_01 || key === exclude_02 || key === exclude_03) {
+                        continue
+                    } else {
+                        $("#select2-formula-priority-four").append(
+                            '<option value="'+key+'">'+priorities[key]+'</option>'
+                        )
+                    }
+                }
 
-            break;
-        case 4:
-            var exclude_01 = document.getElementById("select2-formula-priority-one").value
-            var exclude_02 = document.getElementById("select2-formula-priority-two").value
-            var exclude_03 = document.getElementById("select2-formula-priority-three").value
-            var exclude_04 = document.getElementById("select2-formula-priority-four").value
-            for (let i=4; i<select_priorities.length; i++) {
-               $("#select2-formula-priority-"+select_priorities[i]).empty().append(
-                '<option value="" selected disabled>انتخاب اولویت</option>'
-                )
-            }
-            for (var key in priorities) {
-                if (key === exclude_01 || key === exclude_02 || key === exclude_03 || key === exclude_04) {
-                    continue
-                } else {
-                    $("#select2-formula-priority-five").append(
-                        '<option value="'+key+'">'+priorities[key]+'</option>'
+                break;
+            case 4:
+                var exclude_01 = document.getElementById("select2-formula-priority-one").value
+                var exclude_02 = document.getElementById("select2-formula-priority-two").value
+                var exclude_03 = document.getElementById("select2-formula-priority-three").value
+                var exclude_04 = document.getElementById("select2-formula-priority-four").value
+                for (let i=4; i<select_priorities.length; i++) {
+                   $("#select2-formula-priority-"+select_priorities[i]).empty().append(
+                    '<option value="" selected disabled>انتخاب اولویت</option>'
                     )
-              }
-            }
+                }
+                for (var key in priorities) {
+                    if (key === exclude_01 || key === exclude_02 || key === exclude_03 || key === exclude_04) {
+                        continue
+                    } else {
+                        $("#select2-formula-priority-five").append(
+                            '<option value="'+key+'">'+priorities[key]+'</option>'
+                        )
+                  }
+                }
 
-            break;
-        case 5:
+                break;
+            case 5:
 
-            break;
+                break;
 
+        }
     }
+
+
 }
 
-function submitPriorityFormula() {
+function submitPriorityFormulaVolumes() {
     var pivots = {
         // "time" : "زمان",
         "zone" : "موقعیت",
@@ -4927,12 +5026,93 @@ function clear_volume_filters() {
     }
 }
 
-function fetch_options_in_priority(priority, selectID) {
+
+function submitPriorityFormula_Machines_Material(type, ) {
+    var pivots = {
+        "machine" : "تجهیز",
+        "material" : "مصالح",
+        "provider" : "تامین کننده",
+    }
+    show_machine_material_filters(type=type)
+
+    let priorities = [
+        document.getElementById("select2-formula-priority-one-"+type).value,
+        document.getElementById("select2-formula-priority-two-"+type).value,
+    ]
+
+    for (let i=0; i<priorities.length; i++) {
+        if (pivots[priorities[i]]) {
+            document.getElementById(
+                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+            ).disabled = false
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+            ).disabled = false
+
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+            ).style.textDecoration = "none"
+
+            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + pivots[priorities[i]]
+
+            if (priorities[i] === "time") {
+                let selectID = "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                $("#"+selectID).append(
+                    '<option value="0">همه موارد</option>'
+                )
+            }
+            else {
+                fetch_options_in_priority(priorities[i], "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type, providerType=type)
+                document.getElementById(
+                    "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                ).name = i+1+"_"+priorities[i] + "_priority"
+            }
+
+
+        }
+        else {
+            document.getElementById(
+                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+            ).disabled = true
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+            ).disabled = true
+
+            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + "تعیین نشده"
+
+            document.getElementById(
+                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+            ).style.textDecoration = "line-through"
+
+        }
+
+    }
+
+}
+
+function hide_machine_material_filters(type) {
+    document.getElementById(type+"-Filter-Box").hidden = true
+}
+
+function show_machine_material_filters(type) {
+    document.getElementById(type+"-Filter-Box").hidden = false
+}
+
+function clear_machine_material_filters(type) {
+    var selects = document.getElementById(type+"-Filter-Box").querySelectorAll("select")
+    for (let i = 0; i < selects.length; i++) {
+        $("#"+selects[i].id).empty()
+    }
+}
+
+
+function fetch_options_in_priority(priority, selectID, providerType=null) {
     $.ajax({
         type: 'POST',
         url: '/edit-db/get-options-in-priority/',
         data: {
         'priority': priority,
+        'providerType': providerType,
         },
         beforeSend: function(xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
@@ -4955,21 +5135,26 @@ function fetch_options_in_priority(priority, selectID) {
     });
 }
 
-function dateFilterSwitch() {
-    let switchKey = document.getElementById("customDateFilterSwitch")
+function dateFilterSwitch(nonVolume=null) {
+    if (nonVolume){
+     nonVolume = "-"+nonVolume
+    } else {
+        nonVolume = ""
+    }
+    let switchKey = document.getElementById("customDateFilterSwitch"+nonVolume)
     if (switchKey.checked) {
-        document.getElementById("date-from").disabled = false
-        document.getElementById("date-through").disabled = false
+        document.getElementById("date-from"+nonVolume).disabled = false
+        document.getElementById("date-through"+nonVolume).disabled = false
 
-        document.getElementById("date-from").placeholder = "از تاریخ"
-        document.getElementById("date-through").placeholder = "تا تاریخ"
+        document.getElementById("date-from"+nonVolume).placeholder = "از تاریخ"
+        document.getElementById("date-through"+nonVolume).placeholder = "تا تاریخ"
     }
     else {
-        document.getElementById("date-from").disabled = true
-        document.getElementById("date-through").disabled = true
+        document.getElementById("date-from"+nonVolume).disabled = true
+        document.getElementById("date-through"+nonVolume).disabled = true
 
-        document.getElementById("date-from").placeholder = "همیشه"
-        document.getElementById("date-through").placeholder = "همیشه"
+        document.getElementById("date-from"+nonVolume).placeholder = "همیشه"
+        document.getElementById("date-through"+nonVolume).placeholder = "همیشه"
     }
 }
 

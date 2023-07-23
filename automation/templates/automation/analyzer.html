@@ -11,9 +11,8 @@
     {% if context %}
         {% if not isRecord %}
             <h1 style="text-align: center; padding: 25px">اطلاعاتی جهت نمایش وجود ندارد</h1>
-        {% else %}
-
-            <div class="col" style="width: 1350px; margin-left: auto; margin-right: auto">
+        {% elif analyzeType|equals:'Ahjam' %}
+            <div class="col" style="width: 500px; margin-left: auto; margin-right: auto">
                 <table class="table table-bordered border-dark my-1" style="">
                     <thead>
                         <tr>
@@ -26,28 +25,27 @@
                             </th>
                         </tr>
                     </thead>
-                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths %}
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType %}
                 </table>
             </div>
-
-<!--            {% for i in priority_depths|arange %}-->
-<!--                <h1>Here : {{i}}</h1>-->
-<!--                {% if priorities_values|hasIndex:i %}-->
-
-<!--                    {% for priority_value in priorities_values|getIndex:i %}-->
-<!--                        <h1>There : {{i}}</h1>-->
-<!--                        <h1>{{priority_value}}</h1>-->
-<!--                    {% endfor %}-->
-
-<!--                {% endif %}-->
-
-<!--            {% endfor %}-->
-
-
-
-<!--        </div>-->
-
-
+        {% elif analyzeType|equals:'machine' %}
+            <div class="col" style="width: 500px; margin-left: auto; margin-right: auto">
+                <table class="table table-bordered border-dark my-1" style="">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% if dates_filters %}
+                                    گزارش کارکرد ماشین آلات و تجهیزات از {{ dates_filters.lower }} تا {{ dates_filters.upper }}
+                                {% else %}
+                                    گزارش کارکرد ماشین آلات و تجهیزات در همه زمان ها
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType%}
+                </table>
+            </div>
+        {% elif analyzeType|equals:'material' %}
 
         {% endif %}
 
@@ -89,11 +87,14 @@
 
             </div>
 
+
+
+
             <div hidden id="Ahjam-Box" class="box row py-3 mx-0">
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز احجام</label>
                 </div>
 
                 <div id="select2-formula-priority-one-container" class="col-2 px-2 text-centred">
@@ -158,7 +159,7 @@
                            style="text-align: center; font-weight: bolder; font-size: 14px">&nbsp; &nbsp; &nbsp; &nbsp;</label>
                     <br>
                     <button class="btn-color onhover p-1 px-2 w-75"
-                            onclick="submitPriorityFormula()"
+                            onclick="submitPriorityFormulaVolumes()"
                             style="">
                         اعمال
                     </button>
@@ -176,6 +177,7 @@
                 <form class="row" id="form-Ahjam" method="post" action="/analyzer/analyze/">
                     {% csrf_token %}
                     <input readonly hidden value="Ahjam" name="analyze-type">
+
                     <div id="select2-filter-priority-one-container" class="col-4 px-2 text-centred">
                         <label class="p-1"  id="priority-one-label"
                                style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
@@ -259,25 +261,149 @@
 
             </div>
 
+
+
+
             <div hidden id="MachineWork-Box" class="box row py-3 mx-0">
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز ماشین آلات</label>
+                </div>
+
+                <div id="select2-formula-priority-one-container-machine" class="col-2 px-2 text-centred">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
+                    <br>
+                    <select id="select2-formula-priority-one-machine" onchange="handle_formula_priority(1, nonVolume='machine')"
+                            class="select2-hidden-accessible p-1" style="width: 85%;">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                        <option value="machine">تجهیز</option>
+                        <option value="provider">تامین کننده</option>
+                    </select>
+                </div>
+
+                <div id="select2-formula-priority-two-container-machine" class="col-2 px-2 text-centred">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>
+                    <br>
+                    <select id="select2-formula-priority-two-machine" onchange="handle_formula_priority(2, nonVolume='machine')"
+                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                    </select>
+                </div>
+
+                <div id="select2-formula-priority-three-container-machine" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-three-machine" onchange="handle_formula_priority(3, nonVolume='machine')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
+                </div>
+
+                <div id="select2-formula-priority-four-container-machine" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-four-machine" onchange="handle_formula_priority(4, nonVolume='machine')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
+                </div>
+
+                <div id="select2-formula-priority-five-container-machine" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-five-machine" onchange="handle_formula_priority(5, nonVolume='machine')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
                 </div>
 
 
-
-                <div  class="col-2 px-2 text-centred bg-danger">
+                <div  class="col-2 px-2 text-centred">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 14px">ارسال</label>
+                           style="text-align: center; font-weight: bolder; font-size: 14px">&nbsp; &nbsp; &nbsp; &nbsp;</label>
                     <br>
-                    <button class="btn-primary p-1 px-2 w-75" type="submit">
-                        submit
+                    <button class="btn-color onhover p-1 px-2 w-75"
+                            onclick="submitPriorityFormula_Machines_Material('machine')"
+                            style="">
+                        اعمال
                     </button>
                 </div>
 
             </div>
+
+            <div hidden id="machine-Filter-Box" class="box row py-3 mx-0 container-fluid">
+
+                <div class="row">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر آنالیز</label>
+                </div>
+
+                <form class="row" id="form-machine" method="post" action="/analyzer/analyze/">
+                    {% csrf_token %}
+                    <input readonly hidden value="machine" name="analyze-type">
+                    <div id="select2-filter-priority-one-container-machine" class="col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-one-label-machine"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
+                        <br>
+                        <select id="select2-filter-priority-one-machine"
+                                class="select2-hidden-accessible p-1 " style="width: 85%"
+                                name="priority_01[]" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div id="select2-filter-priority-two-container-machine" class=" col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-two-label-machine"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>
+                        <br>
+                        <select id="select2-filter-priority-two-machine"
+                                class="select2-hidden-accessible w-100 p-1 form-control" style="width: 85%"
+                                name="priority_02[]" multiple="multiple">
+                        </select>
+                    </div>
+
+
+                    <div id="select2-filter-priority-five-container-machine"
+                         class="col-4 px-2 text-centred">
+
+                        <div class="form-check form-switch w-25 mx-auto py-2">
+                            <input checked class="form-check-input" type="checkbox" name="customDateFilterSwitch"
+                                   id="customDateFilterSwitch-machine" onchange="dateFilterSwitch(nonVolume='machine')">
+                            <label class="form-check-label" for="customDateFilterSwitch-machine" id="customDateFilterSwitch-label-machine"
+                               style="font-weight: bolder; font-size: 14px;">فیلتر تاریخی</label>
+                        </div>
+
+                        <label>از تاریخ :</label>
+                        <input required name="date-from" style="width: 25%" id="date-from-machine" class="bg-light" placeholder="از تاریخ" data-jdp onchange="">
+
+                        <label> &nbsp; &nbsp;تا تاریخ :</label>
+                        <input required name="date-through" style="width: 25%" id="date-through-machine" class="bg-light" placeholder="تا تاریخ" data-jdp onchange="">
+
+                    </div>
+
+                    <div  class="col-4 px-2 text-centred mx-auto">
+                        <label class="p-1"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">&nbsp; &nbsp; &nbsp;</label>
+                        <br>
+                        <button class="btn-color onhover p-1 px-2 w-75"
+                                type="submit"
+                                onclick=""
+                                style="">
+                            گزارش گیری
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+
 
             <div hidden id="Material-Box" class="box row py-3 mx-0">
 

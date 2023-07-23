@@ -4,84 +4,163 @@
 
 <!-- recursive_table.html -->
 {% if data %}
-    {% if level == priority_depths %}
+    {% if analyzeType|equals:'Ahjam' %}
+
+        {% if level == priority_depths %}
 <!--        <table class="table table-bordered border-dark px-4 my-1" style="margin-right: {{level|mul:20|add:25}}px">-->
-        {% with delta=level|mul:20|add:25 %}
-        <table class="table table-bordered border-dark my-1" style="margin-right: {{delta}}px; width:{{ 1350|sub:delta}}px">
-        {% endwith %}
-            <thead>
-                <tr>
-                            <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
-                            <th colspan="" style="width: 25%">انجام شده</th>
-                            <th colspan="" style="width: 25%">کل</th>
-                            <th colspan="" style="width: 25%">درصد پیشرفت</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for header in headers %}
-                    {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
-                        <tr>
-                            {% if value|isDict and value|containsDict%}
-                                {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
-                            {% else %}
-
-                                {% if data.values|readIndex:value == headers|readIndex:header %}
-    <!--                                {{ header }} <br>-->
-    <!--                                {{ level }} <br>-->
-    <!--                                {{ priorities_values }} <br>-->
-    <!--                                {{ priorities_values|getIndex:level }}-->
-    <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                        <td class="" style="width: 25%">{{ header }}</td>
-                                        <td class="" style="width: 25%">{{ value.doneVolume }}</td>
-                                        <td class="" style="width: 25%">{{ value.totalVolume }}</td>
-                                        <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }} %</td>
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>
-
-    {% else %}
-        {% for header in headers %}
             {% with delta=level|mul:20|add:25 %}
-            <table class="table table-bordered border-dark my-1" style="margin-right: {{delta}}px; width: {{ 1350|sub:delta}}px">
+            <table class="table table-bordered border-dark my-1" style="margin-right:{{delta}}px; width:{{ 500|sub:delta}}px">
             {% endwith %}
                 <thead>
                     <tr>
-                        <th colspan="" style="width: 25%">{{ header }}</th>
+                                <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
+                                <th colspan="" style="width: 25%">انجام شده</th>
+                                <th colspan="" style="width: 25%">کل</th>
+                                <th colspan="" style="width: 25%">درصد پیشرفت</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
-                        <tr>
-                            {% if value|isDict and value|containsDict%}
-                                {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
-                            {% else %}
+                    {% for header in headers %}
+                        {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
+                            <tr>
+                                {% if value|isDict and value|containsDict%}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                {% else %}
 
-                                {% if data.values|readIndex:value == headers|readIndex:header %}
-    <!--                                {{ header }} <br>-->
-    <!--                                {{ level }} <br>-->
-    <!--                                {{ priorities_values }} <br>-->
-    <!--                                {{ priorities_values|getIndex:level }}-->
-    <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                        <td class="" style="width: 25%">{{ header }}</td>
-                                        <td class="" style="width: 25%">{{ value.doneVolume }}</td>
-                                        <td class="" style="width: 25%">{{ value.totalVolume }}</td>
-                                        <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }}</td>
+                                    {% if data.values|readIndex:value == headers|readIndex:header %}
+        <!--                                {{ header }} <br>-->
+        <!--                                {{ level }} <br>-->
+        <!--                                {{ priorities_values }} <br>-->
+        <!--                                {{ priorities_values|getIndex:level }}-->
+        <!--                                {% if header in priorities_values|getIndex:level %}-->
+                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">{{ value.doneVolume }}</td>
+                                            <td class="" style="width: 25%">{{ value.totalVolume }}</td>
+                                            <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }} %</td>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        </tr>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>
-        {% endfor %}
-{% endif %}
+
+        {% else %}
+            {% for header in headers %}
+                {% with delta=level|mul:20|add:25 %}
+                <table class="table table-bordered border-dark my-1" style="margin-right: {{delta}}px; width: {{ 500|sub:delta}}px">
+                {% endwith %}
+                    <thead>
+                        <tr>
+                            <th colspan="" style="width: 25%">{{ header }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
+                            <tr>
+                                {% if value|isDict and value|containsDict%}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                {% else %}
+
+                                    {% if data.values|readIndex:value == headers|readIndex:header %}
+        <!--                                {{ header }} <br>-->
+        <!--                                {{ level }} <br>-->
+        <!--                                {{ priorities_values }} <br>-->
+        <!--                                {{ priorities_values|getIndex:level }}-->
+        <!--                                {% if header in priorities_values|getIndex:level %}-->
+                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">{{ value.doneVolume }}</td>
+                                            <td class="" style="width: 25%">{{ value.totalVolume }}</td>
+                                            <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }}</td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+
+        {% endif %}
+
+    {% elif analyzeType|equals:'machine' %}
+
+        {% if level == priority_depths %}
+<!--        <table class="table table-bordered border-dark px-4 my-1" style="margin-right: {{level|mul:20|add:25}}px">-->
+            {% with delta=level|mul:20|add:25 %}
+            <table class="table table-bordered border-dark my-1" style="margin-right:{{delta}}px; width:{{ 500|sub:delta}}px">
+            {% endwith %}
+                <thead>
+                    <tr>
+                                <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
+                                <th colspan="" style="width: 25%">کارکرد</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for header in headers %}
+                        {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
+                            <tr>
+                                {% if value|isDict and value|containsDict%}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                {% else %}
+
+                                    {% if data.values|readIndex:value == headers|readIndex:header %}
+        <!--                                {{ header }} <br>-->
+        <!--                                {{ level }} <br>-->
+        <!--                                {{ priorities_values }} <br>-->
+        <!--                                {{ priorities_values|getIndex:level }}-->
+        <!--                                {% if header in priorities_values|getIndex:level %}-->
+                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">{{ value.workHours }}</td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+            {% for header in headers %}
+                {% with delta=level|mul:20|add:25 %}
+                <table class="table table-bordered border-dark my-1" style="margin-right: {{delta}}px; width: {{ 500|sub:delta}}px">
+                {% endwith %}
+                    <thead>
+                        <tr>
+                            <th colspan="" style="width: 25%">{{ header }}</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
+                            <tr>
+                                {% if value|isDict and value|containsDict%}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                {% else %}
+
+                                    {% if data.values|readIndex:value == headers|readIndex:header %}
+                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">{{ value.workHours }}</td>
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+
+        {% endif %}
+
+    {% elif analyzeType|equals:'material' %}
+
+    {% endif %}
+
+
 
 
 

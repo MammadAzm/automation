@@ -24,30 +24,6 @@ from operator import itemgetter
 # TODO : Bug Fix ; error raises for adding already existing objects to base data
 
 
-
-def get_attr(model, instance, level,):
-    if model == "operation":
-        if level == 1:
-            return getattr(getattr(instance, 'operation'), 'id')
-        elif level != 1:
-            # return instance['operation']
-            return model
-
-    elif model == "zone":
-        if level == 1:
-            return getattr(getattr(getattr(instance, 'task'), 'zone'), 'id')
-        elif level != 1:
-            # return instance['zone']
-            return model
-
-    elif model == "contractor":
-        if level == 1:
-            return getattr(getattr(getattr(getattr(instance, 'task'), 'equipe'), 'contractor'), 'id')
-        elif level != 1:
-            # return instance['contractor']
-            return model
-
-
 def home(request):
     return render(request, "base.html")
 
@@ -1915,43 +1891,61 @@ def findOutputTarget(pivot_fields):
     return target
 
 
-def group_queryset(queryset, pivot_fields, target):
+def group_queryset(queryset, pivot_fields, target, analyzeType):
     if not pivot_fields:
         return list(queryset)
-
     pivot_field = pivot_fields[0]
 
     grouped_results = {}
     for key, group in groupby(queryset, key=lambda obj: getattr(obj, pivot_field)):
 
         # Recursively group the remaining queryset for the next pivot fields
-        nested_results = group_queryset(group, pivot_fields[1:], target)
+        nested_results = group_queryset(group, pivot_fields[1:], target, analyzeType=analyzeType)
 
         if type(nested_results) is list:
-            data = {
-                "totalVolume": 0,
-                "doneVolume": 0,
-                "donePercentage": 0,
-            }
-            cache_ids = []
-            for taskreport in nested_results:
+            if analyzeType == "Ahjam":
+                data = {
+                    "totalVolume": 0,
+                    "doneVolume": 0,
+                    "donePercentage": 0,
+                }
+                finalAttribute = "TOTALVOLUME"
+            elif analyzeType == "machine":
+                data = {
+                    "workHours": 0,
+                }
+                finalAttribute = "WORKHOURS"
+            elif analyzeType == "material":
+                pass
 
-                instance = taskreport
+
+            cache_ids = []
+            print(nested_results)
+            for result_obj in nested_results:
+
+                instance = result_obj
                 for attribute in OUTPUT_TARGETS[target]["ID"]:
                     instance = getattr(instance, attribute)
 
                 if instance not in cache_ids:
-                    instance_2 = taskreport
-                    for feature in OUTPUT_TARGETS[target]["VALUES"]["TOTALVOLUME"]:
+                    instance_2 = result_obj
+                    for feature in OUTPUT_TARGETS[target]["VALUES"][finalAttribute]:
                         instance_2 = getattr(instance_2, feature)
 
-                    data["totalVolume"] += instance_2
+                    if analyzeType == "Ahjam":
+                        data["totalVolume"] += instance_2
+                    elif analyzeType == "machine":
+                        data["workHours"] += instance_2
+                    elif analyzeType == "material":
+                        pass
+
                     cache_ids.append(instance)
                 else:
                     pass
 
-                data["doneVolume"] += (taskreport.todayVolume * taskreport.task.suboperation.weight / 100)
-                data["donePercentage"] = data["doneVolume"] / data["totalVolume"] * 100
+                if analyzeType == "Ahjam":
+                    data["doneVolume"] += (result_obj.todayVolume * result_obj.task.suboperation.weight / 100)
+                    data["donePercentage"] = data["doneVolume"] / data["totalVolume"] * 100
 
             for k in FILTER_KEY_NAMES[type(key)]:
                 key = getattr(key, k)
@@ -1981,6 +1975,9 @@ def analyzer(request):
             "operation": None,
             "zone": None,
             "contractor": None,
+            "machine": None,
+            "material": None,
+            "provider": None,
         }
         query_formula = []
 
@@ -2006,7 +2003,7 @@ def analyzer(request):
 
             if "operation" not in query_formula:
                 query_formula.append("operation")
-                query['operation'] = objs = Operation.objects.all()
+                query['operation'] = Operation.objects.all()
 
             priorities_values = []
             requested_models = []
@@ -2061,12 +2058,99 @@ def analyzer(request):
 
             taskReports = taskReports.order_by(*requested_models)
             target = findOutputTarget(requested_models)
-            tree = group_queryset(taskReports, requested_models, target=target)
+            tree = group_queryset(taskReports, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
-        elif data["analyze-type"][0] == "":
-            pass
+        elif data["analyze-type"][0] == "machine":
+            for key in sorted(list(data.keys())):
+                if "priority" in key:
+                    priority, typee, _ = key.split("_")
 
-        elif data["analyze-type"][0] == "":
+                    if typee == "provider":
+                        typee = data["analyze-type"][0]+"Provider"
+
+                    if '0' in data[key]:
+                        data[key] = 0
+                        objs = FILTERS[typee].objects.all()
+                    else:
+                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                    query[typee] = objs
+                    query_formula.append(typee)
+
+                elif "date-from" == key:
+                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("lower-date")
+
+                elif "date-through" == key:
+                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("upper-date")
+
+            if "machine" not in query_formula:
+                query_formula.append("machine")
+                query['machine'] = Machine.objects.all()
+
+            priorities_values = []
+            requested_models = []
+            requested_instances = {}
+            for item in query_formula:
+                if "date" in item:
+                    continue
+                priorities_values.append(
+                    list(query[item].values_list('name', flat=True))
+                )
+                requested_models.append(item)
+                requested_instances[item] = list(query[item].values_list('id', flat=True))
+
+            priority_depth = len(priorities_values)
+
+            requested_models_persian = []
+            for item in requested_models:
+                requested_models_persian.append(MODELS_PERSIAN[item])
+
+            dailyReports = DailyReport.objects.all()
+            if "lower-date" in query_formula and "upper-date" in query_formula:
+                dailyReports = dailyReports.filter(
+                    date__lt=query["upper-date"],
+                    date__gt=query["lower-date"],
+                )
+                # print(">>>", type(query["lower-date"]), query["lower-date"])
+                dates_filters = {
+                    "lower": query["lower-date"].replace("-", "/"),
+                    "upper": query["upper-date"].replace("-", "/"),
+                }
+
+            requested_models.append("dailyReportMachine")
+            requested_instances["dailyReportMachine"] = dailyReports.values_list("id", flat=True)
+
+            machineCounts = MachineCount.objects.all()
+
+            for model in requested_models:
+                q_filter = Q()
+                for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
+                    index = MODELS_PATH_TO_EXCLUDE[model]['models'].index(step)
+                    field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
+                    if field is not None:
+                        q_filter |= Q(
+                            **{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
+                        machineCounts = machineCounts.filter(q_filter).values_list('id', flat=True)
+
+                q_filter = Q()
+                field = getattr(MachineCount, f"{model}", None)
+                if field is not None:
+                    q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
+                    machineCounts = machineCounts.filter(q_filter)
+
+            machineCounts = MachineCount.objects.filter(id__in=machineCounts)
+
+            # requested_models[requested_models.index("dailyReportMachine")] = "dailyReport"
+            if "machineProvider" in requested_models:
+                requested_models[requested_models.index("machineProvider")] = "provider"
+            requested_models.remove("dailyReportMachine")
+            machineCounts = machineCounts.order_by(*requested_models)
+            target = MachineCount
+            # target = findOutputTarget(requested_models)
+            tree = group_queryset(machineCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
+
+        elif data["analyze-type"][0] == "material":
             pass
 
         # print(type(list(tree.keys())[0]))
@@ -2081,7 +2165,7 @@ def analyzer(request):
         context = {
             'context': True,
             'isRecord': isRecord,
-            'analyzeType': "احجام",
+            'analyzeType': data["analyze-type"][0],  #"احجام",
             'priority_depths': priority_depth-1,
             'priorities_values': priorities_values,
             'priorityTypes': requested_models_persian,
@@ -2094,7 +2178,7 @@ def analyzer(request):
 def get_options_in_priority(request):
     if request.method == "POST":
         priority = request.POST['priority']
-
+        providerType = request.POST['providerType']
         if priority == "time":
             pass
         elif priority == "zone":
@@ -2139,6 +2223,29 @@ def get_options_in_priority(request):
 
         elif priority == "equipe":
             objs = Contractor.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "machine":
+            objs = Machine.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+        elif priority == "provider":
+            dilemma = {
+                "machine": MachineProvider,
+                "material": MaterialProvider,
+            }
+            objs = dilemma[providerType].objects.all()
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
