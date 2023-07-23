@@ -2048,7 +2048,6 @@ def analyzer(request):
                     reportDate__lt=query["upper-date"],
                     reportDate__gt=query["lower-date"],
                 )
-                # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
                     "lower": query["lower-date"].replace("-", "/"),
                     "upper": query["upper-date"].replace("-", "/"),
@@ -2109,8 +2108,8 @@ def analyzer(request):
             dailyReports = DailyReport.objects.all()
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 dailyReports = dailyReports.filter(
-                    date__lt=query["upper-date"],
-                    date__gt=query["lower-date"],
+                    date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
+                    date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
                 )
                 # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
