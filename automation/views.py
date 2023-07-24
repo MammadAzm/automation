@@ -200,7 +200,21 @@ def add_unit_to_db(request):
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         unit = request.POST.get("unit")
-        new_unit = Unit.objects.create(name=unit)
+        parent = request.POST.get("parent-unit")
+        coef = request.POST.get("parent-coef")
+
+        if parent:
+            parent = Unit.objects.get(name=parent)
+
+        print(unit)
+        print(parent)
+        print(coef)
+
+        new_unit = Unit.objects.create(
+            name=unit,
+            parent=parent if parent else None,
+            coef=coef,
+        )
 
         return JsonResponse(True, safe=False)
 
@@ -1461,6 +1475,19 @@ def compact_report_on_day(request, idd):
 
 def get_options(request, typee):
     if request.method == "POST":
+        if typee == "unitforunit":
+            data = Unit.objects.filter(parent__isnull=True)
+
+            if data.exists():
+                data = json.dumps(list(data.values()))
+            else:
+                data = "[]"
+
+            context = {
+                typee: data,
+            }
+            return JsonResponse(context)
+
         data = json.loads(request.POST['options'])["options"]
         data = [item.strip().strip() for item in data]
         if "equipe" in typee:
@@ -1506,6 +1533,7 @@ def get_options(request, typee):
                     typee: data,
                 }
                 return JsonResponse(context)
+
 
         if data.exists():
             data = json.dumps(list(data.values()))
@@ -1916,11 +1944,14 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
                 }
                 finalAttribute = "WORKHOURS"
             elif analyzeType == "material":
-                pass
+                data = {
+                    "amount": 0,
+                }
+                finalAttribute = "AMOUNT"
 
 
             cache_ids = []
-            print(nested_results)
+            # print(nested_results)
             for result_obj in nested_results:
 
                 instance = result_obj
@@ -1937,7 +1968,11 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
                     elif analyzeType == "machine":
                         data["workHours"] += instance_2
                     elif analyzeType == "material":
-                        pass
+                        data["amount"] += instance_2*result_obj.unit.coef
+                        if result_obj.unit.parent:
+                            data["unit"] = result_obj.unit.parent
+                        else:
+                            data["unit"] = result_obj.unit
 
                     cache_ids.append(instance)
                 else:
@@ -2150,7 +2185,94 @@ def analyzer(request):
             tree = group_queryset(machineCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
         elif data["analyze-type"][0] == "material":
-            pass
+            for key in sorted(list(data.keys())):
+                if "priority" in key:
+                    priority, typee, _ = key.split("_")
+
+                    if typee == "provider":
+                        typee = data["analyze-type"][0] + "Provider"
+
+                    if '0' in data[key]:
+                        data[key] = 0
+                        objs = FILTERS[typee].objects.all()
+                    else:
+                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                    query[typee] = objs
+                    query_formula.append(typee)
+
+                elif "date-from" == key:
+                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("lower-date")
+
+                elif "date-through" == key:
+                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    query_formula.append("upper-date")
+
+            if "material" not in query_formula:
+                query_formula.append("material")
+                query['material'] = Material.objects.all()
+
+            priorities_values = []
+            requested_models = []
+            requested_instances = {}
+            for item in query_formula:
+                if "date" in item:
+                    continue
+                priorities_values.append(
+                    list(query[item].values_list('name', flat=True))
+                )
+                requested_models.append(item)
+                requested_instances[item] = list(query[item].values_list('id', flat=True))
+
+            priority_depth = len(priorities_values)
+
+            requested_models_persian = []
+            for item in requested_models:
+                requested_models_persian.append(MODELS_PERSIAN[item])
+
+            dailyReports = DailyReport.objects.all()
+            if "lower-date" in query_formula and "upper-date" in query_formula:
+                dailyReports = dailyReports.filter(
+                    date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
+                    date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
+                )
+                # print(">>>", type(query["lower-date"]), query["lower-date"])
+                dates_filters = {
+                    "lower": query["lower-date"].replace("-", "/"),
+                    "upper": query["upper-date"].replace("-", "/"),
+                }
+
+            requested_models.append("dailyReportMaterial")
+            requested_instances["dailyReportMaterial"] = dailyReports.values_list("id", flat=True)
+
+            materialCounts = MaterialCount.objects.all()
+
+            for model in requested_models:
+                q_filter = Q()
+                for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
+                    index = MODELS_PATH_TO_EXCLUDE[model]['models'].index(step)
+                    field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
+                    if field is not None:
+                        q_filter |= Q(
+                            **{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
+                        materialCounts = materialCounts.filter(q_filter).values_list('id', flat=True)
+
+                q_filter = Q()
+                field = getattr(MaterialCount, f"{model}", None)
+                if field is not None:
+                    q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
+                    materialCounts = materialCounts.filter(q_filter)
+
+            materialCounts = MaterialCount.objects.filter(id__in=materialCounts)
+
+            # requested_models[requested_models.index("dailyReportMachine")] = "dailyReport"
+            if "materialProvider" in requested_models:
+                requested_models[requested_models.index("materialProvider")] = "provider"
+            requested_models.remove("dailyReportMaterial")
+            materialCounts = materialCounts.order_by(*requested_models)
+            target = MaterialCount
+            # target = findOutputTarget(requested_models)
+            tree = group_queryset(materialCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
         # print(type(list(tree.keys())[0]))
         # print(tree)
@@ -2164,7 +2286,7 @@ def analyzer(request):
         context = {
             'context': True,
             'isRecord': isRecord,
-            'analyzeType': data["analyze-type"][0],  #"احجام",
+            'analyzeType': data["analyze-type"][0],
             'priority_depths': priority_depth-1,
             'priorities_values': priorities_values,
             'priorityTypes': requested_models_persian,
@@ -2232,6 +2354,15 @@ def get_options_in_priority(request):
 
         elif priority == "machine":
             objs = Machine.objects.all()
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+        elif priority == "material":
+            objs = Material.objects.all()
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:

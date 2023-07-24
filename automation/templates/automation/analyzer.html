@@ -12,7 +12,7 @@
         {% if not isRecord %}
             <h1 style="text-align: center; padding: 25px">اطلاعاتی جهت نمایش وجود ندارد</h1>
         {% elif analyzeType|equals:'Ahjam' %}
-            <div class="col" style="width: 500px; margin-left: auto; margin-right: auto">
+            <div class="col" style="width: 700px; margin-left: auto; margin-right: auto">
                 <table class="table table-bordered border-dark my-1" style="">
                     <thead>
                         <tr>
@@ -29,7 +29,7 @@
                 </table>
             </div>
         {% elif analyzeType|equals:'machine' %}
-            <div class="col" style="width: 500px; margin-left: auto; margin-right: auto">
+            <div class="col" style="width: 700px; margin-left: auto; margin-right: auto">
                 <table class="table table-bordered border-dark my-1" style="">
                     <thead>
                         <tr>
@@ -46,7 +46,22 @@
                 </table>
             </div>
         {% elif analyzeType|equals:'material' %}
-
+            <div class="col" style="width: 700px; margin-left: auto; margin-right: auto">
+                <table class="table table-bordered border-dark my-1" style="">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% if dates_filters %}
+                                    گزارش مقادیر مصالح از {{ dates_filters.lower }} تا {{ dates_filters.upper }}
+                                {% else %}
+                                    گزارش مقادیر مصالح در همه زمان ها
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType%}
+                </table>
+            </div>
         {% endif %}
 
 
@@ -74,7 +89,7 @@
                         <option disabled hidden selected>انتخاب نوع آنالیز</option>
                         <option value="volume">احجام کاری</option>
                         <option value="machine">ماشین آلات</option>
-                        <option value="material">مطالح</option>
+                        <option value="material">مصالح</option>
                     </select>
                 </div>
 
@@ -409,19 +424,137 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز مصالح</label>
+                </div>
+
+                <div id="select2-formula-priority-one-container-material" class="col-2 px-2 text-centred">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
+                    <br>
+                    <select id="select2-formula-priority-one-material" onchange="handle_formula_priority(1, nonVolume='material')"
+                            class="select2-hidden-accessible p-1" style="width: 85%;">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                        <option value="material">مصالح</option>
+                        <option value="provider">تامین کننده</option>
+                    </select>
+                </div>
+
+                <div id="select2-formula-priority-two-container-material" class="col-2 px-2 text-centred">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>
+                    <br>
+                    <select id="select2-formula-priority-two-material" onchange="handle_formula_priority(2, nonVolume='material')"
+                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                    </select>
+                </div>
+
+                <div id="select2-formula-priority-three-container-material" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-three-material" onchange="handle_formula_priority(3, nonVolume='material')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
+                </div>
+
+                <div id="select2-formula-priority-four-container-material" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-four-material" onchange="handle_formula_priority(4, nonVolume='material')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
+                </div>
+
+                <div id="select2-formula-priority-five-container-material" class="col-2 px-2 text-centred">
+<!--                    <label class="p-1"-->
+<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
+<!--                    <br>-->
+<!--                    <select id="select2-formula-priority-five-material" onchange="handle_formula_priority(5, nonVolume='material')"-->
+<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
+<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
+<!--                    </select>-->
                 </div>
 
 
-
-                <div  class="col-2 px-2 text-centred bg-danger">
+                <div  class="col-2 px-2 text-centred">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 14px">ارسال</label>
+                           style="text-align: center; font-weight: bolder; font-size: 14px">&nbsp; &nbsp; &nbsp; &nbsp;</label>
                     <br>
-                    <button class="btn-primary p-1 px-2 w-75" type="submit">
-                        submit
+                    <button class="btn-color onhover p-1 px-2 w-75"
+                            onclick="submitPriorityFormula_Machines_Material('material')"
+                            style="">
+                        اعمال
                     </button>
                 </div>
+
+            </div>
+
+            <div hidden id="material-Filter-Box" class="box row py-3 mx-0 container-fluid">
+
+                <div class="row">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر آنالیز</label>
+                </div>
+
+                <form class="row" id="form-material" method="post" action="/analyzer/analyze/">
+                    {% csrf_token %}
+                    <input readonly hidden value="material" name="analyze-type">
+                    <div id="select2-filter-priority-one-container-material" class="col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-one-label-material"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
+                        <br>
+                        <select id="select2-filter-priority-one-material"
+                                class="select2-hidden-accessible p-1 " style="width: 85%"
+                                name="priority_01[]" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div id="select2-filter-priority-two-container-material" class=" col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-two-label-material"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>
+                        <br>
+                        <select id="select2-filter-priority-two-material"
+                                class="select2-hidden-accessible w-100 p-1 form-control" style="width: 85%"
+                                name="priority_02[]" multiple="multiple">
+                        </select>
+                    </div>
+
+
+                    <div id="select2-filter-priority-five-container-material"
+                         class="col-4 px-2 text-centred">
+
+                        <div class="form-check form-switch w-25 mx-auto py-2">
+                            <input checked class="form-check-input" type="checkbox" name="customDateFilterSwitch"
+                                   id="customDateFilterSwitch-material" onchange="dateFilterSwitch(nonVolume='material')">
+                            <label class="form-check-label" for="customDateFilterSwitch-material" id="customDateFilterSwitch-label-material"
+                               style="font-weight: bolder; font-size: 14px;">فیلتر تاریخی</label>
+                        </div>
+
+                        <label>از تاریخ :</label>
+                        <input required name="date-from" style="width: 25%" id="date-from-material" class="bg-light" placeholder="از تاریخ" data-jdp onchange="">
+
+                        <label> &nbsp; &nbsp;تا تاریخ :</label>
+                        <input required name="date-through" style="width: 25%" id="date-through-material" class="bg-light" placeholder="تا تاریخ" data-jdp onchange="">
+
+                    </div>
+
+                    <div  class="col-4 px-2 text-centred mx-auto">
+                        <label class="p-1"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">&nbsp; &nbsp; &nbsp;</label>
+                        <br>
+                        <button class="btn-color onhover p-1 px-2 w-75"
+                                type="submit"
+                                onclick=""
+                                style="">
+                            گزارش گیری
+                        </button>
+                    </div>
+
+                </form>
 
             </div>
 

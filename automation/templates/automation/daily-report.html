@@ -1115,6 +1115,24 @@
                     <div class="input-group mb-3">
                         <input required type="text" name="unit" class="form-control" placeholder="نام واحد" id="shortcut_unit">
                     </div>
+                    <div class="input-group mb-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuParentUnits" data-bs-toggle="dropdown" onclick='fetch_options("unitforunit")'>
+                                انتخاب واحد مبنا
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-unitforunits">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-unitforunit">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            </ul>
+                        </div>
+                        <input readonly id="unitforunit-name" required type="text" name="parent-unit" class="form-control" placeholder="نام واحد">
+                        <input id="input-coef" required type="number" name="parent-coef" class="form-control" placeholder="ضریب">
+                    </div>
             </div>
 
             <div class="modal-footer">

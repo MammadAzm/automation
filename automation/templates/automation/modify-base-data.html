@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_tags %}
 
 {% block content %}
 
-<div class="container" style="margin-top: 0.5%">
+<div class="container" style="margin-top: 0.5%;">
 
 <!--    <a href="operation-break"><button type="button" class=" btn-color onhover" >شکست عملیات</button></a>-->
 
@@ -409,16 +410,18 @@
             </div>
         </div>
 
-        <div class="col-2">
+        <div class="col-4">
             <table class="table table-bordered border-dark" style="font-size: 11px">
                 <thead class="">
                     <tr class="">
-                        <th class="" >
+                        <th class="" style="width: 35%">
                             واحد
                                 <span class="badge rounded-pill" style="float: left; color: black"
                                    data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
                                     <img src=" {% static 'icons/plus-circle.svg' %} "></span>
                         </th>
+                        <th class="" style="width: 35%">مبنا</th>
+                        <th class="">ضریب</th>
                     </tr>
                 </thead>
             </table>
@@ -426,23 +429,36 @@
                 <table class="table table-bordered border-dark" id="table-unit" style="font-size: 11px">
                     <thead hidden>
                         <tr class="">
-                            <th class="" >
+                            <th class="" style="width: 35%" >
                                 واحد
                                     <span class="badge rounded-pill" style="float: left; color: black"
                                        data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
                                             <img src=" {% static 'icons/plus-circle.svg' %} "></span>
                             </th>
+                            <th class="" style="width: 35%">مبنا</th>
+                            <th class="">ضریب</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         {% for unit in units %}
                             <tr  id="{{ unit }}">
-                                <td>
+                                <td style="width: 35%">
                                     {{ unit }}
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                </td>
+                                <td style="width: 35%">
+
+                                    {% if unit.parent|hasContent %}
+                                        {{ unit.parent }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ unit.coef }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -451,7 +467,11 @@
             </div>
         </div>
 
+    </div>
 
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
+    <div class="row  mb-3">
         <div class="col-4">
             <table class="table table-bordered border-dark" style="font-size: 11px">
                 <thead class="">
@@ -526,13 +546,7 @@
             </div>
         </div>
 
-    </div>
-
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
-
-    <div class="row  mb-3">
-        
-        <div class="col">
+        <div class="col-8">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
@@ -976,6 +990,24 @@
                     {% csrf_token %}
                     <div class="input-group mb-3">
                         <input id="input-unit" required type="text" name="unit" class="form-control" placeholder="نام واحد">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuParentUnits" data-bs-toggle="dropdown" onclick='fetch_options("unitforunit")'>
+                                انتخاب واحد مبنا
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-unitforunits">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-unitforunit">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            </ul>
+                        </div>
+                        <input readonly id="unitforunit-name" type="text" name="parent-unit" class="form-control" placeholder="نام واحد">
+                        <input id="input-coef" type="number" name="parent-coef" class="form-control" placeholder="ضریب">
                     </div>
                     <button class="btn btn-outline-success bp3-round"
                                 type="submit" id="button-addon8">افزودن</button>

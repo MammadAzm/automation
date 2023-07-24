@@ -97,3 +97,9 @@ def equals(operand_01, operand_02):
 register.filter("equals", equals)
 
 
+def hasContent(item):
+    return True if item is not None else False
+
+
+register.filter("hasContent", hasContent)
+

@@ -1002,6 +1002,41 @@ function search_unit_operation(shortcut=null) {
     });
 }
 
+function search_unit_unit(shortcut=null) {
+    if (shortcut) {
+        shortcut = "base-"
+    } else {
+        shortcut = ""
+    }
+
+    let dropdownItems = $('#dropdown-menu-'+shortcut+'unitforunits').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-unitforunit').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-unitforunit").dispatchEvent(event);
+      $('#unitforunit-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-unitforunit').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
 function search_equipe(type) {
     // for base data page
 
@@ -1902,6 +1937,32 @@ function fetch_options(type, shortcut=null){
         options.forEach(option => {
           option.remove()
         });
+        if (type === "unitforunit") {
+            $.ajax({
+                type: 'POST',
+                url: '/edit-db/get-options/'+type,
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    let objs = JSON.parse(response.unitforunit)
+                    for (let i=0; i<objs.length; i++) {
+                        let item = objs[i].name
+                        let li = document.createElement("li")
+                        let a = document.createElement("a")
+                        a.className = "dropdown-item";
+                        a.innerHTML = item;
+
+                        li.appendChild(a);
+                        menu.appendChild(li);
+
+
+                    }
+                    search_unit_unit();
+                }
+            })
+            return 0
+        }
         if (type === "unitforoperation") {
             type = "unit"
         }
@@ -1934,8 +1995,9 @@ function fetch_options(type, shortcut=null){
                 search_equipe(type);
             }
 
-        } else if ( type == "zone" || type == "unit" ){
-                let opts = innerHTMLs
+        }
+        else if ( type == "zone" || type == "unit" ){
+            let opts = innerHTMLs
             for (let i = 0; i < opts.length; i++) {
 
                 let item = opts[i]
@@ -1954,7 +2016,8 @@ function fetch_options(type, shortcut=null){
                 }
 
             }
-        } else {
+        }
+        else {
             options = JSON.stringify(
                 {
                 'options': innerHTMLs,
@@ -3631,6 +3694,16 @@ function submitForm(ID, type, shortcut=null,) {
                 let value = input.value
                 input.value = ""
 
+                let input2 = document.getElementById("unitforunit-name")
+                let value2 = input2.value
+                input2.value = ""
+
+                let input3 = document.getElementById("input-coef")
+                let value3 = input3.value
+                input3.value = ""
+
+
+
                 let table = document.getElementById("table-" + type)
                 let tbody = table.querySelector("tbody")
 
@@ -3656,7 +3729,17 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 cell1.appendChild(span)
 
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.innerText = value2
+
+                let cell3 = document.createElement('td',);
+                cell3.className = "";
+                cell3.innerText = value3
+
                 newRow.appendChild(cell1)
+                newRow.appendChild(cell2)
+                newRow.appendChild(cell3)
 
                 tbody.appendChild(newRow)
             }
@@ -4740,6 +4823,25 @@ function analyzer_handle_select(type=null) {
         // =================================================================
         // =================================================================
 
+        $('#select2-formula-priority-one-material').select2({
+            dropdownParent: $("#select2-formula-priority-one-container-material")
+        });
+        $('#select2-formula-priority-two-material').select2({
+            dropdownParent: $("#select2-formula-priority-two-container-material")
+        });
+
+        // ---------------------------------------------------------------
+
+        $('#select2-filter-priority-one-material').select2({
+            dropdownParent: $("#select2-filter-priority-one-container-material")
+        });
+        $('#select2-filter-priority-two-material').select2({
+            dropdownParent: $("#select2-filter-priority-two-container-material")
+        });
+
+        // =================================================================
+        // =================================================================
+
 
 
 }
@@ -4751,8 +4853,8 @@ function set_analyze_type() {
         case "volume":
             hide_machine_material_filters("machine");
             clear_machine_material_filters("machine");
-            // hide_machine_material_filters("material");
-            // clear_machine_material_filters("material");
+            hide_machine_material_filters("material");
+            clear_machine_material_filters("material");
 
             document.getElementById("MachineWork-Box").hidden = true
             document.getElementById("Material-Box").hidden = true
@@ -4764,8 +4866,8 @@ function set_analyze_type() {
         case "machine":
             hide_volume_filters();
             clear_volume_filters();
-            // hide_machine_material_filters("material");
-            // clear_machine_material_filters("material");
+            hide_machine_material_filters("material");
+            clear_machine_material_filters("material");
 
             document.getElementById("Ahjam-Box").hidden = true
             document.getElementById("Material-Box").hidden = true
@@ -4833,13 +4935,6 @@ function handle_formula_priority(priority=null, nonVolume=null ) {
                 break;
             case 5:
                 break;
-
-        }
-
-        if ( nonVolume === "machine" ) {
-
-        }
-        else if ( nonVolume === "material" ) {
 
         }
     }

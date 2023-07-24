@@ -95,6 +95,8 @@ class MachineCount(models.Model):
 
 class Unit(models.Model):
     name = models.CharField(max_length=25, unique=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    coef = models.FloatField(default=1.0)
 
     def __str__(self):
         return self.name

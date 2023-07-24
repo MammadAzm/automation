@@ -62,16 +62,19 @@ MODELS_PATH_TO_EXCLUDE = {
         "attrs": ["dailyReport"],
     },
 
+    "material": {
+        "models": [MaterialCount],
+        "attrs": ['material'],
+    },
+    "materialProvider": {
+        "models": [MaterialCount],
+        "attrs": ['provider'],
+    },
+    "dailyReportMaterial": {
+        "models": [MaterialCount],
+        "attrs": ["dailyReport"],
+    },
 
-
-    # "material": {
-    #     "models": [Material,],
-    #     "attrs": ['name',],
-    # },
-    # "materialProvider": {
-    #     "models": [MaterialProvider,],
-    #     "attrs": ['name',],
-    # },
 }
 
 FILTER_KEY_NAMES = {
@@ -81,6 +84,9 @@ FILTER_KEY_NAMES = {
 
     type(Machine()): ['name'],
     type(MachineProvider()): ['name'],
+
+    type(Material()): ['name'],
+    type(MaterialProvider()): ['name'],
 }
 
 
@@ -125,6 +131,14 @@ OUTPUT_TARGETS = {
         "ID": ['id'],
         "VALUES": {
             "WORKHOURS": ["workHours"],
+        },
+    },
+
+    MaterialCount: {
+        "CLASS": MaterialCount,
+        "ID": ['id'],
+        "VALUES": {
+            "AMOUNT": ["amount"],
         },
     },
 }
