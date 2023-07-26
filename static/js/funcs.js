@@ -1,3 +1,4 @@
+const ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
 const STRINGS_FROM_NUMBERS = {
     1: "one",
     2: "two",
@@ -13,6 +14,152 @@ const STRINGS_FROM_NUMBERS = {
 function print(entry) {
     console.log(entry);
 }
+
+
+function submitEditingFormHandler(event) {
+        event.preventDefault();
+        let formData = new FormData(event.target);
+        let model = formData.get('model')
+        $.ajax({
+            url: '/edit-db/edit-base-data',
+            type: 'POST',
+            data: formData,
+            // dataType: 'json',
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function (response) {
+                alert("عملیات موفق")
+                if (ONLY_NAME_MODELS.includes(model)) {
+                    let table = document.getElementById("table-"+model)
+                    let instance = formData.get('instance')
+                    instance = instance.replace(/[ -/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    let row = table.querySelector("#"+instance)
+                    let td = row.querySelector("td")
+
+                    let newText = td.innerHTML.replace(new RegExp(instance, 'g'), formData.get('name'));
+                    td.innerHTML = newText
+                    row.id = formData.get('name')
+
+                    if (model === "zone") {
+                        let selects = document.getElementsByTagName("select")
+                        for (let i=0; i<selects.length; i++) {
+                            if (selects[i].id.includes("select2-zone-")) {
+                                let id = selects[i].id
+                                $("#"+id).empty().append(
+                                    '<option value="" selected disabled>انتخاب</option>'
+                                )
+                                fetch_zones(function (zones) {
+                                    zones.forEach(zone => {
+                                        let option = document.createElement('option',)
+                                        option.value = zone.name
+                                        option.innerHTML = zone.name
+                                        selects[i].appendChild(option)
+                                    });
+                                });
+                                // $('#'+id).select2({
+                                //     dropdownParent: $("#equipe-box")
+                                // });
+
+                            }
+                        }
+                    }
+                }
+
+                hidePopup("editing");
+            },
+            error: function (err) {
+                print(err)
+            }
+        })
+}
+function submitEditingForm() {
+    document.getElementById('editing-form').addEventListener('submit', submitEditingFormHandler);
+    // $('#editing-form').submit(function(event) {
+    //
+    //
+    // });
+}
+
+
+function hidePopup(ID) {
+    document.getElementById(ID+'-popup').style.display = 'none';
+    if (ID === "editing"){
+        document.getElementById('dynamic-content').innerHTML = "";
+    }
+}
+
+
+function showPopup(options, ID) {
+    if (ID==="ok") {
+        document.getElementById(ID+'-popup').style.display = 'block';
+    }
+    else if (ID==="editing"){
+        document.getElementById(ID+'-popup').style.display = 'block';
+
+        let div_content = document.getElementById('dynamic-content')
+        if (ONLY_NAME_MODELS.includes(options.model)) {
+        // if (options.model === "position") {
+            var model = options.model
+            var instance = options.instance
+
+            var form = document.getElementById("editing-form")
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = instance
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقدار ' + options.instance // + ' در جدول ' + 'سمت ' + 'ها';
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3"
+
+            var input_name = document.createElement("input")
+            input_name.required = true
+            input_name.type = "text"
+            input_name.id = "input_name"
+            input_name.name = "name"
+            input_name.className = "form-control"
+            input_name.placeholder = "مقدار جدید (فعلی: "+ instance + ")"
+
+            div_input_group.appendChild(input_name)
+
+            div_content.appendChild(div_input_group)
+
+            document.getElementById('editing-form').removeEventListener('submit', submitEditingFormHandler);
+            submitEditingForm();
+        }
+        else if (options.model === "profession") {
+
+        }
+        else if (options.model === "machine") {
+
+        }
+        else if (options.model === "material") {
+
+        }
+        else if (options.model === "contractor") {
+
+        }
+        else if (options.model === "equipe") {
+
+        }
+        else if (options.model === "zone") {
+
+        }
+        else if (options.model === "materialprovider") {
+
+        }
+        else if (options.model === "machineprovider") {
+
+        }
+    }
+}
+
 
 function search_base_machine() {
     let dropdownItems = $('#dropdown-menu-base-machines').find('a');
@@ -465,7 +612,29 @@ function del_zone(zone, db) {
             success: function(response) {
                 let obj = document.getElementById(zone)
                 obj.remove()
+
+                let selects = document.getElementsByTagName("select")
+                for (let i=0; i<selects.length; i++) {
+                    if (selects[i].id.includes("select2-zone-")) {
+                        let id = selects[i].id
+                        $("#"+id).empty().append(
+                            '<option value="" selected disabled>انتخاب</option>'
+                        )
+                        fetch_zones(function (zones) {
+                            zones.forEach(zone => {
+                                let option = document.createElement('option',)
+                                option.value = zone.name
+                                option.innerHTML = zone.name
+                                selects[i].appendChild(option)
+                            });
+                        });
+                        // $('#'+id).select2({
+                        //     dropdownParent: $("#equipe-box")
+                        // });
+
+                    }
                 }
+            }
         });
     } else {
         let obj = document.getElementById(zone)
@@ -3354,13 +3523,28 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_position(
-                        value,
-                        true
-                    );
+                // span.addEventListener('click', function () {
+                //     del_position(
+                //         value,
+                //         true
+                //     );
+                // });
+
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_position('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3389,13 +3573,21 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_profession(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_profession('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3426,13 +3618,21 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_machine(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_machine('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3460,13 +3660,21 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_material(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_material('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3494,13 +3702,21 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_contractor(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_contractor('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3587,13 +3803,19 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_zone(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_zone('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3643,13 +3865,19 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_materialprovider(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_materialprovider('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3677,13 +3905,19 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_machineprovider(
-                        value,
-                        true
-                    );
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_machineprovider('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 

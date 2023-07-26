@@ -38,15 +38,13 @@ def add_base_data_template(request):
     zones = Zone.objects.all()
     tasks = Task.objects.all()
     parentTasks = ParentTask.objects.all()
-    units = Unit.objects.all()
+    units = Unit.objects.all().order_by('parent', 'name')
 
     materialproviders = MaterialProvider.objects.all()
     machineproviders = MachineProvider.objects.all()
 
     operations = Operation.objects.all()
     suboperations = SubOperation.objects.all()
-
-
 
     if not professions.exists():
         professions = []
@@ -97,6 +95,40 @@ def add_base_data_template(request):
     }
 
     return render(request, "modify-base-data.html", context=context)
+
+
+def edit_base_data(request):
+    if request.method == "POST":
+        new_data = request.POST
+        model = EDIT_BASE_DATA[new_data["model"]]
+        ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
+        if new_data["model"] in ONLY_NAME_MODELS:
+            instance = new_data["instance"]
+            object = get_object_or_404(model, name=instance)
+            object.name = new_data['name']
+            object.save()
+        elif new_data["model"] == "profession":
+            pass
+        elif new_data["model"] == "machine":
+            pass
+        elif new_data["model"] == "material":
+            pass
+        elif new_data["model"] == "contractor":
+            pass
+        elif new_data["model"] == "equipe":
+            pass
+        elif new_data["model"] == "zone":
+            pass
+        elif new_data["model"] == "materialprovider":
+            pass
+        elif new_data["model"] == "machineprovider":
+            pass
+        elif new_data["model"] == "":
+            pass
+        elif new_data["model"] == "":
+            pass
+
+        return HttpResponse(True)
 
 
 def operation_break_template(request):
@@ -205,10 +237,6 @@ def add_unit_to_db(request):
 
         if parent:
             parent = Unit.objects.get(name=parent)
-
-        print(unit)
-        print(parent)
-        print(coef)
 
         new_unit = Unit.objects.create(
             name=unit,

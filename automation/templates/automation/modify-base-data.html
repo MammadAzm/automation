@@ -6,8 +6,6 @@
 
 <div class="container" style="margin-top: 0.5%;">
 
-<!--    <a href="operation-break"><button type="button" class=" btn-color onhover" >شکست عملیات</button></a>-->
-
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
     <div class="row  mb-3">
@@ -32,10 +30,10 @@
                         <tr class="" >
                             <th class="" >
                                 سمت
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
-                                        <img src="{% static 'icons/plus-circle.svg' %}">
-                                    </span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
                             </th>
                         </tr>
                     </thead>
@@ -47,6 +45,13 @@
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_position('{{ position.name }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'position',
+                                            instance:'{{position.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
                                     </span>
                                 </td>
                             </tr>
@@ -92,6 +97,13 @@
                                     style="float: left; color: black" onclick="del_profession('{{ profession.name }}', true)">
                                     <img src="{% static 'icons/patch-minus.svg' %}">
                                 </span>
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'profession',
+                                            instance:'{{profession.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                </span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -134,6 +146,13 @@
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black" onclick="del_machine('{{ machine.name }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'machine',
+                                            instance:'{{machine.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
                                     </span>
                                 </td>
                             </tr>
@@ -179,6 +198,13 @@
                                     style="float: left; color: black" onclick="del_material('{{ material.name }}', true)">
                                     <img src="{% static 'icons/patch-minus.svg' %}">
                                 </span>
+                                 <span class="badge rounded-pill" style="float: left; color: black"
+                                    onclick="showPopup({
+                                        model:'material',
+                                        instance:'{{material.name}}',
+                                    }, 'editing')">
+                                    <img src="{% static 'icons/pen.svg' %}">
+                                </span>
                             </td>
                         </tr>
                     {% endfor %}
@@ -221,6 +247,13 @@
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'contractor',
+                                            instance:'{{contractor.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
                                     </span>
                                 </td>
                             </tr>
@@ -266,6 +299,14 @@
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'equipe',
+                                            profession:'{{ equipe.profession }}',
+                                            contractor:'{{ equipe.contractor }}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
                                     </span>
                                 </td>
                             </tr>
@@ -318,6 +359,13 @@
                                         style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
                                     </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'zone',
+                                            instance:'{{zone.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -359,7 +407,15 @@
                                     {{ provider }}
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_materialprovider('{{ provider }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'materialprovider',
+                                            instance:'{{provider.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -401,7 +457,15 @@
                                     {{ provider }}
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_machineprovider('{{ provider }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'machineprovider',
+                                            instance:'{{provider.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -447,7 +511,15 @@
                                     {{ unit }}
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+<!--                                    <span class="badge rounded-pill" style="float: left; color: black"-->
+<!--                                        onclick="showPopup({-->
+<!--                                            model:'provider',-->
+<!--                                            instance:'{{provider.name}}',-->
+<!--                                        })">-->
+<!--                                        <img src="{% static 'icons/pen.svg' %}">-->
+<!--                                    </span>-->
                                 </td>
                                 <td style="width: 35%">
 
@@ -649,6 +721,8 @@
         </div>
 
     </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
 </div>
 
@@ -1568,10 +1642,33 @@
 
 
 
+<form id="editing-form">
+    <input type="text" name="model" required id="input-model" hidden>
+    <input type="text" name="instance" required id="input-instance" hidden>
+    <div class="modal-overlay" id="editing-popup">
+      <div class="modal-container" id="editing-popup-container">
+            <div class="modal-content editing-modal-content" id="editing-popup-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editing-popup-header" style="">
+                    </h5>
+                </div>
+
+                <div class="dynamic-content" id="dynamic-content">
+
+                </div>
+                <div class="static-content" id="static-content">
+                    <button type="reset" class="btn btn-outline-danger mx-1" style="float: left" onclick="hidePopup('editing')">انصراف</button>
+                    <button type="submit" class="btn btn-outline-success mx-1" style="float: left" >ذخیره</button>
+                </div>
+
+            </div>
+      </div>
+    </div>
+</form>
 
 
-
-
+<script>
+</script>
 
 
 {% endblock %}

@@ -49,6 +49,8 @@ urlpatterns = [
     path("edit-db/add-materialprovider", add_materialprovider_to_db),
     path("edit-db/add-machineprovider", add_machineprovider_to_db),
 
+    path("edit-db/edit-base-data", edit_base_data),
+
     path("edit-db/shortcut-add", shortcut_add),
 
     path("edit-db/save-daily-report", save_daily_report_to_db),

@@ -142,3 +142,18 @@ OUTPUT_TARGETS = {
         },
     },
 }
+
+EDIT_BASE_DATA = {
+    "position": Position,
+    "profession": Profession,
+    "machine": Machine,
+    "material": Material,
+    "contractor": Contractor,
+    "equipe": Equipe,
+    "zone": Zone,
+    "materialprovider": MaterialProvider,
+    "machineprovider": MachineProvider,
+}
+
+ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
+
