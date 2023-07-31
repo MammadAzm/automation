@@ -563,11 +563,10 @@ class TaskReport(models.Model):
     preDonePercentage = models.FloatField(default=0.0, )
 
     # created_at = models.DateTimeField(auto_now_add=True)
-    created_at = jmodels.jDateTimeField( auto_now_add=True)
+    created_at = jmodels.jDateTimeField(auto_now_add=True)
 
     # reportDate = models.DateTimeField()
     reportDate = jmodels.jDateTimeField()
-
 
     # Filtering required fields -------------------------------------------------------------------
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)

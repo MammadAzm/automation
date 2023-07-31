@@ -416,10 +416,10 @@
                                             data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                         <img src="{% static 'icons/plus-circle.svg' %}"/>
                                     </span>
-                                    شرح عملیات اصلی
+                                    شرح آیتم های قراردادی
                                 </th>
                                 <th class="" style="width: 20%">
-                                    شرح عملیات اجرایی (زیرعملیات)
+                                    شرح آیتم اجرایی (زیرآیتم)
                                 </th>
                                 <th class="" style="width: 13%">
                                     اکیپ
@@ -819,7 +819,7 @@
 
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                    <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن عملیات</h5>
+                    <h5 class="modal-title" id="staticBackdropTasksLabel" style="margin-right: auto">افزودن آیتم</h5>
                 </div>
 
                 <div class="modal-body">
@@ -830,7 +830,7 @@
                                 <select required class="select2" id="select2-operation" onchange="handle_select('suboperation')"
                                         name="operation" style="width: 100%; border: solid black" onclick="">
                                     <option disabled selected value="">
-                                        انتخاب عملیات اصلی
+                                        انتخاب آیتم های قراردادی
                                     </option>
                                 </select>
                             </div>
@@ -839,7 +839,7 @@
                                 <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"
                                         name="suboperation" style="width: 100%; border: solid black" onclick="">
                                     <option disabled selected value="">
-                                        انتخاب زیرعملیات
+                                        انتخاب زیرآیتم
                                     </option>
                                 </select>
                             </div>
@@ -850,7 +850,7 @@
                                 <select required class="select2" id="select2-zoneoperation" onchange="handle_select('zone_in_report')"
                                         name="zoneoperation" style="width: 100%; border: solid black" onclick="">
                                     <option disabled selected value="">
-                                        انتخاب موقعیت عملیات
+                                        انتخاب موقعیت آیتم
                                     </option>
                                 </select>
                             </div>
@@ -882,7 +882,7 @@
                 <div class="modal-footer">
 
 
-                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ عملیات</button>
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ آیتم</button>
 
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
@@ -1249,14 +1249,14 @@
 
 <!--            <div class="modal-header">-->
 <!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>-->
-<!--                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات</h5>-->
+<!--                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن آیتم</h5>-->
 <!--            </div>-->
 
 <!--            <div class="modal-body">-->
 <!--                <form action="/edit-db/add-task" method="post">-->
 <!--                    {% csrf_token %}-->
 <!--                    <div class="input-group mb-3 ">-->
-<!--                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام عملیات">-->
+<!--                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام آیتم">-->
 <!--                    </div>-->
 
 <!--                    <div class="input-group mb-3">-->
@@ -1348,7 +1348,7 @@
 
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن عملیات اجرایی</h5>
+                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن آیتم اجرایی</h5>
             </div>
 
             <div class="modal-body">
@@ -1360,7 +1360,7 @@
                             <select required class="select2" id="select2-operation-shortcut" onchange="handle_select('zoneoperation-shortcut')"
                                     name="operation" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
-                                    انتخاب عملیات اصلی
+                                    انتخاب آیتم های قراردادی
                                 </option>
                             </select>
                         </div>
@@ -1369,7 +1369,7 @@
                             <select required class="select2" id="select2-zoneoperation-shortcut" onchange="handle_select('zone-shortcut')"
                                     name="zoneoperation" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
-                                    انتخاب موقعیت عملیات
+                                    انتخاب موقعیت آیتم
                                 </option>
                             </select>
                         </div>
@@ -1378,7 +1378,7 @@
 <!--                            <select required class="select2" id="select2-suboperation" onchange="handle_select('zoneoperation')"-->
 <!--                                    name="suboperation" style="width: 100%; border: solid black" onclick="">-->
 <!--                                <option disabled selected value="">-->
-<!--                                    انتخاب زیرعملیات-->
+<!--                                    انتخاب زیرآیتم-->
 <!--                                </option>-->
 <!--                            </select>-->
 <!--                        </div>-->
@@ -1412,7 +1412,7 @@
 
             <div class="modal-footer">
 
-                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">+ عملیات اصلی</button>
+                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">+ آیتم های قراردادی</button>
 
 
                 <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks" >تکمیل</button>
@@ -1428,13 +1428,13 @@
 
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                    <h5 class="modal-title" id="staticBackdropOperationsLabel" style="margin-right: auto">افزودن عملیات اصلی</h5>
+                    <h5 class="modal-title" id="staticBackdropOperationsLabel" style="margin-right: auto">افزودن آیتم های قراردادی</h5>
                 </div>
 
                 <div class="modal-body">
                     <form id="add-operation">
                         <div class="input-group mb-3">
-                            <input required type="text" name="operation" id="operation-name" class="form-control" placeholder="نام عملیات">
+                            <input required type="text" name="operation" id="operation-name" class="form-control" placeholder="نام آیتم">
                         </div>
 
                         <div class="input-group mb-3">

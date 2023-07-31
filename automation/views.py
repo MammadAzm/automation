@@ -101,34 +101,39 @@ def edit_base_data(request):
     if request.method == "POST":
         new_data = request.POST
         model = EDIT_BASE_DATA[new_data["model"]]
-        ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
         if new_data["model"] in ONLY_NAME_MODELS:
             instance = new_data["instance"]
             object = get_object_or_404(model, name=instance)
             object.name = new_data['name']
             object.save()
-        elif new_data["model"] == "profession":
-            pass
-        elif new_data["model"] == "machine":
-            pass
-        elif new_data["model"] == "material":
-            pass
-        elif new_data["model"] == "contractor":
-            pass
+
+            return HttpResponse(True)
+
         elif new_data["model"] == "equipe":
-            pass
-        elif new_data["model"] == "zone":
-            pass
-        elif new_data["model"] == "materialprovider":
-            pass
-        elif new_data["model"] == "machineprovider":
-            pass
+            instance = new_data["instance"]
+            profession = new_data.get("profession")
+            contractor = new_data.get("contractor")
+            object = get_object_or_404(
+                model,
+                name=instance,
+            )
+            if profession:
+                object.profession = Profession.objects.get(name=profession)
+            if contractor:
+                object.contractor = Contractor.objects.get(name=contractor)
+
+            object.set_name()
+
+            object.save()
+
+            return HttpResponse(True)
+
         elif new_data["model"] == "":
             pass
         elif new_data["model"] == "":
             pass
 
-        return HttpResponse(True)
+
 
 
 def operation_break_template(request):
@@ -241,7 +246,7 @@ def add_unit_to_db(request):
         new_unit = Unit.objects.create(
             name=unit,
             parent=parent if parent else None,
-            coef=coef,
+            coef=coef if coef else 1.0,
         )
 
         return JsonResponse(True, safe=False)
@@ -459,10 +464,8 @@ def add_equipe_to_db(request,):
             obj.set_name()
             #obj.save()
             return JsonResponse(True, safe=False)
-
         else:
-            return JsonResponse(False, safe=False)
-        # return redirect(to=redirect_url)
+            return HttpResponse(False, status=500)
 
     elif request.method == "GET":
         pass
@@ -1658,6 +1661,32 @@ def get_units(request):
         return JsonResponse(context)
 
 
+def get_professions(request):
+    if request.method == "GET":
+        professions = Profession.objects.all()
+        if professions.exists():
+            data = json.dumps(list(professions.values()))
+        else:
+            data = "[]"
+        context = {
+            "professions": data
+        }
+        return JsonResponse(context)
+
+
+def get_contractors(request):
+    if request.method == "GET":
+        contractors = Contractor.objects.all()
+        if contractors.exists():
+            data = json.dumps(list(contractors.values()))
+        else:
+            data = "[]"
+        context = {
+            "contractors": data
+        }
+        return JsonResponse(context)
+
+
 def get_operations(request):
     if request.method == "GET":
         operations = Operation.objects.all()
@@ -1964,11 +1993,13 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
                     "totalVolume": 0,
                     "doneVolume": 0,
                     "donePercentage": 0,
+                    "unit":"unit",
                 }
                 finalAttribute = "TOTALVOLUME"
             elif analyzeType == "machine":
                 data = {
                     "workHours": 0,
+                    "unit": "ساعت",
                 }
                 finalAttribute = "WORKHOURS"
             elif analyzeType == "material":
@@ -1993,6 +2024,7 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
 
                     if analyzeType == "Ahjam":
                         data["totalVolume"] += instance_2
+                        data["unit"] = result_obj.operation.unit
                     elif analyzeType == "machine":
                         data["workHours"] += instance_2
                     elif analyzeType == "material":
@@ -2057,11 +2089,18 @@ def analyzer(request):
                     query_formula.append(typee)
 
                 elif "date-from" == key:
-                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    lowerDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d")
+                    lowerDate = lowerDate.togregorian()
+                    query["lower-date"] = lowerDate.strftime("%Y-%m-%d")
+                    query["lower-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("lower-date")
 
                 elif "date-through" == key:
-                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    one_day = jdatetime.timedelta(days=1)
+                    upperDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d") + one_day
+                    upperDate = upperDate.togregorian()
+                    query["upper-date"] = upperDate.strftime("%Y-%m-%d")
+                    query["upper-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("upper-date")
 
             if "operation" not in query_formula:
@@ -2112,8 +2151,8 @@ def analyzer(request):
                     reportDate__gt=query["lower-date"],
                 )
                 dates_filters = {
-                    "lower": query["lower-date"].replace("-", "/"),
-                    "upper": query["upper-date"].replace("-", "/"),
+                    "lower": query["lower-date-jalali"].replace("-", "/"),
+                    "upper": query["upper-date-jalali"].replace("-", "/"),
                 }
 
             # print(taskReports)
@@ -2139,11 +2178,17 @@ def analyzer(request):
                     query_formula.append(typee)
 
                 elif "date-from" == key:
-                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    lowerDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").togregorian()
+                    query["lower-date"] = lowerDate.strftime("%Y-%m-%d")
+                    query["lower-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("lower-date")
 
                 elif "date-through" == key:
-                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    one_day = jdatetime.timedelta(days=1)
+                    upperDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d") + one_day
+                    upperDate = upperDate.togregorian()
+                    query["upper-date"] = upperDate.strftime("%Y-%m-%d")
+                    query["upper-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("upper-date")
 
             if "machine" not in query_formula:
@@ -2176,8 +2221,8 @@ def analyzer(request):
                 )
                 # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
-                    "lower": query["lower-date"].replace("-", "/"),
-                    "upper": query["upper-date"].replace("-", "/"),
+                    "lower": query["lower-date-jalali"].replace("-", "/"),
+                    "upper": query["upper-date-jalali"].replace("-", "/"),
                 }
 
             requested_models.append("dailyReportMachine")
@@ -2229,11 +2274,17 @@ def analyzer(request):
                     query_formula.append(typee)
 
                 elif "date-from" == key:
-                    query["lower-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    lowerDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").togregorian()
+                    query["lower-date"] = lowerDate.strftime("%Y-%m-%d")
+                    query["lower-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("lower-date")
 
                 elif "date-through" == key:
-                    query["upper-date"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
+                    one_day = jdatetime.timedelta(days=1)
+                    upperDate = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d") + one_day
+                    upperDate = upperDate.togregorian()
+                    query["upper-date"] = upperDate.strftime("%Y-%m-%d")
+                    query["upper-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("upper-date")
 
             if "material" not in query_formula:
@@ -2266,8 +2317,8 @@ def analyzer(request):
                 )
                 # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
-                    "lower": query["lower-date"].replace("-", "/"),
-                    "upper": query["upper-date"].replace("-", "/"),
+                    "lower": query["lower-date-jalali"].replace("-", "/"),
+                    "upper": query["upper-date-jalali"].replace("-", "/"),
                 }
 
             requested_models.append("dailyReportMaterial")

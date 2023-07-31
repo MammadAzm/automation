@@ -13,10 +13,11 @@
             {% endwith %}
                 <thead>
                     <tr>
-                                <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
-                                <th colspan="" style="width: 25%">انجام شده</th>
-                                <th colspan="" style="width: 25%">کل</th>
-                                <th colspan="" style="width: 25%">درصد پیشرفت</th>
+                                <th colspan="" style="width: 22%">{{ priorityTypes|getIndex:priority_depths }}</th>
+                                <th colspan="" style="width: 22%">انجام شده</th>
+                                <th colspan="" style="width: 22%">کل</th>
+                                <th colspan="" style="width: 12%">واحد</th>
+                                <th colspan="" style="width: 22%">درصد پیشرفت</th>
                     </tr>
                 </thead>
 
@@ -34,10 +35,11 @@
         <!--                                {{ priorities_values }} <br>-->
         <!--                                {{ priorities_values|getIndex:level }}-->
         <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                            <td class="" style="width: 25%">{{ header }}</td>
-                                            <td class="" style="width: 25%">{{ value.doneVolume }}</td>
-                                            <td class="" style="width: 25%">{{ value.totalVolume }}</td>
-                                            <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }} %</td>
+                                            <td class="" style="width: 22%">{{ header }}</td>
+                                            <td class="" style="width: 22%">{{ value.doneVolume }}</td>
+                                            <td class="" style="width: 22%">{{ value.totalVolume }}</td>
+                                            <td class="" style="width: 12%">{{ value.unit }}</td>
+                                            <td class="" style="width: 22%">{{ value.donePercentage|floatformat:2 }} %</td>
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
@@ -71,10 +73,11 @@
         <!--                                {{ priorities_values }} <br>-->
         <!--                                {{ priorities_values|getIndex:level }}-->
         <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                            <td class="" style="width: 25%">{{ header }}</td>
-                                            <td class="" style="width: 25%">{{ value.doneVolume }}</td>
-                                            <td class="" style="width: 25%">{{ value.totalVolume }}</td>
-                                            <td class="" style="width: 25%">{{ value.donePercentage|floatformat:2 }}</td>
+                                            <td class="" style="width: 22%">{{ header }}</td>
+                                            <td class="" style="width: 22%">{{ value.doneVolume }}</td>
+                                            <td class="" style="width: 22%">{{ value.totalVolume }}</td>
+                                            <td class="" style="width: 12%">{{ value.unit }}</td>
+                                            <td class="" style="width: 22%">{{ value.donePercentage|floatformat:2 }}</td>
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
@@ -95,8 +98,9 @@
             {% endwith %}
                 <thead>
                     <tr>
-                                <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
-                                <th colspan="" style="width: 25%">کارکرد</th>
+                        <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
+                        <th colspan="" style="width: 25%">کارکرد</th>
+                        <th colspan="" style="width: 25%">واحد</th>
                     </tr>
                 </thead>
 
@@ -116,6 +120,7 @@
         <!--                                {% if header in priorities_values|getIndex:level %}-->
                                             <td class="" style="width: 25%">{{ header }}</td>
                                             <td class="" style="width: 25%">{{ value.workHours }}</td>
+                                            <td class="" style="width: 25%">ساعت</td>
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
@@ -146,6 +151,7 @@
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
                                             <td class="" style="width: 25%">{{ header }}</td>
                                             <td class="" style="width: 25%">{{ value.workHours }}</td>
+                                            <td class="" style="width: 25%">ساعت</td>
                                     {% endif %}
                                 {% endif %}
                             </tr>

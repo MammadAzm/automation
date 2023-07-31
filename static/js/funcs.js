@@ -15,7 +15,6 @@ function print(entry) {
     console.log(entry);
 }
 
-
 function submitEditingFormHandler(event) {
         event.preventDefault();
         let formData = new FormData(event.target);
@@ -31,7 +30,7 @@ function submitEditingFormHandler(event) {
                 xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function (response) {
-                alert("عملیات موفق")
+                alert("عملیات  موفق")
                 if (ONLY_NAME_MODELS.includes(model)) {
                     let table = document.getElementById("table-"+model)
                     let instance = formData.get('instance')
@@ -59,19 +58,25 @@ function submitEditingFormHandler(event) {
                                         selects[i].appendChild(option)
                                     });
                                 });
-                                // $('#'+id).select2({
-                                //     dropdownParent: $("#equipe-box")
-                                // });
-
                             }
                         }
                     }
+                    else if (model === "profession") {
+                        location.reload();
+                    }
+                    else if (model === "contractor") {
+                        location.reload();
+                    }
+                }
+
+                else if (model === "equipe") {
+                    location.reload();
                 }
 
                 hidePopup("editing");
             },
             error: function (err) {
-                print(err)
+                alert("این مورد قبلا ایجاد شده است")
             }
         })
 }
@@ -97,6 +102,7 @@ function showPopup(options, ID) {
         document.getElementById(ID+'-popup').style.display = 'block';
     }
     else if (ID==="editing"){
+        document.getElementById('editing-form').removeEventListener('submit', submitEditingFormHandler);
         document.getElementById(ID+'-popup').style.display = 'block';
 
         let div_content = document.getElementById('dynamic-content')
@@ -130,33 +136,116 @@ function showPopup(options, ID) {
 
             div_content.appendChild(div_input_group)
 
-            document.getElementById('editing-form').removeEventListener('submit', submitEditingFormHandler);
             submitEditingForm();
         }
-        else if (options.model === "profession") {
 
-        }
-        else if (options.model === "machine") {
-
-        }
-        else if (options.model === "material") {
-
-        }
-        else if (options.model === "contractor") {
-
-        }
         else if (options.model === "equipe") {
+            var model = options.model
+            var profession = options.profession
+            var contractor = options.contractor
+
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = profession + "-" + contractor
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقدار "' + profession + "-" + contractor + '"' // + ' در جدول ' + 'سمت ' + 'ها';
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mx-auto"
+            div_input_group.id = "temp-input-box"
+            div_input_group.style = "padding: 15px 50px 5px 50px;"
+
+            let label_professions = document.createElement("label")
+            label_professions.innerText = "تخصص: "
+            label_professions.className = "p-1"
+            label_professions.for = "select2-professions-editing"
+            label_professions.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_professions = document.createElement('select')
+            select_professions.required = true
+            select_professions.className = "select2"
+            select_professions.id = "select2-professions-editing"
+            select_professions.name = "profession"
+            // select_professions.value = profession
+            select_professions.style = "width: 150px; border: solid black; "
+            // select_professions.on('click', function() {
+            //     findselect2(ID);
+            // });
+
+            let choose_profession = document.createElement('option')
+            choose_profession.disabled = true
+            choose_profession.selected = true
+            // choose_profession.hidden = true
+            choose_profession.value = profession
+            choose_profession.innerText = profession
+
+            select_professions.appendChild(choose_profession)
+            fetch_professions(function (professions) {
+                professions.forEach(profession => {
+                    let option = document.createElement('option',)
+                    option.value = profession.name
+                    option.innerText = profession.name
+                    select_professions.appendChild(option)
+                })
+            })
+
+            let label_contractors = document.createElement("label")
+            label_contractors.innerText = " \u00A0 \u00A0 \u00A0پیمانکار: "
+            label_contractors.for = "select2-contractors-editing"
+            label_contractors.className = "p-1"
+            label_contractors.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+
+            let select_contractors = document.createElement('select')
+            select_contractors.required = true
+            select_contractors.className = "select2"
+            select_contractors.id = "select2-contractors-editing"
+            select_contractors.name = "contractor"
+            select_contractors.value = contractor
+            select_contractors.style = "width: 150px; border: solid black; "
+            // select_contractors.on('click', function() {
+            //     findselect2(ID);
+            // });
+
+            let choose_contractor = document.createElement('option')
+            choose_contractor.disabled = true
+            choose_contractor.selected = true
+            // choose_contractor.hidden = true
+            choose_contractor.value = contractor
+            choose_contractor.innerText = contractor
+
+            select_contractors.appendChild(choose_contractor)
+            fetch_contractors(function (contractors) {
+                contractors.forEach(contractor => {
+                    let option = document.createElement('option',)
+                    option.value = contractor.name
+                    option.innerText = contractor.name
+                    select_contractors.appendChild(option)
+                })
+            })
+
+            div_input_group.appendChild(label_professions)
+            div_input_group.appendChild(select_professions)
+            div_input_group.appendChild(label_contractors)
+            div_input_group.appendChild(select_contractors)
+            div_content.appendChild(div_input_group)
+
+            $('#select2-professions-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+            $('#select2-contractors-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+
+
+
+            submitEditingForm();
 
         }
-        else if (options.model === "zone") {
 
-        }
-        else if (options.model === "materialprovider") {
-
-        }
-        else if (options.model === "machineprovider") {
-
-        }
     }
 }
 
@@ -657,6 +746,13 @@ function del_unit(unit, db) {
             success: function(response) {
                 let obj = document.getElementById(unit)
                 obj.remove()
+
+                let unit_boxes = document.querySelectorAll(`div[id*="unit-box"]`);
+                for (let i=0; i<unit_boxes.length; i++) {
+                    unit_boxes[i].querySelector("select").querySelector(`option[value="${unit}"]`).remove();
+                }
+
+
                 }
         });
     } else {
@@ -1822,7 +1918,8 @@ function add_equipe_to_base_data(shortcut=null) {
                     }
                 }
             });
-    } else {
+    }
+    else {
         let valProf = document.getElementById("equipe-profession-name").value
         document.getElementById("equipe-profession-name").value = "";
 
@@ -1867,8 +1964,11 @@ function add_equipe_to_base_data(shortcut=null) {
                 xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
                 },
                 success: function(response) {
-                    if (response == "True") {
+                    if (response === "True") {
                         table.querySelector('tbody').appendChild(newRow);
+                    }
+                    else {
+                        alert("این مورد قبلا ایجاد شده است")
                     }
                 }
             });
@@ -1907,7 +2007,7 @@ function add_task_to_base_data(shortcut=null) {
                 },
                 success: function(response) {
                     if (response == "True") {
-                        alert("عملیات با موفقیت انجام شد")
+                        alert("عملیات  با موفقیت انجام شد")
                     }
                 }
             });
@@ -2177,6 +2277,7 @@ function fetch_options(type, shortcut=null){
 
                 li.appendChild(a);
                 menu.appendChild(li);
+
                 if (type == "zone"){
                     search_zone_task();
                 } else {
@@ -2446,6 +2547,34 @@ function edit_report(reportID){
         }
     });
 
+}
+
+function fetch_professions(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-professions/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["professions"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_contractors(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-contractors/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["contractors"])
+
+            callback(opts)
+        }
+    });
 }
 
 function fetch_units(callback) {
@@ -2903,7 +3032,7 @@ function submitForm(ID, type, shortcut=null,) {
 
             let select2 = document.getElementById("select2-zoneoperation")
             $("#select2-zoneoperation").empty().append(
-                '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+                '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
             )
             fetch_zoneoperations(opr, function (zoneoperations) {
                 zoneoperations.forEach(zoneoperation => {
@@ -2920,7 +3049,7 @@ function submitForm(ID, type, shortcut=null,) {
             if (
                 document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
             ) {
-                alert('عملیات انتخابی در جدول وجود دارد')
+                alert('آیتم  انتخابی در جدول وجود دارد')
 
                 return 0
             }
@@ -3238,7 +3367,7 @@ function submitForm(ID, type, shortcut=null,) {
                     if (selects[i].id === "select2-operation") {
                         let id = selects[i].id
                         $("#"+id).empty().append(
-                            '<option value="" selected disabled>انتخاب عملیات اصلی</option>'
+                            '<option value="" selected disabled>انتخاب آیتم های قراردادی</option>'
                         )
                         fetch_operations(function (operations) {
                             operations.forEach(operation => {
@@ -3353,7 +3482,7 @@ function submitForm(ID, type, shortcut=null,) {
 
                     let select2 = document.getElementById("select2-zoneoperation-shortcut")
                     $("#select2-zoneoperation-shortcut").empty().append(
-                        '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+                        '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
                     )
                     fetch_zoneoperations(opr, function (zoneoperations) {
                         zoneoperations.forEach(zoneoperation => {
@@ -3471,7 +3600,7 @@ function submitForm(ID, type, shortcut=null,) {
 
                 let select2 = document.getElementById("select2-zoneoperation")
                 $("#select2-zoneoperation").empty().append(
-                    '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+                    '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
                 )
                 fetch_zoneoperations(opr, function (zoneoperations) {
                     zoneoperations.forEach(zoneoperation => {
@@ -3746,14 +3875,29 @@ function submitForm(ID, type, shortcut=null,) {
                 });
                 span.className = "badge rounded-pill";
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-                span.addEventListener('click', function () {
-                    del_equipe(
-                        prof_value,
-                        cont_value,
-                        true
-                    );
+                // span.addEventListener('click', function () {
+                //     del_equipe(
+                //         prof_value,
+                //         cont_value,
+                //         true
+                //     );
+                // });
+
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
                 });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_equipe('"+prof_value+"','"+cont_value+"' , true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', profession:'"+prof_value+"', contractor:'"+cont_value+"'}, 'editing')")
+
+
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
 
@@ -3965,11 +4109,11 @@ function submitForm(ID, type, shortcut=null,) {
 
                 let cell2 = document.createElement('td',);
                 cell2.className = "";
-                cell2.innerText = value2
+                cell2.innerText = value2 ? value2 : "-"
 
                 let cell3 = document.createElement('td',);
                 cell3.className = "";
-                cell3.innerText = value3
+                cell3.innerText = value3 ? value3 : "1.0"
 
                 newRow.appendChild(cell1)
                 newRow.appendChild(cell2)
@@ -3983,7 +4127,8 @@ function submitForm(ID, type, shortcut=null,) {
 
         },
         error: function(xhr, status, error) {
-            alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)
+            // alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)
+            alert("این مورد قبلا ایجاد شده است")
           // console.error(error);
         }
         });
@@ -4100,7 +4245,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         modal_title.className = "modal-title"
         modal_title.id = "staticBackdropSubOperationsLabel-"+ID
         modal_title.style.marginRight = "auto"
-        modal_title.innerText = "زیرعملیات های " + opr_name
+        modal_title.innerText = "زیرآیتم  های " + opr_name
 
         let div_modal_body = document.createElement("div")
         div_modal_body.className = "modal-body"
@@ -4144,7 +4289,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         thead02_row_td03.style.width = "20%"
         thead02_row_td04.style.width = "20%"
 
-        thead02_row_td01.innerText = "شرح زیرعملیات"
+        thead02_row_td01.innerText = "شرح زیرآیتم "
         thead02_row_td02.innerText = "وزن %"
         thead02_row_td03.innerText = "مقدار"
         thead02_row_td04.innerText = "واحد"
@@ -4179,7 +4324,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         let input_subopr_name = document.createElement("input")
         input_subopr_name.style = "outline: none; background-color: white; border: none; width: 100%; padding: 3px;"
         input_subopr_name.id = "suboperation-name-" + ID
-        input_subopr_name.placeholder = "نام زیرعملیات"
+        input_subopr_name.placeholder = "نام زیرآیتم "
         input_subopr_name.name = "name"
         input_subopr_name.required = true
 
@@ -4601,7 +4746,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         modal_title.className = "modal-title"
         modal_title.id = "staticBackdropSubTaskLabel-"+ID
         modal_title.style.marginRight = "auto"
-        modal_title.innerText = "زیر عملیات های " + opr_name + " در موقعیت " + null + " برای اکیپ " + null
+        modal_title.innerText = "زیر آیتم  های " + opr_name + " در موقعیت " + null + " برای اکیپ " + null
 
         let div_modal_body = document.createElement("div")
         div_modal_body.className = "modal-body"
@@ -4628,7 +4773,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
         thead01_row_td04.style.textAlign = "center"
         thead01_row_td05.style.textAlign = "center"
 
-        thead01_row_td01.innerText = "عملیات اصلی"
+        thead01_row_td01.innerText = "آیتم های قراردادی"
         thead01_row_td02.innerText = "اکیپ"
         thead01_row_td03.innerText = "موقعیت"
         thead01_row_td04.innerText = "مقدار"
@@ -4667,7 +4812,7 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
 
         thead02_row_td01.setAttribute('colspan', '2')
 
-        thead02_row_td01.innerText = "زیرعملیات ها"
+        thead02_row_td01.innerText = "زیرآیتم  ها"
         thead02_row_td02.innerText = "وزن %"
         thead02_row_td03.innerText = "مقدار"
         thead02_row_td04.innerText = "واحد"
@@ -4828,7 +4973,7 @@ function handle_select(type) {
     let select = document.getElementById("select2-"+type+shortcut)
     if ( type === "operation" ) {
         $("#select2-"+type+shortcut).empty().append(
-            '<option value="" selected disabled>انتخاب عملیات اصلی</option>'
+            '<option value="" selected disabled>انتخاب آیتم های قراردادی</option>'
         )
         fetch_operations(function (operations) {
             operations.forEach(operation => {
@@ -4844,10 +4989,10 @@ function handle_select(type) {
     }
     else if ( type === "suboperation" ) {
         $("#select2-"+type+shortcut).empty().append(
-            '<option value="" selected disabled>انتخاب زیرعملیات</option>'
+            '<option value="" selected disabled>انتخاب زیرآیتم </option>'
         )
         $("#select2-zoneoperation+shortcut").empty().append(
-            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+            '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
         )
         let subtype = document.getElementById("select2-operation"+shortcut).value
         fetch_suboperations(subtype, function (operations) {
@@ -4881,7 +5026,7 @@ function handle_select(type) {
     }
     else if (type === "zoneoperation" ) {
         $("#select2-"+type+shortcut).empty().append(
-            '<option value="" selected disabled>انتخاب موقعیت عملیات</option>'
+            '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
         )
         let subtype = document.getElementById("select2-operation"+shortcut).value
         fetch_zoneoperations(subtype, function (zoneoperations) {
@@ -5178,8 +5323,8 @@ function handle_formula_priority(priority=null, nonVolume=null ) {
         var priorities = {
             // "time" : "زمان",
             "zone" : "موقعیت",
-            "operation" : "عملیات اصلی",
-            // "suboperation" : "عملیات اجرایی",
+            "operation" : "آیتم های قراردادی",
+            // "suboperation" : "آیتم  اجرایی",
             "equipe" : "پیمانکار",
         }
         var select_priorities = ["one", "two", "three", "four", "five"]
@@ -5276,8 +5421,8 @@ function submitPriorityFormulaVolumes() {
     var pivots = {
         // "time" : "زمان",
         "zone" : "موقعیت",
-        "operation" : "عملیات اصلی",
-        // "suboperation" : "عملیات اجرایی",
+        "operation" : "آیتم های قراردادی",
+        // "suboperation" : "آیتم  اجرایی",
         "equipe" : "پیمانکار",
     }
     show_volume_filters()
