@@ -241,7 +241,7 @@ class Operation(models.Model):
         self.update_percentage()
 
     def update_percentage(self):
-        self.donePercentage = self.doneAmount / self.amount * 100
+        self.donePercentage = float(self.doneAmount) / float(self.amount) * 100
 
         self.save()
 
@@ -365,7 +365,7 @@ class ZoneOperation(models.Model):
         self.update_donePercentage()
 
     def update_donePercentage(self):
-        self.donePercentage = self.doneAmount / self.amount * 100
+        self.donePercentage = float(self.doneAmount) / float(self.amount) * 100
 
         self.save()
 

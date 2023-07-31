@@ -550,9 +550,10 @@
                     <tr class="">
                         <th class="" >
                             عملیات اصلی
-                                <span class="badge rounded-pill" style="float: left; color: black"
-                                   data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
-                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                               data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
+                                <img src=" {% static 'icons/plus-circle.svg' %} ">
+                            </span>
                         </th>
                         <th style="width: 20%;">
                             واحد
@@ -590,8 +591,17 @@
                                     {{ operation }}
                                     <span class="badge rounded-pill"
                                         style="float: left; color: black; " onclick="del_operation('{{ operation }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}"></span>
-
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'operation',
+                                            instance:'{{ operation.name }}',
+                                            unit:'{{ operation.unit }}',
+                                            amount:'{{ operation.amount }}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
                                     <span class="badge rounded-pill"
                                           style="float: right; color: black; " onclick=""
                                           data-bs-toggle="modal" data-bs-target="#staticBackdropSubOperations-{{ operation.id }}">
@@ -1399,6 +1409,18 @@
                                                 <img src="{% static 'icons/patch-minus.svg' %}">
                                             </span>
 
+                                            <span class="badge rounded-pill" style="float: right; color: black;"
+                                                onclick="showPopup({
+                                                    model:'zoneoperation',
+                                                    zone:'{{ zoneoperation.zone }}',
+                                                    operation:'{{ zoneoperation.operation }}',
+                                                    unit:'{{ zoneoperation.unit }}',
+                                                    amount:'{{ zoneoperation.amount }}',
+                                                    modal:'staticBackdropZoneOperations-{{ operation.id }}'
+                                                }, 'editing')">
+                                                <img src="{% static 'icons/pen.svg' %}">
+                                            </span>
+
                                         </td>
 
 <!--                                        <td class="weights-{{operation.id}}">-->
@@ -1642,13 +1664,13 @@
 
 
 
-<form id="editing-form">
-    <input type="text" name="model" required id="input-model" hidden>
-    <input type="text" name="instance" required id="input-instance" hidden>
-    <div class="modal-overlay" id="editing-popup">
-      <div class="modal-container" id="editing-popup-container">
-            <div class="modal-content editing-modal-content" id="editing-popup-content">
-                <div class="modal-header">
+<form id="editing-form" >
+    <input type="text" name="model" required id="input-model" hidden  >
+    <input type="text" name="instance" required id="input-instance" hidden  >
+    <div class="modal-overlay" id="editing-popup" >
+      <div class="modal-container" id="editing-popup-container"  >
+            <div class="modal-content editing-modal-content" id="editing-popup-content"  >
+                <div class="modal-header" >
                     <h5 class="modal-title" id="editing-popup-header" style="">
                     </h5>
                 </div>
@@ -1656,7 +1678,7 @@
                 <div class="dynamic-content" id="dynamic-content">
 
                 </div>
-                <div class="static-content" id="static-content">
+                <div class="static-content" id="static-content" >
                     <button type="reset" class="btn btn-outline-danger mx-1" style="float: left" onclick="hidePopup('editing')">انصراف</button>
                     <button type="submit" class="btn btn-outline-success mx-1" style="float: left" >ذخیره</button>
                 </div>

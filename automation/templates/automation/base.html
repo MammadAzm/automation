@@ -48,6 +48,13 @@
                 time: true,
                 hideAfterChange: true,
             });
+
+            let modalID = localStorage.getItem('showModal');
+            if (modalID) {
+                $(modalID).modal('show');
+
+                localStorage.removeItem('showModal');
+            }
         })
     </script>
 

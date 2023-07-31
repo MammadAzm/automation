@@ -128,10 +128,79 @@ def edit_base_data(request):
 
             return HttpResponse(True)
 
-        elif new_data["model"] == "":
-            pass
-        elif new_data["model"] == "":
-            pass
+        elif new_data["model"] == "operation":
+            instance = new_data.get("instance")
+            name = new_data.get("name")
+            amount = new_data.get("amount")
+            unit = new_data.get("unit")
+            object = get_object_or_404(
+                model,
+                name=instance,
+            )
+            if name and name.strip() != object.name:
+                print(">>>>", "name chaneged", object.name, name)
+                object.name = name.strip()
+
+            if amount and amount.strip() != str(object.amount):
+                print(">>>>", "amount chaneged", object.amount, amount)
+                object.amount = amount.strip()
+                object.update_percentage()
+                object.update_assignedAmount()
+
+            if unit and unit.strip() != object.unit:
+                print(">>>>", "unit chaneged", object.unit, unit)
+
+                for zone in object.zones.all():
+                    zone.unit = Unit.objects.get(name=unit)
+                    zone.save()
+
+                    for parentTask in zone.parentTasks.all():
+                        parentTask.unit = Unit.objects.get(name=unit)
+                        parentTask.save()
+                    for task in zone.tasks.all():
+                        if task.unit.name == object.unit.name:
+                            task.unit = Unit.objects.get(name=unit)
+                            task.save()
+
+                for suboperation in object.suboperations.all():
+                    if suboperation.unit.name == object.unit.name:
+                        suboperation.unit = Unit.objects.get(name=unit)
+                        suboperation.save()
+
+                object.unit = Unit.objects.get(name=unit)
+
+            object.save()
+
+            return HttpResponse(True)
+
+        elif new_data["model"] == "zoneoperation":
+            instance = new_data.get("instance")
+            zone = new_data.get("zone")
+            amount = new_data.get("amount")
+
+            old_zone, operation = instance.split("-")
+            old_zone, operation = Zone.objects.get(name=old_zone), Operation.objects.get(name=operation)
+            object = get_object_or_404(
+                model,
+                operation=operation,
+                zone=old_zone,
+            )
+
+            if zone:
+                object.zone = Zone.objects.get(name=zone)
+            if amount:
+                object.amount = amount
+            object.save()
+
+            operation.update_assignedAmount()
+
+            # object.update_assignedAmount()
+            object.update_freeAmount()
+            object.update_donePercentage()
+
+
+
+            return HttpResponse(True)
 
 
 
@@ -726,6 +795,8 @@ def add_zoneoperation_to_db(request):
         amount = request.POST.get("amount")
 
         operation = Operation.objects.get(id=operation_id)
+        if float(amount) > float(operation.freeAmount):
+            return HttpResponse(f"حداکثر مقدار وارده {operation.freeAmount} می باشد", status=500)
 
         zone_operation = ZoneOperation.objects.create(
             operation=operation,
@@ -803,7 +874,9 @@ def del_task_from_db(request):
         # taskVol = request.POST.get("taskVol")
         zoneName = request.POST.get("zoneName")
         # unitName = request.POST.get("unitName")
-
+        print(taskOperation)
+        print(equipeName)
+        print(zoneName)
         operation = Operation.objects.get(name=taskOperation)
         zoneoperation = ZoneOperation.objects.get(
             operation=operation,
@@ -1687,17 +1760,21 @@ def get_contractors(request):
         return JsonResponse(context)
 
 
-def get_operations(request):
+def get_operations(request, ID=None):
     if request.method == "GET":
-        operations = Operation.objects.all()
-        if operations.exists():
-            data = json.dumps(list(operations.values()))
+        if ID:
+            opr = Operation.objects.get(id=ID)
+            return HttpResponse(opr)
         else:
-            data = "[]"
-        context = {
-            "operations": data
-        }
-        return JsonResponse(context)
+            operations = Operation.objects.all()
+            if operations.exists():
+                data = json.dumps(list(operations.values()))
+            else:
+                data = "[]"
+            context = {
+                "operations": data
+            }
+            return JsonResponse(context)
 
 
 def get_suboperations(request):
@@ -1885,14 +1962,41 @@ def get_freeAmount(request):
         if model == "zoneoperation":
             operation = request.GET.get('operation')
             zone = request.GET.get('zone')
-
             zoneoperation = ZoneOperation.objects.get(
-                operation=Operation.objects.get(name=operation,),
-                zone=Zone.objects.get(name=zone,),
+                operation=Operation.objects.get(name=operation, ),
+                zone=Zone.objects.get(name=zone, ),
             )
-            freeAmount = zoneoperation.freeAmount
 
-            return HttpResponse(freeAmount)
+            if request.GET.get('mode') == "assigned":
+                assignedAmount = zoneoperation.assignedAmount
+
+                return HttpResponse(assignedAmount)
+            else:
+                freeAmount = zoneoperation.freeAmount
+
+                return HttpResponse(freeAmount)
+
+        elif model == "operation":
+            if request.GET.get('mode') == "free":
+                operation = request.GET.get('operation')
+                operation = Operation.objects.get(name=operation)
+                freeAmount = operation.freeAmount
+
+                zone = request.GET.get('zone')
+                zoneoperation = ZoneOperation.objects.get(
+                    operation=operation,
+                    zone=Zone.objects.get(name=zone)
+                )
+                freeAmount += zoneoperation.amount
+
+                return HttpResponse(freeAmount)
+
+            else:
+                operation = request.GET.get('operation')
+                operation = Operation.objects.get(name=operation)
+                assigendAmount = operation.assignedAmount
+
+                return HttpResponse(assigendAmount)
 
 
 def get_zones(request):

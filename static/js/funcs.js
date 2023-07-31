@@ -73,6 +73,16 @@ function submitEditingFormHandler(event) {
                     location.reload();
                 }
 
+                else if (model === "operation") {
+                    location.reload();
+                }
+
+                else if (model === "zoneoperation") {
+                    let modalID = formData.get("modalID")
+                    localStorage.setItem('showModal', modalID);
+                    location.reload();
+                }
+
                 hidePopup("editing");
             },
             error: function (err) {
@@ -245,6 +255,241 @@ function showPopup(options, ID) {
             submitEditingForm();
 
         }
+
+        else if (options.model === "operation") {
+            var model = options.model
+            var instance = options.instance
+            var unit = options.unit
+            var amount = options.amount
+
+            var form = document.getElementById("editing-form")
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = instance
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقادیر "' + options.instance + '"'
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mt-3"
+
+            let label_operation_name = document.createElement("label")
+            label_operation_name.innerText = "نام آیتم: "
+            label_operation_name.className = "p-1"
+            label_operation_name.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_name = document.createElement("input")
+            input_name.required = true
+            input_name.type = "text"
+            input_name.id = "input_name"
+            input_name.name = "name"
+            input_name.value = instance
+            input_name.className = "form-control py-0"
+            input_name.placeholder = "مقدار جدید (فعلی: "+ instance + ")"
+
+            let label_operation_amount = document.createElement("label")
+            label_operation_amount.innerText = "مقدار آیتم: "
+            label_operation_amount.className = "p-1"
+            label_operation_amount.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_amount = document.createElement("input")
+            input_amount.required = true
+            input_amount.type = "number"
+            input_amount.id = "input_name"
+            input_amount.name = "amount"
+            input_amount.value = amount
+            input_amount.className = "form-control py-0"
+            $.ajax({
+                type: 'GET',
+                url: "/edit-db/get-freeAmount/",
+                data: {
+                    'model': 'operation',
+                    'operation': instance,
+                },
+                success: function(response) {
+                    input_amount.placeholder = "مقدار جدید (فعلی: "+ amount + ")" + "(حداقل " + response + ")"
+                    input_amount.min = response
+                }
+            });
+
+            var div_input_group2 = document.createElement("div")
+            div_input_group2.className = "input-group mb-3 mt-3"
+            div_input_group2.id = "temp-input-box"
+
+            let label_operation_unit = document.createElement("label")
+            label_operation_unit.innerText = "\u00A0 \u00A0واحد آیتم: "
+            label_operation_unit.className = "p-1"
+            label_operation_unit.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_units = document.createElement('select')
+            select_units.required = true
+            select_units.className = "select2"
+            select_units.id = "select2-operations-editing"
+            select_units.name = "unit"
+            select_units.style = "width: 100; border: solid black"
+            // select_units.on('click', function() {
+            //     findselect2(ID);
+            // });
+
+            let choose_option = document.createElement('option')
+            choose_option.disabled = true
+            choose_option.selected = true
+            choose_option.value = unit
+            choose_option.innerText = unit
+
+            select_units.appendChild(choose_option)
+            fetch_units(function (units) {
+                units.forEach(unit => {
+                    let option = document.createElement('option',)
+                    option.value = unit.name
+                    option.innerText = unit.name
+                    select_units.appendChild(option)
+                })
+            })
+
+            div_input_group.appendChild(label_operation_name)
+            div_input_group.appendChild(input_name)
+
+            div_input_group2.appendChild(label_operation_amount)
+            div_input_group2.appendChild(input_amount)
+
+            div_input_group2.appendChild(label_operation_unit)
+            div_input_group2.appendChild(select_units)
+
+            div_content.appendChild(div_input_group)
+            div_content.appendChild(div_input_group2)
+
+            $('#select2-operations-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+
+            submitEditingForm();
+        }
+
+        else if (options.model === "zoneoperation") {
+            $('#'+options.modal).modal('hide');
+            var form = document.getElementById("editing-form")
+            let modalID = document.createElement('input')
+            modalID.name = "modalID"
+            modalID.value = '#'+options.modal
+            modalID.hidden = true
+            form.appendChild(modalID)
+
+            var model = options.model
+            var zone = options.zone
+            var operation = options.operation
+            var amount = options.amount
+
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = zone+"-"+operation
+            input_instance.hidden = true
+
+            // var input_zone = document.getElementById('input-zone')
+            // input_zone.value = zone
+            // input_zone.hidden = true
+            // var input_operation = document.getElementById('input-operation')
+            // input_operation.value = operation
+            // input_operation.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقادیر برای آیتم ' + operation + ' در موقعیت ' + zone
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mt-3"
+            div_input_group.id = "temp-input-box"
+
+            let label_zone_name = document.createElement("label")
+            label_zone_name.innerText = "موقعیت: "
+            label_zone_name.className = "p-1"
+            label_zone_name.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_zones = document.createElement('select')
+            select_zones.required = true
+            select_zones.className = "select2"
+            select_zones.id = "select2-zones-editing"
+            select_zones.name = "zone"
+            // select_zones.value = zone
+            select_zones.style = "width: 150px; border: solid black; "
+
+            let choose_zone = document.createElement('option')
+            choose_zone.disabled = true
+            choose_zone.selected = true
+            // choose_zone.hidden = true
+            choose_zone.value = zone
+            choose_zone.innerText = zone
+
+            select_zones.appendChild(choose_zone)
+            fetch_zones(function (zones) {
+                zones.forEach(zone => {
+                    let option = document.createElement('option',)
+                    option.value = zone.name
+                    option.innerText = zone.name
+                    select_zones.appendChild(option)
+                })
+            })
+
+            let label_zoneoperation_amount = document.createElement("label")
+            label_zoneoperation_amount.innerText = "مقدار آیتم در این موقعیت: "
+            label_zoneoperation_amount.className = "p-1"
+            label_zoneoperation_amount.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_amount = document.createElement("input")
+            input_amount.required = true
+            input_amount.type = "number"
+            input_amount.id = "input_amount"
+            input_amount.name = "amount"
+            input_amount.value = amount
+            input_amount.className = "form-control py-0"
+            $.ajax({
+                type: 'GET',
+                url: "/edit-db/get-freeAmount/",
+                data: {
+                    'model': 'operation',
+                    'mode': 'free',
+                    'operation': operation,
+                    'zone': zone,
+                },
+                success: function(response) {
+                    input_amount.placeholder = ""
+                    input_amount.max = response
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                url: "/edit-db/get-freeAmount/",
+                data: {
+                    'model': 'zoneoperation',
+                    'mode': 'assigned',
+                    'operation': operation,
+                    'zone': zone,
+                },
+                success: function(response) {
+                    input_amount.min = response
+                }
+            });
+
+            div_input_group.appendChild(label_zone_name)
+            div_input_group.appendChild(select_zones)
+            div_input_group.appendChild(label_zoneoperation_amount)
+            div_input_group.appendChild(input_amount)
+
+            div_content.appendChild(div_input_group)
+
+            $('#select2-zones-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+
+            submitEditingForm();
+
+        }
+
+        else if (options.model === "equipe") {}
+
+        else if (options.model === "equipe") {}
 
     }
 }
@@ -3238,6 +3483,8 @@ function submitForm(ID, type, shortcut=null,) {
                         true
                     );
                 });
+
+
                 cell1.appendChild(span)
 
 
@@ -3277,6 +3524,10 @@ function submitForm(ID, type, shortcut=null,) {
                 let newRow = document.createElement('tr');
                 newRow.id = document.getElementById("operation-name").value;
 
+                let instance = document.getElementById("operation-name").value;
+                let unit = document.getElementById("unitforoperation-name").value;
+                let amount = document.getElementById("unitforoperation-amount").value;
+
 
                 let cell1 = document.createElement('td',);
                 cell1.className = "";
@@ -3315,9 +3566,24 @@ function submitForm(ID, type, shortcut=null,) {
                 span3.setAttribute('data-bs-toggle', 'modal');
                 span3.setAttribute('data-bs-target', '#staticBackdropZoneOperations-'+response);
 
+                let span4 = document.createElement('span',);
+                Object.assign(span4.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span4.className = "badge rounded-pill";
+                span4.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_operation('"+val+"', true)")
+                span4.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+instance+"', unit:'"+unit+"', amount:'"+amount+"'}, 'editing')")
+
+
+
                 cell1.innerText = document.getElementById("operation-name").value;
 
                 cell1.appendChild(span)
+                cell1.appendChild(span4)
                 let temp = document.createElement('div')
                 temp.style.display = "inline-block"
                 Object.assign(temp.style, {
@@ -3391,6 +3657,21 @@ function submitForm(ID, type, shortcut=null,) {
                 let newRow = document.createElement('tr');
                 newRow.id = "zoneoperation-" + document.getElementById('select2-zone-' + ID).value + "-" + ID;
 
+                let zone = formData.get('zone')
+                var operation;
+                $.ajax({
+                    async: false,
+                    type: 'GET',
+                    url: "/edit-db/get-operations/"+ID+"/",
+                    data: {
+                    },
+                    success: function(response) {
+                        operation = response
+                    }
+                });
+                let amount = formData.get('amount')
+                let unit = document.getElementById("total-unit-" + ID).innerText.trim();
+                let modal = "staticBackdropZoneOperations-"+ID
 
                 let cell1 = document.createElement('td',);
                 cell1.className = "";
@@ -3406,15 +3687,27 @@ function submitForm(ID, type, shortcut=null,) {
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
                 span.style.marginLeft = "5pt"
                 let val = document.getElementById('select2-zone-' + ID).value
-                span.addEventListener('click', function () {
-                    del_zoneoperation(
-                        val,
-                        ID,
-                        true
-                    );
-                });
-                cell1.appendChild(span)
+                // span.addEventListener('click', function () {
+                //     del_zoneoperation(
+                //         val,
+                //         ID,
+                //         true
+                //     );
+                // });
 
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_zoneoperation('"+val+"'"+ID+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', zone:'"+zone+"', operation:'"+operation+"', modal:'"+modal+"', unit:'"+unit+"', amount:'"+amount+"'}, 'editing')")
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
 
                 // let cell2 = document.createElement('td',);
                 // cell2.className = "";
