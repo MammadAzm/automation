@@ -1273,6 +1273,19 @@
                                                 <img src="{% static 'icons/patch-minus.svg' %}">
                                             </span>
 
+                                            <span class="badge rounded-pill" style="float: right; color: black;"
+                                                onclick="showPopup({
+                                                    model:'suboperation',
+                                                    suboperation:'{{ suboperation.name }}',
+                                                    operation:'{{ suboperation.parent }}',
+                                                    unit:'{{ suboperation.unit }}',
+                                                    amount:'{{ suboperation.amount }}',
+                                                    weight:'{{ suboperation.weight }}',
+                                                    modal:'staticBackdropSubOperations-{{ operation.id }}'
+                                                }, 'editing')">
+                                                <img src="{% static 'icons/pen.svg' %}">
+                                            </span>
+
                                         </td>
 
                                         <td class="weights-{{operation.id}}">
@@ -1679,7 +1692,7 @@
 
                 </div>
                 <div class="static-content" id="static-content" >
-                    <button type="reset" class="btn btn-outline-danger mx-1" style="float: left" onclick="hidePopup('editing')">انصراف</button>
+                    <button type="reset" class="btn btn-outline-danger mx-1" id="cancel-editing-btn" style="float: left" onclick="hidePopup('editing')">انصراف</button>
                     <button type="submit" class="btn btn-outline-success mx-1" style="float: left" >ذخیره</button>
                 </div>
 

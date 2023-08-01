@@ -83,6 +83,12 @@ function submitEditingFormHandler(event) {
                     location.reload();
                 }
 
+                else if (model === "suboperation") {
+                    let modalID = formData.get("modalID")
+                    localStorage.setItem('showModal', modalID);
+                    location.reload();
+                }
+
                 hidePopup("editing");
             },
             error: function (err) {
@@ -99,10 +105,13 @@ function submitEditingForm() {
 }
 
 
-function hidePopup(ID) {
+function hidePopup(ID, modalID=null) {
     document.getElementById(ID+'-popup').style.display = 'none';
     if (ID === "editing"){
         document.getElementById('dynamic-content').innerHTML = "";
+    }
+    if (modalID) {
+        $(modalID).modal("show")
     }
 }
 
@@ -377,6 +386,11 @@ function showPopup(options, ID) {
             modalID.hidden = true
             form.appendChild(modalID)
 
+            document.getElementById("cancel-editing-btn").removeEventListener("click", hidePopup)
+            document.getElementById("cancel-editing-btn").addEventListener("click", function () {
+                hidePopup('editing', modalID=modalID.value)
+            })
+
             var model = options.model
             var zone = options.zone
             var operation = options.operation
@@ -487,7 +501,146 @@ function showPopup(options, ID) {
 
         }
 
-        else if (options.model === "equipe") {}
+        else if (options.model === "suboperation")  {
+            $('#'+options.modal).modal('hide');
+            var form = document.getElementById("editing-form")
+            let modalID = document.createElement('input')
+            modalID.name = "modalID"
+            modalID.value = '#'+options.modal
+            modalID.hidden = true
+            form.appendChild(modalID)
+
+            document.getElementById("cancel-editing-btn").removeEventListener("click", hidePopup)
+            document.getElementById("cancel-editing-btn").addEventListener("click", function () {
+                hidePopup('editing', modalID=modalID.value)
+            })
+
+            var model = options.model
+            var suboperation = options.suboperation
+            var operation = options.operation
+            var amount = options.amount
+            var weight = options.weight
+            var unit = options.unit
+
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = suboperation+"-"+operation
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقادیر برای زیرآیتم ' + suboperation + ' در آیتم ' + operation
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mt-3"
+            div_input_group.id = "temp-input-box"
+            var div_input_group2 = document.createElement("div")
+            div_input_group2.className = "input-group mb-3 mt-3"
+            div_input_group2.id = "temp-input-box2"
+
+            let label_suboperation_name = document.createElement("label")
+            label_suboperation_name.innerText = "نام زیر عملیات: "
+            label_suboperation_name.className = "p-1"
+            label_suboperation_name.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_suboperation_name = document.createElement("input")
+            input_suboperation_name.required = true
+            input_suboperation_name.type = "text"
+            input_suboperation_name.id = "input_name"
+            input_suboperation_name.name = "name"
+            input_suboperation_name.value = suboperation
+            input_suboperation_name.className = "form-control py-0"
+
+
+            let label_suboperation_weight = document.createElement("label")
+            label_suboperation_weight.innerText = "وزن %: "
+            label_suboperation_weight.className = "p-1"
+            label_suboperation_weight.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_weight = document.createElement("input")
+            input_weight.required = true
+            input_weight.type = "number"
+            input_weight.id = "input_amount"
+            input_weight.name = "weight"
+            input_weight.value = weight
+            input_weight.className = "form-control py-0"
+
+            let label_suboperation_amount = document.createElement("label")
+            label_suboperation_amount.innerText = "مقدار زیرآیتم: "
+            label_suboperation_amount.className = "p-1"
+            label_suboperation_amount.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_amount = document.createElement("input")
+            input_amount.required = true
+            input_amount.type = "number"
+            input_amount.id = "input_amount"
+            input_amount.name = "amount"
+            input_amount.value = amount
+            input_amount.className = "form-control py-0"
+
+            let label_suboperation_unit = document.createElement("label")
+            label_suboperation_unit.innerText = "واحد\u00A0\u00A0: "
+            label_suboperation_unit.className = "p-1"
+            label_suboperation_unit.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_units = document.createElement('select')
+            select_units.required = true
+            select_units.className = "select2"
+            select_units.id = "select2-units-editing"
+            select_units.name = "unit"
+            // select_units.value = unit
+            select_units.style = "width: 200px; border: solid black; "
+
+            let choose_unit = document.createElement('option')
+            choose_unit.disabled = true
+            choose_unit.selected = true
+            // choose_unit.hidden = true
+            choose_unit.value = unit
+            choose_unit.innerText = unit
+
+            select_units.appendChild(choose_unit)
+            fetch_units(function (units) {
+                units.forEach(unit => {
+                    let option = document.createElement('option',)
+                    option.value = unit.name
+                    option.innerText = unit.name
+                    select_units.appendChild(option)
+                })
+            })
+            $.ajax({
+                type: 'GET',
+                url: "/edit-db/get-freeAmount/",
+                data: {
+                    'model': 'suboperation',
+                    'mode': 'weight',
+                    'operation': operation,
+                    'suboperation': suboperation,
+                },
+                success: function(response) {
+                    input_weight.max = response
+                    input_weight.min = 0
+                }
+            });
+
+            div_input_group.appendChild(label_suboperation_name)
+            div_input_group.appendChild(input_suboperation_name)
+            div_input_group.appendChild(label_suboperation_weight)
+            div_input_group.appendChild(input_weight)
+            div_input_group2.appendChild(label_suboperation_amount)
+            div_input_group2.appendChild(input_amount)
+            div_input_group2.appendChild(label_suboperation_unit)
+            div_input_group2.appendChild(select_units)
+
+            div_content.appendChild(div_input_group)
+            div_content.appendChild(div_input_group2)
+
+            $('#select2-units-editing').select2({
+                dropdownParent: $("#temp-input-box2")
+            });
+
+            submitEditingForm();
+
+        }
 
         else if (options.model === "equipe") {}
 
@@ -3230,50 +3383,9 @@ function submitForm(ID, type, shortcut=null,) {
 
             let select = document.getElementById("select2-equipe")
 
-            // $.ajax({
-            //     url: '/edit-db/get-equipes-in-report/',
-            //     type: 'POST',
-            //     data: {
-            //         'operation': opr,
-            //         'suboperation': subopr,
-            //         'zone': zoneopr,
-            //     },
-            //     beforeSend: function(xhr, settings) {
-            //     xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-            //     },
-            //     success: function(response) {
-            //         let tasks = JSON.parse(response['tasks'])
-            //
-            //         $("#select2-equipe").empty().append(
-            //             '<option value="" selected disabled>انتخاب اکیپ</option>'
-            //         )
-            //         for (let i=0; i<tasks.length; i++) {
-            //             let splitted = tasks[i].unique_str.split("-")
-            //
-            //             let option = document.createElement("option")
-            //             option.value = splitted[2] + "-" + splitted[3]
-            //             option.innerText = splitted[2] + "-" + splitted[3]
-            //
-            //             select.appendChild(option)
-            //         }
-            //
-            //     }
-            // })
-
             $("#select2-equipe").empty().append(
                 '<option value="" selected disabled>انتخاب اکیپ</option>'
             )
-            // fetch_all_equipes(function (equipes) {
-            //     equipes.forEach(equipe => {
-            //         let option = document.createElement('option',)
-            //         option.value = equipe.name
-            //         option.innerHTML = equipe.name
-            //         select.appendChild(option)
-            //     })
-            // })
-            // $('#select2-equipe').select2({
-            //     dropdownParent: $("#equipe-box")
-            // });
 
             let select2 = document.getElementById("select2-zoneoperation")
             $("#select2-zoneoperation").empty().append(
@@ -3462,6 +3574,22 @@ function submitForm(ID, type, shortcut=null,) {
                 let newRow = document.createElement('tr');
                 newRow.id = "suboperation-" + document.getElementById('suboperation-name-' + ID).value + "-" + ID;
 
+                let name = formData.get('name')
+                var operation;
+                $.ajax({
+                    async: false,
+                    type: 'GET',
+                    url: "/edit-db/get-operations/"+ID+"/",
+                    data: {
+                    },
+                    success: function(response) {
+                        operation = response
+                    }
+                });
+                let amount = formData.get('amount')
+                let weight = formData.get('weight')
+                let unit = formData.get('unit')
+                let modal = "staticBackdropSubOperations-"+ID
 
                 let cell1 = document.createElement('td',);
                 cell1.className = "";
@@ -3476,16 +3604,27 @@ function submitForm(ID, type, shortcut=null,) {
                 span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
                 span.style.marginLeft = "5pt"
                 let val = document.getElementById('suboperation-name-' + ID).value
-                span.addEventListener('click', function () {
-                    del_suboperation(
-                        val,
-                        ID,
-                        true
-                    );
-                });
+                // span.addEventListener('click', function () {
+                //     del_suboperation(
+                //         val,
+                //         ID,
+                //         true
+                //     );
+                // });
 
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'right',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_suboperation('"+val+"','"+ID+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', suboperation:'"+name+"', operation:'"+operation+"', modal:'"+modal+"', unit:'"+unit+"', weight:'"+weight+"', amount:'"+amount+"'}, 'editing')")
 
                 cell1.appendChild(span)
+                cell1.appendChild(span2)
 
 
                 let cell2 = document.createElement('td',);
@@ -3703,7 +3842,7 @@ function submitForm(ID, type, shortcut=null,) {
                 span2.className = "badge rounded-pill";
                 span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
 
-                span.setAttribute("onclick", "del_zoneoperation('"+val+"'"+ID+"', true)")
+                span.setAttribute("onclick", "del_zoneoperation('"+val+"','"+ID+"', true)")
                 span2.setAttribute("onclick", "showPopup({ model:'"+type+"', zone:'"+zone+"', operation:'"+operation+"', modal:'"+modal+"', unit:'"+unit+"', amount:'"+amount+"'}, 'editing')")
 
                 cell1.appendChild(span)

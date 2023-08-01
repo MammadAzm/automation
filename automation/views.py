@@ -138,14 +138,21 @@ def edit_base_data(request):
                 name=instance,
             )
             if name and name.strip() != object.name:
-                print(">>>>", "name chaneged", object.name, name)
                 object.name = name.strip()
 
             if amount and amount.strip() != str(object.amount):
-                print(">>>>", "amount chaneged", object.amount, amount)
                 object.amount = amount.strip()
+
+                for zone in object.zones.all():
+                    for task in zone.tasks.all():
+                        task.totalVolume = (float(task.parent.totalVolume) / float(object.amount)) * float(task.suboperation.amount)
+                        task.save()
+
                 object.update_percentage()
                 object.update_assignedAmount()
+
+                for item in TaskReport.objects.filter(operation=object):
+                    item.update_due_to_base_data_edits()
 
             if unit and unit.strip() != object.unit:
                 print(">>>>", "unit chaneged", object.unit, unit)
@@ -202,7 +209,52 @@ def edit_base_data(request):
 
             return HttpResponse(True)
 
+        elif new_data["model"] == "suboperation":
+            instance = new_data.get("instance")
+            name = new_data.get("name")
+            weight = new_data.get("weight")
+            amount = new_data.get("amount")
+            unit = new_data.get("unit")
 
+            ref_sub, operation = instance.split("-")
+            operation = Operation.objects.get(name=operation)
+            object = get_object_or_404(
+                model,
+                parent=operation,
+                name=ref_sub,
+            )
+
+            if name and name != object.name:
+                print(">>>> Name Changed")
+                object.name = name
+            if weight and float(weight) != float(object.weight):
+                print(">>>> Weight Changed")
+                object.weight = weight
+            if amount and float(amount) != float(object.amount):
+                print(">>>> Amount Changed")
+                object.amount = amount
+                for task in Task.objects.filter(suboperation=object):
+                    task.totalVolume = (float(task.parent.totalVolume)/float(operation.amount))*float(object.amount)
+                    task.save()
+                object.save()
+
+                for item in TaskReport.objects.filter(operation=object.parent):
+                    item.update_due_to_base_data_edits()
+
+            if unit and unit != object.unit.name:
+                print(">>>> Unit Changed")
+                for task in Task.objects.filter(suboperation=object):
+                    if task.unit.name == object.unit.name:
+                        task.unit = Unit.objects.get(name=unit)
+                        task.save()
+
+                object.unit = Unit.objects.get(name=unit)
+
+            object.save()
+
+            operation.update_assignedWeight()
+
+            return HttpResponse(True)
 
 
 def operation_break_template(request):
@@ -1997,6 +2049,31 @@ def get_freeAmount(request):
                 assigendAmount = operation.assignedAmount
 
                 return HttpResponse(assigendAmount)
+
+        elif model == "suboperation":
+            if request.GET.get('mode') == "weight":
+                operation = request.GET.get('operation')
+                suboperation = request.GET.get('suboperation')
+                print(operation)
+                print(suboperation)
+                operation = Operation.objects.get(name=operation)
+                suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+
+                freeWeight = operation.freeWeight + suboperation.weight
+
+                return HttpResponse(freeWeight)
+
+            elif request.GET.get('mode') == "free":
+                operation = request.GET.get('operation')
+                suboperation = request.GET.get('suboperation')
+
+                operation = Operation.objects.get(name=operation)
+                suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+
+                freeAmount = operation.freeAmount + suboperation.amount
+
+                return HttpResponse(freeAmount)
+
 
 
 def get_zones(request):

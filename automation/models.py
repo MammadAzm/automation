@@ -586,6 +586,10 @@ class TaskReport(models.Model):
 
         return self.parent.get_total_parent_values() + self.parent.todayVolume
 
+    def update_due_to_base_data_edits(self):
+        self.preDonePercentage = self.preDoneVolume / self.task.totalVolume * 100
+        self.save()
+
     def update_percentage(self, reverse, date=None):
         if not reverse:
             self.task.preDoneVolume = self.task.doneVolume

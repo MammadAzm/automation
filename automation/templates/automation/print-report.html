@@ -273,15 +273,15 @@
                             </td>
 
                             <td class="text-centred">
-                                {{ task.todayVolume }}
+                                {{ task.todayVolume|floatformat:1 }}
                             </td>
 
                             <td class="text-centred">
-                                {{ task.preDoneVolume }}
+                                {{ task.preDoneVolume|floatformat:1 }}
                             </td>
 
                             <td class="text-centred">
-                                {{ task.task.totalVolume }}
+                                {{ task.task.totalVolume|floatformat:1 }}
                             </td>
 
                             <td class="text-centred">
@@ -296,7 +296,7 @@
                              </td>
 
                             <td class="text-centred">
-                                {{ task.task.parent.totalVolume }}
+                                {{ task.task.parent.totalVolume|floatformat:1 }}
                             </td>
 
                             <td class="text-centred">
