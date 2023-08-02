@@ -156,6 +156,7 @@ EDIT_BASE_DATA = {
     "operation": Operation,
     "zoneoperation": ZoneOperation,
     "suboperation": SubOperation,
+    "task": Task,
 }
 
 ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]

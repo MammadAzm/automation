@@ -1836,6 +1836,25 @@ def get_options(request, typee):
             }
             return JsonResponse(context)
 
+        elif "filtering" in typee:
+            model = request.POST.get("model").split("-")[1]
+            data = EDIT_BASE_DATA[model].objects.filter(project=project)
+
+            if model == "task":
+                data = Operation.objects.filter(project=project)
+            elif model == "contractor":
+                data = Contractor.objects.filter(project=project)
+
+            if data.exists():
+                data = json.dumps(list(data.values()))
+            else:
+                data = "[]"
+
+            context = {
+                "options": data,
+            }
+            return JsonResponse(context)
+
         data = json.loads(request.POST['options'])["options"]
         data = [item.strip().strip() for item in data]
         if "equipe" in typee:
@@ -2928,3 +2947,70 @@ def get_options_in_priority(request):
             }
 
     return JsonResponse(context)
+
+
+@login_required
+def get_task_filters(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        data = dict(request.POST)
+        model = data.get("model")[0].split("-")[1]
+        items = data.get("items[]")
+
+        if model == "contractor":
+            if '0' in items:
+                tasks = ParentTask.objects.filter(
+                    project=project,
+                    equipe__in=Equipe.objects.filter(project=project,
+                                                     contractor__in=Contractor.objects.filter(project=project))
+                )
+                items = Contractor.objects.filter(project=project).values_list("name", flat=True)
+            else:
+                tasks = ParentTask.objects.filter(
+                    project=project,
+                    equipe__in=Equipe.objects.filter(project=project, contractor__in=Contractor.objects.filter(name__in=items, project=project))
+                )
+        elif model == "task":
+            if '0' in items:
+                tasks = ParentTask.objects.filter(
+                    project=project,
+                    operation__in=ZoneOperation.objects.filter(project=project,
+                                                               operation__in=Operation.objects.filter(project=project)),
+                )
+                items = Operation.objects.filter(project=project).values_list("name", flat=True)
+            else:
+                tasks = ParentTask.objects.filter(
+                    project=project,
+                    operation__in=ZoneOperation.objects.filter(project=project, operation__in=Operation.objects.filter(project=project, name__in=items)),
+                )
+
+        data = {
+            "model": model
+        }
+
+        for item in items:
+            data[item] = []
+
+        for task in tasks:
+            if model == "task":
+                if task.equipe.contractor.name not in data[task.operation.operation.name]:
+                    # data[task.operation.operation.name].append(task.equipe.contractor.name)
+                    data[task.operation.operation.name].append({
+                        "target": task.equipe.contractor.name,
+                        "zone": task.operation.zone.name,
+                        "amount": task.operation.amount,
+                        "unit": task.operation.unit.name,
+                    })
+            elif model == "contractor":
+                if task.operation not in data[task.equipe.contractor.name]:
+                    # data[task.equipe.contractor.name].append(task.operation.operation.name)
+                    data[task.equipe.contractor.name].append({
+                        "target": task.operation.operation.name,
+                        "zone": task.operation.zone.name,
+                        "amount": task.operation.amount,
+                        "unit": task.operation.unit.name,
+                    })
+
+        return JsonResponse(data)

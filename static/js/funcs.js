@@ -3314,7 +3314,10 @@ function update_live_total_done(live) {
 }
 
 
-
+function clear_div(divID) {
+    let div = document.getElementById(divID)
+    div.innerHTML = ""
+}
 
 
 function submitForm(ID, type, shortcut=null,) {
@@ -3367,7 +3370,11 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "unit") {
         var target = "form-unit"
     }
+    else if (type === "filtering-task") {
+        var target = "form-filtering-task"
+    }
     $('#'+target).submit(function(event) {
+
         // Prevent form submission
         event.preventDefault();
 
@@ -3531,6 +3538,114 @@ function submitForm(ID, type, shortcut=null,) {
                         }
                     }
                     tbody.appendChild(newRow)
+                }
+            })
+
+            return 0
+        }
+
+        else if (type === "filtering-task") {
+            $.ajax({
+                url: '/edit-db/get-task-filters/',
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                data: formData,
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    let objs = response
+                    var model = objs["model"]
+                    delete objs["model"]
+                    let filter_div = document.getElementById("filter-div")
+                    filter_div.innerHTML = ""
+                    let table = document.createElement("table")
+                    table.className = "table table-bordered border-dark"
+                    table.style = "font-size: 11px"
+
+                    Object.keys(objs).forEach((key) => {
+                        let value = objs[key];
+
+                        let thead = document.createElement("thead")
+                        thead.className = ""
+                        thead.style = ""
+
+                        let tr = document.createElement("tr")
+                        let th = document.createElement("th")
+                        th.innerText = key
+                        th.colSpan = 4
+                        th.style = "text-align: center;"
+
+                        tr.appendChild(th)
+                        thead.appendChild(tr)
+                        table.appendChild(thead)
+
+                        let tbody = document.createElement("tbody")
+
+                        if (value.length > 0) {
+                            let thead = document.createElement("thead")
+
+                            let tr = document.createElement("tr")
+                            let th01 = document.createElement("th")
+                            th01.innerText = model==="contractor" ? "آیتم" : "پیمانکار"
+
+                            let th02 = document.createElement("th")
+                            th02.innerText = "موقعیت"
+
+                            let th03 = document.createElement("th")
+                            th03.innerText = "مقدار"
+
+                            let th04 = document.createElement("th")
+                            th04.innerText = "واحد"
+
+                            tr.appendChild(th01)
+                            tr.appendChild(th02)
+                            tr.appendChild(th03)
+                            tr.appendChild(th04)
+                            thead.appendChild(tr)
+                            table.appendChild(thead)
+
+                            for (let i=0; i<value.length; i++) {
+                                let tr = document.createElement("tr")
+
+                                let td01 = document.createElement("td")
+                                td01.innerText = value[i].target
+
+                                let td02 = document.createElement("td")
+                                td02.innerText = value[i].zone
+
+                                let td03 = document.createElement("td")
+                                td03.innerText = value[i].amount
+
+                                let td04 = document.createElement("td")
+                                td04.innerText = value[i].unit
+
+                                tr.appendChild(td01)
+                                tr.appendChild(td02)
+                                tr.appendChild(td03)
+                                tr.appendChild(td04)
+                                tbody.appendChild(tr)
+                            }
+                            let breaker = document.createElement("tr")
+                            let td = document.createElement("td")
+                            td.colSpan = 4
+                            breaker.appendChild(td)
+                            tbody.appendChild(breaker)
+                            table.appendChild(tbody)
+                        }
+                        else {
+                            let tr = document.createElement("tr")
+                            let td = document.createElement("td")
+                            td.colSpan = 4
+                            tr.appendChild(td)
+                            tbody.appendChild(tr)
+                            table.appendChild(tbody)
+                        }
+                    });
+
+                    filter_div.appendChild(table)
+
                 }
             })
 
@@ -5549,6 +5664,40 @@ function handle_select(type) {
 
 
     }
+    else if ( type === "filtering-model") {
+        let model = document.getElementById('select2-filtering-model').value
+        $.ajax({
+            url: '/edit-db/get-options/'+model,
+            type: 'POST',
+            data: {
+                'model': model,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let select = document.getElementById("select2-filtering-pivot")
+                $("#select2-filtering-pivot").empty()
+                let option = document.createElement("option")
+                option.value = 0
+                option.innerText = "همه موارد"
+
+                select.appendChild(option);
+                let opts = JSON.parse(response['options'])
+                opts.forEach(function (opt){
+                    let option = document.createElement("option")
+                    option.value = opt.name
+                    option.innerText = opt.name
+
+                    select.appendChild(option);
+                })
+
+
+            }
+        })
+
+
+    }
     else {
         $('#select2-operation'+shortcut).select2({
             dropdownParent: $("#operation-box"+shortcut)
@@ -5565,6 +5714,14 @@ function handle_select(type) {
         $('#select2-equipe'+shortcut).select2({
             dropdownParent: $("#equipe-box"+shortcut)
         });
+
+        $('#select2-filtering-model').select2({
+            dropdownParent: $("#box-filtering-tasks")
+        });
+        $('#select2-filtering-pivot').select2({
+            dropdownParent: $("#box-filtering-tasks")
+        });
+
     }
 
 }

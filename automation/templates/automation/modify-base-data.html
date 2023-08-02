@@ -320,7 +320,7 @@
 
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
-    <div class="row  mb-3">
+    <div class="row mb-3">
         <div class="col-2">
             <table class="table table-bordered border-dark">
                 <thead class="">
@@ -634,6 +634,11 @@
                     <tr class="">
                         <th class="" style="width: 45%">
                              شرح آیتم های قراردادی
+
+                            <button class="btn-light py-0 mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdropFilteringTasks">
+                                جستجو
+                            </button>
+
                             <span class="badge rounded-pill" style="float: left; color: black"
                                 data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
                                 <img src="{% static 'icons/plus-circle.svg' %}">
@@ -685,7 +690,6 @@
                         </th>
                     </tr>
                 </thead>
-
                     <tbody>
 
                         {% for parentTask in parentTasks %}
@@ -1164,8 +1168,58 @@
 </div>
 
 
+<div class="modal fade" id="staticBackdropFilteringTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropFilteringTasksLabel" style="margin-right: auto">جستجوی قراردادها</h5>
+            </div>
 
+            <div class="modal-body">
+                <form id="form-filtering-task" class="form">
+                    <div class="input-group mb-3" id="box-filtering-tasks">
+                        <label class="p-1"
+                               style="text-align: right; font-weight: bolder; font-size: 14px; display: block; width: 100px">نوع جستجو: </label>
+                        <select required class="select2 p-1 form-control" id="select2-filtering-model" onchange="handle_select('filtering-model')"
+                                name="model" style="width: 350px; border: solid black; display: inline-block">
+                            <option selected disabled>
+                                انتخاب
+                            </option>
+                            <option value="filtering-task">
+                                آیتم
+                            </option>
+                            <option value="filtering-contractor">
+                                پیمانکار
+                            </option>
+                        </select>
+
+                        <label class="p-1"
+                               style="text-align: right; font-weight: bolder; font-size: 14px; display: block; width: 100px">انتخاب موارد: </label>
+                        <select required class="select2-hidden-accessible w-50 p-1 form-control" id="select2-filtering-pivot"
+                                name="items[]" multiple="multiple" style="width: 350px; border: solid black" onclick="">
+                        </select>
+                    </div>
+
+                    <button class="btn btn-outline-success bp3-round w-100 py-0" onclick=""
+                            type="submit" id="button-addon17" >اعمال فیلتر</button>
+
+                    <button type="button" class="btn btn-outline-warning bp3-round my-2 py-0 w-100" onclick="clear_div('filter-div')">پاک کردن</button>
+                </form>
+
+                <div class="col-12" id="filter-div">
+
+                </div>
+
+                <div class="modal-footer">
+<!--                    <button type="button" class="btn btn-outline-warning py-0 w-100" onclick="clear_div('filter-div')">پاک کردن</button>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade " id="staticBackdropOperations" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -1670,6 +1724,7 @@
     submitForm(null, 'materialprovider')
     submitForm(null, 'machineprovider')
     submitForm(null, 'unit')
+    submitForm(null, 'filtering-task')
 </script>
 
 
@@ -1703,6 +1758,8 @@
 
 
 <script>
+
+
 </script>
 
 

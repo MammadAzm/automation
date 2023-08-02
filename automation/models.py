@@ -47,7 +47,7 @@ class Position(models.Model):
     name = models.CharField(max_length=250,)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
-    class META:
+    class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
@@ -71,7 +71,7 @@ class Profession(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
@@ -105,7 +105,7 @@ class Machine(models.Model):
     type = models.IntegerField(choices=MACHINE_TYPES, default=0)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
@@ -118,7 +118,7 @@ class MachineProvider(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
@@ -152,7 +152,7 @@ class Unit(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     coef = models.FloatField(default=1.0)
 
-    class META:
+    class Meta:
         unique_together = ("project", "name")
 
     def __str__(self):
@@ -163,7 +163,7 @@ class Material(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("project", "name")
 
     def __str__(self):
@@ -174,7 +174,7 @@ class MaterialProvider(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("project", "name")
 
     def __str__(self):
@@ -201,7 +201,7 @@ class Contractor(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=150,)
 
-    class META:
+    class Meta:
         unique_together = ("project", "name")
 
     def __str__(self):
@@ -273,7 +273,7 @@ class Zone(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
 
-    class META:
+    class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
@@ -362,7 +362,7 @@ class Operation(models.Model):
     def __str__(self):
         return self.name
 
-    class META:
+    class Meta:
         unique_together = ("project", "name")
 
 
@@ -817,5 +817,5 @@ class DailyReport(models.Model):
     def __str__(self):
         return self.short_date.strftime(format="%Y/%m/%d")
 
-    class META:
+    class Meta:
         unique_together = ("project", "short_date")

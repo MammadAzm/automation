@@ -105,6 +105,7 @@ urlpatterns = [
 
 
     path("edit-db/get-options-in-priority/", get_options_in_priority),
+    path("edit-db/get-task-filters/", get_task_filters),
 
 
     path("analyzer/analyze/", analyzer),

@@ -65,23 +65,38 @@
 
 <body>
 
+
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
       <div>
           <a href="/home" class=""><button type="button" class="btn-color onhover" style="font-size: 15px">خانه</button></a>
           <a href="/#" class=""><button type="button" class="btn-color onhover" style="font-size: 15px; background-color: darkblue; color: white" id="peyvast">پیوست</button></a>
           <a href="/home/add-base-data/"><button type="button" class=" btn-color onhover" style="font-size: 15px">اطلاعات پایه</button></a>
-          <a href="/home/create-report/"><button type="button" class=" btn-color onhover" style="font-size: 15px">گزارش روزانه</button></a>
-          <a href="/home/daily-reports/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آرشیو گزارشات</button></a>
+
+          <div class="btn-group" style="text-decoration: none;">
+              <button type="button" class="btn-color onhover dropdown-toggle" style="font-size: 15px; " data-bs-toggle="dropdown" aria-expanded="false">
+                  گزارشات روزانه
+              </button>
+              <ul class="dropdown-menu" style="min-width: 130px">
+                  <li style="" class="" style="min-width: 130px">
+                      <a href="/home/create-report/" style="text-decoration: none; "><button type="button" class="btn-color onhover dropdown-item" style="font-size: 15px;text-align: right">ایجاد گزارش</button></a>
+                  </li>
+                  <li style="" class="" style="min-width: 130px">
+                      <a href="/home/daily-reports/" style="text-decoration: none; "><button type="button" class="btn-color onhover dropdown-item" style="font-size: 15px;text-align: right">آرشیو گزارشات</button></a>
+                  </li>
+              </ul>
+          </div>
+
           <a href="/home/analyzer/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آنالیز پروژه</button></a>
       </div>
-      <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">شرکت کیان پولاد سده - کاردان (نسخه آزمایشی)</h1>
+      <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">کاردان (نسخه آزمایشی) - نرم افزار کنترل پروژه - تهیه گزارش روزانه و گزارشات مدیریتی</h1>
     </div>
 </nav>
 
 <div id="main-container" class="">
 
     {% block content %}
+
 
     {% endblock %}
 
