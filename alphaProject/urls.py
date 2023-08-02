@@ -22,13 +22,15 @@ from automation.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("home/", home),
+    path("home/", home, name="home"),
+
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+
     path("home/analyzer/", analyzer, name="analyzer"),
 
     # Main Paths
     path("home/add-base-data/", add_base_data_template),
-
-    path("home/add-base-data/operation-break", operation_break_template),
 
     path("home/create-report/", create_report_template),
     path("home/daily-reports/", reports_daily),

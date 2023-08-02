@@ -17,29 +17,45 @@
                 <div class="col-8">
                     <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
                         <thead class="">
-                            <tr>
-                                <th style="width: 13%">پروژه</th>
-                                <th style="width: 16%" class="table-light">{{ report.project_name }}</th>
-                                <th style="width: 18%">شماره قرارداد</th>
-                                <th style="width: 18%" class="table-light">{{ report.contract_number }}</th>
-                                <th style="width: 13%">مشاور</th>
-                                <th style="width: 22%" class="table-light">{{ report.consultor_name }}</th>
+                            <tr class="p-1">
+                                <th class="p-1" style="width: 13%">پروژه</th>
+                                <th class="p-1 table-light" style="width: 16%">{{ report.project.name }}</th>
+                                <th class="p-1" style="width: 18%">کارفرما</th>
+                                <th class="p-1 table-light" style="width: 18%">{{ report.project.employer }}</th>
+                                <th class="p-1" style="width: 13%">پیمانکار</th>
+                                <th class="p-1 table-light" style="width: 22%">{{ report.project.employee }}</th>
                             </tr>
-                            <tr>
-                                <th style="width: 13%">کارفرما</th>
-                                <th style="width: 16%" class="table-light">{{ report.employer }}</th>
-                                <th style="width: 18%">پیمانکار</th>
-                                <th style="width: 18%" class="table-light">{{ report.employee }}</th>
-                                <th style="width: 13%">تاریخ</th>
-                                <th style="width: 22%" class="table-light">{{ other.weekday }} - {{ other.date }}</th>
+                            <tr class="p-1">
+                                <th class="p-1" style="width: 13%">مشاور</th>
+                                <th class="p-1 table-light" style="width: 16%">{{ report.project.advisor }}</th>
+                                <th class="p-1" style="width: 18%">موضوع قرارداد</th>
+                                <th class="p-1 table-light" style="width: 18%">{{ report.project.contract_subject }}</th>
+                                <th class="p-1" style="width: 13%">نوع قرارداد</th>
+                                <th class="p-1 table-light" style="width: 22%">{{ report.project.contract_type }}</th>
                             </tr>
-                            <tr>
-                                <th style="width: 13%">میزان گرد و غبار</th>
-                                <th style="width: 16%" class="table-light">{{ report.dust_value }}</th>
-                                <th style="width: 18%">بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
-                                <th style="width: 18%" class="table-light">{{ report.temperature_max }} &nbsp; || &nbsp; {{ report.temperature_min }}</th>
-                                <th style="width: 13%">وضعیت جوی</th>
-                                <th style="width: 22%" class="table-light">{{ other.weather }}</th>
+                            <tr class="p-1">
+                                <th class="p-1" style="width: 13%">شماره قرارداد</th>
+                                <th class="p-1 table-light" style="width: 16%">{{ report.project.contract_number }}</th>
+                                <th class="p-1" style="width: 18%">تاریخ شروع قرارداد</th>
+                                <th class="p-1 table-light" style="width: 18%">{{ report.project.start_date }}</th>
+                                <th class="p-1" style="width: 13%">مدت قرارداد</th>
+                                <th class="p-1 table-light" style="width: 22%">{{ report.project.contract_duration }}</th>
+                            </tr>
+                            <tr class="p-1">
+                                <th class="p-1" style="width: 13%">آدرس قرارداد</th>
+                                <th class="p-1 table-light" style="width: 16%">{{ report.project.contract_address }}</th>
+                                <th class="p-1" style="width: 18%">مسئول کنترل پروژه</th>
+                                <th class="p-1 table-light" style="width: 18%">{{ report.project.user.user.first_name }}{{ report.project.user.user.last_name }}</th>
+                                <th class="p-1" style="width: 13%">تاریخ</th>
+                                <th class="p-1 table-light" style="width: 22%">{{ other.weekday }} - {{ other.date }}</th>
+                            </tr>
+                            <tr class="p-1">
+                                <th class="p-1" style="width: 13%">میزان گرد و غبار</th>
+                                <th class="p-1 table-light" style="width: 16%">{{ report.dust_value }}</th>
+                                <th class="p-1" style="width: 18%">بیشترین | کمترین دما</th>
+                                <th class="p-1 table-light" style="width: 18%">{{ report.temperature_max }} | {{ report.temperature_min }}</th>
+                                <th class="p-1" style="width: 13%">وضعیت جوی</th>
+                                <th class="p-1 table-light" style="width: 22%">{{ other.weather }}</th>
                             </tr>
                         </thead>
                     </table>
@@ -51,7 +67,7 @@
 
             </div>
 
-            <div class="col-6" style=" margin-top: -30px">
+            <div class="col-6" style=" margin-top: -10px">
 
                 <div class="row " style="margin-bottom: 0; padding-bottom: 0;">
 
@@ -141,7 +157,7 @@
             </div>
 
 
-            <div class="col-6" style=" margin-top: -30px">
+            <div class="col-6" style=" margin-top: -10px">
                 <div class="row">
 
                     <div class="col-7" style="padding: 0; margin: 0 -10px 0 0;">

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+              <div style="padding: 0; margin: 0;" class="mx-auto">
+                  <label style="font-size: 12pt;">
+                      شما بعنوان "{{ user.first_name }} {{ user.last_name }}" وارد سامانه شده اید <a href="/logout/"> خروج </a>
+                  </label>
+              </div>
+            </div>
+        </nav>
+
+        <div class="container-xxl px-3" style="margin-top: 0.5%">
+
+            <div class="row px-3 text-centred" style="height: 525px">
+
+                <div class="col-4 py-4 px-4" style="">
+                    <div class="row w-100">
+                        <button class="btn btn-light w-75 mx-auto">پروژه شما</button>
+                    </div>
+                    {% for project in my_user.projects.all %}
+                        <div class="row w-100" style="">
+                            <button class="py-1 my-2" style="border-radius: 5px;" onclick="view_project(
+                                name='{{ project.name}}',
+                                employee='{{ project.employee}}',
+                                employer='{{ project.employer}}',
+                                advisor='{{ project.advisor}}',
+                                cnt_subject='{{ project.contract_subject}}',
+                                cnt_type='{{ project.contract_type}}',
+                                cnt_number='{{ project.contract_number}}',
+                                start_date='{{ project.start_date}}',
+                                cnt_duration='{{ project.contract_duration}}',
+                                cnt_address='{{ project.contract_address}}',
+                            )">
+                                {{ project }}
+                            </button>
+                        </div>
+                        <div class="row h-75 py-5">
+                            <img src="{% static 'logo/temp.avif' %}" height="300" width="300">
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div id="project_details_container" class="col-8 bg-light" style="border-radius: 10px; padding: 25px;">
+
+                    <div class="row w-100 ">
+                        <div class="col-6" style="text-align: right">
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                نام پروژه:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                کارفرما:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                پیمانکار:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                مشاور:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                موضوع قراداد:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                نوع قرارداد:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                شماره قرارداد:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                تاریخ شروع:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                مدت قرارداد:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" style="font-size: 16px; display: block">
+                                آدرس قرارداد:
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+
+                        </div>
+
+                        <div class="col-6" style="text-align: right">
+                            <label class="py-1" id="project_name" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.name}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_employer" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.employee}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_employee" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.employer}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_advisor" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.advisor}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_contract_subject" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.contract_subject}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_contract_type" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.contract_type}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_contract_number" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.contract_number}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_start_date" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.start_date}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_contract_duration" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.contract_duration}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                            <label class="py-1" id="project_contract_address" style="font-size: 16px; display: block">
+                                {{ my_user.projects.all.0.contract_address}}
+                            </label>
+                            <div class="row" style="height: 3px; background-color: #ff9d00; border-radius: 3px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="container-xxl px-3" style="margin-top: 0.5%">
+
+            <div class="row px-3 text-centred" style="height: 550px">
+
+                <div class="col-4 py-4 px-4" style="display: flex;justify-content: center;align-items: center;">
+                    <form action="/login/" method="post" class="row py-5 px-3" style="vertical-align: middle; background-color: #ff9d00; border-radius: 10px">
+                        {% csrf_token %}
+                        <div class="col-12 py-2">
+                            <h5>نام کاربری</h5>
+                            <div class="input-group py-1">
+                                <input type="text" name="username" class="form-control" placeholder="نام کاربری را وارد کنید">
+                            </div>
+                        </div>
+
+                        <div class="col-12 py-2">
+                            <h5>رمز عبور</h5>
+                            <div class="input-group py-1">
+                                <input type="text" name="password" class="form-control" placeholder="رمز عبور را وارد کنید">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-dark px-4 mt-4 w-100">ورود</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-8" style="display: flex;justify-content: center;align-items: center; vertical-align: middle; background-color: #ff9d00; border-radius: 10px; opacity: 0.75">
+
+                    <h2>بنر بزرگ</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+{% endblock %}

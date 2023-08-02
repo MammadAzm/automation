@@ -103,3 +103,10 @@ def hasContent(item):
 
 register.filter("hasContent", hasContent)
 
+
+def returnDict(item):
+    temp = item.__dict__
+    return temp
+
+
+register.filter("returnDict", returnDict)

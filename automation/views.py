@@ -20,31 +20,62 @@ from operator import or_
 from django.db.models import F
 from operator import itemgetter
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
-# TODO : Bug Fix ; error raises for adding already existing objects to base data
 
 
 def home(request):
-    return render(request, "base.html")
+    if request.user.is_authenticated:
+        my_user = MyUser.objects.get(user=request.user)
+        context = {
+            "my_user": my_user
+        }
+    else:
+        context = {
+
+        }
+    return render(request, "home.html", context=context)
 
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password, )
+        if user is not None:
+            login(request, user)
+            return redirect('/home/')  # Redirect to a specific page after login
+
+    return redirect('/home/')
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/home/')  # Redirect to the login page after logout
+
+
+@login_required
 def add_base_data_template(request):
-    professions = Profession.objects.all()
-    positions = Position.objects.all()
-    machines = Machine.objects.all()
-    materials = Material.objects.all()
-    contractors = Contractor.objects.all()
-    equipes = Equipe.objects.all()
-    zones = Zone.objects.all()
-    tasks = Task.objects.all()
-    parentTasks = ParentTask.objects.all()
-    units = Unit.objects.all().order_by('parent', 'name')
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
 
-    materialproviders = MaterialProvider.objects.all()
-    machineproviders = MachineProvider.objects.all()
+    professions = Profession.objects.filter(project=project)
+    positions = Position.objects.filter(project=project)
+    machines = Machine.objects.filter(project=project)
+    materials = Material.objects.filter(project=project)
+    contractors = Contractor.objects.filter(project=project)
+    equipes = Equipe.objects.filter(project=project)
+    zones = Zone.objects.filter(project=project)
+    tasks = Task.objects.filter(project=project)
+    parentTasks = ParentTask.objects.filter(project=project)
+    units = Unit.objects.filter(project=project).order_by('parent', 'name')
 
-    operations = Operation.objects.all()
-    suboperations = SubOperation.objects.all()
+    materialproviders = MaterialProvider.objects.filter(project=project)
+    machineproviders = MachineProvider.objects.filter(project=project)
+
+    operations = Operation.objects.filter(project=project)
+    suboperations = SubOperation.objects.filter(project=project)
 
     if not professions.exists():
         professions = []
@@ -76,6 +107,7 @@ def add_base_data_template(request):
         suboperations = []
 
     context = {
+        "project": project,
         "positions": positions,
         "professions": professions,
         "machines": machines,
@@ -97,13 +129,17 @@ def add_base_data_template(request):
     return render(request, "modify-base-data.html", context=context)
 
 
+@login_required
 def edit_base_data(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         new_data = request.POST
         model = EDIT_BASE_DATA[new_data["model"]]
         if new_data["model"] in ONLY_NAME_MODELS:
             instance = new_data["instance"]
-            object = get_object_or_404(model, name=instance)
+            object = get_object_or_404(model, name=instance, project=project)
             object.name = new_data['name']
             object.save()
 
@@ -116,11 +152,12 @@ def edit_base_data(request):
             object = get_object_or_404(
                 model,
                 name=instance,
+                project=project,
             )
             if profession:
-                object.profession = Profession.objects.get(name=profession)
+                object.profession = Profession.objects.get(name=profession, project=project)
             if contractor:
-                object.contractor = Contractor.objects.get(name=contractor)
+                object.contractor = Contractor.objects.get(name=contractor, project=project)
 
             object.set_name()
 
@@ -136,6 +173,7 @@ def edit_base_data(request):
             object = get_object_or_404(
                 model,
                 name=instance,
+                project=project,
             )
             if name and name.strip() != object.name:
                 object.name = name.strip()
@@ -151,30 +189,28 @@ def edit_base_data(request):
                 object.update_percentage()
                 object.update_assignedAmount()
 
-                for item in TaskReport.objects.filter(operation=object):
+                for item in TaskReport.objects.filter(operation=object, project=project):
                     item.update_due_to_base_data_edits()
 
             if unit and unit.strip() != object.unit:
-                print(">>>>", "unit chaneged", object.unit, unit)
-
                 for zone in object.zones.all():
-                    zone.unit = Unit.objects.get(name=unit)
+                    zone.unit = Unit.objects.get(name=unit, project=project)
                     zone.save()
 
                     for parentTask in zone.parentTasks.all():
-                        parentTask.unit = Unit.objects.get(name=unit)
+                        parentTask.unit = Unit.objects.get(name=unit, project=project)
                         parentTask.save()
                     for task in zone.tasks.all():
                         if task.unit.name == object.unit.name:
-                            task.unit = Unit.objects.get(name=unit)
+                            task.unit = Unit.objects.get(name=unit, project=project)
                             task.save()
 
                 for suboperation in object.suboperations.all():
                     if suboperation.unit.name == object.unit.name:
-                        suboperation.unit = Unit.objects.get(name=unit)
+                        suboperation.unit = Unit.objects.get(name=unit, project=project)
                         suboperation.save()
 
-                object.unit = Unit.objects.get(name=unit)
+                object.unit = Unit.objects.get(name=unit, project=project)
 
             object.save()
 
@@ -186,15 +222,16 @@ def edit_base_data(request):
             amount = new_data.get("amount")
 
             old_zone, operation = instance.split("-")
-            old_zone, operation = Zone.objects.get(name=old_zone), Operation.objects.get(name=operation)
+            old_zone, operation = Zone.objects.get(name=old_zone, project=project), Operation.objects.get(name=operation, project=project)
             object = get_object_or_404(
                 model,
                 operation=operation,
                 zone=old_zone,
+                project=project,
             )
 
             if zone:
-                object.zone = Zone.objects.get(name=zone)
+                object.zone = Zone.objects.get(name=zone, project=project)
             if amount:
                 object.amount = amount
             object.save()
@@ -204,8 +241,6 @@ def edit_base_data(request):
             # object.update_assignedAmount()
             object.update_freeAmount()
             object.update_donePercentage()
-
-
 
             return HttpResponse(True)
 
@@ -217,38 +252,35 @@ def edit_base_data(request):
             unit = new_data.get("unit")
 
             ref_sub, operation = instance.split("-")
-            operation = Operation.objects.get(name=operation)
+            operation = Operation.objects.get(name=operation, project=project)
             object = get_object_or_404(
                 model,
                 parent=operation,
                 name=ref_sub,
+                project=project,
             )
 
             if name and name != object.name:
-                print(">>>> Name Changed")
                 object.name = name
             if weight and float(weight) != float(object.weight):
-                print(">>>> Weight Changed")
                 object.weight = weight
             if amount and float(amount) != float(object.amount):
-                print(">>>> Amount Changed")
                 object.amount = amount
-                for task in Task.objects.filter(suboperation=object):
+                for task in Task.objects.filter(suboperation=object, project=project):
                     task.totalVolume = (float(task.parent.totalVolume)/float(operation.amount))*float(object.amount)
                     task.save()
                 object.save()
 
-                for item in TaskReport.objects.filter(operation=object.parent):
+                for item in TaskReport.objects.filter(operation=object.parent, project=project):
                     item.update_due_to_base_data_edits()
 
             if unit and unit != object.unit.name:
-                print(">>>> Unit Changed")
-                for task in Task.objects.filter(suboperation=object):
+                for task in Task.objects.filter(suboperation=object, project=project):
                     if task.unit.name == object.unit.name:
-                        task.unit = Unit.objects.get(name=unit)
+                        task.unit = Unit.objects.get(name=unit, project=project)
                         task.save()
 
-                object.unit = Unit.objects.get(name=unit)
+                object.unit = Unit.objects.get(name=unit, project=project)
 
             object.save()
 
@@ -257,25 +289,12 @@ def edit_base_data(request):
             return HttpResponse(True)
 
 
-def operation_break_template(request):
-    operations = Operation.objects.all()
-    units = Unit.objects.all()
-
-    if not operations.exists():
-        operations = []
-    if not units.exists():
-        units = []
-
-    context = {
-        "operations": operations,
-        "units": units,
-    }
-
-    return render(request, "operation-breaks.html", context=context)
-
-
+@login_required
 def create_report_template(request):
-    if DailyReport.objects.all().count() == 0:
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if DailyReport.objects.filter(project=project).count() == 0:
         # positions = Position.objects.all()
         # professions = Profession.objects.all()
         # machines = Machine.objects.all()
@@ -305,16 +324,16 @@ def create_report_template(request):
         }
 
     else:
-        report = DailyReport.objects.last()
-        positions = PositionCount.objects.filter(dailyReport=report)
-        professions = ProfessionCount.objects.filter(dailyReport=report)
-        machines = MachineCount.objects.filter(dailyReport=report)
-        materials = MaterialCount.objects.filter(dailyReport=report)
-        equipes = EquipeCount.objects.filter(dailyReport=report)
-        units = Unit.objects.all()
-        materialproviders = MaterialProvider.objects.all()
-        machineproviders = MachineProvider.objects.all()
-        tasks = TaskReport.objects.filter(dailyReport=report)
+        report = DailyReport.objects.filter(project=project).last()
+        positions = PositionCount.objects.filter(dailyReport=report, project=project)
+        professions = ProfessionCount.objects.filter(dailyReport=report, project=project)
+        machines = MachineCount.objects.filter(dailyReport=report, project=project)
+        materials = MaterialCount.objects.filter(dailyReport=report, project=project)
+        equipes = EquipeCount.objects.filter(dailyReport=report, project=project)
+        units = Unit.objects.filter(project=project)
+        materialproviders = MaterialProvider.objects.filter(project=project)
+        machineproviders = MachineProvider.objects.filter(project=project)
+        tasks = TaskReport.objects.filter(dailyReport=report, project=project)
 
         other = {
             "weekday": report.get_weekday_display(),
@@ -339,12 +358,16 @@ def create_report_template(request):
     return render(request, "daily-report.html", context=context)
 
 
+@login_required
 def add_position_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         position = request.POST.get("position")
 
-        new_position = Position.objects.create(name=position)
+        new_position = Position.objects.create(name=position, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -354,7 +377,11 @@ def add_position_to_db(request):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_unit_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         unit = request.POST.get("unit")
@@ -362,9 +389,10 @@ def add_unit_to_db(request):
         coef = request.POST.get("parent-coef")
 
         if parent:
-            parent = Unit.objects.get(name=parent)
+            parent = Unit.objects.get(name=parent, project=project)
 
         new_unit = Unit.objects.create(
+            project=project,
             name=unit,
             parent=parent if parent else None,
             coef=coef if coef else 1.0,
@@ -378,12 +406,16 @@ def add_unit_to_db(request):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_materialprovider_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         materialprovider = request.POST.get("materialprovider")
 
-        new_materialprovider = MaterialProvider.objects.create(name=materialprovider)
+        new_materialprovider = MaterialProvider.objects.create(name=materialprovider, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -393,12 +425,16 @@ def add_materialprovider_to_db(request):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_machineprovider_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         machineprovider = request.POST.get("machineprovider")
 
-        new_machineprovider = MachineProvider.objects.create(name=machineprovider)
+        new_machineprovider = MachineProvider.objects.create(name=machineprovider, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -408,13 +444,17 @@ def add_machineprovider_to_db(request):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_machine_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         machine = request.POST.get("machine")
         type = request.POST.get("machineType")
 
-        new_machine = Machine.objects.create(name=machine, type=type)
+        new_machine = Machine.objects.create(name=machine, type=type, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -424,13 +464,18 @@ def add_machine_to_db(request,):
     return HttpResponse("Problem")
 
 
+
+@login_required
 def add_material_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         material = request.POST.get("material")
         # type = request.POST.get("machineType")
 
-        new_material = Material.objects.create(name=material)
+        new_material = Material.objects.create(name=material, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -440,12 +485,16 @@ def add_material_to_db(request,):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_profession_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         profession = request.POST.get("profession")
 
-        new_profession = Profession.objects.create(name=profession)
+        new_profession = Profession.objects.create(name=profession, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -455,12 +504,16 @@ def add_profession_to_db(request,):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_contractor_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         contractor = request.POST.get("contractor")
 
-        new_contractor = Contractor.objects.create(name=contractor)
+        new_contractor = Contractor.objects.create(name=contractor, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -470,12 +523,16 @@ def add_contractor_to_db(request,):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_zone_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
         zone = request.POST.get("zone")
 
-        new_zone = Zone.objects.create(name=zone)
+        new_zone = Zone.objects.create(name=zone, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -485,7 +542,11 @@ def add_zone_to_db(request,):
     return HttpResponse("Problem")
 
 
+@login_required
 def add_task_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
 
@@ -496,20 +557,22 @@ def add_task_to_db(request,):
         taskVol = float(request.POST.get("task-volume"))
         unitName = request.POST.get("unit")
 
-        operation = Operation.objects.get(name=operation)
+        operation = Operation.objects.get(name=operation, project=project)
         zoneoperation = ZoneOperation.objects.get(
-                operation=operation,
-                zone=Zone.objects.get(name=zoneName),
+            operation=operation,
+            zone=Zone.objects.get(name=zoneName, project=project),
+            project=project
         )
 
         new_parent_task, new = ParentTask.objects.get_or_create(
             operation=zoneoperation,
-            equipe=Equipe.objects.get(name=equipeName),
-            zone=Zone.objects.get(name=zoneName),
+            equipe=Equipe.objects.get(name=equipeName, project=project),
+            zone=Zone.objects.get(name=zoneName, project=project),
+            project=project,
 
             defaults={
                 'totalVolume': taskVol,
-                'unit': Unit.objects.get(name=unitName),
+                'unit': Unit.objects.get(name=unitName, project=project),
             }
         )
 
@@ -525,14 +588,16 @@ def add_task_to_db(request,):
         for suboperation in operation.suboperations.all():
             taskVol_for_subopr = (taskVol/zoneoperation.operation.amount) * suboperation.amount
             new_task, new = Task.objects.get_or_create(
+                project=project,
                 parent=new_parent_task,
                 operation=zoneoperation,
                 suboperation=SubOperation.objects.get(
+                    project=project,
                     name=suboperation.name,
                     parent=operation,
                 ),
-                equipe=Equipe.objects.get(name=equipeName),
-                zone=Zone.objects.get(name=zoneName),
+                equipe=Equipe.objects.get(name=equipeName, project=project),
+                zone=Zone.objects.get(name=zoneName, project=project),
 
                 defaults={
                     'totalVolume': taskVol_for_subopr,
@@ -563,17 +628,22 @@ def add_task_to_db(request,):
         return HttpResponse("Problem")
 
 
+@login_required
 def add_equipe_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         # redirect_url = request.META.get('HTTP_REFERER', '/')
         prof = request.POST.get("profession")
         cont = request.POST.get("contractor")
 
-        prof = Profession.objects.get(name=prof)
-        cont = Contractor.objects.get(name=cont)
+        prof = Profession.objects.get(name=prof, project=project)
+        cont = Contractor.objects.get(name=cont, project=project)
 
         # TODO : Make line below get_or_create
         obj , new = Equipe.objects.get_or_create(
+            project=project,
             profession=prof,
             contractor=cont,
             defaults={
@@ -594,30 +664,34 @@ def add_equipe_to_db(request,):
     return HttpResponse("Problem")
 
 
+@login_required
 def shortcut_add(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         which = request.POST.get("which")
         value = request.POST.get("value")
         type = request.POST.get("type")
 
         if which == "position":
-            new_obj = Position.objects.create(name=value)
+            new_obj = Position.objects.create(name=value, project=project)
         elif which == "profession":
-            new_obj = Profession.objects.create(name=value)
+            new_obj = Profession.objects.create(name=value, project=project)
         elif which == "machine":
-            new_obj = Machine.objects.create(name=value, type=type)
+            new_obj = Machine.objects.create(name=value, type=type, project=project)
         elif which == "material":
-            new_obj = Material.objects.create(name=value)
+            new_obj = Material.objects.create(name=value, project=project)
         elif which == "contractor":
-            new_obj = Contractor.objects.create(name=value)
+            new_obj = Contractor.objects.create(name=value, project=project)
         elif which == "zone":
-            new_obj = Zone.objects.create(name=value)
+            new_obj = Zone.objects.create(name=value, project=project)
         elif which == "unit":
-            new_obj = Unit.objects.create(name=value)
+            new_obj = Unit.objects.create(name=value, project=project)
         elif which == "materialprovider":
-            new_obj = MaterialProvider.objects.create(name=value)
+            new_obj = MaterialProvider.objects.create(name=value, project=project)
         elif which == "machineprovider":
-            new_obj = MachineProvider.objects.create(name=value)
+            new_obj = MachineProvider.objects.create(name=value, project=project)
 
         return HttpResponse(True)
 
@@ -627,11 +701,15 @@ def shortcut_add(request,):
     return HttpResponse(False)
 
 
+@login_required
 def del_position_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("position")
-        obj = Position.objects.get(name=name)
-        objCount = PositionCount.objects.filter(position=obj.id)
+        obj = Position.objects.get(name=name, project=project)
+        objCount = PositionCount.objects.filter(position=obj.id, project=project)
         obj.delete()
         objCount.delete()
         return HttpResponse(1)
@@ -642,11 +720,15 @@ def del_position_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_profession_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("profession")
-        obj = Profession.objects.get(name=name)
-        objCount = PositionCount.objects.filter(position=obj.id)
+        obj = Profession.objects.get(name=name, project=project)
+        objCount = PositionCount.objects.filter(position=obj.id, project=project)
         obj.delete()
         objCount.delete()
         return HttpResponse(1)
@@ -657,11 +739,15 @@ def del_profession_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_machine_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("machine")
-        obj = Machine.objects.get(name=name)
-        objCount = MachineCount.objects.filter(machine=obj.id)
+        obj = Machine.objects.get(name=name, project=project)
+        objCount = MachineCount.objects.filter(machine=obj.id, project=project)
         obj.delete()
         objCount.delete()
         return HttpResponse(1)
@@ -672,11 +758,15 @@ def del_machine_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_material_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("material")
-        obj = Material.objects.get(name=name)
-        objCount = MaterialCount.objects.filter(material=obj.id)
+        obj = Material.objects.get(name=name, project=project)
+        objCount = MaterialCount.objects.filter(material=obj.id, project=project)
         obj.delete()
         objCount.delete()
         return HttpResponse(1)
@@ -687,10 +777,14 @@ def del_material_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_contractor_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("contractor")
-        obj = Contractor.objects.get(name=name)
+        obj = Contractor.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -702,10 +796,14 @@ def del_contractor_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_zone_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("zone")
-        obj = Zone.objects.get(name=name)
+        obj = Zone.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -717,10 +815,14 @@ def del_zone_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_unit_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("unit")
-        obj = Unit.objects.get(name=name)
+        obj = Unit.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -732,11 +834,15 @@ def del_unit_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_operation_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("operation")
 
-        obj = Operation.objects.get(name=name)
+        obj = Operation.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -748,14 +854,18 @@ def del_operation_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_suboperation_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         suboperation = request.POST.get("suboperation")
         operation = request.POST.get("operation")
-        obj = SubOperation.objects.get(name=suboperation, parent=operation)
+        obj = SubOperation.objects.get(name=suboperation, parent=operation, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
-        Operation.objects.get(id=operation).update_assignedWeight()
+        Operation.objects.get(id=operation, project=project).update_assignedWeight()
         # objCount.delete()
         return HttpResponse(True)
 
@@ -765,17 +875,21 @@ def del_suboperation_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_zoneoperation_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         zone = request.POST.get("zoneoperation")
-        zone = Zone.objects.get(name=zone)
+        zone = Zone.objects.get(name=zone, project=project)
 
         operation = request.POST.get("operation")
 
-        obj = ZoneOperation.objects.get(zone=zone, operation=operation)
+        obj = ZoneOperation.objects.get(zone=zone, operation=operation, project=project)
         obj.delete()
 
-        Operation.objects.get(id=operation).update_assignedAmount()
+        Operation.objects.get(id=operation, project=project).update_assignedAmount()
 
         return HttpResponse(True)
 
@@ -785,7 +899,11 @@ def del_zoneoperation_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def add_suboperation_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         operation_id = request.POST.get("operation-id")
         name = request.POST.get("name")
@@ -793,10 +911,11 @@ def add_suboperation_to_db(request):
         amount = request.POST.get("amount")
         weight = request.POST.get("weight")
 
-        operation = Operation.objects.get(id=operation_id)
-        unit = Unit.objects.get(name=unit_name)
+        operation = Operation.objects.get(id=operation_id, project=project)
+        unit = Unit.objects.get(name=unit_name, project=project)
 
         new_obj = SubOperation.objects.create(
+            project=project,
             name=name,
             unit=unit,
             parent=operation,
@@ -817,20 +936,24 @@ def add_suboperation_to_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def add_operation_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("operation")
         unit_name = request.POST.get("unit-name").strip()
         amount = request.POST.get("amount")
 
         operation = Operation.objects.create(
+            project=project,
             name=name,
-            unit=Unit.objects.get(name=unit_name),
+            unit=Unit.objects.get(name=unit_name, project=project),
             amount=amount,
         )
         operation.update_assignedWeight()
         operation.update_assignedAmount()
-
 
         return HttpResponse(operation.id)
 
@@ -840,19 +963,24 @@ def add_operation_to_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def add_zoneoperation_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         operation_id = request.POST.get("operation-id")
         zone = request.POST.get("zone").strip()
         amount = request.POST.get("amount")
 
-        operation = Operation.objects.get(id=operation_id)
+        operation = Operation.objects.get(id=operation_id, project=project)
         if float(amount) > float(operation.freeAmount):
             return HttpResponse(f"حداکثر مقدار وارده {operation.freeAmount} می باشد", status=500)
 
         zone_operation = ZoneOperation.objects.create(
+            project=project,
             operation=operation,
-            zone=Zone.objects.get(name=zone),
+            zone=Zone.objects.get(name=zone, project=project),
             unit=operation.unit,
             amount=amount,
         )
@@ -869,10 +997,14 @@ def add_zoneoperation_to_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_materialprovider_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("materialprovider")
-        obj = MaterialProvider.objects.get(name=name)
+        obj = MaterialProvider.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -884,10 +1016,14 @@ def del_materialprovider_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_machineprovider_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name = request.POST.get("machineprovider")
-        obj = MachineProvider.objects.get(name=name)
+        obj = MachineProvider.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()
@@ -899,14 +1035,19 @@ def del_machineprovider_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_equipe_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         prof = request.POST.get("profession")
         cont = request.POST.get("contractor")
 
         obj = Equipe.objects.filter(
-            profession=Profession.objects.get(name=prof),
-            contractor=Contractor.objects.get(name=cont),
+            project=project,
+            profession=Profession.objects.get(name=prof, project=project),
+            contractor=Contractor.objects.get(name=cont, project=project),
         )
         obj.delete()
 
@@ -918,7 +1059,11 @@ def del_equipe_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def del_task_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         taskOperation = request.POST.get("taskOperation")
         # taskSubOperation = request.POST.get("taskSubOperation")
@@ -926,23 +1071,22 @@ def del_task_from_db(request):
         # taskVol = request.POST.get("taskVol")
         zoneName = request.POST.get("zoneName")
         # unitName = request.POST.get("unitName")
-        print(taskOperation)
-        print(equipeName)
-        print(zoneName)
-        operation = Operation.objects.get(name=taskOperation)
+        operation = Operation.objects.get(name=taskOperation, project=project)
         zoneoperation = ZoneOperation.objects.get(
+            project=project,
             operation=operation,
-            zone=Zone.objects.get(name=zoneName),
+            zone=Zone.objects.get(name=zoneName, project=project),
         )
 
         obj = ParentTask.objects.filter(
+            project=project,
             operation=zoneoperation.id,
             # suboperation=SubOperation.objects.get(
             #     name=taskSubOperation,
             #     parent=Operation.objects.get(name=taskOperation),
             # ),
-            equipe=Equipe.objects.get(name=equipeName),
-            zone=Zone.objects.get(name=zoneName),
+            equipe=Equipe.objects.get(name=equipeName, project=project),
+            zone=Zone.objects.get(name=zoneName, project=project),
         )
         obj.delete()
 
@@ -959,7 +1103,11 @@ def del_task_from_db(request):
     return HttpResponse(-1)
 
 
+@login_required
 def save_daily_report_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     # TODO : Modify this service usage in the front-side to be called through AJAX Request
     if request.method == "POST":
         data = dict(request.POST)
@@ -1053,6 +1201,7 @@ def save_daily_report_to_db(request):
         # return HttpResponse(1)
 
         report = DailyReport.objects.create(
+            project=project,
             project_name=data['project_name'][0],
             employer=data["employer"][0],
             employee=data["employee"][0],
@@ -1068,8 +1217,9 @@ def save_daily_report_to_db(request):
 
         for position, count in positions.items():
             if count > 0:
-                pos = Position.objects.get(name=position)
+                pos = Position.objects.get(name=position, project=project)
                 obj = PositionCount.objects.create(
+                    project=project,
                     position=pos,
                     dailyReport=report,
                     count=count,
@@ -1080,8 +1230,9 @@ def save_daily_report_to_db(request):
 
         for profession, count in professions.items():
             if sum(count) > 0:
-                prof = Profession.objects.get(name=profession)
+                prof = Profession.objects.get(name=profession, project=project)
                 obj = ProfessionCount.objects.create(
+                    project=project,
                     profession=prof,
                     dailyReport=report,
                     countExpert=count[0],
@@ -1100,9 +1251,10 @@ def save_daily_report_to_db(request):
             if count[0] > 0 or count[1] > 0:
                 machine = machine.strip()
                 # machine = machine.split("-")[1].strip()
-                mach = Machine.objects.get(name=machine)
-                provider = MachineProvider.objects.get(name=count[3])
+                mach = Machine.objects.get(name=machine, project=project)
+                provider = MachineProvider.objects.get(name=count[3], project=project)
                 obj = MachineCount.objects.create(
+                    project=project,
                     machine=mach,
                     dailyReport=report,
                     activeCount=count[1],
@@ -1121,10 +1273,11 @@ def save_daily_report_to_db(request):
             if amount[0] > 0:
                 material = material.strip()
 
-                mat = Material.objects.get(name=material)
-                unit = Unit.objects.get(name=amount[1])
-                materialprovider = MaterialProvider.objects.get(name=amount[2])
+                mat = Material.objects.get(name=material, project=project)
+                unit = Unit.objects.get(name=amount[1], project=project)
+                materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
                 obj = MaterialCount.objects.create(
+                    project=project,
                     material=mat,
                     dailyReport=report,
                     amount=amount[0],
@@ -1137,8 +1290,9 @@ def save_daily_report_to_db(request):
 
         for contractor, count in contractors.items():
             if sum(count) > 0:
-                cont = Contractor.objects.get(name=contractor)
+                cont = Contractor.objects.get(name=contractor, project=project)
                 obj = ContractorCount.objects.create(
+                    project=project,
                     contractor=cont,
                     dailyReport=report,
                     countExpert=count[0],
@@ -1155,10 +1309,12 @@ def save_daily_report_to_db(request):
             if sum(count) > 0:
                 prof, cont = equipe.split("-")
                 equ = Equipe.objects.get(
-                    profession=Profession.objects.get(name=prof),
-                    contractor=Contractor.objects.get(name=cont),
+                    project=project,
+                    profession=Profession.objects.get(name=prof, project=project),
+                    contractor=Contractor.objects.get(name=cont, project=project),
                 )
                 obj = EquipeCount.objects.create(
+                    project=project,
                     equipe=equ,
                     dailyReport=report,
                     countExpert=count[0],
@@ -1173,13 +1329,14 @@ def save_daily_report_to_db(request):
 
         for task, amount in tasks.items():
             if amount > 0:
-                tsk = Task.objects.get(unique_str=task)
+                tsk = Task.objects.get(unique_str=task, project=project)
 
                 if not tsk.started:
                     tsk.start(date=report.date)
 
-                parent = TaskReport.objects.filter(task=tsk).last()
+                parent = TaskReport.objects.filter(task=tsk, project=project).last()
                 tsk_rep = TaskReport.objects.create(
+                    project=project,
                     task=tsk,
                     operation=tsk.operation.operation,
                     parent=parent,
@@ -1201,9 +1358,13 @@ def save_daily_report_to_db(request):
         return -1
 
 
+@login_required
 def del_daily_report_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
-        rep = DailyReport.objects.get(id=request.POST["id"])
+        rep = DailyReport.objects.get(id=request.POST["id"], project=project)
 
         if rep.deletable:
             for item in rep.taskreport_set.all():
@@ -1216,22 +1377,26 @@ def del_daily_report_from_db(request):
         return -1
 
 
+@login_required
 def edit_daily_report_in_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         if request.POST.get("template"):
-            report = DailyReport.objects.get(id=request.POST["id"])
+            report = DailyReport.objects.get(id=request.POST["id"], project=project)
 
             if report.editable:
 
-                positions = PositionCount.objects.filter(dailyReport=report)
-                professions = ProfessionCount.objects.filter(dailyReport=report)
-                machines = MachineCount.objects.filter(dailyReport=report)
-                materials = MaterialCount.objects.filter(dailyReport=report)
-                equipes = EquipeCount.objects.filter(dailyReport=report)
-                units = Unit.objects.all()
-                materialproviders = MaterialProvider.objects.all()
-                machineproviders = MachineProvider.objects.all()
-                tasks = TaskReport.objects.filter(dailyReport=report)
+                positions = PositionCount.objects.filter(dailyReport=report, project=project)
+                professions = ProfessionCount.objects.filter(dailyReport=report, project=project)
+                machines = MachineCount.objects.filter(dailyReport=report, project=project)
+                materials = MaterialCount.objects.filter(dailyReport=report, project=project)
+                equipes = EquipeCount.objects.filter(dailyReport=report, project=project)
+                units = Unit.objects.filter(project=project)
+                materialproviders = MaterialProvider.objects.filter(project=project)
+                machineproviders = MachineProvider.objects.filter(project=project)
+                tasks = TaskReport.objects.filter(dailyReport=report, project=project)
 
                 other = {
                     "weekday": report.get_weekday_display(),
@@ -1334,7 +1499,7 @@ def edit_daily_report_in_db(request):
                     tasks[key.split("_")[1]] = float(value[0])
 
 
-            report = DailyReport.objects.get(id=request.POST.get("report_id"))
+            report = DailyReport.objects.get(id=request.POST.get("report_id"), project=project)
             ID = report.id
             DATE_CREATED = report.date_created
 
@@ -1346,6 +1511,7 @@ def edit_daily_report_in_db(request):
                 raise PermissionDenied
 
             report = DailyReport.objects.create(
+                project=project,
                 id=ID,
                 project_name=data['project_name'][0],
                 employer=data["employer"][0],
@@ -1378,8 +1544,9 @@ def edit_daily_report_in_db(request):
 
             for position, count in positions.items():
                 if count > 0:
-                    pos = Position.objects.get(name=position)
+                    pos = Position.objects.get(name=position, project=project)
                     obj = PositionCount.objects.create(
+                        project=project,
                         position=pos,
                         dailyReport=report,
                         count=count,
@@ -1390,8 +1557,9 @@ def edit_daily_report_in_db(request):
 
             for profession, count in professions.items():
                 if sum(count) > 0:
-                    prof = Profession.objects.get(name=profession)
+                    prof = Profession.objects.get(name=profession, project=project)
                     obj = ProfessionCount.objects.create(
+                        project=project,
                         profession=prof,
                         dailyReport=report,
                         countExpert=count[0],
@@ -1409,9 +1577,10 @@ def edit_daily_report_in_db(request):
                 if count[0] > 0 or count[1] > 0:
                     machine = machine.strip()
                     # machine = machine.split("-")[1].strip()
-                    mach = Machine.objects.get(name=machine)
-                    provider = MachineProvider.objects.get(name=count[3])
+                    mach = Machine.objects.get(name=machine, project=project)
+                    provider = MachineProvider.objects.get(name=count[3], project=project)
                     obj = MachineCount.objects.create(
+                        project=project,
                         machine=mach,
                         dailyReport=report,
                         activeCount=count[1],
@@ -1429,10 +1598,11 @@ def edit_daily_report_in_db(request):
                 if amount[0] > 0:
                     material = material.strip()
 
-                    mat = Material.objects.get(name=material)
-                    unit = Unit.objects.get(name=amount[1])
-                    materialprovider = MaterialProvider.objects.get(name=amount[2])
+                    mat = Material.objects.get(name=material, project=project)
+                    unit = Unit.objects.get(name=amount[1], project=project)
+                    materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
                     obj = MaterialCount.objects.create(
+                        project=project,
                         material=mat,
                         dailyReport=report,
                         amount=amount[0],
@@ -1445,8 +1615,9 @@ def edit_daily_report_in_db(request):
 
             for contractor, count in contractors.items():
                 if sum(count) > 0:
-                    cont = Contractor.objects.get(name=contractor)
+                    cont = Contractor.objects.get(name=contractor, project=project)
                     obj = ContractorCount.objects.create(
+                        project=project,
                         contractor=cont,
                         dailyReport=report,
                         countExpert=count[0],
@@ -1463,10 +1634,12 @@ def edit_daily_report_in_db(request):
                 if sum(count) > 0:
                     prof, cont = equipe.split("-")
                     equ = Equipe.objects.get(
-                        profession=Profession.objects.get(name=prof),
-                        contractor=Contractor.objects.get(name=cont),
+                        project=project,
+                        profession=Profession.objects.get(name=prof, project=project),
+                        contractor=Contractor.objects.get(name=cont, project=project),
                     )
                     obj = EquipeCount.objects.create(
+                        project=project,
                         equipe=equ,
                         dailyReport=report,
                         countExpert=count[0],
@@ -1481,13 +1654,14 @@ def edit_daily_report_in_db(request):
 
             for task, amount in tasks.items():
                 if amount > 0:
-                    tsk = Task.objects.get(unique_str=task)
+                    tsk = Task.objects.get(unique_str=task, project=project)
 
                     if not tsk.started:
                         tsk.start(date=report.date)
 
-                    parent = TaskReport.objects.filter(task=tsk).last()
+                    parent = TaskReport.objects.filter(task=tsk, project=project).last()
                     tsk_rep = TaskReport.objects.create(
+                        project=project,
                         task=tsk,
                         operation=tsk.operation.operation,
                         parent=parent,
@@ -1506,8 +1680,12 @@ def edit_daily_report_in_db(request):
             return redirect(to="/home/daily-reports")
 
 
+@login_required
 def reports_daily(request):
-    reports = DailyReport.objects.all()
+    user = MyUser.objects.get(user=request.user,)
+    project = user.projects.all()[0]
+
+    reports = DailyReport.objects.filter(project=project)
     for report in reports:
         report.check_deletability()
 
@@ -1518,22 +1696,26 @@ def reports_daily(request):
     return render(request, "reports-list.html", context=context)
 
 
+@login_required
 def report_on_day(request, idd):
-    # report = DailyReport.objects.get(id=idd)
-    report = get_object_or_404(DailyReport, pk=idd)
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
 
-    positions = PositionCount.objects.filter(dailyReport=report)
-    professions = ProfessionCount.objects.filter(dailyReport=report)
-    machines = MachineCount.objects.filter(dailyReport=report)
-    materials = MaterialCount.objects.filter(dailyReport=report)
-    equipes = EquipeCount.objects.filter(dailyReport=report)
-    tasks = TaskReport.objects.filter(dailyReport=report)
+    # report = DailyReport.objects.get(id=idd)
+    report = get_object_or_404(DailyReport, pk=idd, project=project)
+
+    positions = PositionCount.objects.filter(dailyReport=report, project=project,)
+    professions = ProfessionCount.objects.filter(dailyReport=report, project=project,)
+    machines = MachineCount.objects.filter(dailyReport=report, project=project,)
+    materials = MaterialCount.objects.filter(dailyReport=report, project=project,)
+    equipes = EquipeCount.objects.filter(dailyReport=report, project=project,)
+    tasks = TaskReport.objects.filter(dailyReport=report, project=project,)
 
     done_task_zone = []
     parentTaskPercents = {}
     for task in tasks:
-        ids = Equipe.objects.filter(profession=task.task.equipe.profession).values_list('id', flat=True)
-        objs = Task.objects.filter(equipe__id__in=ids)
+        ids = Equipe.objects.filter(profession=task.task.equipe.profession, project=project).values_list('id', flat=True)
+        objs = Task.objects.filter(equipe__id__in=ids, project=project)
         entire_item_vol = 0
         entire_item_done = 0
         for obj in objs:
@@ -1570,21 +1752,25 @@ def report_on_day(request, idd):
     return render(request, "print-report.html", context=context)
 
 
+@login_required
 def compact_report_on_day(request, idd):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     # report = DailyReport.objects.get(id=idd)
-    report = get_object_or_404(DailyReport, pk=idd)
+    report = get_object_or_404(DailyReport, pk=idd, project=project)
 
-    positions = PositionCount.objects.filter(dailyReport=report)
-    professions = ProfessionCount.objects.filter(dailyReport=report)
-    machines = MachineCount.objects.filter(dailyReport=report)
-    materials = MaterialCount.objects.filter(dailyReport=report)
-    equipes = EquipeCount.objects.filter(dailyReport=report)
+    positions = PositionCount.objects.filter(dailyReport=report, project=project)
+    professions = ProfessionCount.objects.filter(dailyReport=report, project=project)
+    machines = MachineCount.objects.filter(dailyReport=report, project=project)
+    materials = MaterialCount.objects.filter(dailyReport=report, project=project)
+    equipes = EquipeCount.objects.filter(dailyReport=report, project=project)
 
-    tasks = TaskReport.objects.filter(dailyReport=report)
-    operation_ids = TaskReport.objects.filter(dailyReport=report).values_list('operation', flat=True).distinct()
+    tasks = TaskReport.objects.filter(dailyReport=report, project=project)
+    operation_ids = TaskReport.objects.filter(dailyReport=report, project=project).values_list('operation', flat=True).distinct()
 
-    history = TaskReport.objects.filter(operation_id__in=operation_ids, created_at__lt=report.created_at)
-    history = history.exclude(id__in=tasks.values('id'))
+    history = TaskReport.objects.filter(operation_id__in=operation_ids, created_at__lt=report.created_at, project=project)
+    history = history.exclude(id__in=tasks.values('id'), project=project)
 
     tsks = {}
     for task in tasks:
@@ -1629,10 +1815,14 @@ def compact_report_on_day(request, idd):
     return render(request, "print-short-report.html", context=context)
 
 
+@login_required
 def get_options(request, typee):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         if typee == "unitforunit":
-            data = Unit.objects.filter(parent__isnull=True)
+            data = Unit.objects.filter(parent__isnull=True, project=project)
 
             if data.exists():
                 data = json.dumps(list(data.values()))
@@ -1651,28 +1841,28 @@ def get_options(request, typee):
         else:
             pass
         if typee == "profession":
-            data = Profession.objects.exclude(name__in=data).all()
+            data = Profession.objects.exclude(name__in=data).filter(project=project)
         elif "provider" in typee:
             if "machineprovider" == typee:
-                data = MachineProvider.objects.all()
+                data = MachineProvider.objects.filter(project=project)
             elif "materialprovider" == typee:
-                data = MaterialProvider.objects.all()
+                data = MaterialProvider.objects.filter(project=project)
         elif typee == "unit":
-            data = Unit.objects.exclude(name__in=data).all()
+            data = Unit.objects.exclude(name__in=data).filter(project=project)
         elif typee == "position":
-            data = Position.objects.exclude(name__in=data).all()
+            data = Position.objects.exclude(name__in=data).filter(project=project)
         elif typee == "machine":
-            data = Machine.objects.exclude(name__in=data).all()
+            data = Machine.objects.exclude(name__in=data).filter(project=project)
         elif typee == "material":
-            data = Material.objects.exclude(name__in=data).all()
+            data = Material.objects.exclude(name__in=data).filter(project=project)
         elif typee == "contractor":
-            data = Contractor.objects.exclude(name__in=data).all()
+            data = Contractor.objects.exclude(name__in=data).filter(project=project)
         elif typee == "task":
-            data = Equipe.objects.exclude(name__in=data).all()
+            data = Equipe.objects.exclude(name__in=data).filter(project=project)
         elif typee == "zone":
-            data = Zone.objects.exclude(name__in=data).all()
+            data = Zone.objects.exclude(name__in=data).filter(project=project)
         elif typee == "equipe":
-            data = Equipe.objects.exclude(name__in=data).all()
+            data = Equipe.objects.exclude(name__in=data).filter(project=project)
             if len(data) > 0:
                 final = {}
                 for item in data:
@@ -1705,7 +1895,11 @@ def get_options(request, typee):
         pass
 
 
+@login_required
 def get_tasks(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         data = json.loads(request.POST['options'])["options"]
         # data = [item.strip().split("-") for item in data]
@@ -1715,7 +1909,7 @@ def get_tasks(request,):
                 [item.strip().split("-") for item in data]
             )
         )
-        data = Task.objects.exclude(unique_str__in=data).all()
+        data = Task.objects.exclude(unique_str__in=data).filter(project=project)
         if data.exists():
             out = []
             for item in data:
@@ -1743,14 +1937,19 @@ def get_tasks(request,):
         pass
 
 
+@login_required
 def get_task(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         name, prof, cont, zone = [item.strip() for item in request.POST['options'].split("-")]
 
         item = Task.objects.filter(
+            project=project,
             name=name,
-            zone=Zone.objects.get(name=zone),
-            equipe=Equipe.objects.get(name=f"{prof}-{cont}"),
+            zone=Zone.objects.get(name=zone, project=project),
+            equipe=Equipe.objects.get(name=f"{prof}-{cont}", project=project),
         )
         if item.exists():
             item = item[0]
@@ -1773,9 +1972,13 @@ def get_task(request,):
         pass
 
 
+@login_required
 def get_units(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        units = Unit.objects.all()
+        units = Unit.objects.filter(project=project)
         if units.exists():
             data = json.dumps(list(units.values()))
         else:
@@ -1786,9 +1989,13 @@ def get_units(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_professions(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        professions = Profession.objects.all()
+        professions = Profession.objects.filter(project=project)
         if professions.exists():
             data = json.dumps(list(professions.values()))
         else:
@@ -1799,9 +2006,13 @@ def get_professions(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_contractors(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        contractors = Contractor.objects.all()
+        contractors = Contractor.objects.filter(project=project)
         if contractors.exists():
             data = json.dumps(list(contractors.values()))
         else:
@@ -1812,13 +2023,17 @@ def get_contractors(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_operations(request, ID=None):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
         if ID:
-            opr = Operation.objects.get(id=ID)
+            opr = Operation.objects.get(id=ID, project=project)
             return HttpResponse(opr)
         else:
-            operations = Operation.objects.all()
+            operations = Operation.objects.filter(project=project)
             if operations.exists():
                 data = json.dumps(list(operations.values()))
             else:
@@ -1829,11 +2044,16 @@ def get_operations(request, ID=None):
             return JsonResponse(context)
 
 
+@login_required
 def get_suboperations(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        opr_name = request.GET.get("operation")
+        opr_name = request.GET.get("operation", project=project)
         suboperations = SubOperation.objects.filter(
-            parent=Operation.objects.get(name=opr_name)
+            project=project,
+            parent=Operation.objects.get(name=opr_name, project=project)
         )
         if suboperations.exists():
             data = json.dumps(list(suboperations.values()))
@@ -1845,10 +2065,15 @@ def get_suboperations(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_subtasks_of(request, ID):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         subtasks = Task.objects.filter(
-            parent=ParentTask.objects.get(id=ID)
+            project=project,
+            parent=ParentTask.objects.get(id=ID, project=project)
         )
         data = []
         for subtask in subtasks:
@@ -1883,7 +2108,11 @@ def get_subtasks_of(request, ID):
         return JsonResponse(data, safe=False)
 
 
+@login_required
 def get_subtask_in_report(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         operation = request.POST.get("operation")
         suboperation = request.POST.get("suboperation")
@@ -1891,14 +2120,15 @@ def get_subtask_in_report(request):
         equipe = request.POST.get("equipe")
 
 
-        operation = Operation.objects.get(name=operation)
-        zone = Zone.objects.get(name=zone)
-        equipe = Equipe.objects.get(name=equipe)
-        suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+        operation = Operation.objects.get(name=operation, project=project)
+        zone = Zone.objects.get(name=zone, project=project)
+        equipe = Equipe.objects.get(name=equipe, project=project)
+        suboperation = SubOperation.objects.get(name=suboperation, parent=operation, project=project)
 
-        zoneoperation = ZoneOperation.objects.get(operation=operation, zone=zone)
+        zoneoperation = ZoneOperation.objects.get(operation=operation, zone=zone, project=project)
 
         subtask = Task.objects.get(
+            project=project,
             operation=zoneoperation,
             suboperation=suboperation,
             equipe=equipe,
@@ -1941,11 +2171,15 @@ def get_subtask_in_report(request):
         return JsonResponse(data, safe=False)
 
 
+@login_required
 def get_zoneoperations(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
         opr_name = request.GET.get("operation")
-        operation = Operation.objects.get(name=opr_name)
-        zoneoperations = operation.zones.all()
+        operation = Operation.objects.get(name=opr_name, project=project)
+        zoneoperations = operation.zones.filter(project=project)
         data = [
             {
                 "operation": item.operation.name,
@@ -1966,9 +2200,13 @@ def get_zoneoperations(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_all_equipes(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        equipes = Equipe.objects.all()
+        equipes = Equipe.objects.filter(project=project)
         if equipes.exists():
             data = json.dumps(list(equipes.values()))
         else:
@@ -1979,22 +2217,29 @@ def get_all_equipes(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_equipes_in_report(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         operation = request.POST.get('operation')
         suboperation = request.POST.get('suboperation')
         zone = request.POST.get('zone')
 
         tasks = Task.objects.filter(
+            project=project,
             operation=ZoneOperation.objects.get(
-                operation=Operation.objects.get(name=operation),
-                zone=Zone.objects.get(name=zone),
+                project=project,
+                operation=Operation.objects.get(name=operation, project=project),
+                zone=Zone.objects.get(name=zone, project=project),
             ),
             suboperation=SubOperation.objects.get(
+                project=project,
                 name=suboperation,
-                parent=Operation.objects.get(name=operation),
+                parent=Operation.objects.get(name=operation, project=project),
             ),
-            zone=Zone.objects.get(name=zone),
+            zone=Zone.objects.get(name=zone, project=project),
         ).values_list('unique_str')
 
         if tasks.exists():
@@ -2008,36 +2253,41 @@ def get_equipes_in_report(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_freeAmount(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
         model = request.GET.get('model')
         if model == "zoneoperation":
             operation = request.GET.get('operation')
             zone = request.GET.get('zone')
             zoneoperation = ZoneOperation.objects.get(
-                operation=Operation.objects.get(name=operation, ),
-                zone=Zone.objects.get(name=zone, ),
+                project=project,
+                operation=Operation.objects.get(name=operation, project=project),
+                zone=Zone.objects.get(name=zone, project=project),
             )
 
             if request.GET.get('mode') == "assigned":
                 assignedAmount = zoneoperation.assignedAmount
-
                 return HttpResponse(assignedAmount)
+
             else:
                 freeAmount = zoneoperation.freeAmount
-
                 return HttpResponse(freeAmount)
 
         elif model == "operation":
             if request.GET.get('mode') == "free":
                 operation = request.GET.get('operation')
-                operation = Operation.objects.get(name=operation)
+                operation = Operation.objects.get(name=operation, project=project)
                 freeAmount = operation.freeAmount
 
                 zone = request.GET.get('zone')
                 zoneoperation = ZoneOperation.objects.get(
+                    project=project,
                     operation=operation,
-                    zone=Zone.objects.get(name=zone)
+                    zone=Zone.objects.get(name=zone, project=project)
                 )
                 freeAmount += zoneoperation.amount
 
@@ -2045,7 +2295,7 @@ def get_freeAmount(request):
 
             else:
                 operation = request.GET.get('operation')
-                operation = Operation.objects.get(name=operation)
+                operation = Operation.objects.get(name=operation, project=project)
                 assigendAmount = operation.assignedAmount
 
                 return HttpResponse(assigendAmount)
@@ -2054,10 +2304,9 @@ def get_freeAmount(request):
             if request.GET.get('mode') == "weight":
                 operation = request.GET.get('operation')
                 suboperation = request.GET.get('suboperation')
-                print(operation)
-                print(suboperation)
-                operation = Operation.objects.get(name=operation)
-                suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+
+                operation = Operation.objects.get(name=operation, project=project)
+                suboperation = SubOperation.objects.get(name=suboperation, parent=operation, project=project)
 
                 freeWeight = operation.freeWeight + suboperation.weight
 
@@ -2067,18 +2316,21 @@ def get_freeAmount(request):
                 operation = request.GET.get('operation')
                 suboperation = request.GET.get('suboperation')
 
-                operation = Operation.objects.get(name=operation)
-                suboperation = SubOperation.objects.get(name=suboperation, parent=operation)
+                operation = Operation.objects.get(name=operation, project=project)
+                suboperation = SubOperation.objects.get(name=suboperation, parent=operation, project=project)
 
                 freeAmount = operation.freeAmount + suboperation.amount
 
                 return HttpResponse(freeAmount)
 
 
-
+@login_required
 def get_zones(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        zones = Zone.objects.all()
+        zones = Zone.objects.filter(project=project)
         if zones.exists():
             data = json.dumps(list(zones.values()))
         else:
@@ -2089,9 +2341,13 @@ def get_zones(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_materialproviders(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        materialproviders = MaterialProvider.objects.all()
+        materialproviders = MaterialProvider.objects.filter(project=project)
         if materialproviders.exists():
             data = json.dumps(list(materialproviders.values()))
         else:
@@ -2102,9 +2358,13 @@ def get_materialproviders(request):
         return JsonResponse(context)
 
 
+@login_required
 def get_machineproviders(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
-        machineproviders = MachineProvider.objects.all()
+        machineproviders = MachineProvider.objects.filter(project=project)
         if machineproviders.exists():
             data = json.dumps(list(machineproviders.values()))
         else:
@@ -2115,34 +2375,44 @@ def get_machineproviders(request):
         return JsonResponse(context)
 
 
+@login_required
 def check_deletability(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         idd = request.POST['id']
-        rep = DailyReport.objects.get(id=idd)
+        rep = DailyReport.objects.get(id=idd, project=project)
 
         return HttpResponse(rep.deletable)
 
 
+@login_required
 def check_editability(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         idd = request.POST['id']
-        rep = DailyReport.objects.get(id=idd)
+        rep = DailyReport.objects.get(id=idd, project=project)
 
         return HttpResponse(rep.editable)
 
 
+@login_required
 def check_dailyreport_existence(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
 
         date = request.POST.get("date")
         date, time = date.split(" ")
         date = date.replace("/", "-")
 
-        report = get_object_or_404(DailyReport, short_date=date)
+        report = get_object_or_404(DailyReport, short_date=date, project=project)
         if report:
             return HttpResponse(True)
-
-        # ("%Y-%m-%d %H:%M:%S")
 
 
 def findOutputTarget(pivot_fields):
@@ -2236,7 +2506,11 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
     return grouped_results
 
 
+@login_required
 def analyzer(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "GET":
 
         context = {
@@ -2263,9 +2537,9 @@ def analyzer(request):
                     priority, typee, _ = key.split("_")
                     if '0' in data[key]:
                         data[key] = 0
-                        objs = FILTERS[typee].objects.all()
+                        objs = FILTERS[typee].objects.filter(project=project)
                     else:
-                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                        objs = FILTERS[typee].objects.filter(id__in=data[key], project=project)
                     query[typee] = objs
                     query_formula.append(typee)
 
@@ -2286,7 +2560,7 @@ def analyzer(request):
 
             if "operation" not in query_formula:
                 query_formula.append("operation")
-                query['operation'] = Operation.objects.all()
+                query['operation'] = Operation.objects.filter(project=project)
 
             priorities_values = []
             requested_models = []
@@ -2306,7 +2580,7 @@ def analyzer(request):
             for item in requested_models:
                 requested_models_persian.append(MODELS_PERSIAN[item])
 
-            parentTasks = ParentTask.objects.all()
+            parentTasks = ParentTask.objects.filter(project=project)
             for model in requested_models:
                 q_filter = Q()
 
@@ -2315,19 +2589,20 @@ def analyzer(request):
                     field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
                     if field is not None:
                         q_filter |= Q(**{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
-                        requested_instances[model] = step.objects.filter(q_filter).values_list('id', flat=True)
+                        requested_instances[model] = step.objects.filter(q_filter).filter(project=project).values_list('id', flat=True)
 
                 q_filter = Q()
                 field = getattr(ParentTask, f"{model}", None)
                 if field is not None:
                     q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
-                    parentTasks = parentTasks.filter(q_filter)
+                    parentTasks = parentTasks.filter(q_filter).filter(project=project)
 
-            parentTasks = parentTasks.all().values_list('id', flat=True)
-            taskReports = TaskReport.objects.filter(parentTask_id__in=parentTasks)
+            parentTasks = parentTasks.filter(project=project).values_list('id', flat=True)
+            taskReports = TaskReport.objects.filter(parentTask_id__in=parentTasks, project=project)
 
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 taskReports = taskReports.filter(
+                    project=project,
                     reportDate__lt=query["upper-date"],
                     reportDate__gt=query["lower-date"],
                 )
@@ -2352,9 +2627,9 @@ def analyzer(request):
 
                     if '0' in data[key]:
                         data[key] = 0
-                        objs = FILTERS[typee].objects.all()
+                        objs = FILTERS[typee].objects.filter(project=project)
                     else:
-                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                        objs = FILTERS[typee].objects.filter(id__in=data[key], project=project)
                     query[typee] = objs
                     query_formula.append(typee)
 
@@ -2374,7 +2649,7 @@ def analyzer(request):
 
             if "machine" not in query_formula:
                 query_formula.append("machine")
-                query['machine'] = Machine.objects.all()
+                query['machine'] = Machine.objects.filter(project=project)
 
             priorities_values = []
             requested_models = []
@@ -2394,9 +2669,10 @@ def analyzer(request):
             for item in requested_models:
                 requested_models_persian.append(MODELS_PERSIAN[item])
 
-            dailyReports = DailyReport.objects.all()
+            dailyReports = DailyReport.objects.filter(project=project)
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 dailyReports = dailyReports.filter(
+                    project=project,
                     date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
                     date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
                 )
@@ -2409,7 +2685,7 @@ def analyzer(request):
             requested_models.append("dailyReportMachine")
             requested_instances["dailyReportMachine"] = dailyReports.values_list("id", flat=True)
 
-            machineCounts = MachineCount.objects.all()
+            machineCounts = MachineCount.objects.filter(project=project)
 
             for model in requested_models:
                 q_filter = Q()
@@ -2419,15 +2695,15 @@ def analyzer(request):
                     if field is not None:
                         q_filter |= Q(
                             **{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
-                        machineCounts = machineCounts.filter(q_filter).values_list('id', flat=True)
+                        machineCounts = machineCounts.filter(q_filter).filter(project=project).values_list('id', flat=True)
 
                 q_filter = Q()
                 field = getattr(MachineCount, f"{model}", None)
                 if field is not None:
                     q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
-                    machineCounts = machineCounts.filter(q_filter)
+                    machineCounts = machineCounts.filter(q_filter).filter(project=project)
 
-            machineCounts = MachineCount.objects.filter(id__in=machineCounts)
+            machineCounts = MachineCount.objects.filter(id__in=machineCounts, project=project)
 
             # requested_models[requested_models.index("dailyReportMachine")] = "dailyReport"
             if "machineProvider" in requested_models:
@@ -2448,9 +2724,9 @@ def analyzer(request):
 
                     if '0' in data[key]:
                         data[key] = 0
-                        objs = FILTERS[typee].objects.all()
+                        objs = FILTERS[typee].objects.filter(project=project)
                     else:
-                        objs = FILTERS[typee].objects.filter(id__in=data[key])
+                        objs = FILTERS[typee].objects.filter(id__in=data[key], project=project)
                     query[typee] = objs
                     query_formula.append(typee)
 
@@ -2470,7 +2746,7 @@ def analyzer(request):
 
             if "material" not in query_formula:
                 query_formula.append("material")
-                query['material'] = Material.objects.all()
+                query['material'] = Material.objects.filter(project=project)
 
             priorities_values = []
             requested_models = []
@@ -2490,9 +2766,10 @@ def analyzer(request):
             for item in requested_models:
                 requested_models_persian.append(MODELS_PERSIAN[item])
 
-            dailyReports = DailyReport.objects.all()
+            dailyReports = DailyReport.objects.filter(project=project)
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 dailyReports = dailyReports.filter(
+                    project=project,
                     date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
                     date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
                 )
@@ -2505,7 +2782,7 @@ def analyzer(request):
             requested_models.append("dailyReportMaterial")
             requested_instances["dailyReportMaterial"] = dailyReports.values_list("id", flat=True)
 
-            materialCounts = MaterialCount.objects.all()
+            materialCounts = MaterialCount.objects.filter(project=project)
 
             for model in requested_models:
                 q_filter = Q()
@@ -2515,15 +2792,15 @@ def analyzer(request):
                     if field is not None:
                         q_filter |= Q(
                             **{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
-                        materialCounts = materialCounts.filter(q_filter).values_list('id', flat=True)
+                        materialCounts = materialCounts.filter(q_filter).filter(project=project).values_list('id', flat=True)
 
                 q_filter = Q()
                 field = getattr(MaterialCount, f"{model}", None)
                 if field is not None:
                     q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
-                    materialCounts = materialCounts.filter(q_filter)
+                    materialCounts = materialCounts.filter(q_filter).filter(project=project)
 
-            materialCounts = MaterialCount.objects.filter(id__in=materialCounts)
+            materialCounts = MaterialCount.objects.filter(id__in=materialCounts, project=project)
 
             # requested_models[requested_models.index("dailyReportMachine")] = "dailyReport"
             if "materialProvider" in requested_models:
@@ -2556,14 +2833,18 @@ def analyzer(request):
         return render(request, 'analyzer.html', context=context)
 
 
+@login_required
 def get_options_in_priority(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
     if request.method == "POST":
         priority = request.POST['priority']
         providerType = request.POST['providerType']
         if priority == "time":
             pass
         elif priority == "zone":
-            objs = Zone.objects.all()
+            objs = Zone.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2573,7 +2854,7 @@ def get_options_in_priority(request):
             }
 
         elif priority == "operation":
-            objs = Operation.objects.all()
+            objs = Operation.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2583,7 +2864,7 @@ def get_options_in_priority(request):
             }
 
         elif priority == "suboperation":
-            objs = SubOperation.objects.all()
+            objs = SubOperation.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2593,7 +2874,7 @@ def get_options_in_priority(request):
             }
 
         elif priority == "contractor":
-            objs = Contractor.objects.all()
+            objs = Contractor.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2603,7 +2884,7 @@ def get_options_in_priority(request):
             }
 
         elif priority == "equipe":
-            objs = Contractor.objects.all()
+            objs = Contractor.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2613,7 +2894,7 @@ def get_options_in_priority(request):
             }
 
         elif priority == "machine":
-            objs = Machine.objects.all()
+            objs = Machine.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2622,7 +2903,7 @@ def get_options_in_priority(request):
                 priority: objs,
             }
         elif priority == "material":
-            objs = Material.objects.all()
+            objs = Material.objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:
@@ -2635,7 +2916,7 @@ def get_options_in_priority(request):
                 "machine": MachineProvider,
                 "material": MaterialProvider,
             }
-            objs = dilemma[providerType].objects.all()
+            objs = dilemma[providerType].objects.filter(project=project)
             if objs.exists():
                 objs = json.dumps(list(objs.values()))
             else:

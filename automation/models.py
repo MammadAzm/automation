@@ -5,37 +5,81 @@ import jdatetime
 from .converters import *
 from django_jalali.db import models as jmodels
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
+class MyUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    projects = models.ManyToManyField('Project', related_name="projects")
+
+    def __str__(self):
+        return self.user.username
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=250, unique=True, )
+    employer = models.CharField(max_length=250,)
+    employee = models.CharField(max_length=250,)
+    advisor = models.CharField(max_length=250,)
+
+    contract_subject = models.CharField(max_length=250,)
+    contract_type = models.IntegerField(choices=CONTRACT_TYPES) # TODO : maybe to be changed later to an independent class and make it foreignkey
+    contract_number = models.CharField(max_length=15,
+                                       validators=[RegexValidator(r'^\d{1,10}$', 'Enter a valid number.')],
+                                       )
+    start_date = jmodels.jDateField(null=True, blank=True)
+    contract_duration = models.IntegerField()
+    contract_address = models.CharField(max_length=250, )
+
+    user = models.ForeignKey(MyUser, on_delete=models.PROTECT)
+
+    dailyReports = models.ManyToManyField("DailyReport", related_name="dailyReports")
+
+    def __str__(self):
+        return self.name + " - " + self.contract_number
+
 
 class Position(models.Model):
-    name = models.CharField(max_length=250, unique=True,)
+    name = models.CharField(max_length=250,)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    class META:
+        unique_together = ("name", "project")
 
     def __str__(self):
         return self.name
 
 
 class PositionCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     count = models.PositiveIntegerField()
 
     class Meta:
-        unique_together = ('dailyReport', 'position')
+        unique_together = ('dailyReport', 'position', 'project')
 
     def __str__(self):
         return self.position.name
 
 
 class Profession(models.Model):
-    name = models.CharField(max_length=250, unique=True,)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("name", "project")
 
     def __str__(self):
         return self.name
 
 
 class ProfessionCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
@@ -50,15 +94,19 @@ class ProfessionCount(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('dailyReport', 'profession')
+        unique_together = ('dailyReport', 'profession', 'project')
 
     def __str__(self):
         return self.profession.name
 
 
 class Machine(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     type = models.IntegerField(choices=MACHINE_TYPES, default=0)
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("name", "project")
 
     def __str__(self):
         # return self.name
@@ -67,13 +115,18 @@ class Machine(models.Model):
 
 
 class MachineProvider(models.Model):
-    name = models.CharField(max_length=250, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("name", "project")
 
     def __str__(self):
         return self.name
 
 
 class MachineCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
@@ -86,7 +139,7 @@ class MachineCount(models.Model):
     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        unique_together = ('dailyReport', 'machine', 'provider')
+        unique_together = ('dailyReport', 'machine', 'provider', 'project')
 
     def __str__(self):
         # TODO : add dailyReport.date to the returning string of the object
@@ -94,29 +147,42 @@ class MachineCount(models.Model):
 
 
 class Unit(models.Model):
-    name = models.CharField(max_length=25, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=25,)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     coef = models.FloatField(default=1.0)
+
+    class META:
+        unique_together = ("project", "name")
 
     def __str__(self):
         return self.name
 
 
 class Material(models.Model):
-    name = models.CharField(max_length=250, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("project", "name")
 
     def __str__(self):
         return self.name
 
 
 class MaterialProvider(models.Model):
-    name = models.CharField(max_length=250, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("project", "name")
 
     def __str__(self):
         return self.name
 
 
 class MaterialCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
@@ -125,20 +191,25 @@ class MaterialCount(models.Model):
     provider = models.ForeignKey(MaterialProvider, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        unique_together = ('dailyReport', 'material', 'provider')
+        unique_together = ('dailyReport', 'material', 'provider', 'project')
 
     def __str__(self):
         return self.material.name
 
 
 class Contractor(models.Model):
-    name = models.CharField(max_length=150, unique=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150,)
+
+    class META:
+        unique_together = ("project", "name")
 
     def __str__(self):
         return self.name
 
 
 class ContractorCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
@@ -153,13 +224,14 @@ class ContractorCount(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('dailyReport', 'contractor')
+        unique_together = ('dailyReport', 'contractor', 'project')
 
     def __str__(self):
         return self.profession.name
 
 
 class Equipe(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
     name = models.CharField(max_length=150, unique=True, blank=True)
@@ -169,13 +241,14 @@ class Equipe(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('profession', 'contractor')
+        unique_together = ('profession', 'contractor', 'project')
 
     def __str__(self):
         return self.profession.name + "-" + self.contractor.name
 
 
 class EquipeCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
@@ -190,22 +263,26 @@ class EquipeCount(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('dailyReport', 'equipe')
+        unique_together = ('dailyReport', 'equipe', 'project')
 
     def __str__(self):
         return str(self.equipe)
 
 
 class Zone(models.Model):
-    # TODO : make unique=true
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
+
+    class META:
+        unique_together = ("name", "project")
 
     def __str__(self):
         return self.name
 
 
 class Operation(models.Model):
-    name = models.CharField(max_length=250, unique=True,)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="operation_unit")
 
     amount = models.FloatField(default=0.0, )
@@ -285,8 +362,12 @@ class Operation(models.Model):
     def __str__(self):
         return self.name
 
+    class META:
+        unique_together = ("project", "name")
+
 
 class SubOperation(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=250,)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
@@ -307,13 +388,14 @@ class SubOperation(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('name', 'parent')
+        unique_together = ('name', 'parent', "project")
 
     def __str__(self):
         return self.parent.name + " | " + self.name
 
 
 class ZoneOperation(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
@@ -372,13 +454,14 @@ class ZoneOperation(models.Model):
         self.operation.update_doneAmount()
 
     class Meta:
-        unique_together = ('operation', 'zone')
+        unique_together = ('operation', 'zone', "project")
 
     def __str__(self):
         return self.operation.name + " | " + self.zone.name
 
 
 class ParentTask(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
     equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
@@ -393,7 +476,7 @@ class ParentTask(models.Model):
     completed = models.BooleanField(default=False, )
     # start_date = models.DateField(null=True, blank=True)
     # completion_date = models.DateField(null=True, blank=True)
-    start_date = jmodels.jDateField( null=True, blank=True)
+    start_date = jmodels.jDateField(null=True, blank=True)
     completion_date = jmodels.jDateField( null=True, blank=True)
 
     subtasks = models.ManyToManyField('Task', related_name='subtasks')
@@ -462,13 +545,14 @@ class ParentTask(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('operation', 'equipe', 'zone')
+        unique_together = ('operation', 'equipe', 'zone', "project")
 
     def __str__(self):
         return self.unique_str
 
 
 class Task(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
     suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE, null=True, blank=True)
@@ -547,13 +631,14 @@ class Task(models.Model):
         self.save()
 
     class Meta:
-        unique_together = ('operation', 'suboperation', 'equipe', 'zone')
+        unique_together = ('operation', 'suboperation', 'equipe', 'zone', "project")
 
     def __str__(self):
         return self.unique_str
 
 
 class TaskReport(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     parentTask = models.ForeignKey(ParentTask, on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
@@ -618,10 +703,11 @@ class TaskReport(models.Model):
         return self.task.unique_str
 
     class Meta:
-        unique_together = ('dailyReport', 'task')
+        unique_together = ('dailyReport', 'task', "project")
 
 
 class DailyReport(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     # --------------------Header----------------------
     project_name = models.CharField(max_length=250, default="Automation Project")
     employer = models.CharField(max_length=250, default="Default Employer")
@@ -631,15 +717,15 @@ class DailyReport(models.Model):
                                        default="123456789")
 
     # date = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    date = jmodels.jDateTimeField( default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    date = jmodels.jDateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # short_date = models.DateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
-    short_date = jmodels.jDateField( default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
+    short_date = jmodels.jDateField(default=jdatetime.datetime.now().strftime("%Y-%m-%d"))
 
     weekday = models.IntegerField(choices=WEEKDAY_CHOICES, default=datetime.now().weekday())
 
     # created_at = models.DateTimeField(auto_now_add=True)
-    created_at = jmodels.jDateTimeField( auto_now_add=True)
+    created_at = jmodels.jDateTimeField(auto_now_add=True)
 
     # date_created = models.DateTimeField(default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     date_created = jmodels.jDateTimeField( default=jdatetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -663,7 +749,6 @@ class DailyReport(models.Model):
 
     countPeople = models.IntegerField(default=0)
 
-    # TODO : Check and Track the machine summation
     machines = models.ManyToManyField(Machine, through='MachineCount')
     countActiveMachines = models.IntegerField(default=0)
     countInactiveMachines = models.IntegerField(default=0)
@@ -671,7 +756,6 @@ class DailyReport(models.Model):
 
     materials = models.ManyToManyField(Material, through='MaterialCount')
 
-    # TODO : Check and Track the Contractors and Equipes summation
     contractors = models.ManyToManyField(Contractor, through='ContractorCount')
     countContractors = models.IntegerField(default=0)
 
@@ -731,5 +815,7 @@ class DailyReport(models.Model):
             self.save()
 
     def __str__(self):
-        return self.project_name
+        return self.short_date.strftime(format="%Y/%m/%d")
 
+    class META:
+        unique_together = ("project", "short_date")

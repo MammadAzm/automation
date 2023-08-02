@@ -6100,3 +6100,41 @@ function submitAnalyzer(type) {
 }
 
 
+
+function view_project(
+    name,
+    employee,
+    employer,
+    advisor,
+    cnt_subject,
+    cnt_type,
+    cnt_number,
+    start_date,
+    cnt_duration,
+    cnt_address,
+) {
+
+    document.getElementById("project_details_container").style.display = 'block';
+
+    document.getElementById("project_name").innerText = name;
+    document.getElementById("project_employer").innerText = employee;
+    document.getElementById("project_employee").innerText = employer;
+    document.getElementById("project_advisor").innerText = advisor;
+    document.getElementById("project_contract_subject").innerText = cnt_subject;
+    document.getElementById("project_contract_type").innerText = cnt_type;
+    document.getElementById("project_contract_number").innerText = cnt_number;
+    document.getElementById("project_start_date").innerText = start_date;
+    document.getElementById("project_contract_duration").innerText = cnt_duration;
+    document.getElementById("project_contract_address").innerText = cnt_address;
+
+
+
+
+
+
+
+
+
+
+
+}
