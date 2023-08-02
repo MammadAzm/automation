@@ -47,18 +47,18 @@
                             <tr class="py-1">
                                 <th class="py-1" style="width: 100px">پروژه</th>
                                 <th class="table-light py-1" style="width: 100px">
-                                    <input id="project_name" value="{{ report.project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
+                                    <input id="project_name" value="{{ project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1" style="width: 150px">کارفرما</th>
                                 <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employer" value="{{ report.project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
+                                    <input id="employer" value="{{ project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
                                 <th class="py-1" style="width: 125px">پیمانکار</th>
                                 <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employee" value="{{ report.project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
+                                    <input id="employee" value="{{ project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
@@ -67,19 +67,19 @@
                             <tr class="py-1">
                                 <th class="py-1">مشاور</th>
                                 <th class="table-light py-1">
-                                    <input id="consultor_name" value="{{ report.project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
+                                    <input id="consultor_name" value="{{ project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">موضوع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_subj" value="{{ report.project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
+                                    <input id="contract_subj" value="{{ project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">نوع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_type" value="{{ report.project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
+                                    <input id="contract_type" value="{{ project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
@@ -89,19 +89,19 @@
                             <tr class="py-1">
                                 <th class="py-1">شماره قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_no" value="{{ report.project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
+                                    <input id="contract_no" value="{{ project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">تاریخ شروع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_start_date" value="{{ report.project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
+                                    <input id="contract_start_date" value="{{ project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">مدت قرارداد(ماه)</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_duration" value="{{ report.project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
+                                    <input id="contract_duration" value="{{ project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
                             </tr>
@@ -109,13 +109,13 @@
                             <tr class="py-1">
                                 <th class="py-1">آدرس قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_address" value="{{ report.project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
+                                    <input id="contract_address" value="{{ project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">مسئول کنترل پروژه</th>
                                 <th class="table-light py-1">
-                                    <input id="project_user" value="{{ report.project.user.user.first_name }} {{ report.project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
+                                    <input id="project_user" value="{{ project.user.user.first_name }} {{ project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
                                        style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 

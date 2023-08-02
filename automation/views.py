@@ -341,6 +341,7 @@ def create_report_template(request):
         }
 
         context = {
+            "project": project,
             "report": report,
             "positions": positions,
             "professions": professions,
@@ -1404,6 +1405,7 @@ def edit_daily_report_in_db(request):
                 }
 
                 context = {
+                    "project": project,
                     "report": report,
                     "positions": positions,
                     "professions": professions,
