@@ -37,7 +37,7 @@ class Project(models.Model):
 
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)
 
-    dailyReports = models.ManyToManyField("DailyReport", related_name="dailyReports")
+    dailyReports = models.ManyToManyField("DailyReport", related_name="dailyReports", null=True, blank=True)
 
     def __str__(self):
         return self.name + " - " + self.contract_number

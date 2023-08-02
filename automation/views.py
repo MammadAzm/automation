@@ -319,7 +319,7 @@ def create_report_template(request):
         # }
 
         context = {
-
+            "project": project,
             "machine_types": MACHINE_TYPES,
         }
 
