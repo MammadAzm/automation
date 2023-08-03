@@ -2465,7 +2465,7 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
                     "totalVolume": 0,
                     "doneVolume": 0,
                     "donePercentage": 0,
-                    "unit":"unit",
+                    "unit": "unit",
                 }
                 finalAttribute = "TOTALVOLUME"
             elif analyzeType == "machine":
@@ -2693,9 +2693,10 @@ def analyzer(request):
             dailyReports = DailyReport.objects.filter(project=project)
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 dailyReports = dailyReports.filter(
-                    project=project,
-                    date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
-                    date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
+                    # date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
+                    # date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
+                    date__lt=query["upper-date"],
+                    date__gt=query["lower-date"],
                 )
                 # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
@@ -2790,9 +2791,10 @@ def analyzer(request):
             dailyReports = DailyReport.objects.filter(project=project)
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 dailyReports = dailyReports.filter(
-                    project=project,
-                    date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
-                    date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
+                    # date__lt=jdatetime.datetime.strptime(query["upper-date"], format="%Y-%m-%d").togregorian(),
+                    # date__gt=jdatetime.datetime.strptime(query["lower-date"], format="%Y-%m-%d").togregorian(),
+                    date__lt=query["upper-date"],
+                    date__gt=query["lower-date"],
                 )
                 # print(">>>", type(query["lower-date"]), query["lower-date"])
                 dates_filters = {
@@ -2841,6 +2843,11 @@ def analyzer(request):
             isRecord = True
         else:
             isRecord = False
+
+        # used for day2day analyzer
+        if "provider" in requested_models:
+            requested_models[requested_models.index("provider")] = "machineProvider" if data["analyze-type"][0] == "machine" else "materialProvider" if data["analyze-type"][0] == "material" else None
+
         context = {
             'context': True,
             'isRecord': isRecord,
@@ -2848,6 +2855,7 @@ def analyzer(request):
             'priority_depths': priority_depth-1,
             'priorities_values': priorities_values,
             'priorityTypes': requested_models_persian,
+            'query_formula': requested_models,
             'tree': tree,
             'dates_filters': dates_filters if 'dates_filters' in locals() else False,
         }
@@ -3014,3 +3022,125 @@ def get_task_filters(request):
                     })
 
         return JsonResponse(data)
+
+
+@login_required
+def day2day_analyzer(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        prio_1 = request.POST.get("prio_1")
+        prio_2 = request.POST.get("prio_2")
+
+        item_1 = request.POST.get("item_1")
+        item_2 = request.POST.get("item_2")
+
+        lower_date = request.POST.get("lower_date")
+        upper_date = request.POST.get("upper_date")
+        analyzeType = request.POST.get("analyzeType")
+
+        if analyzeType == "machine":
+            model = MODELS["MachineCount"]
+        elif analyzeType == "material":
+            model = MODELS["MaterialCount"]
+
+        objs = model.objects.filter(project=project)
+
+        if lower_date and upper_date:
+            reps = DailyReport.objects.filter(
+                project=project,
+                date__lt=jdatetime.datetime.strptime(upper_date, format="%Y/%m/%d").togregorian()+jdatetime.timedelta(days=1),
+                date__gt=jdatetime.datetime.strptime(lower_date, format="%Y/%m/%d").togregorian(),
+            )
+            objs = objs.filter(
+                dailyReport__in=reps,
+            )
+
+        if prio_1 and prio_2:
+            q_filter = Q()
+            if "Provider" in prio_1:
+                q_filter |= Q(**{"provider": MODELS[prio_1].objects.get(project=project, name=item_1)})
+                provider = item_1
+            else:
+                q_filter |= Q(**{f"{prio_1}": MODELS[prio_1].objects.get(project=project, name=item_1)})
+                item = item_1
+
+            objs = objs.filter(q_filter)
+
+            q_filter = Q()
+            if "Provider" in prio_2:
+                q_filter |= Q(**{"provider": MODELS[prio_2].objects.get(project=project, name=item_2)})
+                provider = item_2
+            else:
+                q_filter |= Q(**{f"{prio_2}": MODELS[prio_2].objects.get(project=project, name=item_2)})
+                item = item_2
+
+            objs = objs.filter(q_filter)
+
+            data = {
+                "mode": "multiple",
+                "model": "تجهیز" if analyzeType=="machine" else "مصالح" if analyzeType=="material" else None,
+                "item": item,
+                "provider": provider,
+                "days": []
+            }
+            for obj in objs:
+                temp = {
+                    "date": obj.dailyReport.date.strftime(format="%Y/%m/%d"),
+                    "value": obj.workHours if analyzeType=="machine" else obj.amount if analyzeType=="material" else None,
+                    "unit": "ساعت" if analyzeType=="machine" else obj.unit.name if analyzeType=="material" else None,
+                }
+                data["days"].append(temp)
+
+            return JsonResponse(data)
+
+        elif prio_1:
+            q_filter = Q()
+            if "Provider" in prio_1:
+                q_filter |= Q(**{"provider": MODELS[prio_1].objects.get(project=project, name=item_2)})
+                provider = item_2
+            else:
+                q_filter |= Q(**{f"{prio_1}": MODELS[prio_1].objects.get(project=project, name=item_2)})
+                provider = None
+                item = item_2
+
+            objs = objs.filter(q_filter)
+
+            data = {
+                "mode": "single",
+                "model": "تجهیز" if analyzeType == "machine" else "مصالح" if analyzeType=="material" else None,
+                "item": item,
+                "provider": provider,
+                "days": [],
+            }
+            trash = {}
+            cached_dates = []
+            for obj in objs:
+                if obj.dailyReport.date.strftime(format="%Y/%m/%d") not in cached_dates:
+                    if analyzeType == "machine":
+                        temp = {
+                            "date": obj.dailyReport.date.strftime(format="%Y/%m/%d"),
+                            "value": obj.workHours,
+                            "unit": "ساعت",
+                        }
+                    elif analyzeType == "material":
+                        temp = {
+                            "date": obj.dailyReport.date.strftime(format="%Y/%m/%d"),
+                            "value":  obj.amount*obj.unit.coef,
+                            "unit": obj.unit.parent.name if obj.unit.parent else obj.unit.name,
+                        }
+
+                    trash[obj.dailyReport.date.strftime(format="%Y/%m/%d")] = temp
+                    cached_dates.append(obj.dailyReport.date.strftime(format="%Y/%m/%d"))
+
+                else:
+                    if analyzeType == "machine":
+                        trash[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["value"] += obj.workHours
+                    elif analyzeType == "material":
+                        trash[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["value"] += obj.amount*obj.unit.coef
+
+            data["days"] = list(trash.values())
+
+            return JsonResponse(data)
+

@@ -26,7 +26,7 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
@@ -64,7 +64,7 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
@@ -109,7 +109,7 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
@@ -118,7 +118,14 @@
         <!--                                {{ priorities_values }} <br>-->
         <!--                                {{ priorities_values|getIndex:level }}-->
         <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">
+                                                {{ header }}
+                                                <span class="badge rounded-pill"
+                                                      style="float: right; color: black; "
+                                                      onclick="show_day2day_analyze('{{query_formula.0}}', '{{query_formula.1}}', '{{ header }}', '{{ parent }}', '{{ dates_filters.lower }}', '{{ dates_filters.upper }}', '{{analyzeType}}')">
+                                                    <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                                                </span>
+                                            </td>
                                             <td class="" style="width: 25%">{{ value.workHours }}</td>
                                             <td class="" style="width: 25%">ساعت</td>
                                         {% endif %}
@@ -137,7 +144,11 @@
                 {% endwith %}
                     <thead>
                         <tr>
-                            <th colspan="" style="width: 25%">{{ header }}</th>
+                            <th colspan="" style="width: 25%">
+                                {{ header }}
+
+<!--                                <button style="float: left; border-radius: 20px; width: 40px; height: 20px;">||</button>-->
+                            </th>
                         </tr>
                     </thead>
 
@@ -145,7 +156,7 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
@@ -181,7 +192,7 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
@@ -190,7 +201,15 @@
         <!--                                {{ priorities_values }} <br>-->
         <!--                                {{ priorities_values|getIndex:level }}-->
         <!--                                {% if header in priorities_values|getIndex:level %}-->
-                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">
+                                                {{ header }}
+
+                                                <span class="badge rounded-pill"
+                                                      style="float: right; color: black; "
+                                                      onclick="show_day2day_analyze('{{query_formula.0}}', '{{query_formula.1}}', '{{ header }}', '{{ parent }}', '{{ dates_filters.lower }}', '{{ dates_filters.upper }}', '{{analyzeType}}')">
+                                                    <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                                                </span>
+                                            </td>
                                             <td class="" style="width: 25%">{{ value.amount }}</td>
                                             <td class="" style="width: 25%">{{ value.unit }}</td>
                                         {% endif %}
@@ -209,7 +228,9 @@
                 {% endwith %}
                     <thead>
                         <tr>
-                            <th colspan="" style="width: 25%">{{ header }}</th>
+                            <th colspan="" style="width: 25%">
+                                {{ header }}
+                            </th>
                         </tr>
                     </thead>
 
@@ -217,11 +238,13 @@
                         {% for key, value in data|getValueOfKey:header|getItemsOfDict %}
                             <tr>
                                 {% if value|isDict and value|containsDict%}
-                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths %}
+                                    {% include "recursive_table.html" with data=value headers=value.keys level=level|add:1 priorities_values=priorities_values priority_depths=priority_depths parent=header query_formula=query_formula %}
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
-                                            <td class="" style="width: 25%">{{ header }}</td>
+                                            <td class="" style="width: 25%">
+                                                {{ header }}
+                                            </td>
                                             <td class="" style="width: 25%">{{ header }}</td>
                                             <td class="" style="width: 25%">{{ value.unit }}</td>
                                     {% endif %}

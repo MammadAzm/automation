@@ -3320,6 +3320,16 @@ function clear_div(divID) {
 }
 
 
+function clear_div_hide_popup(divID, popupID) {
+    let div = document.getElementById(divID)
+    div.innerHTML = ""
+
+    let div2 = document.getElementById(popupID)
+    div2.style.display = "none"
+
+}
+
+
 function submitForm(ID, type, shortcut=null,) {
     if (type === "suboperation") {
         var target = "form-" + ID
@@ -6284,14 +6294,182 @@ function view_project(
     document.getElementById("project_contract_duration").innerText = cnt_duration;
     document.getElementById("project_contract_address").innerText = cnt_address;
 
+}
 
+function show_day2day_analyze(prio01=null, prio02=null, item=null, parent=null, lower=null, upper=null, analyzeType=null) {
+    var prio_1 = prio01
+    var prio_2 = prio02
+    var item_1 = parent
+    var item_2 = item
+    var lower_date = lower
+    var upper_date = upper
+    var analyzeType = analyzeType
+    $.ajax({
+        url: '/analyzer/analyze/day2day/',
+        type: 'POST',
+        data: {
+            "prio_1": prio_1,
+            "prio_2": prio_2,
+            "item_1": item_1,
+            "item_2": item_2,
+            "lower_date": lower_date,
+            "upper_date": upper_date,
+            "analyzeType": analyzeType,
+        },
+        dataType: 'json',
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function (response) {
+            let dynamic_div = document.getElementById("dynamic-content")
 
+            if (response.mode === "single") {
+                // document.getElementById("day2day-popup-header").innerText = "نمایش روز به روز"
+                let table = document.createElement("table")
+                table.className = "table table-bordered border-dark"
+                table.style.fontSize = "11px"
 
+                let thead = document.createElement("thead")
+                thead.className = ""
+                thead.style = ""
 
+                let tr = document.createElement("tr")
+                let th = document.createElement("th")
+                th.innerText = response.item
+                th.colSpan = 3
+                th.style = "text-align: center;"
 
+                tr.appendChild(th)
+                thead.appendChild(tr)
+                table.appendChild(thead)
 
+                let thead2 = document.createElement("thead")
 
+                let tr2 = document.createElement("tr")
 
+                let th01 = document.createElement("th")
+                th01.innerText = "تاریخ"
+                th01.style.textAlign = "center"
 
+                let th02 = document.createElement("th")
+                th02.innerText = "مقدار"
+                th02.style.textAlign = "center"
 
+                let th03 = document.createElement("th")
+                th03.innerText = "واحد"
+                th03.style.textAlign = "center"
+
+                tr2.appendChild(th01)
+                tr2.appendChild(th02)
+                tr2.appendChild(th03)
+                thead2.appendChild(tr2)
+                table.appendChild(thead2)
+
+                let tbody = document.createElement("tbody")
+
+                for (let i=0; i<response.days.length; i++) {
+                    let tr = document.createElement("tr")
+
+                    let td01 = document.createElement("td")
+                    td01.style.textAlign = "center"
+                    td01.innerText = response.days[i].date
+
+                    let td02 = document.createElement("td")
+                    td02.style.textAlign = "center"
+                    td02.innerText = response.days[i].value
+
+                    let td03 = document.createElement("td")
+                    td03.style.textAlign = "center"
+                    td03.innerText = response.days[i].unit
+
+                    tr.appendChild(td01)
+                    tr.appendChild(td02)
+                    tr.appendChild(td03)
+                    tbody.appendChild(tr)
+                }
+                table.appendChild(tbody)
+                dynamic_div.appendChild(table)
+            }
+
+            else if (response.mode === "multiple") {
+                // document.getElementById("day2day-popup-header").innerText = "نمایش روز به روز"
+                let table = document.createElement("table")
+                table.className = "table table-bordered border-dark"
+                table.style.fontSize = "11px"
+
+                let thead = document.createElement("thead")
+                thead.className = ""
+                thead.style = ""
+
+                let tr = document.createElement("tr")
+                let th = document.createElement("th")
+                th.innerText = response.item
+                th.colSpan = 4
+                th.style = "text-align: center;"
+
+                tr.appendChild(th)
+                thead.appendChild(tr)
+                table.appendChild(thead)
+
+                let thead2 = document.createElement("thead")
+
+                let tr2 = document.createElement("tr")
+
+                let th01 = document.createElement("th")
+                th01.innerText = "تاریخ"
+                th01.style.textAlign = "center"
+
+                let th02 = document.createElement("th")
+                th02.innerText = "تامین کننده"
+                th02.style.textAlign = "center"
+
+                let th03 = document.createElement("th")
+                th03.innerText = "مقدار"
+                th03.style.textAlign = "center"
+
+                let th04 = document.createElement("th")
+                th04.innerText = "واحد"
+                th04.style.textAlign = "center"
+
+                tr2.appendChild(th01)
+                tr2.appendChild(th02)
+                tr2.appendChild(th03)
+                tr2.appendChild(th04)
+                thead2.appendChild(tr2)
+                table.appendChild(thead2)
+
+                let tbody = document.createElement("tbody")
+
+                for (let i=0; i<response.days.length; i++) {
+                    let tr = document.createElement("tr")
+
+                    let td01 = document.createElement("td")
+                    td01.style.textAlign = "center"
+                    td01.innerText = response.days[i].date
+
+                    let td02 = document.createElement("td")
+                    td02.style.textAlign = "center"
+                    td02.innerText = response.provider
+
+                    let td03 = document.createElement("td")
+                    td03.style.textAlign = "center"
+                    td03.innerText = response.days[i].value
+
+                    let td04 = document.createElement("td")
+                    td04.style.textAlign = "center"
+                    td04.innerText = response.days[i].unit
+
+                    tr.appendChild(td01)
+                    tr.appendChild(td02)
+                    tr.appendChild(td03)
+                    tr.appendChild(td04)
+                    tbody.appendChild(tr)
+                }
+                table.appendChild(tbody)
+                dynamic_div.appendChild(table)
+            }
+
+            document.getElementById("day2day-popup").style.display = "block"
+        }
+    })
 }

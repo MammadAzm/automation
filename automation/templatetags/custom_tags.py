@@ -110,3 +110,10 @@ def returnDict(item):
 
 
 register.filter("returnDict", returnDict)
+
+
+def returnList(obj):
+    return list(obj)
+
+
+register.filter("returnList", returnList)

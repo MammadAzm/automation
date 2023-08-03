@@ -25,7 +25,7 @@
                             </th>
                         </tr>
                     </thead>
-                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType %}
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType parent="" query_formula=query_formula %}
                 </table>
             </div>
         {% elif analyzeType|equals:'machine' %}
@@ -42,7 +42,7 @@
                             </th>
                         </tr>
                     </thead>
-                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType%}
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType parent="" query_formula=query_formula %}
                 </table>
             </div>
         {% elif analyzeType|equals:'material' %}
@@ -59,7 +59,7 @@
                             </th>
                         </tr>
                     </thead>
-                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType%}
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType parent="" query_formula=query_formula%}
                 </table>
             </div>
         {% endif %}
@@ -575,6 +575,26 @@
 
         </script>
     {% endif %}
+
+
+<div class="modal-overlay" id="day2day-popup" >
+      <div class="modal-container" id="day2day-popup-container"  >
+            <div class="modal-content editing-modal-content" id="day2day-popup-content"  >
+                <div class="modal-header" style="text-align: center">
+                    <h5 class="modal-title" id="day2day-popup-header" style="text-align: center">
+                    </h5>
+                </div>
+
+                <div class="dynamic-content" id="dynamic-content">
+
+                </div>
+                <div class="static-content py-2" id="static-content" >
+                    <button type="reset" class="btn btn-outline-warning w-100 mx-0 py-0" id="cancel-day2day-btn" style="" onclick="clear_div_hide_popup('dynamic-content', 'day2day-popup')">بستن</button>
+                </div>
+
+            </div>
+      </div>
+</div>
 
 
 {% endblock %}

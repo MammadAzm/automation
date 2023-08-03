@@ -109,4 +109,5 @@ urlpatterns = [
 
 
     path("analyzer/analyze/", analyzer),
+    path("analyzer/analyze/day2day/", day2day_analyzer),
 ]
