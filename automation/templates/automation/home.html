@@ -2,6 +2,27 @@
 {% load static %}
 {% load custom_tags %}
 
+
+{% block navbar %}
+    {% if user.is_authenticated %}
+        {{ block.super }}
+    {% else %}
+
+    {% endif %}
+{% endblock %}
+
+{% block additionalCSS %}
+    {% if user.is_authenticated %}
+        {{ block.super }}
+    {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/homeStyle.css' %}">
+    {% endif %}
+
+{% endblock %}
+
+
+
+
 {% block content %}
 
     {% if user.is_authenticated %}
@@ -144,37 +165,41 @@
         </div>
 
     {% else %}
+        <div class="container-xxl px-0" style="">
+            <div class="row px-3 text-centred" style="height: 100%">
 
-        <div class="container-xxl px-3" style="margin-top: 0.5%">
-
-            <div class="row px-3 text-centred" style="height: 550px">
-
-                <div class="col-4 py-4 px-4" style="display: flex;justify-content: center;align-items: center;">
-                    <form action="/login/" method="post" class="row py-5 px-3" style="vertical-align: middle; background-color: #ff9d00; border-radius: 10px">
-                        {% csrf_token %}
-                        <div class="col-12 py-2">
-                            <h5>نام کاربری</h5>
-                            <div class="input-group py-1">
-                                <input type="text" name="username" class="form-control" placeholder="نام کاربری را وارد کنید">
+                <div class="formContainer col-8 mx-auto py-0 px-0" style="">
+                    <div class="loginTitle">
+                        <h3 class="textTitle">
+                            کاردان (نسخه آزمایشی)
+                        </h3>
+                    </div>
+                    <div class="row w-100 p-5 mx-auto" style="">
+                        <form action="/login/" method="post" class="loginForm pt-4 pb-5 px-3 w-50 mx-auto" style="">
+                            {% csrf_token %}
+                            <div class="col-12 pb-2">
+                                <h3 style="font-size: 24px; color: white">ورود به کاردان</h3>
                             </div>
-                        </div>
 
-                        <div class="col-12 py-2">
-                            <h5>رمز عبور</h5>
-                            <div class="input-group py-1">
-                                <input type="text" name="password" class="form-control" placeholder="رمز عبور را وارد کنید">
+                            <div class="col-12 py-0 w-75 mx-auto">
+                                <div class="input-group py-1">
+                                    <input type="text" name="username" class="form-control py-1" placeholder="نام کاربری">
+                                </div>
+                                <div class="input-group py-1">
+                                    <input type="password" name="password" class="form-control py-1" placeholder="رمز عبور">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-dark px-4 mt-4 w-100">ورود</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="col-8" style="display: flex;justify-content: center;align-items: center; vertical-align: middle; background-color: #ff9d00; border-radius: 10px; opacity: 0.75">
-
-                    <h2>بنر بزرگ</h2>
+                            <div class="col-4 mx-auto">
+                                <button type="submit" class="btn onhover bg-light px-4 mt-4 py-1 w-100" style="font-weight:600";>ورود</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="loginSubTitle">
+                        <h3 class="textSubTitle"">
+                            نرم افزار کنترل پروژه، تهیه گزارش روزانه و گزارشات مدیریتی
+                        </h3>
+                    </div>
 
                 </div>
 

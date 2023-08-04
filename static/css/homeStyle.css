@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('/static/images/bg.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    backdrop-filter: blur(9px);
+}
+
+.formContainer {
+}
+
+.loginForm {
+    vertical-align: middle;
+    background-color: #00000084;
+    border-radius: 10px;
+    box-shadow: 0 1px 10px 10px #FFFFFF6F;
+    display: block;
+    /*box-shadow: 0 1px 10px 10px #ff9d00;*/
+    cursor: default;
+}
+
+.loginTitle {
+    width: 30%;
+    padding: 5px 10px 0px 10px;
+    margin: 30px auto 0 auto;
+    /*background-color: #00000064;*/
+    border-radius: 10px;
+    /*box-shadow: 0 1px 10px 10px #FFFFFF6F ;*/
+    display: block;
+    /*box-shadow: 0 1px 10px 10px #ff9d00;*/
+    cursor: default;
+}
+
+.loginSubTitle {
+    vertical-align: middle;
+    padding: 25px 10px 25px 10px;
+    margin-top: 30px;
+    background-color: #00000084;
+    border-radius: 10px;
+    box-shadow: 0 1px 10px 10px #FFFFFF6F ;
+    display: block;
+    /*box-shadow: 0 1px 10px 10px #ff9d00;*/
+    cursor: default;
+}
+
+input {
+    text-align: center;
+}
+
+.textTitle {
+    color: #000000CF;
+    font-weight: 650;
+    font-size: 24px;
+}
+
+.textSubTitle {
+    color: white;
+    font-weight: 800;
+}
+
+.login-btn {
+    color: #00000084;
+    background-color: #FFFFFFF4;
+}

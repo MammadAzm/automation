@@ -7,7 +7,9 @@
     {% csrf_token %}
     <meta charset="UTF-8">
     <title>Automation System</title>
+    {% block additionalCSS %}
 
+    {% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/myStyle.css' %}">
 
     <script src="{% static 'js/funcs.js' %}"></script>
@@ -65,7 +67,7 @@
 
 <body>
 
-
+{% block navbar %}
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
       <div>
@@ -89,9 +91,11 @@
 
           <a href="/home/analyzer/"><button type="button" class=" btn-color onhover" style="font-size: 15px">آنالیز پروژه</button></a>
       </div>
-      <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">کاردان (نسخه آزمایشی) - نرم افزار کنترل پروژه - تهیه گزارش روزانه و گزارشات مدیریتی</h1>
+      <h1 class="navbar-brand" style="font-size: 15px; font-weight: bold">کاردان (نسخه آزمایشی) | نرم افزار کنترل پروژه، تهیه گزارش روزانه و گزارشات مدیریتی</h1>
     </div>
 </nav>
+{% endblock %}
+
 
 <div id="main-container" class="">
 
