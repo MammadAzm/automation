@@ -62,6 +62,8 @@ def add_base_data_template(request):
 
     professions = Profession.objects.filter(project=project)
     positions = Position.objects.filter(project=project)
+    hardwares = Hardware.objects.filter(project=project)
+    machineFamilies = MachineFamily.objects.filter(project=project)
     machines = Machine.objects.filter(project=project)
     materials = Material.objects.filter(project=project)
     contractors = Contractor.objects.filter(project=project)
@@ -82,6 +84,10 @@ def add_base_data_template(request):
         professions = []
     if not positions.exists():
         positions = []
+    if not hardwares.exists():
+        hardwares = []
+    if not machineFamilies.exists():
+        machineFamilies = []
     if not machines.exists():
         machines = []
     if not materials.exists():
@@ -107,12 +113,14 @@ def add_base_data_template(request):
     if not suboperations.exists():
         suboperations = []
     if not projectFields.exists():
-        suboperations = []
+        projectFields = []
 
     context = {
         "project": project,
         "positions": positions,
         "professions": professions,
+        "hardwares": hardwares,
+        "machineFamilys": machineFamilies,
         "machines": machines,
         "materials": materials,
         "contractors": contractors,
@@ -289,6 +297,78 @@ def edit_base_data(request):
             object.save()
 
             operation.update_assignedWeight()
+
+            return HttpResponse(True)
+
+        elif new_data["model"] == "machineFamily":
+            instance = new_data.get("instance")
+            name = new_data.get("name")
+            hardware = new_data.get("hardware")
+
+            ref_name, ref_hardware = instance.split("-")
+
+            ref_hardware = Hardware.objects.get(name=ref_hardware, project=project)
+
+            object = get_object_or_404(
+                model,
+                hardware=ref_hardware,
+                name=ref_name,
+                project=project,
+            )
+
+            if name and name != object.name:
+                object.name = name
+            if hardware and hardware != object.hardware:
+                hardware = Hardware.objects.get(name=hardware, project=project)
+                object.hardware = hardware
+
+            object.save()
+
+            return HttpResponse(True)
+
+        elif new_data["model"] == "machine":
+            instance = new_data.get("instance")
+            name = new_data.get("name")
+
+            if new_data.get("family"):
+                family, hardware = new_data.get("family").split("-")
+                hardware = Hardware.objects.get(id=hardware, project=project)
+                family = MachineFamily.objects.get(name=family,
+                                                   hardware=hardware,
+                                                   project=project)
+            else:
+                family = None
+            
+            
+            ref_hardware = new_data.get("hardware")
+
+            ref_name, ref_family = instance.split("-")
+
+            ref_hardware = Hardware.objects.get(
+                project=project,
+                name=ref_hardware,
+            )
+
+            ref_family = MachineFamily.objects.get(name=ref_family,
+                                                   hardware=ref_hardware,
+                                                   project=project)
+
+            object = get_object_or_404(
+                model,
+                type=ref_family,
+                hardware=ref_hardware,
+                name=ref_name,
+                project=project,
+            )
+
+            if name and name != object.name:
+                object.name = name
+
+            if family and family != object.type:
+                object.type = family
+                object.hardware = hardware
+
+            object.save()
 
             return HttpResponse(True)
 
@@ -469,16 +549,15 @@ def add_projectField_to_db(request):
 
 
 @login_required
-def add_machine_to_db(request,):
+def add_hardware_to_db(request,):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
 
     if request.method == "POST":
         redirect_url = request.META.get('HTTP_REFERER', '/')
-        machine = request.POST.get("machine")
-        type = request.POST.get("machineType")
+        hardware = request.POST.get("hardware")
 
-        new_machine = Machine.objects.create(name=machine, type=type, project=project)
+        new_hardware = Hardware.objects.create(name=hardware, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -487,6 +566,59 @@ def add_machine_to_db(request,):
 
     return HttpResponse("Problem")
 
+
+@login_required
+def add_machineFamily_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        machineFamily = request.POST.get("machineFamily")
+        hardware = request.POST.get("hardware-name")
+        hardware = Hardware.objects.get(name=hardware, project=project)
+        print(hardware)
+        new_machineFamily = MachineFamily.objects.create(name=machineFamily, hardware=hardware, project=project)
+
+        return JsonResponse(True, safe=False)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+@login_required
+def add_machine_to_db(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        machine = request.POST.get("machine-name")
+        type, hardware = request.POST.get("machineFamily-name").split("-")
+
+        new_machine = Machine.objects.create(name=machine,
+                                             type=MachineFamily.objects.get(
+                                                 project=project,
+                                                 name=type,
+                                                 hardware=Hardware.objects.get(
+                                                     name=hardware,
+                                                     project=project,
+                                                 )
+                                             ),
+                                             project=project)
+        new_machine.hardware = Hardware.objects.get(
+                                                     name=hardware,
+                                                     project=project,
+                                                 )
+        new_machine.save()
+        return JsonResponse(True, safe=False)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
 
 
 @login_required
@@ -764,13 +896,61 @@ def del_profession_from_db(request):
 
 
 @login_required
+def del_hardware_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        name = request.POST.get("hardware")
+        obj = Hardware.objects.get(name=name, project=project)
+        # objCount = MachineCount.objects.filter(machine=obj.id, project=project)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+@login_required
+def del_machineFamily_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        name, hardware = request.POST.get("machineFamily").split("-")
+        obj = MachineFamily.objects.get(name=name,
+                                        hardware=Hardware.objects.get(name=hardware, project=project),
+                                        project=project)
+        obj.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+@login_required
 def del_machine_from_db(request):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
 
     if request.method == "POST":
-        name = request.POST.get("machine")
-        obj = Machine.objects.get(name=name, project=project)
+        print(request.POST.get("machine"))
+        name, family, hardware = request.POST.get("machine").split("-")
+        obj = Machine.objects.get(name=name,
+                                  type=MachineFamily.objects.get(
+                                      project=project,
+                                      name=family,
+                                      hardware=Hardware.objects.get(
+                                          project=project,
+                                          name=hardware,
+                                      )
+                                  ),
+                                  project=project)
         objCount = MachineCount.objects.filter(machine=obj.id, project=project)
         obj.delete()
         objCount.delete()
@@ -1897,6 +2077,34 @@ def get_options(request, typee):
             }
             return JsonResponse(context)
 
+        elif typee == "hardware":
+            data = Hardware.objects.filter(project=project)
+
+            if data.exists():
+                data = json.dumps(list(data.values()))
+            else:
+                data = "[]"
+
+            context = {
+                typee: data,
+            }
+            return JsonResponse(context)
+
+        elif typee == "machineFamily":
+            data = MachineFamily.objects.filter(project=project)
+            objs = []
+            for item in data:
+                objs.append({
+                    "name": item.name,
+                    "hardware": item.hardware.name,
+                })
+
+            context = {
+                typee: objs,
+            }
+
+            return JsonResponse(context, safe=False)
+
         data = json.loads(request.POST['options'])["options"]
         data = [item.strip().strip() for item in data]
         if "equipe" in typee:
@@ -2065,6 +2273,40 @@ def get_professions(request):
             data = "[]"
         context = {
             "professions": data
+        }
+        return JsonResponse(context)
+
+
+@login_required
+def get_machineFamilies(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        machineFamilies = MachineFamily.objects.filter(project=project)
+        if machineFamilies.exists():
+            data = json.dumps(list(machineFamilies.values()))
+        else:
+            data = "[]"
+        context = {
+            "machineFamilies": data
+        }
+        return JsonResponse(context)
+
+
+@login_required
+def get_hardwares(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        hardwares = Hardware.objects.filter(project=project)
+        if hardwares.exists():
+            data = json.dumps(list(hardwares.values()))
+        else:
+            data = "[]"
+        context = {
+            "hardwares": data
         }
         return JsonResponse(context)
 

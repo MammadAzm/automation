@@ -41,6 +41,8 @@ urlpatterns = [
     # Edit DB paths
     path("edit-db/add-position", add_position_to_db),
     path("edit-db/add-profession", add_profession_to_db),
+    path("edit-db/add-hardware", add_hardware_to_db),
+    path("edit-db/add-machineFamily", add_machineFamily_to_db),
     path("edit-db/add-machine", add_machine_to_db),
     path("edit-db/add-material", add_material_to_db),
     path("edit-db/add-contractor", add_contractor_to_db),
@@ -63,6 +65,8 @@ urlpatterns = [
 
     path("edit-db/del-position", del_position_from_db),
     path("edit-db/del-profession", del_profession_from_db),
+    path("edit-db/del-hardware", del_hardware_from_db),
+    path("edit-db/del-machineFamily", del_machineFamily_from_db),
     path("edit-db/del-machine", del_machine_from_db),
     path("edit-db/del-material", del_material_from_db),
     path("edit-db/del-contractor", del_contractor_from_db),
@@ -89,6 +93,8 @@ urlpatterns = [
     path("edit-db/get-units/", get_units),
     path("edit-db/get-professions/", get_professions),
     path("edit-db/get-contractors/", get_contractors),
+    path("edit-db/get-hardwares/", get_hardwares),
+    path("edit-db/get-machineFamilies/", get_machineFamilies),
     path("edit-db/get-operations/", get_operations),
     path("edit-db/get-operations/<int:ID>/", get_operations),
     path("edit-db/get-suboperations/", get_suboperations),

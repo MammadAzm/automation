@@ -158,9 +158,11 @@ EDIT_BASE_DATA = {
     "suboperation": SubOperation,
     "task": Task,
     "projectField": ProjectField,
+    "hardware": Hardware,
+    "machineFamily": MachineFamily,
 }
 
-ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField", ]
+ONLY_NAME_MODELS = ["position", "profession", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField", "hardware",]
 
 MODELS = {
     "position": Position,
@@ -181,4 +183,6 @@ MODELS = {
     "MachineCount": MachineCount,
     "MaterialCount": MaterialCount,
     "projectField": ProjectField,
+    "hardware": Hardware,
+    "machineFamily": MachineFamily,
 }

@@ -331,9 +331,9 @@
                 <thead class="">
                     <tr class="">
                         <th class="">
-                            ماشین آلات
+                            انواع سخت افزار
                             <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropHardwares">
                                 <img src="{% static 'icons/plus-circle.svg' %}">
                             </span>
                         </th>
@@ -341,34 +341,147 @@
                 </thead>
             </table>
             <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
+                <table class="table table-bordered border-dark" id="table-hardware" style="font-size: 11px">
                     <thead class="" hidden>
                         <tr class="">
                                 <th class="" >
                                     ماشین آلات
                                     <span class="badge rounded-pill" style="float: left; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropHardwares">
                                         <img src="{% static 'icons/plus-circle.svg' %}">
                                     </span>
                                 </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for machine in machines %}
-                            <tr id="{{ machine.name }}">
+                        {% for hardware in hardwares %}
+                            <tr id="{{ hardware.name }}">
                                 <td class="">
+                                    {{ hardware.name }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black" onclick="del_hardware('{{ hardware.name }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'hardware',
+                                            instance:'{{hardware.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="" style="width: 70%;">
+                            خانواده های ماشین آلات
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropMachineFamilys">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+                        <th class="" style="width: 30%;">سخت افزار</th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-machineFamily" style="font-size: 11px">
+                    <thead class="" hidden>
+                        <tr class="">
+                            <th class="" >
+                                ماشین آلات
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachineFamilys">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
+                            </th>
+                            <th class="">سخت افزار</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machineFamily in machineFamilys %}
+                            <tr id="{{machineFamily.name}}-{{machineFamily.hardware}}">
+                                <td class="" style="width: 70%;">
+                                    {{ machineFamily.name }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black" onclick="del_machineFamily('{{machineFamily.name}}-{{machineFamily.hardware}}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'machineFamily',
+                                            instance:'{{machineFamily.name}}-{{machineFamily.hardware}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                                <td style="width: 30%;">
+                                    {{ machineFamily.hardware }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="" style="width: 70%;">
+                            ماشین آلات
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+                        <th class="" style="width: 30%;">نوع/خانواده</th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
+                    <thead class="" hidden>
+                        <tr class="">
+                            <th class="" style="width: 70%;">
+                                ماشین آلات
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
+                            </th>
+                            <th class="" style="width: 30%;">نوع/خانواده</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machine in machines %}
+                            <tr id="{{ machine.name }}-{{ machine.type }}-{{machine.hardware}}">
+                                <td class="" style="width: 70%;">
                                     {{ machine.name }}
                                     <span class="badge rounded-pill"
-                                        style="float: left; color: black" onclick="del_machine('{{ machine.name }}', true)">
+                                        style="float: left; color: black" onclick="del_machine('{{ machine.name }}-{{ machine.type }}-{{machine.hardware}}', true)">
                                         <img src="{% static 'icons/patch-minus.svg' %}">
                                     </span>
                                     <span class="badge rounded-pill" style="float: left; color: black"
                                         onclick="showPopup({
                                             model:'machine',
-                                            instance:'{{machine.name}}',
+                                            instance:'{{machine.name}}-{{ machine.type }}',
+                                            hardware:'{{machine.hardware}}',
                                         }, 'editing')">
                                         <img src="{% static 'icons/pen.svg' %}">
                                     </span>
+                                </td>
+                                <td class="" style="width: 30%;">
+                                    {{ machine.type }}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -526,72 +639,6 @@
                 </table>
             </div>
         </div>
-
-        <div class="col-4">
-            <table class="table table-bordered border-dark" style="font-size: 11px">
-                <thead class="">
-                    <tr class="">
-                        <th class="" style="width: 35%">
-                            واحدها
-                                <span class="badge rounded-pill" style="float: left; color: black"
-                                   data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
-                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
-                        </th>
-                        <th class="" style="width: 35%">مبنا</th>
-                        <th class="">ضریب</th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-unit" style="font-size: 11px">
-                    <thead hidden>
-                        <tr class="">
-                            <th class="" style="width: 35%" >
-                                واحد
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                       data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
-                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
-                            </th>
-                            <th class="" style="width: 35%">مبنا</th>
-                            <th class="">ضریب</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {% for unit in units %}
-                            <tr  id="{{ unit }}">
-                                <td style="width: 35%">
-                                    {{ unit }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-<!--                                    <span class="badge rounded-pill" style="float: left; color: black"-->
-<!--                                        onclick="showPopup({-->
-<!--                                            model:'provider',-->
-<!--                                            instance:'{{provider.name}}',-->
-<!--                                        })">-->
-<!--                                        <img src="{% static 'icons/pen.svg' %}">-->
-<!--                                    </span>-->
-                                </td>
-                                <td style="width: 35%">
-
-                                    {% if unit.parent|hasContent %}
-                                        {{ unit.parent }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ unit.coef }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
 
 
     </div>
@@ -793,6 +840,73 @@
 
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 
+    <div class="col-4">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" style="width: 35%">
+                            واحدها
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                        <th class="" style="width: 35%">مبنا</th>
+                        <th class="">ضریب</th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-unit" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" style="width: 35%" >
+                                واحد
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                            <th class="" style="width: 35%">مبنا</th>
+                            <th class="">ضریب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for unit in units %}
+                            <tr  id="{{ unit }}">
+                                <td style="width: 35%">
+                                    {{ unit }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_unit('{{ unit }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+<!--                                    <span class="badge rounded-pill" style="float: left; color: black"-->
+<!--                                        onclick="showPopup({-->
+<!--                                            model:'provider',-->
+<!--                                            instance:'{{provider.name}}',-->
+<!--                                        })">-->
+<!--                                        <img src="{% static 'icons/pen.svg' %}">-->
+<!--                                    </span>-->
+                                </td>
+                                <td style="width: 35%">
+
+                                    {% if unit.parent|hasContent %}
+                                        {{ unit.parent }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ unit.coef }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
 </div>
 
 
@@ -854,6 +968,78 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdropHardwares" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropHardwaresLabel" style="margin-right: auto">افزودن ماشین</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-hardware">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" id="input-hardware" name="hardware" class="form-control" placeholder="نام سخت افزار">
+                    </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="">افزودن</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdropMachineFamilys" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropMachineFamilysLabel" style="margin-right: auto">افزودن خانواده</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-machineFamily">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input required type="text" id="input-machineFamily" name="machineFamily" class="form-control" placeholder="نام خانواده">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuHardwares" data-bs-toggle="dropdown" onclick='fetch_options("hardware")'>
+                                انتخاب سخت افزار
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-hardwares">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-hardware">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            </ul>
+                        </div>
+                        <input required readonly type="text" id="hardware-name" name="hardware-name" class="form-control" placeholder="نوع سخت افزار">
+                    </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="">افزودن</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="staticBackdropMachines" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" >
     <div class="modal-dialog">
         <div class="modal-content">
@@ -867,15 +1053,22 @@
                 <form id="form-machine">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input required type="text" id="input-machine" name="machine" class="form-control" placeholder="نام ماشین">
-                        <select required class="form-select" id="machineType" name="machineType"
-                            style="text-align: right;">
-                            <option selected disabled hidden value="" >انتخاب</option>
-                            {% for type in machine_types %}
-                                <option value="{{ type.0 }}">{{ type.1 }}</option>
-                            {% endfor %}
-                        </select>
-
+                        <input required type="text" id="input-machine" name="machine-name" class="form-control" placeholder="نام ماشین">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuFamilys" data-bs-toggle="dropdown" onclick='fetch_options("machineFamily")'>
+                                انتخاب خانواده
+                            </button>
+                            <ul class="dropdown-menu" id="dropdown-menu-machineFamilys">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-machineFamily">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                            </ul>
+                        </div>
+                        <input required readonly type="text" id="machineFamily-name" name="machineFamily-name" class="form-control" placeholder="خانواده">
                     </div>
                     <button class="btn btn-outline-success bp3-round"
                                 type="submit" id="button-addon3">افزودن</button>
@@ -1799,6 +1992,8 @@
     submitForm(null, 'task')
     submitForm(null, 'position')
     submitForm(null, 'profession')
+    submitForm(null, 'hardware')
+    submitForm(null, 'machineFamily')
     submitForm(null, 'machine')
     submitForm(null, 'material')
     submitForm(null, 'contractor')

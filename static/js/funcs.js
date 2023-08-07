@@ -1,4 +1,5 @@
-const ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField"]
+const ONLY_NAME_MODELS = ["position", "profession", "material", "contractor", "zone",
+    "materialprovider", "machineprovider", "projectField", "hardware",]
 const STRINGS_FROM_NUMBERS = {
     1: "one",
     2: "two",
@@ -86,6 +87,14 @@ function submitEditingFormHandler(event) {
                 else if (model === "suboperation") {
                     let modalID = formData.get("modalID")
                     localStorage.setItem('showModal', modalID);
+                    location.reload();
+                }
+
+                else if (model === "machineFamily") {
+                    location.reload();
+                }
+
+                else if (model === "machine") {
                     location.reload();
                 }
 
@@ -642,7 +651,183 @@ function showPopup(options, ID) {
 
         }
 
-        else if (options.model === "equipe") {}
+        else if (options.model === "machineFamily") {
+
+            var model = options.model
+            var instance = options.instance
+            instance = instance.split("-")
+            var name = instance[0]
+            var family = instance[1]
+
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = name + "-" + family
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقدار "' + name + "-" + family + '"'
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mx-auto"
+            div_input_group.id = "temp-input-box"
+            div_input_group.style = "padding: 15px 25px 5px 50px;"
+
+            let label_name = document.createElement("label")
+            label_name.innerText = "نام خانواده: "
+            label_name.className = "p-1"
+            label_name.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_name = document.createElement("input")
+            input_name.required = true
+            input_name.type = "text"
+            input_name.id = "input_name"
+            input_name.name = "name"
+            input_name.value = name
+            input_name.className = "form-control py-0"
+            input_name.placeholder = "مقدار جدید (فعلی: "+ name + ")"
+            input_name.style = "width: 125px"
+
+            let label_hardwares = document.createElement("label")
+            label_hardwares.innerText = " \u00A0 \u00A0 \u00A0خانواده: "
+            label_hardwares.for = "select2-contractors-editing"
+            label_hardwares.className = "p-1"
+            label_hardwares.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_harddwares = document.createElement('select')
+            select_harddwares.required = true
+            select_harddwares.className = "select2"
+            select_harddwares.id = "select2-hardwares-editing"
+            select_harddwares.name = "hardware"
+            select_harddwares.value = family
+            select_harddwares.style = "width: 150px; border: solid black; "
+
+            let choose_hardware = document.createElement('option')
+            choose_hardware.disabled = true
+            choose_hardware.selected = true
+            // choose_hardware.hidden = true
+            choose_hardware.value = family
+            choose_hardware.innerText = family
+
+            select_harddwares.appendChild(choose_hardware)
+            fetch_hardwares(function (hardwares) {
+                hardwares.forEach(hardware => {
+                    let option = document.createElement('option',)
+                    option.value = hardware.name
+                    option.innerText = hardware.name
+                    select_harddwares.appendChild(option)
+                })
+            })
+
+            div_input_group.appendChild(label_name)
+            div_input_group.appendChild(input_name)
+            div_input_group.appendChild(label_hardwares)
+            div_input_group.appendChild(select_harddwares)
+            div_content.appendChild(div_input_group)
+
+
+            $('#select2-hardwares-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+
+
+
+            submitEditingForm();
+
+        }
+
+        else if (options.model === "machine") {
+
+            var model = options.model
+            var instance = options.instance
+            instance = instance.split("-")
+            var name = instance[0]
+            var family = instance[1]
+
+            var input_model = document.getElementById('input-model')
+            input_model.value = model
+            input_model.hidden = true
+            var input_instance = document.getElementById('input-instance')
+            input_instance.value = name + "-" + family
+            input_instance.hidden = true
+
+            document.getElementById('editing-popup-header').innerText = 'ویرایش مقدار "' + name + "-" + family + '"'
+
+            var div_input_group = document.createElement("div")
+            div_input_group.className = "input-group mb-3 mx-auto"
+            div_input_group.id = "temp-input-box"
+            div_input_group.style = "padding: 15px 25px 5px 50px;"
+
+            let label_name = document.createElement("label")
+            label_name.innerText = "نام ماشین: "
+            label_name.className = "p-1"
+            label_name.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            var input_name = document.createElement("input")
+            input_name.required = true
+            input_name.type = "text"
+            input_name.id = "input_name"
+            input_name.name = "name"
+            input_name.value = name
+            input_name.className = "form-control py-0"
+            input_name.placeholder = "مقدار جدید (فعلی: "+ name + ")"
+            input_name.style = "width: 125px"
+
+            let label_families = document.createElement("label")
+            label_families.innerText = " \u00A0 \u00A0 \u00A0خانواده: "
+            label_families.className = "p-1"
+            label_families.style = "text-align: center; font-weight: bolder; font-size: 14px"
+
+            let select_families = document.createElement('select')
+            select_families.required = true
+            select_families.className = "select2"
+            select_families.id = "select2-families-editing"
+            select_families.name = "family"
+            select_families.value = family
+            select_families.style = "width: 150px; border: solid black; "
+
+            let choose_family = document.createElement('option')
+            choose_family.disabled = true
+            choose_family.selected = true
+            // choose_family.hidden = true
+            choose_family.value = null
+            choose_family.innerText = family
+
+            select_families.appendChild(choose_family)
+            fetch_machineFamilies(function (families) {
+                families.forEach(family => {
+                    let option = document.createElement('option',)
+                    option.value = family.name + "-" + family.hardware_id
+                    option.innerText = family.name
+                    select_families.appendChild(option)
+                })
+            })
+
+            div_input_group.appendChild(label_name)
+            div_input_group.appendChild(input_name)
+            div_input_group.appendChild(label_families)
+            div_input_group.appendChild(select_families)
+
+            var hardware = document.createElement("input")
+            hardware.required = true
+            hardware.hidden = true
+            hardware.type = "text"
+            hardware.name = "hardware"
+            hardware.value = options.hardware
+
+            div_content.appendChild(div_input_group)
+            div_content.appendChild(hardware)
+
+
+            $('#select2-families-editing').select2({
+                dropdownParent: $("#temp-input-box")
+            });
+
+
+
+            submitEditingForm();
+
+        }
 
     }
 }
@@ -1016,6 +1201,52 @@ function del_position(pos, db) {
 
 }
 
+function del_hardware(hardware, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-hardware',
+            data: {
+            'hardware': hardware,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(hardware)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(hardware)
+        obj.remove()
+    }
+
+}
+
+function del_machineFamily(machineFamily, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-machineFamily',
+            data: {
+            'machineFamily': machineFamily,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(machineFamily)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(machineFamily)
+        obj.remove()
+    }
+
+}
+
 function del_machine(mach, db) {
     if (db) {
         $.ajax({
@@ -1328,6 +1559,64 @@ function del_task_in_report(taskOperation, taskSubOperation, equipeName, zoneNam
         obj.remove()
     }
 
+}
+
+function search_hardware() {
+    let dropdownItems = $('#dropdown-menu-hardwares').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-hardware').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-hardware").dispatchEvent(event);
+      $('#hardware-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-hardware').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+}
+
+function search_machineFamily() {
+    let dropdownItems = $('#dropdown-menu-machineFamilys').find('a');
+
+    // Add event listener to the dropdown items
+    dropdownItems.on('click', function() {
+      let selectedItemText = $(this).text();
+
+      // Set the search input value to the selected item text
+      $('#search-machineFamily').val("");
+      let event = new Event('keyup');
+      document.getElementById("search-machineFamily").dispatchEvent(event);
+      $('#machineFamily-name').val(selectedItemText);
+    });
+    // Add event listener to the search input
+    $('#search-machineFamily').on('keyup', function() {
+      let searchText = $(this).val().toLowerCase();
+
+      // Loop through each dropdown item and hide/show based on search text
+      dropdownItems.each(function() {
+        let text = $(this).text().toLowerCase();
+        if (text.includes(searchText)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
 }
 
 function search_machine() {
@@ -2594,6 +2883,8 @@ function fetch_options(type, shortcut=null){
                     search_base_position();
                 } else if (type == "profession") {
                     search_base_profession();
+                } else if (type == "hardware") {
+                    search_base_hardware();
                 } else if (type == "machine") {
                     search_base_machine();
                 } else if (type == "material") {
@@ -2726,21 +3017,38 @@ function fetch_options(type, shortcut=null){
             xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
             },
             success: function(response) {
-                let opts = response[type]
-                opts = JSON.parse(opts)
-                for (let i = 0; i < opts.length; i++) {
-                    let li = document.createElement("li")
-                    let a = document.createElement("a")
-                    a.className = "dropdown-item";
-                    a.innerHTML = opts[i].name;
-                    li.appendChild(a);
-                    menu.appendChild(li);
+                if (type === "machineFamily") {
+                    let opts = response[type]
+                    for (let i = 0; i < opts.length; i++) {
+                        let li = document.createElement("li")
+                        let a = document.createElement("a")
+                        a.className = "dropdown-item";
+                        a.innerHTML = opts[i].name+"-"+opts[i].hardware;
+                        li.appendChild(a);
+                        menu.appendChild(li);
+                    }
+                }
+                else {
+                    let opts = response[type]
+                    opts = JSON.parse(opts)
+                    for (let i = 0; i < opts.length; i++) {
+                        let li = document.createElement("li")
+                        let a = document.createElement("a")
+                        a.className = "dropdown-item";
+                        a.innerHTML = opts[i].name;
+                        li.appendChild(a);
+                        menu.appendChild(li);
+                    }
                 }
 
                 if (type=="position") {
                    search_position();
                 } else if (type=="profession") {
                     search_profession();
+                } else if (type=="machineFamily") {
+                    search_machineFamily();
+                } else if (type=="hardware") {
+                    search_hardware();
                 } else if (type=="machine") {
                     search_machine();
                 } else if (type=="material") {
@@ -2980,6 +3288,34 @@ function fetch_professions(callback) {
             let opts = response
 
             opts = JSON.parse(opts["professions"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_hardwares(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-hardwares/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["hardwares"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_machineFamilies(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-machineFamilies/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["machineFamilies"])
 
             callback(opts)
         }
@@ -3381,6 +3717,12 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "profession") {
         var target = "form-profession"
     }
+    else if (type === "hardware") {
+        var target = "form-hardware"
+    }
+    else if (type === "machineFamily") {
+        var target = "form-machineFamily"
+    }
     else if (type === "machine") {
         var target = "form-machine"
     }
@@ -3719,8 +4061,6 @@ function submitForm(ID, type, shortcut=null,) {
 
                 return 0
             }
-
-            print(type)
 
             if ( type === "suboperation" ) {
                 let table = document.getElementById("table-" + ID)
@@ -4309,14 +4649,10 @@ function submitForm(ID, type, shortcut=null,) {
 
                 tbody.appendChild(newRow)
             }
-            else if (type === "machine") {
+            else if (type === "hardware") {
                 let input = document.getElementById("input-" + type)
-                let machine = document.getElementById('machineType')
                 let value = input.value
-                let machineType = machine.value
                 input.value = ""
-                machine.value = ""
-
                 let table = document.getElementById("table-" + type)
                 let tbody = table.querySelector("tbody")
 
@@ -4343,7 +4679,7 @@ function submitForm(ID, type, shortcut=null,) {
                 span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
 
 
-                span.setAttribute("onclick", "del_machine('"+value+"', true)")
+                span.setAttribute("onclick", "del_hardware('"+value+"', true)")
                 span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
 
 
@@ -4351,6 +4687,111 @@ function submitForm(ID, type, shortcut=null,) {
                 cell1.appendChild(span2)
 
                 newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "machineFamily") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+                document.getElementById("hardware-name").value = ""
+
+                let hardware = formData.get("hardware-name")
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value+"-"+hardware;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.style = "width: 70%";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_machineFamily('"+value+"-"+hardware+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"-"+hardware+"'}, 'editing')")
+
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.style = "width: 30%";
+                cell2.innerText = hardware
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell2)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "machine") {
+                let input = document.getElementById("input-" + type)
+
+                let family_hardware = document.getElementById('machineFamily-name')
+                let machineFamily = family_hardware.value.split("-")[0]
+                let hardware = family_hardware.value.split("-")[1]
+
+                let value = input.value
+                let machineType = machineFamily
+                input.value = ""
+                family_hardware.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value+"-"+machineType+"-"+hardware;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+
+                span.setAttribute("onclick", "del_machine('"+value+"-"+machineType+"-"+hardware+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"-"+machineType+"', hardware:'"+hardware+"'}, 'editing')")
+
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
+
+                let cell2 = document.createElement('td',);
+                cell2.className = "";
+                cell2.innerText = machineFamily
+
+                newRow.appendChild(cell1)
+                newRow.appendChild(cell2)
 
                 tbody.appendChild(newRow)
             }
@@ -5593,7 +6034,8 @@ function handle_select(type) {
         } else {
             var shortcut = ""
         }
-    } else {
+    }
+    else {
         var shortcut = ""
     }
 

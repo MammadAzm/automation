@@ -100,17 +100,41 @@ class ProfessionCount(models.Model):
         return self.profession.name
 
 
-class Machine(models.Model):
+class Hardware(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    type = models.IntegerField(choices=MACHINE_TYPES, default=0)
-    name = models.CharField(max_length=250,)
+    name = models.CharField(max_length=250, )
 
     class Meta:
         unique_together = ("name", "project")
 
     def __str__(self):
-        # return self.name
-        # return str(self.get_type_display()) + " - " + self.name
+        return self.name
+
+
+class MachineFamily(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250,)
+
+    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        unique_together = ("name", "project")
+
+    def __str__(self):
+        return self.name
+
+
+class Machine(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    type = models.ForeignKey(MachineFamily, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=250,)
+
+    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        unique_together = ("name", "project")
+
+    def __str__(self):
         return self.name
 
 
