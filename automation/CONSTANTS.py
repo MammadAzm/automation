@@ -157,9 +157,10 @@ EDIT_BASE_DATA = {
     "zoneoperation": ZoneOperation,
     "suboperation": SubOperation,
     "task": Task,
+    "projectField": ProjectField,
 }
 
-ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
+ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField", ]
 
 MODELS = {
     "position": Position,
@@ -179,4 +180,5 @@ MODELS = {
     "task": Task,
     "MachineCount": MachineCount,
     "MaterialCount": MaterialCount,
+    "projectField": ProjectField,
 }

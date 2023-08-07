@@ -10,12 +10,62 @@
 
     <div class="row  mb-3">
 
-        <div class="col">
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                           رسته های پروژه
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropProjectFields">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-projectField" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                               رسته
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropProjectFields">
+                                        <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for projectField in projectFields %}
+                            <tr  id="{{ projectField }}">
+                                <td>
+                                    {{ projectField }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_projectField('{{ projectField }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'projectField',
+                                            instance:'{{projectField.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-2">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
                         <th class="">
-                            سمت
+                            سمت ها
                             <span class="badge rounded-pill" style="float: left; color: black"
                                 data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
                                 <img src="{% static 'icons/plus-circle.svg' %}">
@@ -61,12 +111,12 @@
             </div>
         </div>
 
-        <div class="col">
+        <div class="col-2">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
                         <th class="">
-                            تخصص
+                            تخصص ها
                                 <span class="badge rounded-pill" style="float: left; color: black"
                                     data-bs-toggle="modal" data-bs-target="#staticBackdropProfessions">
                                     <img src="{% static 'icons/plus-circle.svg' %}">
@@ -111,7 +161,172 @@
             </div>
         </div>
 
-        <div class="col">
+        <div class="col-2">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="">
+                           پیمانکاران
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-contractor" style="font-size: 11px">
+                    <thead class="" hidden>
+                        <tr class="">
+                            <th class="" >
+                                پیمانکار
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">
+                                    <img src="{% static 'icons/plus-circle.svg' %}">
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contractor in contractors %}
+                            <tr  id="{{contractor.name}}">
+                                <td>
+                                    {{ contractor.name }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'contractor',
+                                            instance:'{{contractor.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="">
+                            اکیپ ها
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-equipe" style="font-size: 11px">
+                    <thead class="" hidden>
+                        <tr class="">
+                            <th class="" >
+                                اکیپ
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
+                                        <img src="{% static 'icons/plus-circle.svg' %}">
+                                    </span>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for equipe in equipes %}
+                            <tr  id="{{ equipe.profession }}-{{ equipe.contractor }}">
+                                <td>
+                                    {{ equipe.profession }}-{{ equipe.contractor }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'equipe',
+                                            profession:'{{ equipe.profession }}',
+                                            contractor:'{{ equipe.contractor }}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="">
+                            موقعیت ها
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-zone" style="font-size: 11px">
+                    <thead class="" hidden>
+                        <tr class="">
+                            <th class="" >
+                                موقعیت
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
+                                        <img src="{% static 'icons/plus-circle.svg' %}">
+                                    </span>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for zone in zones %}
+                            <tr  id="{{ zone }}">
+                                <td>
+                                    {{ zone }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'zone',
+                                            instance:'{{zone.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
+    <div class="row mb-3">
+
+        <div class="col-2">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
@@ -162,7 +377,7 @@
             </div>
         </div>
 
-        <div class="col">
+        <div class="col-2">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
@@ -212,174 +427,12 @@
             </div>
         </div>
 
-        <div class="col">
-            <table class="table table-bordered border-dark">
-                <thead class="">
-                    <tr class="">
-                        <th class="">
-                           پیمانکار
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">
-                                <img src="{% static 'icons/plus-circle.svg' %}">
-                            </span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-contractor" style="font-size: 11px">
-                    <thead class="" hidden>
-                        <tr class="">
-                            <th class="" >
-                                پیمانکار
-                                <span class="badge rounded-pill" style="float: left; color: black"
-                                    data-bs-toggle="modal" data-bs-target="#staticBackdropContractors">
-                                    <img src="{% static 'icons/plus-circle.svg' %}">
-                                </span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for contractor in contractors %}
-                            <tr  id="{{contractor.name}}">
-                                <td>
-                                    {{ contractor.name }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_contractor('{{ contractor.name }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        onclick="showPopup({
-                                            model:'contractor',
-                                            instance:'{{contractor.name}}',
-                                        }, 'editing')">
-                                        <img src="{% static 'icons/pen.svg' %}">
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="col">
-            <table class="table table-bordered border-dark">
-                <thead class="">
-                    <tr class="">
-                        <th class="">
-                            اکیپ
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
-                                <img src="{% static 'icons/plus-circle.svg' %}">
-                            </span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-equipe" style="font-size: 11px">
-                    <thead class="" hidden>
-                        <tr class="">
-                            <th class="" >
-                                اکیپ
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
-                                        <img src="{% static 'icons/plus-circle.svg' %}">
-                                    </span>
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for equipe in equipes %}
-                            <tr  id="{{ equipe.profession }}-{{ equipe.contractor }}">
-                                <td>
-                                    {{ equipe.profession }}-{{ equipe.contractor }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_equipe('{{ equipe.profession }}', '{{ equipe.contractor }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        onclick="showPopup({
-                                            model:'equipe',
-                                            profession:'{{ equipe.profession }}',
-                                            contractor:'{{ equipe.contractor }}',
-                                        }, 'editing')">
-                                        <img src="{% static 'icons/pen.svg' %}">
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
-
-    <div class="row mb-3">
-        <div class="col-2">
-            <table class="table table-bordered border-dark">
-                <thead class="">
-                    <tr class="">
-                        <th class="">
-                            موقعیت
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
-                                <img src="{% static 'icons/plus-circle.svg' %}">
-                            </span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-zone" style="font-size: 11px">
-                    <thead class="" hidden>
-                        <tr class="">
-                            <th class="" >
-                                موقعیت
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropZones">
-                                        <img src="{% static 'icons/plus-circle.svg' %}">
-                                    </span>
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for zone in zones %}
-                            <tr  id="{{ zone }}">
-                                <td>
-                                    {{ zone }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_zone('{{ zone }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        onclick="showPopup({
-                                            model:'zone',
-                                            instance:'{{zone.name}}',
-                                        }, 'editing')">
-                                        <img src="{% static 'icons/pen.svg' %}">
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <div class="col-2">
             <table class="table table-bordered border-dark" style="font-size: 11px">
                 <thead class="">
                     <tr class="">
                         <th class="" >
-                            تامین کننده مصالح
+                            تامین کنندگان مصالح
                                 <span class="badge rounded-pill" style="float: left; color: black"
                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMaterialProviders">
                                     <img src=" {% static 'icons/plus-circle.svg' %} "></span>
@@ -429,7 +482,7 @@
                 <thead class="">
                     <tr class="">
                         <th class="" >
-                            تامین کننده ماشین آلات
+                            تامین کنندگان ماشین آلات
                                 <span class="badge rounded-pill" style="float: left; color: black"
                                    data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
                                     <img src=" {% static 'icons/plus-circle.svg' %} "></span>
@@ -479,7 +532,7 @@
                 <thead class="">
                     <tr class="">
                         <th class="" style="width: 35%">
-                            واحد
+                            واحدها
                                 <span class="badge rounded-pill" style="float: left; color: black"
                                    data-bs-toggle="modal" data-bs-target="#staticBackdropUnits">
                                     <img src=" {% static 'icons/plus-circle.svg' %} "></span>
@@ -538,6 +591,8 @@
                 </table>
             </div>
         </div>
+
+
 
     </div>
 
@@ -1167,6 +1222,34 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdropProjectFields" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropProjectFieldsLabel" style="margin-right: auto">افزودن رسته</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-projectField">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input id="input-projectField" required type="text" name="projectField" class="form-control" placeholder="نام رسته">
+                    </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit" id="button-addon19">افزودن</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="staticBackdropFilteringTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
@@ -1723,6 +1806,7 @@
     submitForm(null, 'zone')
     submitForm(null, 'materialprovider')
     submitForm(null, 'machineprovider')
+    submitForm(null, 'projectField')
     submitForm(null, 'unit')
     submitForm(null, 'filtering-task')
 </script>

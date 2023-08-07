@@ -70,6 +70,7 @@ def add_base_data_template(request):
     tasks = Task.objects.filter(project=project)
     parentTasks = ParentTask.objects.filter(project=project)
     units = Unit.objects.filter(project=project).order_by('parent', 'name')
+    projectFields = ProjectField.objects.filter(project=project)
 
     materialproviders = MaterialProvider.objects.filter(project=project)
     machineproviders = MachineProvider.objects.filter(project=project)
@@ -105,6 +106,8 @@ def add_base_data_template(request):
         operations = []
     if not suboperations.exists():
         suboperations = []
+    if not projectFields.exists():
+        suboperations = []
 
     context = {
         "project": project,
@@ -122,6 +125,7 @@ def add_base_data_template(request):
         "machineproviders": machineproviders,
         "operations": operations,
         "suboperations": suboperations,
+        "projectFields": projectFields,
 
         "machine_types": MACHINE_TYPES,
     }
@@ -436,6 +440,25 @@ def add_machineprovider_to_db(request):
         machineprovider = request.POST.get("machineprovider")
 
         new_machineprovider = MachineProvider.objects.create(name=machineprovider, project=project)
+
+        return JsonResponse(True, safe=False)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+@login_required
+def add_projectField_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        projectField = request.POST.get("projectField")
+
+        new_projectField = ProjectField.objects.create(name=projectField, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -1025,6 +1048,25 @@ def del_machineprovider_from_db(request):
     if request.method == "POST":
         name = request.POST.get("machineprovider")
         obj = MachineProvider.objects.get(name=name, project=project)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+@login_required
+def del_projectField_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        name = request.POST.get("projectField")
+        obj = ProjectField.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()

@@ -819,3 +819,14 @@ class DailyReport(models.Model):
 
     class Meta:
         unique_together = ("project", "short_date")
+
+
+class ProjectField(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, )
+
+    class Meta:
+        unique_together = ("name", "project")
+
+    def __str__(self):
+        return self.name

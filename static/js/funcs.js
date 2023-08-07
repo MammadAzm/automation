@@ -1,4 +1,4 @@
-const ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider"]
+const ONLY_NAME_MODELS = ["position", "profession", "machine", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField"]
 const STRINGS_FROM_NUMBERS = {
     1: "one",
     2: "two",
@@ -1226,6 +1226,29 @@ function del_machineprovider(machineprovider, db) {
         });
     } else {
         let obj = document.getElementById(machineprovider)
+        obj.remove()
+    }
+
+}
+
+function del_projectField(projectField, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-projectField',
+            data: {
+            'projectField': projectField,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(projectField)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(projectField)
         obj.remove()
     }
 
@@ -3379,6 +3402,9 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "machineprovider") {
         var target = "form-machineprovider"
     }
+    else if (type === "projectField") {
+        var target = "form-projectField"
+    }
     else if (type === "unit") {
         var target = "form-unit"
     }
@@ -3693,6 +3719,8 @@ function submitForm(ID, type, shortcut=null,) {
 
                 return 0
             }
+
+            print(type)
 
             if ( type === "suboperation" ) {
                 let table = document.getElementById("table-" + ID)
@@ -4617,6 +4645,46 @@ function submitForm(ID, type, shortcut=null,) {
                 span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
 
                 span.setAttribute("onclick", "del_machineprovider('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "projectField") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_projectField('"+value+"', true)")
                 span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
 
                 cell1.appendChild(span)
