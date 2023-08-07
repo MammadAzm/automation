@@ -1835,6 +1835,7 @@ function add_machine_to_daily_report() {
     select.style.textAlign = 'left  ';
     select.style.padding = '0';
     select.style.paddingLeft = '15%';
+    select.style.background = "none"
 
     let option = document.createElement('option',)
     option.value = valP
@@ -1962,6 +1963,7 @@ function add_material_to_daily_report() {
     select2.style.textAlign = 'left  ';
     select2.style.padding = '0';
     select2.style.paddingLeft = '15%';
+    select2.style.background = "none"
 
     option = document.createElement('option',)
     option.value = valP
