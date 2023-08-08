@@ -577,7 +577,6 @@ def add_machineFamily_to_db(request,):
         machineFamily = request.POST.get("machineFamily")
         hardware = request.POST.get("hardware-name")
         hardware = Hardware.objects.get(name=hardware, project=project)
-        print(hardware)
         new_machineFamily = MachineFamily.objects.create(name=machineFamily, hardware=hardware, project=project)
 
         return JsonResponse(True, safe=False)

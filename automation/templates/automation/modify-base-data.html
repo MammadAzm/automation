@@ -377,7 +377,7 @@
             </div>
         </div>
 
-        <div class="col-3">
+        <div class="col-4">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
@@ -433,7 +433,7 @@
             </div>
         </div>
 
-        <div class="col-3">
+        <div class="col-4">
             <table class="table table-bordered border-dark">
                 <thead class="">
                     <tr class="">
@@ -489,6 +489,62 @@
                 </table>
             </div>
         </div>
+
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            تامین کنندگان ماشین آلات
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-machineprovider" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                                تامین کننده
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for provider in machineproviders %}
+                            <tr  id="{{ provider }}">
+                                <td>
+                                    {{ provider }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_machineprovider('{{ provider }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'machineprovider',
+                                            instance:'{{provider.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
+    <div class="row  mb-3">
 
         <div class="col-2">
             <table class="table table-bordered border-dark">
@@ -590,257 +646,7 @@
             </div>
         </div>
 
-        <div class="col-2">
-            <table class="table table-bordered border-dark" style="font-size: 11px">
-                <thead class="">
-                    <tr class="">
-                        <th class="" >
-                            تامین کنندگان ماشین آلات
-                                <span class="badge rounded-pill" style="float: left; color: black"
-                                   data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
-                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-machineprovider" style="font-size: 11px">
-                    <thead hidden>
-                        <tr class="">
-                            <th class="" >
-                                تامین کننده
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                       data-bs-toggle="modal" data-bs-target="#staticBackdropMachineProviders">
-                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        {% for provider in machineproviders %}
-                            <tr  id="{{ provider }}">
-                                <td>
-                                    {{ provider }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_machineprovider('{{ provider }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        onclick="showPopup({
-                                            model:'machineprovider',
-                                            instance:'{{provider.name}}',
-                                        }, 'editing')">
-                                        <img src="{% static 'icons/pen.svg' %}">
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-    </div>
-
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
-
-    <div class="row  mb-3">
         <div class="col-4">
-            <table class="table table-bordered border-dark" style="font-size: 11px">
-                <thead class="">
-                    <tr class="">
-                        <th class="" >
-                            عملیات اصلی
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                               data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
-                                <img src=" {% static 'icons/plus-circle.svg' %} ">
-                            </span>
-                        </th>
-                        <th style="width: 20%;">
-                            واحد
-                        </th>
-
-                        <th style="width: 20%;">
-                            مقدار کل
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-operation" style="font-size: 11px">
-                    <thead hidden>
-                        <tr class="">
-                            <th class="" >
-                                عملیات
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                       data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
-                                        <img src=" {% static 'icons/plus-circle.svg' %} "></span>
-                            </th>
-                            <th style="width: 20%;">
-                                واحد
-                            </th>
-
-                            <th style="width: 20%;">
-                                مقدار کل
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for operation in operations %}
-                            <tr  id="{{ operation }}">
-                                <td>
-                                    {{ operation }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_operation('{{ operation }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill" style="float: left; color: black"
-                                        onclick="showPopup({
-                                            model:'operation',
-                                            instance:'{{ operation.name }}',
-                                            unit:'{{ operation.unit }}',
-                                            amount:'{{ operation.amount }}',
-                                        }, 'editing')">
-                                        <img src="{% static 'icons/pen.svg' %}">
-                                    </span>
-                                    <span class="badge rounded-pill"
-                                          style="float: right; color: black; " onclick=""
-                                          data-bs-toggle="modal" data-bs-target="#staticBackdropSubOperations-{{ operation.id }}">
-                                        <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
-                                    </span>
-                                    <span class="badge rounded-pill"
-                                          style="float: right; color: black; " onclick=""
-                                          data-bs-toggle="modal" data-bs-target="#staticBackdropZoneOperations-{{ operation.id }}">
-                                        <img src="{% static 'icons/grid-1x2.svg' %}">
-                                    </span>
-                                </td>
-
-                                <td style="width: 20%;">
-                                    {{ operation.unit }}
-                                </td>
-
-                                <td style="width: 20%;">
-                                    {{ operation.amount }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="col-8">
-            <table class="table table-bordered border-dark">
-                <thead class="">
-                    <tr class="">
-                        <th class="" style="width: 45%">
-                             شرح آیتم های قراردادی
-
-                            <button class="btn-light py-0 mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdropFilteringTasks">
-                                جستجو
-                            </button>
-
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                <img src="{% static 'icons/plus-circle.svg' %}">
-                            </span>
-                        </th>
-<!--                        <th class="" style="width: 20%" >-->
-<!--                            شرح زیر عملیات-->
-<!--                        </th>-->
-                        <th class="" style="width: 18%" >
-                            اکیپ
-                        </th>
-                        <th class="" style="width: 17%" >
-                            موقعیت
-                        </th>
-                        <th class="" style="width: 10%" >
-                            واحد
-                        </th>
-                        <th class="" style="width: 10%">
-                            مقدار کل
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
-                <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
-                    <thead hidden class="">
-                    <tr class="">
-                        <th class="" style="width: 45%">
-                             شرح آیتم های قراردادی
-                            <span class="badge rounded-pill" style="float: left; color: black"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
-                                <img src="{% static 'icons/plus-circle.svg' %}">
-                            </span>
-                        </th>
-<!--                        <th class="" style="width: 20%" >-->
-<!--                            شرح زیر عملیات-->
-<!--                        </th>-->
-                        <th class="" style="width: 18%" >
-                            اکیپ
-                        </th>
-                        <th class="" style="width: 17%" >
-                            موقعیت
-                        </th>
-                        <th class="" style="width: 10%" >
-                            واحد
-                        </th>
-                        <th class="" style="width: 10%">
-                            مقدار کل
-                        </th>
-                    </tr>
-                </thead>
-                    <tbody>
-
-                        {% for parentTask in parentTasks %}
-                            <tr  id="{{parentTask.operation.operation.name}}-{{parentTask.equipe}}-{{parentTask.zone}}">
-                                <td style="width: 45%">
-                                    {{ parentTask.operation.operation }}
-                                    <span class="badge rounded-pill"
-                                        style="float: left; color: black; " onclick="del_task('{{parentTask.operation.operation.name}}', '{{ parentTask.equipe }}', '{{ parentTask.zone }}', true)">
-                                        <img src="{% static 'icons/patch-minus.svg' %}">
-                                    </span>
-
-                                    <span class="badge rounded-pill"
-                                          style="float: right; color: black; " onclick=""
-                                          data-bs-toggle="modal" data-bs-target="#staticBackdropSubTasks-{{ parentTask.id }}">
-                                        <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
-                                    </span>
-                                </td>
-
-<!--                                <td style="width: 20%">-->
-<!--                                    {{ task.suboperation.name }}-->
-<!--                                </td>-->
-
-                                <td style="width: 18%">
-                                    {{ parentTask.equipe }}
-                                </td>
-
-                                <td style="width: 17%">
-                                    {{ parentTask.zone }}
-                                </td>
-
-                                <td style="width: 10%">
-                                    {{ parentTask.unit }}
-                                </td>
-
-                                <td style="width: 10%">
-                                    {{ parentTask.totalVolume }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
-
-    <div class="col-4">
             <table class="table table-bordered border-dark" style="font-size: 11px">
                 <thead class="">
                     <tr class="">
@@ -904,6 +710,204 @@
                 </table>
             </div>
         </div>
+
+    </div>
+
+    <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
+
+    <div class="row  mb-3">
+
+        <div class="col-4">
+                <table class="table table-bordered border-dark" style="font-size: 11px">
+                    <thead class="">
+                        <tr class="">
+                            <th class="" >
+                                عملیات اصلی
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} ">
+                                </span>
+                            </th>
+                            <th style="width: 20%;">
+                                واحد
+                            </th>
+
+                            <th style="width: 20%;">
+                                مقدار کل
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                    <table class="table table-bordered border-dark" id="table-operation" style="font-size: 11px">
+                        <thead hidden>
+                            <tr class="">
+                                <th class="" >
+                                    عملیات
+                                        <span class="badge rounded-pill" style="float: left; color: black"
+                                           data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                                </th>
+                                <th style="width: 20%;">
+                                    واحد
+                                </th>
+
+                                <th style="width: 20%;">
+                                    مقدار کل
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for operation in operations %}
+                                <tr  id="{{ operation }}">
+                                    <td>
+                                        {{ operation }}
+                                        <span class="badge rounded-pill"
+                                            style="float: left; color: black; " onclick="del_operation('{{ operation }}', true)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}">
+                                        </span>
+                                        <span class="badge rounded-pill" style="float: left; color: black"
+                                            onclick="showPopup({
+                                                model:'operation',
+                                                instance:'{{ operation.name }}',
+                                                unit:'{{ operation.unit }}',
+                                                amount:'{{ operation.amount }}',
+                                            }, 'editing')">
+                                            <img src="{% static 'icons/pen.svg' %}">
+                                        </span>
+                                        <span class="badge rounded-pill"
+                                              style="float: right; color: black; " onclick=""
+                                              data-bs-toggle="modal" data-bs-target="#staticBackdropSubOperations-{{ operation.id }}">
+                                            <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                                        </span>
+                                        <span class="badge rounded-pill"
+                                              style="float: right; color: black; " onclick=""
+                                              data-bs-toggle="modal" data-bs-target="#staticBackdropZoneOperations-{{ operation.id }}">
+                                            <img src="{% static 'icons/grid-1x2.svg' %}">
+                                        </span>
+                                    </td>
+
+                                    <td style="width: 20%;">
+                                        {{ operation.unit }}
+                                    </td>
+
+                                    <td style="width: 20%;">
+                                        {{ operation.amount }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        <div class="col-8">
+            <table class="table table-bordered border-dark">
+                <thead class="">
+                    <tr class="">
+                        <th class="" style="width: 45%">
+                             شرح آیتم های قراردادی
+
+                            <button class="btn-light py-0 mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdropFilteringTasks">
+                                جستجو
+                            </button>
+
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+    <!--                        <th class="" style="width: 20%" >-->
+    <!--                            شرح زیر عملیات-->
+    <!--                        </th>-->
+                        <th class="" style="width: 18%" >
+                            اکیپ
+                        </th>
+                        <th class="" style="width: 17%" >
+                            موقعیت
+                        </th>
+                        <th class="" style="width: 10%" >
+                            واحد
+                        </th>
+                        <th class="" style="width: 10%">
+                            مقدار کل
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-task" style="font-size: 11px">
+                    <thead hidden class="">
+                    <tr class="">
+                        <th class="" style="width: 45%">
+                             شرح آیتم های قراردادی
+                            <span class="badge rounded-pill" style="float: left; color: black"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">
+                                <img src="{% static 'icons/plus-circle.svg' %}">
+                            </span>
+                        </th>
+    <!--                        <th class="" style="width: 20%" >-->
+    <!--                            شرح زیر عملیات-->
+    <!--                        </th>-->
+                        <th class="" style="width: 18%" >
+                            اکیپ
+                        </th>
+                        <th class="" style="width: 17%" >
+                            موقعیت
+                        </th>
+                        <th class="" style="width: 10%" >
+                            واحد
+                        </th>
+                        <th class="" style="width: 10%">
+                            مقدار کل
+                        </th>
+                    </tr>
+                </thead>
+                    <tbody>
+
+                        {% for parentTask in parentTasks %}
+                            <tr  id="{{parentTask.operation.operation.name}}-{{parentTask.equipe}}-{{parentTask.zone}}">
+                                <td style="width: 45%">
+                                    {{ parentTask.operation.operation }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_task('{{parentTask.operation.operation.name}}', '{{ parentTask.equipe }}', '{{ parentTask.zone }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+
+                                    <span class="badge rounded-pill"
+                                          style="float: right; color: black; " onclick=""
+                                          data-bs-toggle="modal" data-bs-target="#staticBackdropSubTasks-{{ parentTask.id }}">
+                                        <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                                    </span>
+                                </td>
+
+    <!--                                <td style="width: 20%">-->
+    <!--                                    {{ task.suboperation.name }}-->
+    <!--                                </td>-->
+
+                                <td style="width: 18%">
+                                    {{ parentTask.equipe }}
+                                </td>
+
+                                <td style="width: 17%">
+                                    {{ parentTask.zone }}
+                                </td>
+
+                                <td style="width: 10%">
+                                    {{ parentTask.unit }}
+                                </td>
+
+                                <td style="width: 10%">
+                                    {{ parentTask.totalVolume }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+    </div>
 
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
 

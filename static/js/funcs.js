@@ -794,14 +794,33 @@ function showPopup(options, ID) {
             choose_family.innerText = family
 
             select_families.appendChild(choose_family)
-            fetch_machineFamilies(function (families) {
-                families.forEach(family => {
-                    let option = document.createElement('option',)
-                    option.value = family.name + "-" + family.hardware_id
-                    option.innerText = family.name
-                    select_families.appendChild(option)
-                })
+            $.ajax({
+                url: '/edit-db/get-options/machineFamily',
+                type: 'POST',
+                data: {
+                    'model': 'machineFamily',
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    let families = response['machineFamily']
+                    families.forEach(family => {
+                        let option = document.createElement('option',)
+                        option.value = family.name + "-" + family.hardware
+                        option.innerText = family.name + "-" + family.hardware
+                        select_families.appendChild(option)
+                    })
+                }
             })
+            // fetch_machineFamilies(function (families) {
+            //     families.forEach(family => {
+            //         let option = document.createElement('option',)
+            //         option.value = family.name + "-" + family.hardware_id
+            //         option.innerText = family.name
+            //         select_families.appendChild(option)
+            //     })
+            // })
 
             div_input_group.appendChild(label_name)
             div_input_group.appendChild(input_name)
