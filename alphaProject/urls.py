@@ -95,6 +95,7 @@ urlpatterns = [
     path("edit-db/get-contractors/", get_contractors),
     path("edit-db/get-hardwares/", get_hardwares),
     path("edit-db/get-machineFamilies/", get_machineFamilies),
+    path("edit-db/get-machines/", get_machines),
     path("edit-db/get-operations/", get_operations),
     path("edit-db/get-operations/<int:ID>/", get_operations),
     path("edit-db/get-suboperations/", get_suboperations),

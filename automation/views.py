@@ -22,6 +22,7 @@ from operator import itemgetter
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import re
 
 
 
@@ -1470,21 +1471,49 @@ def save_daily_report_to_db(request):
 
         for machine, count in machines.items():
             machine = machine.split("_")[0]
-            if count[0] > 0 or count[1] > 0:
+            if count[0] >= 0 or count[1] > 0:
                 machine = machine.strip()
-                # machine = machine.split("-")[1].strip()
-                mach = Machine.objects.get(name=machine, project=project)
-                provider = MachineProvider.objects.get(name=count[3], project=project)
-                obj = MachineCount.objects.create(
+                machine = re.sub(r'[\[\]]', '', machine)
+                machine, family, hardware = machine.split("-")
+
+                hardware = Hardware.objects.get(
                     project=project,
-                    machine=mach,
-                    dailyReport=report,
-                    activeCount=count[1],
-                    inactiveCount=count[2],
-                    workHours=count[0],
-                    provider=provider,
-                    totalCount=sum(count[1:3]),
+                    name=hardware
                 )
+                family = MachineFamily.objects.get(
+                    project=project,
+                    name=family,
+                    hardware=hardware,
+                )
+                mach = Machine.objects.get(name=machine,
+                                           type=family,
+                                           hardware=hardware,
+                                           project=project)
+
+                provider = MachineProvider.objects.get(name=count[3], project=project)
+                if provider.name == "شرکتی":
+                    obj = MachineCount.objects.create(
+                        project=project,
+                        machine=mach,
+                        dailyReport=report,
+                        activeCount=count[1],
+                        inactiveCount=count[2],
+                        workHours=count[0],
+                        provider=provider,
+                        totalCount=sum(count[1:3]),
+                    )
+                else:
+                    obj = MachineCount.objects.create(
+                        project=project,
+                        machine=mach,
+                        dailyReport=report,
+                        activeCount=1 if count[0] > 0 else 0,
+                        inactiveCount=0 if count[0] > 0 else 1,
+                        workHours=count[0],
+                        provider=provider,
+                        totalCount=1,
+                    )
+
                 report.machines.add(obj.machine)
 
             else:
@@ -1952,7 +1981,7 @@ def report_on_day(request, idd):
         else:
             parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.totalVolume*100 + task.todayVolume/task.task.totalVolume*100)*task.task.suboperation.weight/100
 
-    # [item for item in parentTaskPercents.items()]
+    machines = machines.order_by('-provider',)
 
     other = {
         "weather": report.get_weather_display(),
@@ -2018,6 +2047,22 @@ def compact_report_on_day(request, idd):
     for key, value in tsks.items():
         tsks[key]['entire_item_done'] = tsks[key]['todayVolume'] + tsks[key]['preDoneVolume']
         tsks[key]['entire_item_done_percent'] = tsks[key]['entire_item_done'] / tsks[key]['entire_item_vol'] * 100
+
+    temp = {}
+    for machine in machines:
+        if machine.machine.type.name not in temp.keys():
+            temp[machine.machine.type.name] = {
+                "machine": machine.machine.type.name,
+                "activeCount": machine.activeCount,
+                "inactiveCount": machine.inactiveCount,
+                "totalCount": machine.totalCount,
+            }
+        else:
+            temp[machine.machine.type.name]["activeCount"] += machine.activeCount
+            temp[machine.machine.type.name]["inactiveCount"] += machine.inactiveCount
+            temp[machine.machine.type.name]["totalCount"] += machine.totalCount
+
+    machines = [value for key, value in temp.items()]
 
     other = {
         "weather": report.get_weather_display(),
@@ -2274,6 +2319,29 @@ def get_professions(request):
             "professions": data
         }
         return JsonResponse(context)
+
+
+@login_required
+def get_machines(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        data = Machine.objects.filter(project=project)
+        objs = []
+        for item in data:
+            objs.append({
+                "name": item.name,
+                "type": item.type.name,
+                "hardware": item.hardware.name,
+            })
+
+        context = {
+            "machines": objs,
+        }
+
+        return JsonResponse(context)
+
 
 
 @login_required

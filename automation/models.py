@@ -119,6 +119,7 @@ class MachineFamily(models.Model):
 
     class Meta:
         unique_together = ("name", "project")
+        # unique_together = ("name", "project", "hardware")
 
     def __str__(self):
         return self.name
@@ -133,6 +134,7 @@ class Machine(models.Model):
 
     class Meta:
         unique_together = ("name", "project")
+        # unique_together = ("name", "project", "type")
 
     def __str__(self):
         return self.name
@@ -159,6 +161,8 @@ class MachineCount(models.Model):
     activeCount = models.PositiveIntegerField(default=0)
     inactiveCount = models.PositiveIntegerField(default=0)
     totalCount = models.PositiveIntegerField(default=0)
+
+    # onRent = ...
 
     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -854,3 +858,29 @@ class ProjectField(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class Issue(models.Model):
+#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=250, )
+#
+#     class Meta:
+#         unique_together = ("name", "project")
+#
+#     def __str__(self):
+#         return self.name
+
+
+# class IssueReport(models.Model):
+#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+#     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+#     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+#
+#     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
+#
+#     class Meta:
+#         unique_together = ('dailyReport', 'machine', 'provider', 'project')
+#
+#     def __str__(self):
+#         # TODO : add dailyReport.date to the returning string of the object
+#         return self.machine.name

@@ -1,0 +1,114 @@
+<div class="col-6 me-4" style="padding: 0; margin: 0">
+                        <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
+                            <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                                <thead class="" style="font-size: 11px;">
+                                    <tr class="py-0">
+                                        <th class="py-0" style="width: 82%; text-align: center">ماشین آلات و تجهیزات</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
+                            <thead class="">
+                                <tr class="">
+                                    <th class="" style="width: 45%">
+                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                        </span>
+                                        ماشین
+                                    </th>
+                                    <th class="" style="width: 8%">
+                                        کارکرد
+                                    </th>
+
+                                    <th class="" style="width: 8%">
+                                        فعال
+                                    </th>
+
+                                    <th class="" style="width: 8%">
+                                        غیرفعال
+                                    </th>
+
+                                    <th class="" style="width: 25%; text-align: center">
+                                        تامین
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for machine in machines %}
+                                <tr id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}">
+                                    <td class="" >
+                                        <span class="badge rounded-pill" data-toggle="popover" title="{{machine}} - {{machine.machine.type}} - {{machine.machine.hardware}} - {{machine.provider}}"
+                                            style="margin: 0pt; color: black; padding: 0">
+                                            <img src="{% static 'icons/info-circle.svg' %}"/>
+                                        </span>
+                                        <span class="badge rounded-pill"
+                                            style="margin-left: 0pt; color: black; padding: 0 2px 0 5px" onclick="del_machine('{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}', false)">
+                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                        </span>
+                                        {{ machine }}
+                                    </td>
+
+                                    {% with ownership="شرکتی" %}
+                                        {% if machine.provider.name|equals:ownership %}
+                                            <td class="" style="text-align: center">
+                                                <input readonly hidden onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                            </td>
+                                        {% else %}
+                                            <td class="">
+                                                {% if machine.workHours %}
+                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
+                                                {% else %}
+                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                    {% endwith %}
+
+                                    {% with ownership="شرکتی" %}
+                                        {% if machine.provider.name|equals:ownership %}
+                                            <td class="" style="text-align: center">
+                                                {% if machine.activeCount %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
+                                                {% else %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                                {% endif %}
+                                            </td>
+                                            <td class="">
+                                                {% if machine.inactiveCount %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                                {% else %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                                {% endif %}
+                                            </td>
+
+                                        {% else %}
+                                            <td class="" style="text-align: center">
+                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                            </td>
+
+                                            <td class="" style="text-align: center">
+                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                            </td>
+                                        {% endif %}
+                                    {% endwith %}
+
+
+
+
+
+                                    <td class="">
+                                        <select required class="form-select" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_provider"
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; background: none">
+                                            <option value="{{ machine.provider }}" >
+                                                {{ machine.provider }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>

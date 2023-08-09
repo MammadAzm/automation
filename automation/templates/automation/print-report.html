@@ -191,7 +191,7 @@
                             <thead class="">
                                 <tr>
                                     <th style="width: 35%;">ماشین</th>
-                                    <th style="width: 10%; text-align: center">کارکرد</th>
+                                    <th style="width: 10%; text-align: center">کارکرد(ساعت)</th>
                                     <th style="width: 10%; text-align: center">فعال</th>
                                     <th style="width: 10%; text-align: center">غیرفعال</th>
                                     <th style="width: 10%; text-align: center">کل</th>
@@ -199,16 +199,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for machine in machines %}
-                                <tr>
-                                    <td>{{ machine }}</td>
-                                    <td style="text-align: center">{{ machine.workHours }}</td>
-                                    <td style="text-align: center">{{ machine.activeCount }}</td>
-                                    <td style="text-align: center">{{ machine.inactiveCount }}</td>
-                                    <td style="text-align: center">{{ machine.totalCount }}</td>
-                                    <td style="text-align: center">{{ machine.provider }}</td>
-                                </tr>
-                            {% endfor %}
+                            {% with ownership="شرکتی" %}
+                                {% for machine in machines %}
+                                    {% if machine.provider.name|equals:ownership %}
+                                        <tr>
+                                            <td>{{ machine }}</td>
+                                            <td style="text-align: center">&#x0000;</td>
+                                            <td style="text-align: center">{{ machine.activeCount }}</td>
+                                            <td style="text-align: center">{{ machine.inactiveCount }}</td>
+                                            <td style="text-align: center">{{ machine.totalCount }}</td>
+                                            <td style="text-align: center">{{ machine.provider }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td>{{ machine }}</td>
+                                            <td style="text-align: center">{{ machine.workHours }}</td>
+                                            {% if machine.workHours > 0 %}
+                                                <td style="text-align: center">&#x2713;</td>
+                                                <td style="text-align: center">&#x2717;</td>
+                                            {% else %}
+                                                <td style="text-align: center">&#x2717;</td>
+                                                <td style="text-align: center">&#x2713;</td>
+                                            {% endif %}
+                                            <td style="text-align: center">1</td>
+                                            <td style="text-align: center">{{ machine.provider }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
                             </tbody>
                         </table>
                     </div>

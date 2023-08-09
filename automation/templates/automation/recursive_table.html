@@ -92,7 +92,6 @@
     {% elif analyzeType|equals:'machine' %}
 
         {% if level == priority_depths %}
-<!--        <table class="table table-bordered border-dark px-4 my-1" style="margin-right: {{level|mul:50|add:25}}px">-->
             {% with delta=level|mul:50|add:25 %}
             <table class="table table-bordered border-dark my-1" style="margin-right:{{delta}}px; width:{{ 700|sub:delta}}px">
             {% endwith %}
@@ -175,7 +174,6 @@
 
     {% elif analyzeType|equals:'material' %}
         {% if level == priority_depths %}
-<!--        <table class="table table-bordered border-dark px-4 my-1" style="margin-right: {{level|mul:50|add:25}}px">-->
             {% with delta=level|mul:50|add:25 %}
             <table class="table table-bordered border-dark my-1" style="margin-right:{{delta}}px; width:{{ 700|sub:delta}}px">
             {% endwith %}

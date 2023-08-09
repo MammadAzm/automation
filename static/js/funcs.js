@@ -2083,33 +2083,65 @@ function add_machine_to_daily_report() {
         let name = rows[i].getElementsByTagName("td")[0].innerText
         let prov = rows[i].getElementsByTagName("td")[4].innerText
 
-        if (name.trim() === val.trim() && prov.trim() === valP.trim()) {
+        // if (name.trim() === val.trim() && prov.trim() === valP.trim()) {
+        if (rows[i].id === val.trim() + "_" + valP.trim()) {
             alert("این ماشین قبلا به جدول اضافه شده است")
             return 0
         }
     }
 
     let newRow = document.createElement('tr');
-    newRow.id = val;
+    newRow.id = val + "_" + valP;
 
     let cell1 = document.createElement('td', );
     cell1.className = "";
     cell1.innerHTML = val;
     let span = document.createElement('span', );
     Object.assign(span.style, {
-        float: 'right',
+        float: 'left',
         color: 'black',
+        paddingRight: '0',
     });
     span.className = "badge rounded-pill";
     span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
-    span.style.marginLeft = "5pt"
-    span.style.marginLeft = "5pt"
+    // span.style.marginLeft = "5pt"
+    // span.style.marginLeft = "5pt"
     span.addEventListener('click', function() {
-    del_machine(val, false);
+    del_machine(val + "_" + valP, false);
     });
 
-    cell1.innerHTML = val;
-    cell1.appendChild(span)
+    let span2 = document.createElement('span', );
+    Object.assign(span2.style, {
+        float: 'right',
+        color: 'black',
+    });
+    span2.className = "badge rounded-pill";
+    span2.innerHTML = '<img src="/static/icons/info-circle.svg"/>';
+    span2.style = "color: black; padding-right: 1px; padding-left: 4px"
+    span2.setAttribute(
+        "data-toggle", "popover"
+    )
+
+    let temp = val
+    temp = temp.replace(/[\[\]]/g, '');
+    temp = temp.replace(/-/g, ' - ');
+    temp = temp + " - " + valP
+    span2.setAttribute(
+        "title", temp
+    )
+
+
+    cell1.innerHTML = val.split("-")[0];
+
+    let tempDiv = document.createElement("div")
+    tempDiv.style = "float: right; margin-left: 2px"
+    tempDiv.appendChild(span2)
+    tempDiv.appendChild(span)
+    // cell1.appendChild()
+    // cell1.appendChild(span)
+    cell1.appendChild(tempDiv)
+    // $('[data-toggle="popover"]').popover();
+    $(span2).popover();
 
     let cell02 = document.createElement('td', );
     cell02.className = "";
@@ -2125,9 +2157,18 @@ function add_machine_to_daily_report() {
     input0.value = '0';
 
     cell02.appendChild(input0)
+    if (valP === "شرکتی") {
+        input0.hidden = true
+    }
+    else {
+    }
 
     let cell2 = document.createElement('td', );
     cell2.className = "";
+
+    let cell3 = document.createElement('td', );
+    cell3.className = "";
+
     let input = document.createElement('input', );
     input.style.borderRadius = "0"
     input.style.textAlign = "center"
@@ -2138,11 +2179,13 @@ function add_machine_to_daily_report() {
     input.name = "machine_"+val+"_"+valP+"_activeCount";
     input.min = '0';
     input.value = '0';
-
     cell2.appendChild(input)
+    if (valP === "شرکتی") {
+    }
+    else {
+        input.hidden = true
+    }
 
-    let cell3 = document.createElement('td', );
-    cell3.className = "";
     input = document.createElement('input', );
     input.style.borderRadius = "0"
     input.style.textAlign = "center"
@@ -2153,7 +2196,14 @@ function add_machine_to_daily_report() {
     input.name = "machine_"+val+"_"+valP+"_inactiveCount";
     input.min = '0';
     input.value = '0';
+
     cell3.appendChild(input)
+
+    if (valP === "شرکتی") {
+    }
+    else {
+        input.hidden = true
+    }
 
     let cell4 = document.createElement('td', );
     cell4.className = "";
@@ -2968,6 +3018,7 @@ function fetch_options(type, shortcut=null){
         if (type === "unitforoperation") {
             type = "unit"
         }
+
         let table = document.getElementById("table-" + type)
         let tbody = table.getElementsByTagName("tbody")[0]
         let rows = tbody.getElementsByTagName("tr")
@@ -3047,6 +3098,17 @@ function fetch_options(type, shortcut=null){
                         menu.appendChild(li);
                     }
                 }
+                // else if (type === "machine") {
+                //     let opts = response[type]
+                //     for (let i = 0; i < opts.length; i++) {
+                //         let li = document.createElement("li")
+                //         let a = document.createElement("a")
+                //         a.className = "dropdown-item";
+                //         a.innerHTML = opts[i].name+"-"+opts[i].hardware;
+                //         li.appendChild(a);
+                //         menu.appendChild(li);
+                //     }
+                // }
                 else {
                     let opts = response[type]
                     opts = JSON.parse(opts)
@@ -3201,8 +3263,6 @@ function fetch_providers(type){
             search_providers(type);
         }
     });
-
-
 }
 
 function fetch_tasks(){
@@ -3337,6 +3397,33 @@ function fetch_machineFamilies(callback) {
             opts = JSON.parse(opts["machineFamilies"])
 
             callback(opts)
+        }
+    });
+}
+
+function fetch_machines(type="machine") {
+    let menu = document.getElementById("dropdown-menu-"+type+"s")
+    let options = menu.querySelectorAll('.dropdown-item');
+    options.forEach(option => {
+      option.remove()
+    });
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-machines/',
+        success: function(response) {
+            let opts = response
+            opts = opts["machines"]
+            for (let i = 0; i < opts.length; i++) {
+                let li = document.createElement("li")
+                let a = document.createElement("a")
+                a.className = "dropdown-item";
+                a.innerHTML = opts[i].name+"-["+opts[i].type+"]-["+opts[i].hardware+"]";
+                // a.innerHTML = opts[i].name;
+                li.appendChild(a);
+                menu.appendChild(li);
+            }
+            search_machine()
+
         }
     });
 }

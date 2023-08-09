@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load mathfilters %}
+{% load custom_tags %}
 
 {% block content %}
 
@@ -339,44 +340,71 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                             {% for machine in machines %}
-                                <tr id="{{ machine }}">
-                                    <td class="">
+                                <tr id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}">
+                                    <td class="" >
+                                        <span class="badge rounded-pill" data-toggle="popover" title="{{machine}} - {{machine.machine.type}} - {{machine.machine.hardware}} - {{machine.provider}}"
+                                            style="margin: 0pt; color: black; padding: 0">
+                                            <img src="{% static 'icons/info-circle.svg' %}"/>
+                                        </span>
                                         <span class="badge rounded-pill"
-                                            style="margin-left: 0pt; color: black" onclick="del_machine('{{ machine }}', false)">
+                                            style="margin-left: 0pt; color: black; padding: 0 2px 0 5px" onclick="del_machine('{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ machine }}
                                     </td>
 
-                                    <td class="">
-                                        {% if machine.workHours %}
-                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{ machine }}_{{ machine.provider }}_workHours" name="machine_{{ machine }}_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
+                                    {% with ownership="شرکتی" %}
+                                        {% if machine.provider.name|equals:ownership %}
+                                            <td class="" style="text-align: center">
+                                                <input readonly hidden onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                            </td>
                                         {% else %}
-                                            <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_workHours" name="machine_{{ machine }}_{{ machine.provider }}_workHours" min="0" value="0"
+                                            <td class="">
+                                                {% if machine.workHours %}
+                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
+                                                {% else %}
+                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                                {% endif %}
+                                            </td>
                                         {% endif %}
+                                    {% endwith %}
 
-                                    </td>
+                                    {% with ownership="شرکتی" %}
+                                        {% if machine.provider.name|equals:ownership %}
+                                            <td class="" style="text-align: center">
+                                                {% if machine.activeCount %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
+                                                {% else %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                                {% endif %}
+                                            </td>
+                                            <td class="">
+                                                {% if machine.inactiveCount %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                                {% else %}
+                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                                {% endif %}
+                                            </td>
 
-                                    <td class="">
-                                        {% if machine.activeCount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_activeCount" name="machine_{{ machine }}_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
                                         {% else %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_activeCount" name="machine_{{ machine }}_{{ machine.provider }}_activeCount" min="0" value="0"
-                                        {% endif %}
+                                            <td class="" style="text-align: center">
+                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                            </td>
 
-                                    </td>
+                                            <td class="" style="text-align: center">
+                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                            </td>
+                                        {% endif %}
+                                    {% endwith %}
+
+
+
+
 
                                     <td class="">
-                                        {% if machine.inactiveCount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_inactiveCount" name="machine_{{ machine }}_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
-                                        {% else %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ machine }}_{{ machine.provider }}_inactiveCount" name="machine_{{ machine }}_{{ machine.provider }}_inactiveCount" min="0" value="0"
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="">
-                                        <select required class="form-select" name="machine_{{ machine }}_{{ machine.provider }}_provider"
+                                        <select required class="form-select" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_provider"
                                             style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; background: none">
                                             <option value="{{ machine.provider }}" >
                                                 {{ machine.provider }}
@@ -663,7 +691,7 @@
                                         id="dropdownMenuProfessions" data-bs-toggle="dropdown" onclick='fetch_options("profession")'>
                                     انتخاب
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-professions">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-professions">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-profession">
@@ -699,52 +727,51 @@
                 </div>
 
                 <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <input id="machine-name" disabled required type="text" name="machine" class="form-control" placeholder="ماشین">
-                            <input id="machineprovider-name" disabled required type="text" name="machine" class="form-control" placeholder="تامین">
+                    <div class="input-group mb-3">
+                        <input id="machine-name" disabled required type="text" name="machine" class="form-control" placeholder="ماشین">
+                        <input id="machineprovider-name" disabled required type="text" name="machine" class="form-control" placeholder="تامین">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="dropdown w-50">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-5 w-100 py-0" type="button"
+                                    id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_machines("machine")' >
+                                ماشین
+                            </button>
 
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuMachines" data-bs-toggle="dropdown" onclick='fetch_providers("machine")' >
-                                    ماشین
-                                </button>
-
-                                <ul class="dropdown-menu" id="dropdown-menu-machines" aria-labelledby="dropdownMenuMachines">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-machine">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    {% for machine in machines %}
-                                        <li><a class="dropdown-item">{{ machine }}</a></li>
-                                    {% endfor %}
-
-
-                                </ul>
-                            </div>
-
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle px-5" type="button"
-                                        id="dropdownMenuMachinesProviders" data-bs-toggle="dropdown" onclick='fetch_providers("machineprovider")' >
-                                    تامین
-                                </button>
-
-                                <ul class="dropdown-menu" id="dropdown-menu-machineproviders" aria-labelledby="dropdownMenuMachinesProviders">
-                                    <li>
-                                        <div class="input-group px-2 mb-3">
-                                            <input type="text" class="form-control" placeholder="جستجو" id="search-machineprovider">
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    {% for provider in machineproviders %}
-                                        <li><a class="dropdown-item">{{ provider }}</a></li>
-                                    {% endfor %}
-
-
-                                </ul>
-                            </div>
+                            <ul style="text-align: right" class="dropdown-menu w-100" id="dropdown-menu-machines" aria-labelledby="dropdownMenuMachines">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-machine">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for machine in machines %}
+                                    <li><a class="dropdown-item">{{ machine }}</a></li>
+                                {% endfor %}
+                            </ul>
                         </div>
+
+                        <div class="dropdown w-50">
+                            <button class="btn btn-outline-secondary dropdown-toggle px-5 w-100 py-0" type="button"
+                                    id="dropdownMenuMachinesProviders" data-bs-toggle="dropdown" onclick='fetch_providers("machineprovider")' >
+                                تامین
+                            </button>
+
+                            <ul style="text-align: right" class="dropdown-menu w-100" id="dropdown-menu-machineproviders" aria-labelledby="dropdownMenuMachinesProviders">
+                                <li>
+                                    <div class="input-group px-2 mb-3">
+                                        <input type="text" class="form-control" placeholder="جستجو" id="search-machineprovider">
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for provider in machineproviders %}
+                                    <li><a class="dropdown-item">{{ provider }}</a></li>
+                                {% endfor %}
+
+
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -781,7 +808,7 @@
                                         id="dropdownMenuPositions" data-bs-toggle="dropdown" onclick='fetch_options("position")' >
                                     انتخاب
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-positions" aria-labelledby="dropdownMenuPositions">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-positions" aria-labelledby="dropdownMenuPositions">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-position">
@@ -829,7 +856,7 @@
                                     انتخاب
                                 </button>
 
-                                <ul class="dropdown-menu" id="dropdown-menu-materials" aria-labelledby="dropdownMenuMaterials">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-materials" aria-labelledby="dropdownMenuMaterials">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-material">
@@ -850,7 +877,7 @@
                                     انتخاب
                                 </button>
 
-                                <ul class="dropdown-menu" id="dropdown-menu-materialproviders" aria-labelledby="dropdownMenuMaterialsProviders">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-materialproviders" aria-labelledby="dropdownMenuMaterialsProviders">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-materialprovider">
@@ -900,7 +927,7 @@
                                         id="dropdownMenuEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_equipes()'>
                                     انتخاب تخصص
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-equipes-professions">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-equipes-professions">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-equipe-profession">
@@ -1213,7 +1240,7 @@
                                     id="dropdownMenuParentUnits" data-bs-toggle="dropdown" onclick='fetch_options("unitforunit")'>
                                 انتخاب واحد مبنا
                             </button>
-                            <ul class="dropdown-menu" id="dropdown-menu-unitforunits">
+                            <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-unitforunits">
                                 <li>
                                     <div class="input-group px-2 mb-3">
                                         <input type="text" class="form-control" placeholder="جستجو" id="search-unitforunit">
@@ -1311,7 +1338,7 @@
                                         id="dropdownMenuBaseEquipesProfessions" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "profession"], true)'>
                                     انتخاب تخصص
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-professions">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-equipes-professions">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-base-equipe-profession">
@@ -1326,7 +1353,7 @@
                                         id="dropdownMenuBaseEquipesContractors" data-bs-toggle="dropdown" onclick='fetch_options(["equipe", "contractor"], true)'>
                                     انتخاب پیمانکار
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-base-equipes-contractors">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-equipes-contractors">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-base-equipe-contractor">
@@ -1358,105 +1385,6 @@
         </div>
     </div>
 
-<!--    <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-
-<!--            <div class="modal-header">-->
-<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>-->
-<!--                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن آیتم</h5>-->
-<!--            </div>-->
-
-<!--            <div class="modal-body">-->
-<!--                <form action="/edit-db/add-task" method="post">-->
-<!--                    {% csrf_token %}-->
-<!--                    <div class="input-group mb-3 ">-->
-<!--                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام آیتم">-->
-<!--                    </div>-->
-
-<!--                    <div class="input-group mb-3">-->
-<!--                        <div class="input-group mb-3">-->
-<!--                            <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task", true)'>-->
-<!--                                انتخاب اکیپ-->
-<!--                            </button>-->
-<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-tasks">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-task">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
-<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                            <input required disabled type="text" name="equipetask-name" id="base-equipetask-name" class="form-control" placeholder="اکیپ">-->
-<!--                        </div>-->
-
-<!--                         <div class="input-group mb-3">-->
-<!--                            <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone", true)'>-->
-<!--                                انتخاب موقعیت-->
-<!--                            </button>-->
-<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-zones">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-zone">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
-<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                            <input required disabled type="text" name="zone-name" id="base-zone-name" class="form-control" placeholder="موقعیت">-->
-<!--                        </div>-->
-
-<!--                         <div class="input-group mb-3">-->
-<!--                             <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit", true)'>-->
-<!--                                انتخاب واحد-->
-<!--                            </button>-->
-<!--                            <ul class="dropdown-menu" id="dropdown-menu-base-units">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-unit">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--&lt;!&ndash;                                        {% for profession in professions %}&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                             <input required  type="number"  name="task-name" id="base-task-volume" class="form-control" placeholder="مقدار">-->
-<!--                             <input required disabled type="text" name="zone-name" id="base-unit-name" class="form-control" placeholder="واحد">-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                </form>-->
-<!--            </div>-->
-
-<!--            <div class="modal-footer">-->
-
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>-->
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">+ موقعیت</button>-->
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">+ واحد</button>-->
-
-<!--                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data(true)"-->
-<!--                                type="submit" id="button-addon7" >افزودن</button>-->
-<!--                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">تکمیل</button>-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--    </div>-->
-<!--    </div>-->
     <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1558,7 +1486,7 @@
                                         id="dropdownMenuUnits" data-bs-toggle="dropdown" onclick='fetch_options("unitforoperation", shortcut=true)'>
                                     انتخاب واحد
                                 </button>
-                                <ul class="dropdown-menu" id="dropdown-menu-base-unitforoperations">
+                                <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-unitforoperations">
                                     <li>
                                         <div class="input-group px-2 mb-3">
                                             <input type="text" class="form-control" placeholder="جستجو" id="search-unitforoperation">
@@ -1599,6 +1527,10 @@
     submitForm(null, 'task')
     submitForm(null, 'task-shortcut')
     submitForm(null, 'operation', shortcut=true)
+
+    $(document).ready(function(){
+      $('[data-toggle="popover"]').popover();
+    });
 </script>
 
 {% endblock %}
