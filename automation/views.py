@@ -2025,6 +2025,9 @@ def compact_report_on_day(request, idd):
     history = history.exclude(id__in=tasks.values('id'), project=project)
 
     tsks = {}
+
+    # if you want it based on Operation model==============================================
+    """
     for task in tasks:
         if task.task.operation.operation.name in tsks.keys():
             tsks[task.task.operation.operation.name]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
@@ -2043,10 +2046,38 @@ def compact_report_on_day(request, idd):
     for task in history:
         if task.task.operation.operation.name in tsks.keys():
             tsks[task.task.operation.operation.name]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+    
+    # endif--------------------------------------------------------------------------------
+    """
+    # if you want it based on ZoneOperation model==============================================
+    for task in tasks:
+        if task.task.operation in tsks.keys():
+            tsks[task.task.operation][
+                'todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+        else:
+            tsks[task.task.operation] = {
+                'name': task.task.operation.operation.name,
+                'zone': task.task.operation.zone.name,
+                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                'preDoneVolume': 0.0,
+                'entire_item_vol': task.task.operation.operation.amount,
+                'entire_item_done': 0.0,
+                'entire_item_done_percent': 0.0,
+                'unit': task.task.unit,
+            }
+
+    for task in history:
+        if task.task.operation in tsks.keys():
+            tsks[task.task.operation.operation.name][
+                'preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+    # endif--------------------------------------------------------------------------------
 
     for key, value in tsks.items():
         tsks[key]['entire_item_done'] = tsks[key]['todayVolume'] + tsks[key]['preDoneVolume']
         tsks[key]['entire_item_done_percent'] = tsks[key]['entire_item_done'] / tsks[key]['entire_item_vol'] * 100
+
 
     temp = {}
     for machine in machines:
@@ -2422,7 +2453,7 @@ def get_suboperations(request):
     project = user.projects.all()[0]
 
     if request.method == "GET":
-        opr_name = request.GET.get("operation", project=project)
+        opr_name = request.GET.get("operation")
         suboperations = SubOperation.objects.filter(
             project=project,
             parent=Operation.objects.get(name=opr_name, project=project)
