@@ -42,7 +42,7 @@
                             </th>
                         </tr>
                     </thead>
-                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType parent="" query_formula=query_formula %}
+                    {% include 'recursive_table.html' with data=tree headers=tree.keys level=0 priorities_values=priorities_values priority_depths=priority_depths analyzeType=analyzeType parent="" query_formula=query_formula onRent=onRent %}
                 </table>
             </div>
         {% elif analyzeType|equals:'material' %}
@@ -81,14 +81,15 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">نوع آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">نوع گزارشگیری</label>
                 </div>
 
                 <div id="select2-analyze-type-container" class="col-12 px-2 my-1 text-centred">
                     <select id="select2-analyze-type" class="select2-hidden-accessible w-25 p-1">
-                        <option disabled hidden selected>انتخاب نوع آنالیز</option>
-                        <option value="volume">احجام کاری</option>
-                        <option value="machine">ماشین آلات</option>
+                        <option disabled hidden selected>انتخاب نوع گزارشگیری</option>
+                        <option value="volume">احجام</option>
+<!--                        <option value="machine">ماشین آلات، ابزارآلات و تجهیزات</option>-->
+                        <option value="machine">سخت افزاری</option>
                         <option value="material">مصالح</option>
                     </select>
                 </div>
@@ -103,13 +104,11 @@
             </div>
 
 
-
-
             <div hidden id="Ahjam-Box" class="box row py-3 mx-0">
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز احجام</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">اولویت بندی گزارشگیری احجام</label>
                 </div>
 
                 <div id="select2-formula-priority-one-container" class="col-2 px-2 text-centred">
@@ -186,7 +185,7 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر گزارشگیری</label>
                 </div>
 
                 <form class="row" id="form-Ahjam" method="post" action="/analyzer/analyze/">
@@ -271,19 +270,29 @@
                             گزارش گیری
                         </button>
                     </div>
-
                 </form>
-
             </div>
-
-
 
 
             <div hidden id="MachineWork-Box" class="box row py-3 mx-0">
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز ماشین آلات</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">اولویت بندی گزارشگیری سخت افزاری</label>
+                </div>
+
+                <div id="select2-formula-priority-zero-container-machine" class="col-2 px-2 text-centred">
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">مالکیت</label>
+                    <br>
+                    <select id="select2-formula-priority-zero-machine" onchange="ownership_changed()"
+                            class="select2-hidden-accessible p-1" style="width: 85%;">
+<!--                        <option disabled hidden selected>انتخاب مالکیت</option>-->
+<!--                        <option value="machine">تجهیز</option>-->
+<!--                        <option value="provider">تامین کننده</option>-->
+                        <option value="onOwn">شرکتی</option>
+                        <option selected value="onRent">استیجاری</option>
+                    </select>
                 </div>
 
                 <div id="select2-formula-priority-one-container-machine" class="col-2 px-2 text-centred">
@@ -293,7 +302,11 @@
                     <select id="select2-formula-priority-one-machine" onchange="handle_formula_priority(1, nonVolume='machine')"
                             class="select2-hidden-accessible p-1" style="width: 85%;">
                         <option disabled hidden selected>انتخاب اولویت</option>
-                        <option value="machine">تجهیز</option>
+<!--                        <option value="machine">تجهیز</option>-->
+<!--                        <option value="provider">تامین کننده</option>-->
+                        <option value="hardware">سخت افزار</option>
+                        <option value="machineFamily">دسته بندی</option>
+                        <option value="machine">دستگاه</option>
                         <option value="provider">تامین کننده</option>
                     </select>
                 </div>
@@ -309,26 +322,26 @@
                 </div>
 
                 <div id="select2-formula-priority-three-container-machine" class="col-2 px-2 text-centred">
-<!--                    <label class="p-1"-->
-<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
-<!--                    <br>-->
-<!--                    <select id="select2-formula-priority-three-machine" onchange="handle_formula_priority(3, nonVolume='machine')"-->
-<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
-<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
-<!--                    </select>-->
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت سوم</label>
+                    <br>
+                    <select id="select2-formula-priority-three-machine" onchange="handle_formula_priority(3, nonVolume='machine')"
+                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                    </select>
                 </div>
 
                 <div id="select2-formula-priority-four-container-machine" class="col-2 px-2 text-centred">
-<!--                    <label class="p-1"-->
-<!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
-<!--                    <br>-->
-<!--                    <select id="select2-formula-priority-four-machine" onchange="handle_formula_priority(4, nonVolume='machine')"-->
-<!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
-<!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
-<!--                    </select>-->
+                    <label class="p-1"
+                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت چهارم</label>
+                    <br>
+                    <select id="select2-formula-priority-four-machine" onchange="handle_formula_priority(4, nonVolume='machine')"
+                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">
+                        <option disabled hidden selected>انتخاب اولویت</option>
+                    </select>
                 </div>
 
-                <div id="select2-formula-priority-five-container-machine" class="col-2 px-2 text-centred">
+<!--                <div id="select2-formula-priority-five-container-machine" class="col-2 px-2 text-centred">-->
 <!--                    <label class="p-1"-->
 <!--                           style="text-align: center; font-weight: bolder; font-size: 14px">اولویت دوم</label>-->
 <!--                    <br>-->
@@ -336,7 +349,7 @@
 <!--                            class="select2-hidden-accessible w-100 p-1" style="width: 85%">-->
 <!--                        <option disabled hidden selected>انتخاب اولویت</option>-->
 <!--                    </select>-->
-                </div>
+<!--                </div>-->
 
 
                 <div  class="col-2 px-2 text-centred">
@@ -356,12 +369,13 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر گزارشگیری</label>
                 </div>
 
                 <form class="row" id="form-machine" method="post" action="/analyzer/analyze/">
                     {% csrf_token %}
                     <input readonly hidden value="machine" name="analyze-type">
+                    <input readonly hidden id="ownership" name="ownership">
                     <div id="select2-filter-priority-one-container-machine" class="col-4 px-2 text-centred">
                         <label class="p-1"  id="priority-one-label-machine"
                                style="text-align: center; font-weight: bolder; font-size: 14px">اولویت اول</label>
@@ -379,6 +393,26 @@
                         <select id="select2-filter-priority-two-machine"
                                 class="select2-hidden-accessible w-100 p-1 form-control" style="width: 85%"
                                 name="priority_02[]" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div id="select2-filter-priority-three-container-machine" class=" col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-three-label-machine"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت سوم</label>
+                        <br>
+                        <select id="select2-filter-priority-three-machine"
+                                class="select2-hidden-accessible w-100 p-1 form-control" style="width: 85%"
+                                name="priority_03[]" multiple="multiple">
+                        </select>
+                    </div>
+
+                    <div id="select2-filter-priority-four-container-machine" class=" col-4 px-2 text-centred">
+                        <label class="p-1"  id="priority-four-label-machine"
+                               style="text-align: center; font-weight: bolder; font-size: 14px">اولویت چهارم</label>
+                        <br>
+                        <select id="select2-filter-priority-four-machine"
+                                class="select2-hidden-accessible w-100 p-1 form-control" style="width: 85%"
+                                name="priority_04[]" multiple="multiple">
                         </select>
                     </div>
 
@@ -424,7 +458,7 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فرمولاسیون آنالیز مصالح</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">اولویت بندی گزارشگیری مصالح</label>
                 </div>
 
                 <div id="select2-formula-priority-one-container-material" class="col-2 px-2 text-centred">
@@ -497,7 +531,7 @@
 
                 <div class="row">
                     <label class="p-1"
-                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر آنالیز</label>
+                           style="text-align: center; font-weight: bolder; font-size: 18px">فیلتر گزارشگیری</label>
                 </div>
 
                 <form class="row" id="form-material" method="post" action="/analyzer/analyze/">

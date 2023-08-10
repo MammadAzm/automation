@@ -96,11 +96,21 @@
             <table class="table table-bordered border-dark my-1" style="margin-right:{{delta}}px; width:{{ 700|sub:delta}}px">
             {% endwith %}
                 <thead>
-                    <tr>
-                        <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
-                        <th colspan="" style="width: 25%">کارکرد</th>
-                        <th colspan="" style="width: 25%">واحد</th>
-                    </tr>
+                    {% if onRent %}
+                        <tr>
+                            <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
+                            <th colspan="" style="width: 25%">کارکرد</th>
+                            <th colspan="" style="width: 25%">واحد</th>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th colspan="" style="width: 25%">{{ priorityTypes|getIndex:priority_depths }}</th>
+<!--                            <th colspan="" style="width: 25%">مالکیت</th>-->
+                            <th colspan="" style="width: 25%">فعال</th>
+                            <th colspan="" style="width: 25%">غیر فعال</th>
+                            <th colspan="" style="width: 25%">کل</th>
+                        </tr>
+                    {% endif %}
                 </thead>
 
                 <tbody>
@@ -112,21 +122,63 @@
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
-        <!--                                {{ header }} <br>-->
-        <!--                                {{ level }} <br>-->
-        <!--                                {{ priorities_values }} <br>-->
-        <!--                                {{ priorities_values|getIndex:level }}-->
-        <!--                                {% if header in priorities_values|getIndex:level %}-->
+                                        {% if onRent %}
                                             <td class="" style="width: 25%">
                                                 {{ header }}
                                                 <span class="badge rounded-pill"
                                                       style="float: right; color: black; "
-                                                      onclick="show_day2day_analyze('{{query_formula.0}}', '{{query_formula.1}}', '{{ header }}', '{{ parent }}', '{{ dates_filters.lower }}', '{{ dates_filters.upper }}', '{{analyzeType}}')">
+                                                      onclick="show_day2day_analyze_machine(
+                                                          '{{query_formula.0}}',
+                                                          '{{query_formula.1}}',
+                                                          '{{query_formula.2}}',
+                                                          '{{query_formula.3}}',
+                                                          '{{query_formula.4}}',
+                                                          '{{value.headers.0}}',
+                                                          '{{value.headers.1}}',
+                                                          '{{value.headers.2}}',
+                                                          '{{value.headers.3}}',
+                                                          '{{value.headers.4}}',
+                                                          // '{{ header }}',
+                                                          // '{{ parent }}',
+                                                          '{{ dates_filters.lower }}',
+                                                          '{{ dates_filters.upper }}',
+                                                          '{{analyzeType}}',
+                                                          '{{onRent}}')">
                                                     <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
                                                 </span>
                                             </td>
                                             <td class="" style="width: 25%">{{ value.workHours }}</td>
                                             <td class="" style="width: 25%">ساعت</td>
+                                        {% else %}
+                                            <td class="" style="width: 25%">
+                                                {{ header }}
+                                                <span class="badge rounded-pill"
+                                                      style="float: right; color: black; "
+                                                      onclick="show_day2day_analyze_machine(
+                                                          '{{query_formula.0}}',
+                                                          '{{query_formula.1}}',
+                                                          '{{query_formula.2}}',
+                                                          '{{query_formula.3}}',
+                                                          '{{query_formula.4}}',
+                                                          '{{value.headers.0}}',
+                                                          '{{value.headers.1}}',
+                                                          '{{value.headers.2}}',
+                                                          '{{value.headers.3}}',
+                                                          '{{value.headers.4}}',
+                                                          // '{{ header }}',
+                                                          // '{{ parent }}',
+                                                          '{{ dates_filters.lower }}',
+                                                          '{{ dates_filters.upper }}',
+                                                          '{{analyzeType}}',
+                                                          '{{onRent}}')">
+                                                    <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
+                                                </span>
+                                            </td>
+                                            <td class="" style="width: 25%">{{ value.activeCount }}</td>
+                                            <td class="" style="width: 25%">{{ value.inactiveCount }}</td>
+                                            <td class="" style="width: 25%">{{ value.totalCount }}</td>
+
+
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
@@ -145,7 +197,6 @@
                         <tr>
                             <th colspan="" style="width: 25%">
                                 {{ header }}
-
 <!--                                <button style="float: left; border-radius: 20px; width: 40px; height: 20px;">||</button>-->
                             </th>
                         </tr>
@@ -204,7 +255,7 @@
 
                                                 <span class="badge rounded-pill"
                                                       style="float: right; color: black; "
-                                                      onclick="show_day2day_analyze('{{query_formula.0}}', '{{query_formula.1}}', '{{ header }}', '{{ parent }}', '{{ dates_filters.lower }}', '{{ dates_filters.upper }}', '{{analyzeType}}')">
+                                                      onclick="show_day2day_analyze_material('{{query_formula.0}}', '{{query_formula.1}}', '{{ header }}', '{{ parent }}', '{{ dates_filters.lower }}', '{{ dates_filters.upper }}', '{{analyzeType}}')">
                                                     <img src="{% static 'icons/list-task.svg' %}" style="-webkit-transform: scaleX(-1); transform: scaleX(-1);">
                                                 </span>
                                             </td>

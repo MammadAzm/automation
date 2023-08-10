@@ -162,9 +162,12 @@ class MachineCount(models.Model):
     inactiveCount = models.PositiveIntegerField(default=0)
     totalCount = models.PositiveIntegerField(default=0)
 
-    # onRent = ...
+    onRent = models.BooleanField(default=True)
 
     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
+
+    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE)
+    type = models.ForeignKey(MachineFamily, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('dailyReport', 'machine', 'provider', 'project')

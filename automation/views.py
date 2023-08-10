@@ -939,7 +939,6 @@ def del_machine_from_db(request):
     project = user.projects.all()[0]
 
     if request.method == "POST":
-        print(request.POST.get("machine"))
         name, family, hardware = request.POST.get("machine").split("-")
         obj = Machine.objects.get(name=name,
                                   type=MachineFamily.objects.get(
@@ -1501,6 +1500,9 @@ def save_daily_report_to_db(request):
                         workHours=count[0],
                         provider=provider,
                         totalCount=sum(count[1:3]),
+                        onRent=False,
+                        hardware=hardware,
+                        type=family,
                     )
                 else:
                     obj = MachineCount.objects.create(
@@ -1512,6 +1514,10 @@ def save_daily_report_to_db(request):
                         workHours=count[0],
                         provider=provider,
                         totalCount=1,
+                        onRent=True,
+                        hardware=hardware,
+                        type=family,
+
                     )
 
                 report.machines.add(obj.machine)
@@ -2560,8 +2566,8 @@ def get_subtask_in_report(request):
             'donePercentage': subtask.donePercentage,
             'started': subtask.started,
             'completed': subtask.completed,
-            'start_date': subtask.start_date,
-            'completion_date': subtask.completion_date,
+            'start_date': subtask.start_date.strftime(format="%Y/%m/%d") if subtask.start_date is not None else None,
+            'completion_date': subtask.completion_date.strftime(format="%Y/%m/%d") if subtask.completion_date is not None else None,
             'freeVolume': subtask.totalVolume - subtask.doneVolume,
 
             # Add more fields as needed
@@ -2830,16 +2836,17 @@ def findOutputTarget(pivot_fields):
     return target
 
 
-def group_queryset(queryset, pivot_fields, target, analyzeType):
+def group_queryset(queryset, pivot_fields, target, analyzeType, headers=[]):
     if not pivot_fields:
-        return list(queryset)
+        return list(queryset), headers
     pivot_field = pivot_fields[0]
-
+    hdrs = headers.copy()
     grouped_results = {}
     for key, group in groupby(queryset, key=lambda obj: getattr(obj, pivot_field)):
-
+        hdrs = headers.copy()
+        hdrs.append(key.name)
         # Recursively group the remaining queryset for the next pivot fields
-        nested_results = group_queryset(group, pivot_fields[1:], target, analyzeType=analyzeType)
+        nested_results, hdrs = group_queryset(group, pivot_fields[1:], target, analyzeType=analyzeType, headers=hdrs)
 
         if type(nested_results) is list:
             if analyzeType == "Ahjam":
@@ -2853,8 +2860,16 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
             elif analyzeType == "machine":
                 data = {
                     "workHours": 0,
+                    "activeCount": 0,
+                    "inactiveCount": 0,
+                    "totalCount": 0,
                     "unit": "ساعت",
+                    "headers": hdrs,
+                    # "hardware": nested_results[0].hardware.name,
+                    # "type": nested_results[0].type.name,
+                    # "machine": nested_results[0].type.name,
                 }
+                # headers =
                 finalAttribute = "WORKHOURS"
             elif analyzeType == "material":
                 data = {
@@ -2881,6 +2896,9 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
                         data["unit"] = result_obj.operation.unit
                     elif analyzeType == "machine":
                         data["workHours"] += instance_2
+                        data["activeCount"] += result_obj.activeCount
+                        data["inactiveCount"] += result_obj.inactiveCount
+                        data["totalCount"] += result_obj.totalCount
                     elif analyzeType == "material":
                         data["amount"] += instance_2*result_obj.unit.coef
                         if result_obj.unit.parent:
@@ -2906,7 +2924,8 @@ def group_queryset(queryset, pivot_fields, target, analyzeType):
             # print(">>> ", type(key), key)
             grouped_results[key] = nested_results
 
-    return grouped_results
+
+    return grouped_results, hdrs
 
 
 @login_required
@@ -2923,12 +2942,14 @@ def analyzer(request):
 
     elif request.method == "POST":
         data = dict(request.POST)
-
+        # print(data)
         query = {
             "operation": None,
             "zone": None,
             "contractor": None,
             "machine": None,
+            "hardware": None,
+            "machineFamily": None,
             "material": None,
             "provider": None,
         }
@@ -3018,7 +3039,7 @@ def analyzer(request):
 
             taskReports = taskReports.order_by(*requested_models)
             target = findOutputTarget(requested_models)
-            tree = group_queryset(taskReports, requested_models, target=target, analyzeType=data["analyze-type"][0])
+            tree, _ = group_queryset(taskReports, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
         elif data["analyze-type"][0] == "machine":
             for key in sorted(list(data.keys())):
@@ -3050,7 +3071,7 @@ def analyzer(request):
                     query["upper-date-jalali"] = jdatetime.datetime.strptime(data[key][0], format="%Y/%m/%d").strftime("%Y-%m-%d")
                     query_formula.append("upper-date")
 
-            if "machine" not in query_formula:
+            if "machine" not in query_formula and "machineFamily" not in query_formula and "hardware" not in query_formula:
                 query_formula.append("machine")
                 query['machine'] = Machine.objects.filter(project=project)
 
@@ -3088,9 +3109,9 @@ def analyzer(request):
 
             requested_models.append("dailyReportMachine")
             requested_instances["dailyReportMachine"] = dailyReports.values_list("id", flat=True)
-
             machineCounts = MachineCount.objects.filter(project=project)
-
+            onRent = True if data.get("ownership")[0]=="onRent" else False if data.get("ownership")[0]=="onOwn" else None
+            machineCounts = machineCounts.filter(onRent=onRent)
             for model in requested_models:
                 q_filter = Q()
                 for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
@@ -3108,15 +3129,16 @@ def analyzer(request):
                     machineCounts = machineCounts.filter(q_filter).filter(project=project)
 
             machineCounts = MachineCount.objects.filter(id__in=machineCounts, project=project)
-
             # requested_models[requested_models.index("dailyReportMachine")] = "dailyReport"
             if "machineProvider" in requested_models:
                 requested_models[requested_models.index("machineProvider")] = "provider"
+            if "machineFamily" in requested_models:
+                requested_models[requested_models.index("machineFamily")] = "type"
             requested_models.remove("dailyReportMachine")
             machineCounts = machineCounts.order_by(*requested_models)
             target = MachineCount
             # target = findOutputTarget(requested_models)
-            tree = group_queryset(machineCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
+            tree, _ = group_queryset(machineCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
         elif data["analyze-type"][0] == "material":
             for key in sorted(list(data.keys())):
@@ -3214,7 +3236,7 @@ def analyzer(request):
             materialCounts = materialCounts.order_by(*requested_models)
             target = MaterialCount
             # target = findOutputTarget(requested_models)
-            tree = group_queryset(materialCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
+            tree, _ = group_queryset(materialCounts, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
         # print(type(list(tree.keys())[0]))
         # print(tree)
@@ -3234,6 +3256,7 @@ def analyzer(request):
             'context': True,
             'isRecord': isRecord,
             'analyzeType': data["analyze-type"][0],
+            'onRent': True if data["analyze-type"][0]=="machine" and onRent else False,
             'priority_depths': priority_depth-1,
             'priorities_values': priorities_values,
             'priorityTypes': requested_models_persian,
@@ -3245,6 +3268,20 @@ def analyzer(request):
 
 
 @login_required
+def get_onOwn_id(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        idd = MachineProvider.objects.get(
+            name="شرکتی",
+            project=project,
+        ).id
+
+    return HttpResponse(idd)
+
+
+@login_required
 def get_options_in_priority(request):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
@@ -3252,7 +3289,9 @@ def get_options_in_priority(request):
     if request.method == "POST":
         priority = request.POST['priority']
         providerType = request.POST['providerType']
+
         if priority == "time":
+            pass
             pass
         elif priority == "zone":
             objs = Zone.objects.filter(project=project)
@@ -3313,6 +3352,27 @@ def get_options_in_priority(request):
             context = {
                 priority: objs,
             }
+
+        elif priority == "machineFamily":
+            objs = MachineFamily.objects.filter(project=project)
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
+        elif priority == "hardware":
+            objs = Hardware.objects.filter(project=project)
+            if objs.exists():
+                objs = json.dumps(list(objs.values()))
+            else:
+                objs = "[]"
+            context = {
+                priority: objs,
+            }
+
         elif priority == "material":
             objs = Material.objects.filter(project=project)
             if objs.exists():
@@ -3322,6 +3382,7 @@ def get_options_in_priority(request):
             context = {
                 priority: objs,
             }
+
         elif priority == "provider":
             dilemma = {
                 "machine": MachineProvider,
@@ -3407,7 +3468,146 @@ def get_task_filters(request):
 
 
 @login_required
-def day2day_analyzer(request):
+def day2day_analyzer_machine(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        prio_1 = request.POST.get("prio_1")
+        prio_2 = request.POST.get("prio_2")
+        prio_3 = request.POST.get("prio_3")
+        prio_4 = request.POST.get("prio_4")
+        prio_5 = request.POST.get("prio_5")
+
+        item_1 = request.POST.get("item_1")
+        item_2 = request.POST.get("item_2")
+        item_3 = request.POST.get("item_3")
+        item_4 = request.POST.get("item_4")
+        item_5 = request.POST.get("item_5")
+
+        onRent = request.POST.get("onRent")
+        onRent = True if onRent == "True" else False
+
+        prios = [prio_1, prio_2, prio_3, prio_4, prio_5, ]
+        items = [item_1, item_2, item_3, item_4, item_5, ]
+        prios = [item for item in prios if item is not None and item != ""]
+        items = [item for item in items if item is not None and item != ""]
+        lower_date = request.POST.get("lower_date")
+        upper_date = request.POST.get("upper_date")
+        analyzeType = request.POST.get("analyzeType")
+
+        if analyzeType == "machine":
+            model = MODELS["MachineCount"]
+
+        objs = model.objects.filter(project=project)
+        objs = objs.filter(onRent=onRent)
+
+        if lower_date and upper_date:
+            reps = DailyReport.objects.filter(
+                project=project,
+                date__lt=jdatetime.datetime.strptime(upper_date, format="%Y/%m/%d").togregorian()+jdatetime.timedelta(days=1),
+                date__gt=jdatetime.datetime.strptime(lower_date, format="%Y/%m/%d").togregorian(),
+            )
+            objs = objs.filter(
+                dailyReport__in=reps,
+            )
+        if len(prios) > 1:
+            data = {
+                "onRent": onRent,
+                "mode": "multiple",
+                "model": "تجهیز",
+                "item": None,
+                "provider": None,
+                "days": []
+            }
+
+            if "hardware" in prios:
+                data["item"] = items[prios.index("hardware")]
+            if "type" in prios:
+                data["item"] = items[prios.index("type")]
+            if "machine" in prios:
+                data["item"] = items[prios.index("machine")]
+
+            for i in range(len(prios)):
+                q_filter = Q()
+                if "machineProvider" == prios[i]:
+                    q_filter |= Q(**{"provider": MODELS[prios[i]].objects.get(project=project, name=items[i])})
+                    data["provider"] = items[i]
+                else:
+                    q_filter |= Q(**{f"{prios[i]}": MODELS[prios[i]].objects.get(project=project, name=items[i])})
+
+                objs = objs.filter(q_filter)
+
+            days = {}
+            for obj in objs:
+                if obj.dailyReport.date.strftime(format="%Y/%m/%d") not in days.keys():
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")] = {
+                        "date": obj.dailyReport.date.strftime(format="%Y/%m/%d"),
+                        "value": obj.workHours,
+                        "activeCount": obj.activeCount,
+                        "inactiveCount": obj.inactiveCount,
+                        "totalCount": obj.totalCount,
+                        "unit": "ساعت",
+                    }
+                else:
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["value"] += obj.workHours
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["activeCount"] += obj.activeCount
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["inactiveCount"] += obj.inactiveCount
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["totalCount"] += obj.totalCount
+
+            data["days"] = list(days.values())
+
+            return JsonResponse(data)
+
+        elif len(prios) == 1:
+            data = {
+                "onRent": onRent,
+                "mode": "single",
+                "model": "تجهیز",
+                "item": None,
+                "provider": None,
+                "days": []
+            }
+
+            if "hardware" in prios:
+                data["item"] = items[prios.index("hardware")]
+            if "type" in prios:
+                data["item"] = items[prios.index("type")]
+            if "machine" in prios:
+                data["item"] = items[prios.index("machine")]
+
+            q_filter = Q()
+            if "machineProvider" == prios[0]:
+                q_filter |= Q(**{"provider": MODELS[prios[0]].objects.get(project=project, name=items[0])})
+                data["provider"] = items[0]
+            else:
+                q_filter |= Q(**{f"{prios[0]}": MODELS[prios[0]].objects.get(project=project, name=items[0])})
+
+            objs = objs.filter(q_filter)
+
+            days = {}
+            for obj in objs:
+                if obj.dailyReport.date.strftime(format="%Y/%m/%d") not in days.keys():
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")] = {
+                        "date": obj.dailyReport.date.strftime(format="%Y/%m/%d"),
+                        "value": obj.workHours,
+                        "activeCount": obj.activeCount,
+                        "inactiveCount": obj.inactiveCount,
+                        "totalCount": obj.totalCount,
+                        "unit": "ساعت",
+                    }
+                else:
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["value"] += obj.workHours
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["activeCount"] += obj.activeCount
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["inactiveCount"] += obj.inactiveCount
+                    days[obj.dailyReport.date.strftime(format="%Y/%m/%d")]["totalCount"] += obj.totalCount
+
+            data["days"] = list(days.values())
+            return JsonResponse(data)
+
+
+@login_required
+def day2day_analyzer_material(request):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
 

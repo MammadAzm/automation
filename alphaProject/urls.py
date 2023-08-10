@@ -114,9 +114,11 @@ urlpatterns = [
 
 
     path("edit-db/get-options-in-priority/", get_options_in_priority),
+    path("edit-db/get-onOwn-id/", get_onOwn_id),
     path("edit-db/get-task-filters/", get_task_filters),
 
 
     path("analyzer/analyze/", analyzer),
-    path("analyzer/analyze/day2day/", day2day_analyzer),
+    path("analyzer/analyze/machine/day2day/", day2day_analyzer_machine),
+    path("analyzer/analyze/material/day2day/", day2day_analyzer_material),
 ]

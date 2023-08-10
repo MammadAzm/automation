@@ -6400,11 +6400,20 @@ function analyzer_handle_select(type=null) {
         // =================================================================
         // =================================================================
 
+        $('#select2-formula-priority-zero-machine').select2({
+            dropdownParent: $("#select2-formula-priority-zero-container-machine")
+        });
         $('#select2-formula-priority-one-machine').select2({
             dropdownParent: $("#select2-formula-priority-one-container-machine")
         });
         $('#select2-formula-priority-two-machine').select2({
             dropdownParent: $("#select2-formula-priority-two-container-machine")
+        });
+        $('#select2-formula-priority-three-machine').select2({
+            dropdownParent: $("#select2-formula-priority-three-container-machine")
+        });
+        $('#select2-formula-priority-four-machine').select2({
+            dropdownParent: $("#select2-formula-priority-four-container-machine")
         });
 
         // ---------------------------------------------------------------
@@ -6414,6 +6423,12 @@ function analyzer_handle_select(type=null) {
         });
         $('#select2-filter-priority-two-machine').select2({
             dropdownParent: $("#select2-filter-priority-two-container-machine")
+        });
+        $('#select2-filter-priority-three-machine').select2({
+            dropdownParent: $("#select2-filter-priority-three-container-machine")
+        });
+        $('#select2-filter-priority-four-machine').select2({
+            dropdownParent: $("#select2-filter-priority-four-container-machine")
         });
 
         // =================================================================
@@ -6488,51 +6503,617 @@ function set_analyze_type() {
     }
 }
 
+function ownership_changed() {
+    let ownership = document.getElementById("select2-formula-priority-zero-machine").value
+    document.getElementById("ownership").value = ownership
+}
+
 function handle_formula_priority(priority=null, nonVolume=null ) {
 
     if (nonVolume) {
         clear_machine_material_filters(type=nonVolume);
         hide_machine_material_filters(type=nonVolume)
 
-        var priorities = {
-            "machine" : "تجهیز",
-            "material" : "مصالح",
-            "provider" : "تامین کننده",
-        }
         var select_priorities = ["one", "two", "three", "four", "five"]
 
-        switch (priority) {
-            case 1:
-                var exclude = document.getElementById("select2-formula-priority-one-"+nonVolume).value
-                for (let i=1; i<select_priorities.length; i++) {
-                    let temp = '<option value="" selected disabled>انتخاب اولویت</option>'
-                   $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
-                         temp
-                    )
-                }
-                if (exclude === nonVolume) {
-                    $("#select2-formula-priority-two-"+nonVolume).append(
-                        '<option value="'+'provider'+'">'+priorities["provider"]+'</option>'
-                    )
-                }
-                else {
-                    $("#select2-formula-priority-two-"+nonVolume).append(
-                        '<option value="'+nonVolume+'">'+priorities[nonVolume]+'</option>'
-                    )
-                }
+        if (nonVolume === "material") {
+            var priorities = {
+                "material" : "مصالح",
+                "provider" : "تامین کننده",
+            }
+            switch (priority) {
+                case 1:
+                    var exclude = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                    for (let i=1; i<select_priorities.length; i++) {
+                        let temp = '<option value="" selected disabled>انتخاب اولویت</option>'
+                       $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                             temp
+                        )
+                    }
+                    if (exclude === nonVolume) {
+                        $("#select2-formula-priority-two-"+nonVolume).append(
+                            '<option value="'+'provider'+'">'+priorities["provider"]+'</option>'
+                        )
+                    }
+                    else {
+                        $("#select2-formula-priority-two-"+nonVolume).append(
+                            '<option value="'+nonVolume+'">'+priorities[nonVolume]+'</option>'
+                        )
+                    }
 
-                break;
+                    break;
 
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+            }
         }
+        else if (nonVolume === "machine") {
+            var priorities = {
+                "machine" : "دستگاه",
+                "machineFamily" : "دسته بندی",
+                "hardware" : "سخت افزار",
+                "provider" : "تامین کننده",
+            }
+            switch (priority) {
+                case 1:
+                    var exclude = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                    for (let i=1; i<select_priorities.length; i++) {
+                        let temp = '<option value="" selected disabled>انتخاب اولویت</option>'
+                        $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                             temp
+                        )
+                    }
+                    for (var key in priorities) {
+                        if (exclude === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+
+                        }
+                        else if (exclude === "machineFamily") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude === "hardware") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude === "provider") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                $("#select2-formula-priority-two-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="provider") {
+                                continue
+                            }
+                        }
+                    }
+                    break;
+
+
+                case 2:
+                    var exclude_01 = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                    var exclude_02 = document.getElementById("select2-formula-priority-two-"+nonVolume).value
+                    for (let i=2; i<select_priorities.length; i++) {
+                       $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                        '<option value="" selected disabled>انتخاب اولویت</option>'
+                        )
+                    }
+                    for (var key in priorities) {
+                        // if (key === exclude_01) {
+                        //     continue
+                        // }
+                        if (exclude_01 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+
+                        }
+                        else if (exclude_01 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+                        if (exclude_02 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+
+                        }
+                        else if (exclude_02 === "machineFamily") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_02 === "hardware") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_02 === "provider") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                $("#select2-formula-priority-three-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="provider") {
+                                continue
+                            }
+                        }
+                    }
+                    break;
+
+
+                case 3:
+                    var exclude_01 = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                    var exclude_02 = document.getElementById("select2-formula-priority-two-"+nonVolume).value
+                    var exclude_03 = document.getElementById("select2-formula-priority-three-"+nonVolume).value
+
+                    for (let i=3; i<select_priorities.length; i++) {
+                       $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                        '<option value="" selected disabled>انتخاب اولویت</option>'
+                        )
+                    }
+                    for (var key in priorities) {
+                        // if (key === exclude_01 || key === exclude_02) {
+                        //     continue
+                        // }
+
+                        if (exclude_01 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+
+                        }
+                        else if (exclude_01 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+                        if (exclude_02 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+                        if (exclude_03 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+
+                        }
+                        else if (exclude_03 === "machineFamily") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_03 === "hardware") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_03 === "provider") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                $("#select2-formula-priority-four-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="provider") {
+                                continue
+                            }
+                        }
+                    }
+                    break;
+                case 4:
+                    var exclude_01 = document.getElementById("select2-formula-priority-one-"+nonVolume).value
+                    var exclude_02 = document.getElementById("select2-formula-priority-two-"+nonVolume).value
+                    var exclude_03 = document.getElementById("select2-formula-priority-three-"+nonVolume).value
+                    var exclude_04 = document.getElementById("select2-formula-priority-four-"+nonVolume).value
+                    for (let i=4; i<select_priorities.length; i++) {
+                       $("#select2-formula-priority-"+select_priorities[i]+"-"+nonVolume).empty().append(
+                        '<option value="" selected disabled>انتخاب اولویت</option>'
+                        )
+                    }
+                    for (var key in priorities) {
+                        // if (key === exclude_01 || key === exclude_02 || key === exclude_03) {
+                        //     continue
+                        // }
+
+                        if (exclude_01 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+
+                        }
+                        else if (exclude_01 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_01 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+                        if (exclude_02 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_02 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+                        if (exclude_03 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_03 === "machineFamily") {
+                            if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_03 === "hardware") {
+                            if (key==="hardware") {
+                                continue
+                            }
+                        }
+                        else if (exclude_03 === "provider") {
+                            if (key==="provider") {
+                                continue
+                            }
+                        }
+
+
+                        if (exclude_04 === "machine") {
+                            if (key==="machine") {
+                                continue
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+
+                        }
+                        else if (exclude_04 === "machineFamily") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                continue
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_04 === "hardware") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                continue
+                            }
+                            else if (key==="provider") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                        }
+                        else if (exclude_04 === "provider") {
+                            if (key==="machine") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="machineFamily") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="hardware") {
+                                $("#select2-formula-priority-five-"+nonVolume).append(
+                                    '<option value="'+key+'">'+priorities[key]+'</option>'
+                                )
+                            }
+                            else if (key==="provider") {
+                                continue
+                            }
+                        }
+                    }
+                    break;
+                case 5:
+                    break;
+            }
+        }
+
+
     }
     else {
         clear_volume_filters();
@@ -6719,66 +7300,133 @@ function clear_volume_filters() {
 
 
 function submitPriorityFormula_Machines_Material(type, ) {
-    var pivots = {
-        "machine" : "تجهیز",
-        "material" : "مصالح",
-        "provider" : "تامین کننده",
-    }
-    show_machine_material_filters(type=type)
+    if (type === "material") {
+        var pivots = {
+            "material" : "مصالح",
+            "provider" : "تامین کننده",
+        }
+        show_machine_material_filters(type=type)
 
-    let priorities = [
-        document.getElementById("select2-formula-priority-one-"+type).value,
-        document.getElementById("select2-formula-priority-two-"+type).value,
-    ]
+        let priorities = [
+            document.getElementById("select2-formula-priority-one-"+type).value,
+            document.getElementById("select2-formula-priority-two-"+type).value,
+        ]
 
-    for (let i=0; i<priorities.length; i++) {
-        if (pivots[priorities[i]]) {
-            document.getElementById(
-                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
-            ).disabled = false
-            document.getElementById(
-                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
-            ).disabled = false
-
-            document.getElementById(
-                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
-            ).style.textDecoration = "none"
-
-            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + pivots[priorities[i]]
-
-            if (priorities[i] === "time") {
-                let selectID = "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
-                $("#"+selectID).append(
-                    '<option value="0">همه موارد</option>'
-                )
-            }
-            else {
-                fetch_options_in_priority(priorities[i], "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type, providerType=type)
+        for (let i=0; i<priorities.length; i++) {
+            if (pivots[priorities[i]]) {
                 document.getElementById(
                     "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
-                ).name = i+1+"_"+priorities[i] + "_priority"
+                ).disabled = false
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).disabled = false
+
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).style.textDecoration = "none"
+
+                document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + pivots[priorities[i]]
+
+                if (priorities[i] === "time") {
+                    let selectID = "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                    $("#"+selectID).append(
+                        '<option value="0">همه موارد</option>'
+                    )
+                }
+                else {
+                    fetch_options_in_priority(priorities[i], "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type, providerType=type)
+                    document.getElementById(
+                        "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                    ).name = i+1+"_"+priorities[i] + "_priority"
+                }
+
+
+            }
+            else {
+                document.getElementById(
+                    "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                ).disabled = true
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).disabled = true
+
+                document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + "تعیین نشده"
+
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).style.textDecoration = "line-through"
+
             }
 
-
         }
-        else {
-            document.getElementById(
-                "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
-            ).disabled = true
-            document.getElementById(
-                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
-            ).disabled = true
-
-            document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + "تعیین نشده"
-
-            document.getElementById(
-                "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
-            ).style.textDecoration = "line-through"
-
-        }
-
     }
+    else if (type === "machine") {
+        document.getElementById("ownership").value = document.getElementById("select2-formula-priority-zero-machine").value
+        var pivots = {
+            "machine" : "دستگاه",
+            "machineFamily" : "دسته بندی",
+            "hardware" : "سخت افزار",
+            "provider" : "تامین کننده",
+        }
+        show_machine_material_filters(type=type)
 
+        let ownership = document.getElementById("select2-formula-priority-zero-"+type).value
+
+        let priorities = [
+            document.getElementById("select2-formula-priority-one-"+type).value,
+            document.getElementById("select2-formula-priority-two-"+type).value,
+            document.getElementById("select2-formula-priority-three-"+type).value,
+            document.getElementById("select2-formula-priority-four-"+type).value,
+        ]
+
+        for (let i=0; i<priorities.length; i++) {
+            if (pivots[priorities[i]]) {
+                document.getElementById(
+                    "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                ).disabled = false
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).disabled = false
+
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).style.textDecoration = "none"
+
+                document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + pivots[priorities[i]]
+
+                if (priorities[i] === "time") {
+                    let selectID = "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                    $("#"+selectID).append(
+                        '<option value="0">همه موارد</option>'
+                    )
+                }
+                else {
+                    fetch_options_in_priority(priorities[i], "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type, providerType=type, ownership=ownership)
+                    document.getElementById(
+                        "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                    ).name = i+1+"_"+priorities[i] + "_priority"
+                }
+
+
+            }
+            else {
+                document.getElementById(
+                    "select2-filter-priority-"+STRINGS_FROM_NUMBERS[i+1]+"-"+type
+                ).disabled = true
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).disabled = true
+
+                document.getElementById("priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type).innerText = i+1 + "- " + "تعیین نشده"
+
+                document.getElementById(
+                    "priority-"+STRINGS_FROM_NUMBERS[i+1]+"-label"+"-"+type
+                ).style.textDecoration = "line-through"
+
+            }
+
+        }
+    }
 }
 
 function hide_machine_material_filters(type) {
@@ -6797,7 +7445,22 @@ function clear_machine_material_filters(type) {
 }
 
 
-function fetch_options_in_priority(priority, selectID, providerType=null) {
+function fetch_options_in_priority(priority, selectID, providerType=null, ownership=null) {
+    if (providerType === "machine" && priority==="provider") {
+        if (ownership === "onOwn") {
+            $.ajax({
+                type: 'GET',
+                url: '/edit-db/get-onOwn-id/',
+                success: function (response) {
+                    let id = response
+                    $("#" + selectID).empty().append(
+                        '<option selected value="' + id + '">' + 'شرکتی' + '</option>'
+                    )
+                }
+            })
+            return 0
+        }
+    }
     $.ajax({
         type: 'POST',
         url: '/edit-db/get-options-in-priority/',
@@ -6813,10 +7476,13 @@ function fetch_options_in_priority(priority, selectID, providerType=null) {
             // $("#"+selectID).empty().append(
             //     '<option value="" selected disabled>انتخاب اولویت</option>'
             // )
-             $("#"+selectID).append(
+             $("#"+selectID).empty().append(
                 '<option value="0">همه موارد</option>'
             )
             for (let i=0; i<objs.length; i++) {
+                if (objs[i].name === "شرکتی" && providerType === "machine") {
+                    continue
+                }
                 $("#"+selectID).append(
                     '<option value="'+objs[i].id+'">'+objs[i].name+'</option>'
                 )
@@ -6853,8 +7519,6 @@ function submitAnalyzer(type) {
     if (type === "Ahjam") {
         var target = "form-Ahjam"
     }
-
-
     $('#'+target).submit(function(event) {
         // Prevent form submission
         event.preventDefault();
@@ -6914,7 +7578,343 @@ function view_project(
 
 }
 
-function show_day2day_analyze(prio01=null, prio02=null, item=null, parent=null, lower=null, upper=null, analyzeType=null) {
+function show_day2day_analyze_machine(prio01=null,
+                              prio02=null,
+                              prio03=null,
+                              prio04=null,
+                              prio05=null,
+                              item01=null,
+                              item02=null,
+                              item03=null,
+                              item04=null,
+                              item05=null,
+                              // item=null,
+                              // parent=null,
+                              lower=null,
+                              upper=null,
+                              analyzeType=null,
+                              onRent=null,) {
+    var prio_1 = prio01
+    var prio_2 = prio02
+    var prio_3 = prio03
+    var prio_4 = prio04
+    var prio_5 = prio05
+    var item_1 = item01
+    var item_2 = item02
+    var item_3 = item03
+    var item_4 = item04
+    var item_5 = item05
+    var lower_date = lower
+    var upper_date = upper
+    var analyzeType = analyzeType
+
+    $.ajax({
+        url: '/analyzer/analyze/machine/day2day/',
+        type: 'POST',
+        data: {
+            "prio_1": prio_1,
+            "prio_2": prio_2,
+            "prio_3": prio_3,
+            "prio_4": prio_4,
+            "prio_5": prio_5,
+            "item_1": item_1,
+            "item_2": item_2,
+            "item_3": item_3,
+            "item_4": item_4,
+            "item_5": item_5,
+            "lower_date": lower_date,
+            "upper_date": upper_date,
+            "analyzeType": analyzeType,
+            "onRent": onRent,
+        },
+        dataType: 'json',
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function (response) {
+            let dynamic_div = document.getElementById("dynamic-content")
+            if (response.mode === "single") {
+                // document.getElementById("day2day-popup-header").innerText = "نمایش روز به روز"
+                let table = document.createElement("table")
+                table.className = "table table-bordered border-dark"
+                table.style.fontSize = "11px"
+
+                let thead = document.createElement("thead")
+                thead.className = ""
+                thead.style = ""
+
+                let tr = document.createElement("tr")
+                let th = document.createElement("th")
+                th.innerText = response.item
+                th.style = "text-align: center;"
+
+                tr.appendChild(th)
+                thead.appendChild(tr)
+                table.appendChild(thead)
+
+                let thead2 = document.createElement("thead")
+
+                let tr2 = document.createElement("tr")
+
+                if (response.onRent) {
+                    th.colSpan = 3
+                    let th01 = document.createElement("th")
+                    th01.innerText = "تاریخ"
+                    th01.style.textAlign = "center"
+
+                    let th02 = document.createElement("th")
+                    th02.innerText = "کارکرد"
+                    th02.style.textAlign = "center"
+
+                    let th03 = document.createElement("th")
+                    th03.innerText = "واحد"
+                    th03.style.textAlign = "center"
+
+                    tr2.appendChild(th01)
+                    tr2.appendChild(th02)
+                    tr2.appendChild(th03)
+                    thead2.appendChild(tr2)
+                    table.appendChild(thead2)
+
+                    let tbody = document.createElement("tbody")
+
+                    for (let i = 0; i < response.days.length; i++) {
+                        let tr = document.createElement("tr")
+
+                        let td01 = document.createElement("td")
+                        td01.style.textAlign = "center"
+                        td01.innerText = response.days[i].date
+
+                        let td02 = document.createElement("td")
+                        td02.style.textAlign = "center"
+                        td02.innerText = response.days[i].value
+
+                        let td03 = document.createElement("td")
+                        td03.style.textAlign = "center"
+                        td03.innerText = response.days[i].unit
+
+                        tr.appendChild(td01)
+                        tr.appendChild(td02)
+                        tr.appendChild(td03)
+                        tbody.appendChild(tr)
+
+                        table.appendChild(tbody)
+                        dynamic_div.appendChild(table)
+                    }
+                }
+                else {
+                    th.colSpan = 4
+                    let th01 = document.createElement("th")
+                    th01.innerText = "تاریخ"
+                    th01.style.textAlign = "center"
+
+                    let th02 = document.createElement("th")
+                    th02.innerText = "تعداد فعال"
+                    th02.style.textAlign = "center"
+
+                    let th03 = document.createElement("th")
+                    th03.innerText = "تعداد غیرفعال"
+                    th03.style.textAlign = "center"
+
+                    let th04 = document.createElement("th")
+                    th04.innerText = "تعداد کل"
+                    th04.style.textAlign = "center"
+
+                    tr2.appendChild(th01)
+                    tr2.appendChild(th02)
+                    tr2.appendChild(th03)
+                    tr2.appendChild(th04)
+                    thead2.appendChild(tr2)
+                    table.appendChild(thead2)
+
+                    let tbody = document.createElement("tbody")
+
+                    for (let i = 0; i < response.days.length; i++) {
+                        let tr = document.createElement("tr")
+
+                        let td01 = document.createElement("td")
+                        td01.style.textAlign = "center"
+                        td01.innerText = response.days[i].date
+
+                        let td02 = document.createElement("td")
+                        td02.style.textAlign = "center"
+                        td02.innerText = response.days[i].activeCount
+
+                        let td03 = document.createElement("td")
+                        td03.style.textAlign = "center"
+                        td03.innerText = response.days[i].inactiveCount
+
+                        let td04 = document.createElement("td")
+                        td04.style.textAlign = "center"
+                        td04.innerText = response.days[i].totalCount
+
+                        tr.appendChild(td01)
+                        tr.appendChild(td02)
+                        tr.appendChild(td03)
+                        tr.appendChild(td04)
+                        tbody.appendChild(tr)
+                    }
+
+                    table.appendChild(tbody)
+                    dynamic_div.appendChild(table)
+                }
+            }
+
+            else if (response.mode === "multiple") {
+                // document.getElementById("day2day-popup-header").innerText = "نمایش روز به روز"
+                let table = document.createElement("table")
+                table.className = "table table-bordered border-dark"
+                table.style.fontSize = "11px"
+
+                let thead = document.createElement("thead")
+                thead.className = ""
+                thead.style = ""
+
+                let tr = document.createElement("tr")
+                let th = document.createElement("th")
+                th.innerText = response.item
+                th.colSpan = 4
+                th.style = "text-align: center;"
+
+                tr.appendChild(th)
+                thead.appendChild(tr)
+                table.appendChild(thead)
+
+                if (response.onRent) {
+                    let thead2 = document.createElement("thead")
+
+                    let tr2 = document.createElement("tr")
+
+                    let th01 = document.createElement("th")
+                    th01.innerText = "تاریخ"
+                    th01.style.textAlign = "center"
+
+                    let th02 = document.createElement("th")
+                    th02.innerText = "تامین کننده"
+                    th02.style.textAlign = "center"
+
+                    let th03 = document.createElement("th")
+                    th03.innerText = "کارکرد"
+                    th03.style.textAlign = "center"
+
+                    let th04 = document.createElement("th")
+                    th04.innerText = "واحد"
+                    th04.style.textAlign = "center"
+
+                    tr2.appendChild(th01)
+                    tr2.appendChild(th02)
+                    tr2.appendChild(th03)
+                    tr2.appendChild(th04)
+                    thead2.appendChild(tr2)
+                    table.appendChild(thead2)
+
+                    let tbody = document.createElement("tbody")
+
+                    for (let i=0; i<response.days.length; i++) {
+                        let tr = document.createElement("tr")
+
+                        let td01 = document.createElement("td")
+                        td01.style.textAlign = "center"
+                        td01.innerText = response.days[i].date
+
+                        let td02 = document.createElement("td")
+                        td02.style.textAlign = "center"
+                        if (response.provider) {
+                            td02.innerText = response.provider
+                        }
+                        else {
+                            td02.innerText = "گوناگون"
+                        }
+
+
+                        let td03 = document.createElement("td")
+                        td03.style.textAlign = "center"
+                        td03.innerText = response.days[i].value
+
+                        let td04 = document.createElement("td")
+                        td04.style.textAlign = "center"
+                        td04.innerText = response.days[i].unit
+
+                        tr.appendChild(td01)
+                        tr.appendChild(td02)
+                        tr.appendChild(td03)
+                        tr.appendChild(td04)
+                        tbody.appendChild(tr)
+                    }
+                    table.appendChild(tbody)
+                    dynamic_div.appendChild(table)
+                }
+                else {
+                    let thead2 = document.createElement("thead")
+
+                    let tr2 = document.createElement("tr")
+
+                    let th01 = document.createElement("th")
+                    th01.innerText = "تاریخ"
+                    th01.style.textAlign = "center"
+
+                    let th02 = document.createElement("th")
+                    th02.innerText = "تعداد فعال"
+                    th02.style.textAlign = "center"
+
+                    let th03 = document.createElement("th")
+                    th03.innerText = "تعداد غیر فعال"
+                    th03.style.textAlign = "center"
+
+                    let th04 = document.createElement("th")
+                    th04.innerText = "تعداد کل"
+                    th04.style.textAlign = "center"
+
+                    tr2.appendChild(th01)
+                    tr2.appendChild(th02)
+                    tr2.appendChild(th03)
+                    tr2.appendChild(th04)
+                    thead2.appendChild(tr2)
+                    table.appendChild(thead2)
+
+                    let tbody = document.createElement("tbody")
+
+                    for (let i=0; i<response.days.length; i++) {
+                        let tr = document.createElement("tr")
+
+                        let td01 = document.createElement("td")
+                        td01.style.textAlign = "center"
+                        td01.innerText = response.days[i].date
+
+                        let td02 = document.createElement("td")
+                        td02.style.textAlign = "center"
+                        td02.innerText = response.days[i].activeCount
+
+                        let td03 = document.createElement("td")
+                        td03.style.textAlign = "center"
+                        td03.innerText = response.days[i].inactiveCount
+
+                        let td04 = document.createElement("td")
+                        td04.style.textAlign = "center"
+                        td04.innerText = response.days[i].totalCount
+
+                        tr.appendChild(td01)
+                        tr.appendChild(td02)
+                        tr.appendChild(td03)
+                        tr.appendChild(td04)
+                        tbody.appendChild(tr)
+                    }
+                    table.appendChild(tbody)
+                    dynamic_div.appendChild(table)
+                }
+
+
+            }
+
+            document.getElementById("day2day-popup").style.display = "block"
+        }
+    })
+
+
+
+}
+
+function show_day2day_analyze_material(prio01=null, prio02=null, item=null, parent=null, lower=null, upper=null, analyzeType=null) {
     var prio_1 = prio01
     var prio_2 = prio02
     var item_1 = parent
@@ -6923,7 +7923,7 @@ function show_day2day_analyze(prio01=null, prio02=null, item=null, parent=null, 
     var upper_date = upper
     var analyzeType = analyzeType
     $.ajax({
-        url: '/analyzer/analyze/day2day/',
+        url: '/analyzer/analyze/material/day2day/',
         type: 'POST',
         data: {
             "prio_1": prio_1,

@@ -1,34 +1,22 @@
 from .models import *
 
 FILTERS = {
-        "zone": Zone,
-        "operation": Operation,
-        "contractor": Contractor,
-        "equipe": Contractor,
-
-        "machine": Machine,
-        "machineProvider": MachineProvider,
-
-        "material": Material,
-        "materialProvider": MaterialProvider,
-    }
-
-MODELS = {
     "zone": Zone,
     "operation": Operation,
     "contractor": Contractor,
-}
+    "equipe": Contractor,
 
-MODELS_PERSIAN = {
-    "equipe": "پیمانکار",
-    "zone": "موقعیت",
-    "operation": "عملیات",
+    "machine": Machine,
+    "machineFamily": MachineFamily,
+    "hardware": Hardware,
+    "machineProvider": MachineProvider,
 
-    "machine": "تجهیز",
-    "material": "مصالح",
-    "machineProvider": "تامین کننده",
-    "materialProvider": "تامین کننده",
-}
+    "material": Material,
+    "materialProvider": MaterialProvider,
+    }
+
+
+
 
 MODELS_PATH_TO_EXCLUDE = {
     "contractor": {
@@ -50,8 +38,16 @@ MODELS_PATH_TO_EXCLUDE = {
 
 
     "machine": {
-        "models": [MachineCount],
+        "models": [MachineCount, ],
         "attrs": ['machine'],
+    },
+    "machineFamily": {
+        "models": [MachineCount, ],
+        "attrs": ["type", ],
+    },
+    "hardware": {
+        "models": [MachineCount, ],
+        "attrs": ["hardware", ],
     },
     "machineProvider": {
         "models": [MachineCount],
@@ -83,6 +79,8 @@ FILTER_KEY_NAMES = {
     type(Operation()): ["name"],
 
     type(Machine()): ['name'],
+    type(MachineFamily()): ['name'],
+    type(Hardware()): ['name'],
     type(MachineProvider()): ['name'],
 
     type(Material()): ['name'],
@@ -185,4 +183,18 @@ MODELS = {
     "projectField": ProjectField,
     "hardware": Hardware,
     "machineFamily": MachineFamily,
+    "type": MachineFamily,
+}
+
+MODELS_PERSIAN = {
+    "equipe": "پیمانکار",
+    "zone": "موقعیت",
+    "operation": "عملیات",
+
+    "machine": "دستگاه",
+    "machineFamily": "دسته بندی",
+    "hardware": "سخت افزار",
+    "material": "مصالح",
+    "machineProvider": "تامین کننده",
+    "materialProvider": "تامین کننده",
 }
