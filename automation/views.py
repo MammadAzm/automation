@@ -424,6 +424,7 @@ def create_report_template(request):
         materialproviders = MaterialProvider.objects.filter(project=project)
         machineproviders = MachineProvider.objects.filter(project=project)
         tasks = TaskReport.objects.filter(dailyReport=report, project=project)
+        issueReports = IssueReport.objects.filter(project=project, solved=False)
 
         other = {
             "weekday": report.get_weekday_display(),
@@ -441,6 +442,7 @@ def create_report_template(request):
             "units": units,
             "materialproviders": materialproviders,
             "machineproviders": machineproviders,
+            "issueReports": issueReports,
             "tasks": tasks,
             "machine_types": MACHINE_TYPES,
             "other": other,
@@ -552,6 +554,44 @@ def add_issue_to_db(request):
         pass
 
     return HttpResponse("Problem")
+
+
+@login_required
+def add_issueReport_to_project(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        issue = request.POST.get("issue")
+        projectField = request.POST.get("projectField")
+        zone = request.POST.get("zone")
+        description = request.POST.get("description")
+
+        issue = Issue.objects.get(
+            project=project,
+            name=issue
+        )
+        projectField = ProjectField.objects.get(
+            project=project,
+            name=projectField,
+        )
+        zone = Zone.objects.get(
+            project=project,
+            name=zone,
+        )
+        issueReport, new = IssueReport.objects.get_or_create(project=project,
+                                                             issue=issue,
+                                                             projectField=projectField,
+                                                             zone=zone,
+                                                             description=description,
+                                                             defaults={})
+        if new:
+            return HttpResponse(True)
+        else:
+            return HttpResponse("مشکل وارد شده قبلا در پروژه وجود دارد", status=500)
+
+    elif request.method == "GET":
+        pass
 
 
 @login_required
@@ -1384,6 +1424,7 @@ def save_daily_report_to_db(request):
         equipes = {}
         contractors = {}
         tasks = {}
+        issues = {}
 
         # print(data.items())
         for key, value in data.items():
@@ -1431,6 +1472,9 @@ def save_daily_report_to_db(request):
                 else:
                     equipes[key.split("_")[2]] = []
                     equipes[key.split("_")[2]].append(int(value[0]))
+
+            elif "issueReport" in key:
+                issues[key.split("_")[1]] = value[0]
 
             elif "machine" in key:
                 if f"{key.split('_')[1]}_{key.split('_')[2]}" in machines.keys():
@@ -1653,6 +1697,43 @@ def save_daily_report_to_db(request):
         report.cal_countPeople()
         report.cal_countMachines()
 
+        for issue, status in issues.items():
+            issue_name, projectField, zone, description = issue.split(" - ")
+
+            issue = Issue.objects.get(
+                project=project,
+                name=issue_name
+            )
+            projectField = ProjectField.objects.get(
+                project=project,
+                name=projectField,
+            )
+            zone = Zone.objects.get(
+                project=project,
+                name=zone,
+            )
+
+            issueReport = IssueReport.objects.get(project=project,
+                                                  issue=issue,
+                                                  projectField=projectField,
+                                                  zone=zone,
+                                                  description=description)
+
+            if not issueReport.started:
+                issueReport.start(report.date)
+
+            if status == "solved":
+                issueReport.complete(report.date)
+
+            obj = IssueCount.objects.create(
+                project=project,
+                dailyReport=report,
+                issue=issueReport,
+            )
+            report.issues.add(obj.issue)
+
+            issueReport.issueCounts.add(obj)
+
         return redirect(to="/home/daily-reports")
     else:
         return -1
@@ -1663,13 +1744,29 @@ def del_daily_report_from_db(request):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
 
+
     if request.method == "POST":
         rep = DailyReport.objects.get(id=request.POST["id"], project=project)
 
         if rep.deletable:
             for item in rep.taskreport_set.all():
                 item.update_percentage(True, date=rep.date)
+
+            for issue in rep.issues.all():
+                if issue.solved:
+                    issue.solved = False
+                    issue.save()
+
+                print()
+                if len(issue.issueCounts.all()) > 1:
+                    continue
+                else:
+                    if issue.started:
+                        issue.started = False
+                        issue.save()
+
             rep.delete()
+
             return redirect(to="/home/daily-reports")
         else:
             raise PermissionDenied
@@ -2471,6 +2568,40 @@ def get_contractors(request):
             data = "[]"
         context = {
             "contractors": data
+        }
+        return JsonResponse(context)
+
+
+@login_required
+def get_issues(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        issues = Issue.objects.filter(project=project)
+        if issues.exists():
+            data = json.dumps(list(issues.values()))
+        else:
+            data = "[]"
+        context = {
+            "issues": data
+        }
+        return JsonResponse(context)
+
+
+@login_required
+def get_projectFields(request,):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "GET":
+        projectFields = ProjectField.objects.filter(project=project)
+        if projectFields.exists():
+            data = json.dumps(list(projectFields.values()))
+        else:
+            data = "[]"
+        context = {
+            "projectFields": data
         }
         return JsonResponse(context)
 

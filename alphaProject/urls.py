@@ -53,6 +53,7 @@ urlpatterns = [
     path("edit-db/add-materialprovider", add_materialprovider_to_db),
     path("edit-db/add-machineprovider", add_machineprovider_to_db),
     path("edit-db/add-issue", add_issue_to_db),
+    path("edit-db/add-issueReport-to-project", add_issueReport_to_project),
     path("edit-db/add-projectField", add_projectField_to_db),
 
     path("edit-db/edit-base-data", edit_base_data),
@@ -99,6 +100,8 @@ urlpatterns = [
     path("edit-db/get-machineFamilies/", get_machineFamilies),
     path("edit-db/get-machines/", get_machines),
     path("edit-db/get-operations/", get_operations),
+    path("edit-db/get-issues/", get_issues),
+    path("edit-db/get-projectFields/", get_projectFields),
     path("edit-db/get-operations/<int:ID>/", get_operations),
     path("edit-db/get-suboperations/", get_suboperations),
     path("edit-db/get-subtasks-of/<int:ID>/", get_subtasks_of),

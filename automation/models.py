@@ -887,7 +887,10 @@ class IssueReport(models.Model):
     start_date = jmodels.jDateField(null=True, blank=True)
     completion_date = jmodels.jDateField(null=True, blank=True)
 
+    started = models.BooleanField(default=False, )
     solved = models.BooleanField(default=False, )
+
+    issueCounts = models.ManyToManyField("IssueCount", related_name="issueCounts", null=True, blank=True)
 
     def start(self, date):
         datee = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
@@ -896,25 +899,24 @@ class IssueReport(models.Model):
             month=datee.month,
             day=datee.day,
         ).strftime("%Y-%m-%d")
-
+        self.started = True
         self.save()
 
     def complete(self, date):
         date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
-        self.solved = True
         self.completion_date = jdatetime.datetime(
             year=date.year,
             month=date.month,
             day=date.day,
         ).strftime("%Y-%m-%d")
-
+        self.solved = True
         self.save()
 
     class Meta:
-        unique_together = ('project', 'issue', 'projectField', 'zone')
+        unique_together = ('project', 'issue', 'projectField', 'zone', 'description')
 
     def __str__(self):
-        return self.project.name + " - " + self.issue.name + " - " + self.projectField.name + " - " + self.zone.name
+        return self.issue.name + " - " + self.projectField.name + " - " + self.zone.name + " - " + self.description
 
 
 class IssueCount(models.Model):
@@ -927,11 +929,3 @@ class IssueCount(models.Model):
 
     def __str__(self):
         return self.dailyReport.short_date.strftime(format="%Y/%m/%d") + ": " + self.project.name + " - " + self.issue.issue.name + " - " + self.issue.projectField.name + " - " + self.issue.zone.name
-
-    def delete(self, *args, **kwargs):
-        # Your custom behavior before deletion
-        if self.issue.solved:
-            self.issue.solved = False
-            self.issue.save()
-        # Call the superclass delete method to actually delete the instance
-        super(IssueCount, self).delete(*args, **kwargs)

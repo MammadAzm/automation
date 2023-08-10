@@ -3492,6 +3492,34 @@ function fetch_operations(callback) {
     });
 }
 
+function fetch_issues(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-issues/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["issues"])
+
+            callback(opts)
+        }
+    });
+}
+
+function fetch_projectFields(callback) {
+    $.ajax({
+        type: 'GET',
+        url: '/edit-db/get-projectFields/',
+        success: function(response) {
+            let opts = response
+
+            opts = JSON.parse(opts["projectFields"])
+
+            callback(opts)
+        }
+    });
+}
+
 function fetch_all_equipes(callback) {
     $.ajax({
         type: 'GET',
@@ -3839,6 +3867,9 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "task_in_report") {
         var target = "form-task_in_report"
     }
+    else if (type === "task_in_report") {
+        var target = "form-issueReport_in_report"
+    }
     else if (type === "position") {
         var target = "form-position"
     }
@@ -3874,6 +3905,9 @@ function submitForm(ID, type, shortcut=null,) {
     }
     else if (type === "issue") {
         var target = "form-issue"
+    }
+    else if (type === "issueReport_in_report") {
+        var target = "form-issueReport_in_report"
     }
     else if (type === "projectField") {
         var target = "form-projectField"
@@ -4049,6 +4083,82 @@ function submitForm(ID, type, shortcut=null,) {
                         }
                     }
                     tbody.appendChild(newRow)
+                }
+            })
+
+            return 0
+        }
+
+        else if (type === "issueReport_in_report") {
+            print("AAA")
+            var issue = formData.get("issue")
+            var projectField = formData.get("projectField")
+            var zone = formData.get("zone")
+            var description = formData.get("description")
+
+            $.ajax({
+                url: '/edit-db/add-issueReport-to-project',
+                type: 'POST',
+                data: {
+                    'issue': issue,
+                    'projectField': projectField,
+                    'zone': zone,
+                    'description': description,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    let table = document.getElementById("table-issueReport")
+                    let tr = document.createElement("tr")
+                    tr.id = issue + " - " + projectField + " - " + zone + " - " + description
+
+                    let td01 = document.createElement("td")
+                    td01.innerText = issue
+
+                    let td02 = document.createElement("td")
+                    td02.innerText = projectField
+
+                    let td03 = document.createElement("td")
+                    td03.innerText = zone
+
+                    let td04 = document.createElement("td")
+                    td04.innerText = description
+
+                    let td05 = document.createElement("td")
+
+                    let select_status = document.createElement("select")
+                    select_status.className = "form-select"
+                    select_status.required = true
+                    select_status.name = "issueReport_" + tr.id + "_status"
+                    select_status.style = "font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;"
+
+                    let options = ["موجود", "رفع"]
+                    options.forEach(option => {
+                        let opt = document.createElement("option")
+                        opt.value = option==="موجود" ? "exists" : option==="رفع" ? "solved" : null
+                        opt.selected = option==="موجود" ? true : false
+                        opt.innerText = option
+
+                        select_status.appendChild(opt)
+                    })
+
+                    td05.appendChild(select_status)
+
+                    tr.appendChild(td01)
+                    tr.appendChild(td02)
+                    tr.appendChild(td03)
+                    tr.appendChild(td04)
+                    tr.appendChild(td05)
+
+                    let tbody = table.querySelector("tbody")
+                    tbody.appendChild(tr)
+
+                    alert("با موفقیت افزوده شد")
+
+                },
+                error: function (response) {
+                    alert(response)
                 }
             })
 
@@ -6197,7 +6307,6 @@ function createModal(type, ID, opr_name, opr_amount, opr_unit, zone=null, equipe
 }
 
 function handle_select(type) {
-
     if (type) {
         if (type.includes("shortcut")) {
             var shortcut = "-shortcut"
@@ -6390,6 +6499,54 @@ function handle_select(type) {
         })
 
 
+    }
+    else if ( type === "issue" ) {
+        $("#select2-"+type+shortcut).empty().append(
+            '<option value="" selected disabled>انتخاب عنوان مشکل</option>'
+        )
+        fetch_issues(function (issues) {
+            issues.forEach(issue => {
+                let option = document.createElement('option',)
+                option.value = issue.name
+                option.innerHTML = issue.name
+                select.appendChild(option)
+            })
+        })
+        $('#select2-issue'+shortcut).select2({
+            dropdownParent: $("#issue-box"+shortcut)
+        });
+    }
+    else if ( type === "projectField" ) {
+        $("#select2-"+type+shortcut).empty().append(
+            '<option value="" selected disabled>انتخاب رسته</option>'
+        )
+        fetch_projectFields(function (projectFields) {
+            projectFields.forEach(projectField => {
+                let option = document.createElement('option',)
+                option.value = projectField.name
+                option.innerHTML = projectField.name
+                select.appendChild(option)
+            })
+        })
+        $('#select2-projectField'+shortcut).select2({
+            dropdownParent: $("#projectField-box"+shortcut)
+        });
+    }
+    else if ( type === "zoneforissue" ) {
+        $("#select2-"+type+shortcut).empty().append(
+            '<option value="" selected disabled>انتخاب موقعیت</option>'
+        )
+        fetch_zones(function (zones) {
+            zones.forEach(zone => {
+                let option = document.createElement('option',)
+                option.value = zone.name
+                option.innerHTML = zone.name
+                select.appendChild(option)
+            })
+        })
+        $('#select2-zoneforissue'+shortcut).select2({
+            dropdownParent: $("#zoneforissue-box"+shortcut)
+        });
     }
     else {
         $('#select2-operation'+shortcut).select2({

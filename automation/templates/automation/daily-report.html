@@ -654,6 +654,86 @@
         </div>
 
         <div class="row">
+            <div class="col-12">
+                <div class="row ps-4">
+                    <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
+                        <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                            <thead class="" style="font-size: 11px;">
+                                <tr class="py-0">
+                                    <th class="py-0" style="width: 82%; text-align: center">مشکلات کارگاهی</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <table class="table table-bordered border-dark" id="table-issueReport" style="font-size: 11px;">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 30%">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropIssueReports">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    نوع مشکل
+                                </th>
+                                <th class="" style="width: 7%">
+                                    رسته
+                                </th>
+                                <th class="" style="width: 8%">
+                                    موقعیت
+                                </th>
+                                <th class="" style="width: 48%">
+                                    شرح مشکل
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    وضعیت
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for issueReport in issueReports %}
+                                <tr  id="{{issueReport}}">
+                                    <td>
+<!--                                        <span class="badge rounded-pill"-->
+<!--                                            style="margin-left: 0pt; color: black;">-->
+<!--                                            <img src="{% static 'icons/patch-minus.svg' %}"/>-->
+<!--                                        </span>-->
+                                        {{ issueReport.issue.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ issueReport.projectField.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ issueReport.zone.name }}
+                                    </td>
+
+                                    <td>
+<!--                                        <input style="border-radius: 0; text-align: center;"  required class="form-control py-0" id="issueReport_{{issueReport}}_today"-->
+<!--                                               name="issueReport_{{issueReport}}_today" type="text" maxlength="255">-->
+                                        {{issueReport.description}}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        <select required class="form-select" name="issueReport_{{ issueReport }}_status"
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
+
+                                            <option selected value="exists" >موجود</option>
+                                            <option value="solved" >رفع</option>
+
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
 
             <button type="submit" class="btn btn-success ">ذخیره</button>
 
@@ -1033,6 +1113,68 @@
         </div>
     </div>
 
+    <div class="modal fade" id="staticBackdropIssueReports" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropIssueReportsLabel" style="margin-right: auto">گزارش مشکل جدید</h5>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form-issueReport_in_report">
+                        {% csrf_token %}
+                        <div class="input-group mb-3 ">
+                            <div id="issue-box" style="width: 50%;">
+                                <select required class="select2" id="select2-issue" onchange="handle_select('projectField')"
+                                        name="issue" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب عنوان مشکل
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="projectField-box" style="width: 50%;">
+                                <select required class="select2" id="select2-projectField" onchange="handle_select('zoneforissue')"
+                                        name="projectField" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب رسته
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3 ">
+                            <div id="zoneforissue-box" style="width: 100%;">
+                                <select required class="select2 w-100" id="select2-zoneforissue"
+                                        name="zone" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب موقعیت
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="description-box" class="mt-2" style="width: 100%;">
+                                <textarea class="form-control" rows="2" name="description" maxlength="255" placeholder="شرح مشکل (حداکثر 255 کاراکتر)"></textarea>
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-outline-success bp3-round w-100" onclick="" type="submit">
+                            افزودن
+                        </button>
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-warning w-100" data-bs-dismiss="modal" >تکمیل</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 
 
@@ -1522,11 +1664,16 @@
     handle_select(type="operation-shortcut")
     handle_select(type="equipe-shortcut")
     handle_select(type="shortcut")
+    handle_select(type="issue")
+    handle_select(type="zoneforissue")
+    handle_select(type="projectField")
 
     submitForm(null, 'task_in_report')
+    submitForm(null, 'issueReport_in_report')
     submitForm(null, 'task')
     submitForm(null, 'task-shortcut')
     submitForm(null, 'operation', shortcut=true)
+
 
     $(document).ready(function(){
       $('[data-toggle="popover"]').popover();
