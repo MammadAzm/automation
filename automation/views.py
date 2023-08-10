@@ -78,6 +78,8 @@ def add_base_data_template(request):
     materialproviders = MaterialProvider.objects.filter(project=project)
     machineproviders = MachineProvider.objects.filter(project=project)
 
+    issues = Issue.objects.filter(project=project)
+
     operations = Operation.objects.filter(project=project)
     suboperations = SubOperation.objects.filter(project=project)
 
@@ -109,6 +111,8 @@ def add_base_data_template(request):
         materialproviders = []
     if not machineproviders.exists():
         machineproviders = []
+    if not issues.exists():
+        issues = []
     if not operations.exists():
         operations = []
     if not suboperations.exists():
@@ -132,6 +136,7 @@ def add_base_data_template(request):
         "units": units,
         "materialproviders": materialproviders,
         "machineproviders": machineproviders,
+        "issues": issues,
         "operations": operations,
         "suboperations": suboperations,
         "projectFields": projectFields,
@@ -521,6 +526,25 @@ def add_machineprovider_to_db(request):
         machineprovider = request.POST.get("machineprovider")
 
         new_machineprovider = MachineProvider.objects.create(name=machineprovider, project=project)
+
+        return JsonResponse(True, safe=False)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse("Problem")
+
+
+@login_required
+def add_issue_to_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        redirect_url = request.META.get('HTTP_REFERER', '/')
+        issue = request.POST.get("issue")
+
+        new_issue = Issue.objects.create(name=issue, project=project)
 
         return JsonResponse(True, safe=False)
 
@@ -1227,6 +1251,25 @@ def del_machineprovider_from_db(request):
     if request.method == "POST":
         name = request.POST.get("machineprovider")
         obj = MachineProvider.objects.get(name=name, project=project)
+        # objCount = .objects.filter(material=obj.id)
+        obj.delete()
+        # objCount.delete()
+        return HttpResponse(1)
+
+    elif request.method == "GET":
+        pass
+
+    return HttpResponse(-1)
+
+
+@login_required
+def del_issue_from_db(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        name = request.POST.get("issue")
+        obj = Issue.objects.get(name=name, project=project)
         # objCount = .objects.filter(material=obj.id)
         obj.delete()
         # objCount.delete()

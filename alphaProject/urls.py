@@ -52,6 +52,7 @@ urlpatterns = [
     path("edit-db/add-unit", add_unit_to_db),
     path("edit-db/add-materialprovider", add_materialprovider_to_db),
     path("edit-db/add-machineprovider", add_machineprovider_to_db),
+    path("edit-db/add-issue", add_issue_to_db),
     path("edit-db/add-projectField", add_projectField_to_db),
 
     path("edit-db/edit-base-data", edit_base_data),
@@ -76,6 +77,7 @@ urlpatterns = [
     path("edit-db/del-task", del_task_from_db),
     path("edit-db/del-materialprovider", del_materialprovider_from_db),
     path("edit-db/del-machineprovider", del_machineprovider_from_db),
+    path("edit-db/del-issue", del_issue_from_db),
     path("edit-db/del-projectField", del_projectField_from_db),
 
 

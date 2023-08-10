@@ -13,6 +13,9 @@ FILTERS = {
 
     "material": Material,
     "materialProvider": MaterialProvider,
+
+    "issue": Issue,
+    "issueReport": IssueReport,
     }
 
 
@@ -85,6 +88,8 @@ FILTER_KEY_NAMES = {
 
     type(Material()): ['name'],
     type(MaterialProvider()): ['name'],
+
+
 }
 
 
@@ -158,9 +163,13 @@ EDIT_BASE_DATA = {
     "projectField": ProjectField,
     "hardware": Hardware,
     "machineFamily": MachineFamily,
+
+    "issue": Issue,
+    "issueReport": IssueReport,
 }
 
-ONLY_NAME_MODELS = ["position", "profession", "material", "contractor", "zone", "materialprovider", "machineprovider", "projectField", "hardware",]
+ONLY_NAME_MODELS = ["position", "profession", "material", "contractor", "issue",
+                    "zone", "materialprovider", "machineprovider", "projectField", "hardware",]
 
 MODELS = {
     "position": Position,
@@ -184,6 +193,8 @@ MODELS = {
     "hardware": Hardware,
     "machineFamily": MachineFamily,
     "type": MachineFamily,
+    "issue": Issue,
+    "issueReport": IssueReport,
 }
 
 MODELS_PERSIAN = {

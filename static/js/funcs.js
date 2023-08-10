@@ -1,5 +1,5 @@
 const ONLY_NAME_MODELS = ["position", "profession", "material", "contractor", "zone",
-    "materialprovider", "machineprovider", "projectField", "hardware",]
+    "materialprovider", "machineprovider", "projectField", "hardware", "issue", ]
 const STRINGS_FROM_NUMBERS = {
     1: "one",
     2: "two",
@@ -1479,6 +1479,28 @@ function del_machineprovider(machineprovider, db) {
         obj.remove()
     }
 
+}
+
+function del_issue(issue, db) {
+    if (db) {
+        $.ajax({
+            type: 'POST',
+            url: '/edit-db/del-issue',
+            data: {
+            'issue': issue,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                let obj = document.getElementById(issue)
+                obj.remove()
+                }
+        });
+    } else {
+        let obj = document.getElementById(issue)
+        obj.remove()
+    }
 }
 
 function del_projectField(projectField, db) {
@@ -3850,6 +3872,9 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "machineprovider") {
         var target = "form-machineprovider"
     }
+    else if (type === "issue") {
+        var target = "form-issue"
+    }
     else if (type === "projectField") {
         var target = "form-projectField"
     }
@@ -5192,6 +5217,46 @@ function submitForm(ID, type, shortcut=null,) {
                 span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
 
                 span.setAttribute("onclick", "del_machineprovider('"+value+"', true)")
+                span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
+
+                cell1.appendChild(span)
+                cell1.appendChild(span2)
+
+                newRow.appendChild(cell1)
+
+                tbody.appendChild(newRow)
+            }
+            else if (type === "issue") {
+                let input = document.getElementById("input-" + type)
+                let value = input.value
+                input.value = ""
+
+                let table = document.getElementById("table-" + type)
+                let tbody = table.querySelector("tbody")
+
+                let newRow = document.createElement('tr');
+                newRow.id = value;
+
+                let cell1 = document.createElement('td',);
+                cell1.className = "";
+                cell1.innerText = value
+
+                let span = document.createElement('span',);
+                Object.assign(span.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span.className = "badge rounded-pill";
+                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                let span2 = document.createElement('span',);
+                Object.assign(span2.style, {
+                    float: 'left',
+                    color: 'black',
+                });
+                span2.className = "badge rounded-pill";
+                span2.innerHTML = '<img src="/static/icons/pen.svg"/>';
+
+                span.setAttribute("onclick", "del_issue('"+value+"', true)")
                 span2.setAttribute("onclick", "showPopup({ model:'"+type+"', instance:'"+value+"'}, 'editing')")
 
                 cell1.appendChild(span)

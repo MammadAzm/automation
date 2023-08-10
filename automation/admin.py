@@ -28,3 +28,7 @@ from .models import *
 
 admin.site.register(MyUser)
 admin.site.register(Project)
+
+admin.site.register(IssueReport)
+admin.site.register(Issue)
+admin.site.register(IssueCount)

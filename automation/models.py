@@ -795,6 +795,8 @@ class DailyReport(models.Model):
 
     tasks = models.ManyToManyField(Task, through="TaskReport")
 
+    issues = models.ManyToManyField('IssueReport', through='IssueCount')
+
     deletable = models.BooleanField(default=1)
     editable = models.BooleanField(default=1)
     edited = models.BooleanField(default=0)
@@ -863,27 +865,73 @@ class ProjectField(models.Model):
         return self.name
 
 
-# class Issue(models.Model):
-#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=250, )
-#
-#     class Meta:
-#         unique_together = ("name", "project")
-#
-#     def __str__(self):
-#         return self.name
+class Issue(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, )
+
+    class Meta:
+        unique_together = ("name", "project")
+
+    def __str__(self):
+        return self.name
 
 
-# class IssueReport(models.Model):
-#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-#     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-#     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
-#
-#     provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
-#
-#     class Meta:
-#         unique_together = ('dailyReport', 'machine', 'provider', 'project')
-#
-#     def __str__(self):
-#         # TODO : add dailyReport.date to the returning string of the object
-#         return self.machine.name
+class IssueReport(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    description = models.CharField(max_length=255, )
+
+    projectField = models.ForeignKey(ProjectField, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+
+    start_date = jmodels.jDateField(null=True, blank=True)
+    completion_date = jmodels.jDateField(null=True, blank=True)
+
+    solved = models.BooleanField(default=False, )
+
+    def start(self, date):
+        datee = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.start_date = jdatetime.datetime(
+            year=datee.year,
+            month=datee.month,
+            day=datee.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    def complete(self, date):
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d %H:%M:%S")
+        self.solved = True
+        self.completion_date = jdatetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+        ).strftime("%Y-%m-%d")
+
+        self.save()
+
+    class Meta:
+        unique_together = ('project', 'issue', 'projectField', 'zone')
+
+    def __str__(self):
+        return self.project.name + " - " + self.issue.name + " - " + self.projectField.name + " - " + self.zone.name
+
+
+class IssueCount(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    issue = models.ForeignKey(IssueReport, on_delete=models.CASCADE)
+    dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('dailyReport', 'project', 'issue')
+
+    def __str__(self):
+        return self.dailyReport.short_date.strftime(format="%Y/%m/%d") + ": " + self.project.name + " - " + self.issue.issue.name + " - " + self.issue.projectField.name + " - " + self.issue.zone.name
+
+    def delete(self, *args, **kwargs):
+        # Your custom behavior before deletion
+        if self.issue.solved:
+            self.issue.solved = False
+            self.issue.save()
+        # Call the superclass delete method to actually delete the instance
+        super(IssueCount, self).delete(*args, **kwargs)

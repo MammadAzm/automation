@@ -540,6 +540,56 @@
             </div>
         </div>
 
+        <div class="col-2">
+            <table class="table table-bordered border-dark" style="font-size: 11px">
+                <thead class="">
+                    <tr class="">
+                        <th class="" >
+                            نواقص
+                                <span class="badge rounded-pill" style="float: left; color: black"
+                                   data-bs-toggle="modal" data-bs-target="#staticBackdropIssues">
+                                    <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="height: 315px; overflow-y: scroll; margin-top: -10pt">
+                <table class="table table-bordered border-dark" id="table-issue" style="font-size: 11px">
+                    <thead hidden>
+                        <tr class="">
+                            <th class="" >
+                                تامین کنندگان دستگاه
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                       data-bs-toggle="modal" data-bs-target="#staticBackdropIssues">
+                                            <img src=" {% static 'icons/plus-circle.svg' %} "></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for issue in issues %}
+                            <tr  id="{{ issue }}">
+                                <td>
+                                    {{ issue }}
+                                    <span class="badge rounded-pill"
+                                        style="float: left; color: black; " onclick="del_issue('{{ issue }}', true)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}">
+                                    </span>
+                                    <span class="badge rounded-pill" style="float: left; color: black"
+                                        onclick="showPopup({
+                                            model:'issue',
+                                            instance:'{{issue.name}}',
+                                        }, 'editing')">
+                                        <img src="{% static 'icons/pen.svg' %}">
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <div class="row mb-3" style="height: 5px; background-color: #ff9d00; border-radius: 5px;"></div>
@@ -1447,6 +1497,34 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdropIssues" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                <h5 class="modal-title" id="staticBackdropIssuesLabel" style="margin-right: auto">افزودن نوع نقص</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-issue">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input id="input-issue" required type="text" name="issue" class="form-control" placeholder="عنوان نقص">
+                    </div>
+                    <button class="btn btn-outline-success bp3-round"
+                                type="submit">افزودن</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" >تکمیل</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="staticBackdropFilteringTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
@@ -2005,6 +2083,7 @@
     submitForm(null, 'zone')
     submitForm(null, 'materialprovider')
     submitForm(null, 'machineprovider')
+    submitForm(null, 'issue')
     submitForm(null, 'projectField')
     submitForm(null, 'unit')
     submitForm(null, 'filtering-task')
