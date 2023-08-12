@@ -8,542 +8,521 @@
 <form action="/edit-db/save-daily-report" method="post" id="report-form" onsubmit="return confirmZeroValues()">
     {% csrf_token %}
 
-<!--    <details open class="bg-light">-->
-<!--        <summary>-->
-<!--            افزودن اطلاعات پایه-->
-<!--        </summary>-->
-<!--        <div>-->
-<!--            <nav class="navbar navbar-light bg-light">-->
-<!--                <div class="container-fluid">-->
-<!--                    <div class="mx-auto">-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBasePositions">سمت</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseProfessions">تخصص</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachines">ماشین آلات</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterials">مصالح</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseContractors">پیمانکار</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">اکیپ</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">موقعیت</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMaterialProviders">تامین کننده مصالح</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseMachineProviders">تامین کننده ماشین</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">واحد</button>-->
-<!--                        <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">آیتم</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </nav>-->
-<!--        </div>-->
+    <div class="row">
+        <div class="col-2 h-75">
+            <img class="h-100 mx-auto" src="{% static 'logo/jpc.jpg' %}" style="max-width: 100%; display: block;">
+        </div>
 
-<!--    </details>-->
+        <div class="col-8">
+            <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
+                <table class="table table-bordered border-dark py-1 my-0" style="margin-top: 0;">
+                    <thead class="" style="font-size: 11px;">
+                        <tr class="py-1">
+                            <th class="py-1" style="width: 82%; text-align: center">فرم گزارش روزانه</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
+                <thead class="">
+                    <tr class="py-1">
+                        <th class="py-1" style="width: 100px">پروژه</th>
+                        <th class="table-light py-1" style="width: 100px">
+                            <input id="project_name" value="{{ project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
 
-    <div class="container-xxl px-4 " style="margin-top: 0.5%">
+                        <th class="py-1" style="width: 150px">کارفرما</th>
+                        <th class="table-light py-1"  style="width: 100px">
+                            <input id="employer" value="{{ project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+                        <th class="py-1" style="width: 125px">پیمانکار</th>
+                        <th class="table-light py-1"  style="width: 100px">
+                            <input id="employee" value="{{ project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                    </tr>
+
+                    <tr class="py-1">
+                        <th class="py-1">مشاور</th>
+                        <th class="table-light py-1">
+                            <input id="consultor_name" value="{{ project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                        <th class="py-1">موضوع قرارداد</th>
+                        <th class="table-light py-1">
+                            <input id="contract_subj" value="{{ project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                        <th class="py-1">نوع قرارداد</th>
+                        <th class="table-light py-1">
+                            <input id="contract_type" value="{{ project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+
+                    </tr>
+
+                    <tr class="py-1">
+                        <th class="py-1">شماره قرارداد</th>
+                        <th class="table-light py-1">
+                            <input id="contract_no" value="{{ project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                        <th class="py-1">تاریخ شروع قرارداد</th>
+                        <th class="table-light py-1">
+                            <input id="contract_start_date" value="{{ project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                        <th class="py-1">مدت قرارداد(ماه)</th>
+                        <th class="table-light py-1">
+                            <input id="contract_duration" value="{{ project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+                    </tr>
+
+                    <tr class="py-1">
+                        <th class="py-1">آدرس قرارداد</th>
+                        <th class="table-light py-1">
+                            <input id="contract_address" value="{{ project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
+                            style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+                        <th class="py-1">مسئول کنترل پروژه</th>
+                        <th class="table-light py-1">
+                            <input id="project_user" value="{{ project.user.user.first_name }} {{ project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
+                               style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
+                        </th>
+
+
+                        <th class="py-1">تاریخ</th>
+                        <th class="table-light py-1">
+                            <input required name="date" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
+                        </th>
+
+                    </tr>
+
+                    <tr class="py-1">
+
+                        <th class="py-1">میزان گرد و غبار</th>
+                        <th class="table-light py-1">
+                            <input id="dust_value" value="{{ report.dust_value }}" required type="number" name="dust_value" placeholder=""
+                            style="border-radius: 0" class="small-input-integer bg-light" step="1" min="0">
+                        </th>
+
+                        <th class="py-1">بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
+                        <th class="table-light py-1">
+                            <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_max }}" name="maxTemp"
+                            style="border-radius: 0" step="1">
+                            &nbsp; || &nbsp;
+                            <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_min }}" name="minTemp"
+                            style="border-radius: 0" step="1">
+                        </th>
+
+                        <th class="py-1">وضعیت جوی</th>
+                        <th class="table-light py-1">
+                            <select required id="weather_status" name="weather_status" value="{{ report.weather }}" class="bg-light">
+                                <option class="bg-light" value="" disabled selected hidden>انتخاب</option>
+                                <option class="bg-light" value="1">آفتابی</option>
+                                <option class="bg-light" value="2">ابری</option>
+                                <option class="bg-light" value="3">بارانی</option>
+                                <option class="bg-light" value="4">برفی</option>
+                            </select>
+
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div class="col-2  h-75">
+            <img class="h-100 mx-auto" src="{% static 'logo/pamidco.png' %}" style="max-width: 100%; display: block;">
+        </div>
+    </div>
+
+    <div class="container-xxl px-4 w-100" style="margin-top: 0.5%">
         <div class="row">
 
-            <div class="row">
-                <div class="col-2 h-75">
-                    <img class="h-100 mx-auto" src="{% static 'logo/jpc.jpg' %}" style="max-width: 100%; display: block;">
-                </div>
-
-                <div class="col-8">
-                    <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
-                        <table class="table table-bordered border-dark py-1 my-0" style="margin-top: 0;">
-                            <thead class="" style="font-size: 11px;">
-                                <tr class="py-1">
-                                    <th class="py-1" style="width: 82%; text-align: center">فرم گزارش روزانه</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <table class="table table-bordered border-dark" id="table-header" style="font-size: 11px;">
-                        <thead class="">
-                            <tr class="py-1">
-                                <th class="py-1" style="width: 100px">پروژه</th>
-                                <th class="table-light py-1" style="width: 100px">
-                                    <input id="project_name" value="{{ project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1" style="width: 150px">کارفرما</th>
-                                <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employer" value="{{ project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-                                <th class="py-1" style="width: 125px">پیمانکار</th>
-                                <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employee" value="{{ project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                            </tr>
-
-                            <tr class="py-1">
-                                <th class="py-1">مشاور</th>
-                                <th class="table-light py-1">
-                                    <input id="consultor_name" value="{{ project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1">موضوع قرارداد</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_subj" value="{{ project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1">نوع قرارداد</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_type" value="{{ project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-
-                            </tr>
-
-                            <tr class="py-1">
-                                <th class="py-1">شماره قرارداد</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_no" value="{{ project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1">تاریخ شروع قرارداد</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_start_date" value="{{ project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1">مدت قرارداد(ماه)</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_duration" value="{{ project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-                            </tr>
-
-                            <tr class="py-1">
-                                <th class="py-1">آدرس قرارداد</th>
-                                <th class="table-light py-1">
-                                    <input id="contract_address" value="{{ project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
-                                    style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-                                <th class="py-1">مسئول کنترل پروژه</th>
-                                <th class="table-light py-1">
-                                    <input id="project_user" value="{{ project.user.user.first_name }} {{ project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
-                                       style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
-                                </th>
-
-
-                                <th class="py-1">تاریخ</th>
-                                <th class="table-light py-1">
-                                    <input required name="date" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
-                                </th>
-
-                            </tr>
-
-                            <tr class="py-1">
-
-                                <th class="py-1">میزان گرد و غبار</th>
-                                <th class="table-light py-1">
-                                    <input id="dust_value" value="{{ report.dust_value }}" required type="number" name="dust_value" placeholder=""
-                                    style="border-radius: 0" class="small-input-integer bg-light" step="1" min="0">
-                                </th>
-
-                                <th class="py-1">بیشترین دما &nbsp; || &nbsp; کمترین دما</th>
-                                <th class="table-light py-1">
-                                    <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_max }}" name="maxTemp"
-                                    style="border-radius: 0" step="1">
-                                    &nbsp; || &nbsp;
-                                    <input required type="number" class="small-input-integer bg-light" value="{{ report.temperature_min }}" name="minTemp"
-                                    style="border-radius: 0" step="1">
-                                </th>
-
-                                <th class="py-1">وضعیت جوی</th>
-                                <th class="table-light py-1">
-                                    <select required id="weather_status" name="weather_status" value="{{ report.weather }}" class="bg-light">
-                                        <option class="bg-light" value="" disabled selected hidden>انتخاب</option>
-                                        <option class="bg-light" value="1">آفتابی</option>
-                                        <option class="bg-light" value="2">ابری</option>
-                                        <option class="bg-light" value="3">بارانی</option>
-                                        <option class="bg-light" value="4">برفی</option>
-                                    </select>
-
-                                </th>
+            <div class="row mx-auto" style="">
+                <div class="col-12" style="padding: 0 0 0 0 ; margin: 0;">
+                    <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                        <thead class="" style="font-size: 11px;">
+                            <tr class="py-0">
+                                <th class="py-0" style="width: 82%; text-align: center">نیروی انسانی ستادی</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
+            </div>
 
-                <div class="col-2  h-75">
-                    <img class="h-100 mx-auto" src="{% static 'logo/pamidco.png' %}" style="max-width: 100%; display: block;">
+            <div class="row mx-auto">
+                <div class="col-12 " style="padding: 0; margin: 0;">
+                    <table class="table table-bordered border-dark" id="table-position" style="font-size: 11px;">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 75%">
+                                    <span class="badge rounded-pill" style="color: black; margin-left: 0pt;"
+                                    data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    سمت
+                                </th>
+                                <th class=""  style="text-align: center">
+                                    تعداد
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for position in positions %}
+                            <tr id="{{ position }}">
+                                <td class="" style="font-family: 'B Nazanin';font-weight: bold; ">
+                                    <span class="badge rounded-pill"
+                                        style="color: black; margin-left: 0pt;" onclick="del_position('{{ position }}', false)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                    </span>
+                                    {{ position }}
+                                </td>
+                                <td class="" style="font-family: 'B Nazanin';">
+                                    {% if position.count %}
+                                        <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="{{ position.count }}">
+                                    {% else %}
+                                        <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0">
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row mx-auto" style="">
+                <div class="col-12" style="padding: 0 0 0 0 ; margin: 0;">
+                    <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                        <thead class="" style="font-size: 11px;">
+                            <tr class="py-0">
+                                <th class="py-0" style="width: 82%; text-align: center">نیروی انسانی اجرایی</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row mx-auto">
+                <div class="col-12 " style="padding: 0; margin: 0">
+                    <table class="table table-bordered border-dark" id="table-equipes-profession" style="font-size: 11px; width: 100% ">
+                        <thead class="">
+                            <tr class="">
+                                    <th class="" style="width: 40%">
+                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black;"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
+                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                        </span>
+                                        تخصص
+                                    </th>
+                                    <th class="" style="text-align: center">اکیپ</th>
+                                    <th class="" style="text-align: center">ماهر</th>
+                                    <th class="" style="width: 18%; text-align: center">نیمه ماهر</th>
+                                    <th class="" style="text-align: center">ساده</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for equipe in equipes %}
+                            <tr id="{{ equipe }}">
+
+                                <td class="">
+                                    <span class="badge rounded-pill"
+                                        style="margin-left: 0pt; color: black" onclick="del_profession('{{ equipe }}', false)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                    </span>
+                                    {{ equipe.profession }}{{ equipe.equipe.profession }}
+                                </td>
+                                <td>
+                                    {{ equipe.contractor }}{{ equipe.equipe.contractor }}
+                                </td>
+                                <td class="">
+                                    {% if equipe.countExpert %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="{{ equipe.countExpert }}">
+                                    {% else %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="0">
+                                    {% endif %}
+                                </td>
+
+                                <td class="">
+                                    {% if equipe.countSemiExpert %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="{{ equipe.countSemiExpert }}">
+                                    {% else %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="0">
+                                    {% endif %}
+                                </td>
+
+                                <td class="">
+                                    {% if equipe.countNonExpert %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="{{ equipe.countNonExpert }}">
+                                    {% else %}
+                                        <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="0">
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
 
-            <div class="col-5" style="margin-top: -10px">
-
-                <div class="row" style="">
-                    <div class="col-12" style="padding: 0 0 0 6px; margin: 0;">
+            <div class="row mx-auto">
+                <div class="col-12" style="padding: 0; margin: 0">
+                    <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
                         <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
                             <thead class="" style="font-size: 11px;">
                                 <tr class="py-0">
-                                    <th class="py-0" style="width: 82%; text-align: center">نیروی انسانی</th>
+                                    <th class="py-0" style="width: 82%; text-align: center">ماشین آلات و تجهیزات</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
+                    <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 45%">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    ماشین
+                                </th>
+                                <th class="" style="width: 8%">
+                                    کارکرد
+                                </th>
+
+                                <th class="" style="width: 8%">
+                                    فعال
+                                </th>
+
+                                <th class="" style="width: 8%">
+                                    غیرفعال
+                                </th>
+
+                                <th class="" style="width: 25%; text-align: center">
+                                    تامین
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for machine in machines %}
+                            <tr id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}">
+                                <td class="" >
+                                    <span class="badge rounded-pill" data-toggle="popover" title="{{machine}} - {{machine.machine.type}} - {{machine.machine.hardware}} - {{machine.provider}}"
+                                        style="margin: 0pt; color: black; padding: 0">
+                                        <img src="{% static 'icons/info-circle.svg' %}"/>
+                                    </span>
+                                    <span class="badge rounded-pill"
+                                        style="margin-left: 0pt; color: black; padding: 0 2px 0 5px" onclick="del_machine('{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}', false)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                    </span>
+                                    {{ machine }}
+                                </td>
+
+                                {% with ownership="شرکتی" %}
+                                    {% if machine.provider.name|equals:ownership %}
+                                        <td class="" style="text-align: center">
+                                            <input readonly hidden onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                        </td>
+                                    {% else %}
+                                        <td class="">
+                                            {% if machine.workHours %}
+                                                <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
+                                            {% else %}
+                                                <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                {% endwith %}
+
+                                {% with ownership="شرکتی" %}
+                                    {% if machine.provider.name|equals:ownership %}
+                                        <td class="" style="text-align: center">
+                                            {% if machine.activeCount %}
+                                                <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
+                                            {% else %}
+                                                <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                            {% endif %}
+                                        </td>
+                                        <td class="">
+                                            {% if machine.inactiveCount %}
+                                                <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
+                                            {% else %}
+                                                <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                            {% endif %}
+                                        </td>
+
+                                    {% else %}
+                                        <td class="" style="text-align: center">
+                                            <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
+                                        </td>
+
+                                        <td class="" style="text-align: center">
+                                            <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
+                                        </td>
+                                    {% endif %}
+                                {% endwith %}
+
+
+
+
+
+                                <td class="">
+                                    <select required class="form-select" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_provider"
+                                        style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; background: none">
+                                        <option value="{{ machine.provider }}" >
+                                            {{ machine.provider }}
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="row">
-
-                    <div class="col-4 " style="padding: 0; margin: 0;">
-                        <table class="table table-bordered border-dark" id="table-position" style="font-size: 11px;">
-
-                            <thead class="">
-                                <tr class="">
-                                    <th class="" style="width: 75%">
-                                        <span class="badge rounded-pill" style="color: black; margin-left: 0pt;"
-                                        data-bs-toggle="modal" data-bs-target="#staticBackdropPositions">
-                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
-                                        </span>
-                                        سمت
-                                    </th>
-                                    <th class=""  style="text-align: center">
-                                        تعداد
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for position in positions %}
-                                <tr id="{{ position }}">
-                                    <td class="" style="font-family: 'B Nazanin';font-weight: bold; ">
-                                        <span class="badge rounded-pill"
-                                            style="color: black; margin-left: 0pt;" onclick="del_position('{{ position }}', false)">
-                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                        </span>
-                                        {{ position }}
-                                    </td>
-                                    <td class="" style="font-family: 'B Nazanin';">
-                                        {% if position.count %}
-                                            <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="{{ position.count }}">
-                                        {% else %}
-                                            <input style="border-radius: 0; text-align: center;" class="small-input-integer" required type="number" id="{{ position }}_count" name="position_{{ position }}_count" min="0" value="0">
-                                        {% endif %}
-
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="col-7  me-2 " style="padding: 0; margin: 0">
-                        <table class="table table-bordered border-dark" id="table-equipes-profession" style="font-size: 11px; width: 110% ">
-                            <thead class="">
-                                <tr class="">
-                                        <th class="" style="width: 40%">
-                                            <span class="badge rounded-pill" style="margin-left: 0pt; color: black;"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropEquipes">
-                                                <img src="{% static 'icons/plus-circle.svg' %}"/>
-                                            </span>
-                                            تخصص
-                                        </th>
-                                        <th class="" style="text-align: center">اکیپ</th>
-                                        <th class="" style="text-align: center">ماهر</th>
-                                        <th class="" style="width: 18%; text-align: center">نیمه ماهر</th>
-                                        <th class="" style="text-align: center">ساده</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            {% for equipe in equipes %}
-                                <tr id="{{ equipe }}">
-
-                                    <td class="">
-                                        <span class="badge rounded-pill"
-                                            style="margin-left: 0pt; color: black" onclick="del_profession('{{ equipe }}', false)">
-                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                        </span>
-                                        {{ equipe.profession }}{{ equipe.equipe.profession }}
-                                    </td>
-                                    <td>
-                                        {{ equipe.contractor }}{{ equipe.equipe.contractor }}
-                                    </td>
-                                    <td class="">
-                                        {% if equipe.countExpert %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="{{ equipe.countExpert }}">
-                                        {% else %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_ExpertCount" name="equipe_profession_{{ equipe }}_ExpertCount" min="0" value="0">
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="">
-                                        {% if equipe.countSemiExpert %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="{{ equipe.countSemiExpert }}">
-                                        {% else %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_SemiExpertCount" name="equipe_profession_{{ equipe }}_SemiExpertCount" min="0" value="0">
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="">
-                                        {% if equipe.countNonExpert %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="{{ equipe.countNonExpert }}">
-                                        {% else %}
-                                            <input required style="border-radius: 0; text-align: center;"  class="small-input-integer" type="number" id="{{ equipe.equipe.profession }}_NonExpertCount" name="equipe_profession_{{ equipe }}_NonExpertCount" min="0" value="0">
-                                        {% endif %}
-                                    </td>
-
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-
             </div>
 
-            <div class="col-7" style="margin-top: -10px;">
-
-                <div class="row">
-                    <div class="col-6 me-4" style="padding: 0; margin: 0">
-                        <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
-                            <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
-                                <thead class="" style="font-size: 11px;">
-                                    <tr class="py-0">
-                                        <th class="py-0" style="width: 82%; text-align: center">ماشین آلات و تجهیزات</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <table class="table table-bordered border-dark" id="table-machine" style="font-size: 11px">
-                            <thead class="">
-                                <tr class="">
-                                    <th class="" style="width: 45%">
-                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">
-                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
-                                        </span>
-                                        ماشین
-                                    </th>
-                                    <th class="" style="width: 8%">
-                                        کارکرد
-                                    </th>
-
-                                    <th class="" style="width: 8%">
-                                        فعال
-                                    </th>
-
-                                    <th class="" style="width: 8%">
-                                        غیرفعال
-                                    </th>
-
-                                    <th class="" style="width: 25%; text-align: center">
-                                        تامین
-                                    </th>
+            <div class="row mx-auto">
+                <div class="col-12" style="padding: 0; margin: 0">
+                    <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
+                        <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                            <thead class="" style="font-size: 11px;">
+                                <tr class="py-0">
+                                    <th class="py-0" style="width: 82%; text-align: center">مصالح ورودی به سایت</th>
                                 </tr>
                             </thead>
-                            <tbody>
-
-                            {% for machine in machines %}
-                                <tr id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}">
-                                    <td class="" >
-                                        <span class="badge rounded-pill" data-toggle="popover" title="{{machine}} - {{machine.machine.type}} - {{machine.machine.hardware}} - {{machine.provider}}"
-                                            style="margin: 0pt; color: black; padding: 0">
-                                            <img src="{% static 'icons/info-circle.svg' %}"/>
-                                        </span>
-                                        <span class="badge rounded-pill"
-                                            style="margin-left: 0pt; color: black; padding: 0 2px 0 5px" onclick="del_machine('{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{machine.provider}}', false)">
-                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                        </span>
-                                        {{ machine }}
-                                    </td>
-
-                                    {% with ownership="شرکتی" %}
-                                        {% if machine.provider.name|equals:ownership %}
-                                            <td class="" style="text-align: center">
-                                                <input readonly hidden onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
-                                            </td>
-                                        {% else %}
-                                            <td class="">
-                                                {% if machine.workHours %}
-                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer " type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="{{ machine.workHours }}">
-                                                {% else %}
-                                                    <input onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_workHours" min="0" value="0">
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
-                                    {% endwith %}
-
-                                    {% with ownership="شرکتی" %}
-                                        {% if machine.provider.name|equals:ownership %}
-                                            <td class="" style="text-align: center">
-                                                {% if machine.activeCount %}
-                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="{{ machine.activeCount }}">
-                                                {% else %}
-                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
-                                                {% endif %}
-                                            </td>
-                                            <td class="">
-                                                {% if machine.inactiveCount %}
-                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="{{ machine.inactiveCount }}">
-                                                {% else %}
-                                                    <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
-                                                {% endif %}
-                                            </td>
-
-                                        {% else %}
-                                            <td class="" style="text-align: center">
-                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_activeCount" min="0" value="0">
-                                            </td>
-
-                                            <td class="" style="text-align: center">
-                                                <input style="border-radius: 0; text-align: center;" readonly hidden required class="small-input-integer" type="number" id="{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_inactiveCount" min="0" value="0">
-                                            </td>
-                                        {% endif %}
-                                    {% endwith %}
-
-
-
-
-
-                                    <td class="">
-                                        <select required class="form-select" name="machine_{{machine}}-[{{machine.machine.type}}]-[{{machine.machine.hardware}}]_{{ machine.provider }}_provider"
-                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; background: none">
-                                            <option value="{{ machine.provider }}" >
-                                                {{ machine.provider }}
-                                            </option>
-                                        </select>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
                         </table>
                     </div>
+                    <table class="table table-bordered border-dark" id="table-material" style="font-size: 11px">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 22%;">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    مصالح
+                                </th>
+                                <th class="" style="width: 10%; text-align: center">
+                                    مقدار
+                                </th>
+                                <th class="" style="width: 20%; text-align: center">
+                                    واحد
+                                </th>
+                                <th class="" style="width: 20%; text-align: center">
+                                    تامین
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for material in materials %}
+                            <tr id="{{ material }}">
+                                <td class="">
+                                    <span class="badge rounded-pill"
+                                        style="margin-left: 0pt; color: black" onclick="del_material('{{ material }}', false)">
+                                        <img src="{% static 'icons/patch-minus.svg' %}"/>
+                                    </span>
+                                    {{ material }}
+                                </td>
+                                <td class="" style="text-align: center">
+                                    {% if material.amount %}
+                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
+                                               name="material_{{ material }}_{{ material.provider }}_count" min="0" value="{{ material.amount }}">
+                                </td>
+                                <td class="">
 
-                    <div class="col-5 me-2" style="padding: 0; margin: 0">
-                        <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
-                            <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
-                                <thead class="" style="font-size: 11px;">
-                                    <tr class="py-0">
-                                        <th class="py-0" style="width: 82%; text-align: center">مصالح ورودی به سایت</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <table class="table table-bordered border-dark" id="table-material" style="font-size: 11px">
-                            <thead class="">
-                                <tr class="">
-                                    <th class="" style="width: 22%;">
-                                        <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
-                                            data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">
-                                            <img src="{% static 'icons/plus-circle.svg' %}"/>
-                                        </span>
-                                        مصالح
-                                    </th>
-                                    <th class="" style="width: 10%; text-align: center">
-                                        مقدار
-                                    </th>
-                                    <th class="" style="width: 20%; text-align: center">
-                                        واحد
-                                    </th>
-                                    <th class="" style="width: 20%; text-align: center">
-                                        تامین
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for material in materials %}
-                                <tr id="{{ material }}">
-                                    <td class="">
-                                        <span class="badge rounded-pill"
-                                            style="margin-left: 0pt; color: black" onclick="del_material('{{ material }}', false)">
-                                            <img src="{% static 'icons/patch-minus.svg' %}"/>
-                                        </span>
-                                        {{ material }}
-                                    </td>
-                                    <td class="" style="text-align: center">
+                                    <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
+                                        style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
+
                                         {% if material.amount %}
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
-                                                   name="material_{{ material }}_{{ material.provider }}_count" min="0" value="{{ material.amount }}">
-                                    </td>
-                                    <td class="">
-
-                                        <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
-                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
-
-                                            {% if material.amount %}
-
-                                            {% else %}
-                                                <option selected disabled hidden value="" >انتخاب</option>
-                                            {% endif %}
-
-                                            {% for unit in units %}
-
-                                                {% if material.unit == unit %}
-                                                    <option value="{{ unit.name }}" selected name="">{{ unit.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ unit.name }}" name="">{{ unit.name }}</option>
-                                                {% endif %}
-
-                                            {% endfor %}
-
-                                        </select>
-                                    </td>
 
                                         {% else %}
-
-                                            <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
-                                                   name="material_{{ material }}_{{ material.provider }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
-                                    </td>
-
-                                    <td class="">
-
-                                        <select class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
-                                            style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
-
-                                            {% if material.amount %}
-
-                                            {% else %}
-                                                <option selected disabled hidden value="" >انتخاب</option>
-                                            {% endif %}
-
-
-                                            {% for unit in units %}
-
-                                                {% if material.unit == unit %}
-                                                    <option value="{{ unit.name }}" selected name="">{{ unit.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ unit.name }}" name="">{{ unit.name }}</option>
-                                                {% endif %}
-
-                                            {% endfor %}
-
-                                        </select>
-                                    </td>
-
+                                            <option selected disabled hidden value="" >انتخاب</option>
                                         {% endif %}
 
-                                    <td class="">
-                                        <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_provider"
-                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; ; background: none">
-                                            <option name="{{ material }}_{{ material.provider }}_provider_options" id="{{ material }}_{{ material.provider }}_provider_options">
-                                                {{ material.provider }}
-                                            </option>
-                                        </select>
-                                    </td>
+                                        {% for unit in units %}
+
+                                            {% if material.unit == unit %}
+                                                <option value="{{ unit.name }}" selected name="">{{ unit.name }}</option>
+                                            {% else %}
+                                                <option value="{{ unit.name }}" name="">{{ unit.name }}</option>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </select>
+                                </td>
+
+                                    {% else %}
+
+                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer w-75" type="number" id="{{ material }}_{{ material.provider }}_count" step="0.1"
+                                               name="material_{{ material }}_{{ material.provider }}_count" min="0" value="0" onchange="toggle_requirement('{{ material }}_unit_options', '{{ material }}_count')">
+                                </td>
+
+                                <td class="">
+
+                                    <select class="form-select" name="material_{{ material }}_{{ material.provider }}_unit" id="{{ material }}_{{ material.provider }}_unit_options"
+                                        style="font-size: 11px; text-align: left; padding: 0; padding-left: 15%">
+
+                                        {% if material.amount %}
+
+                                        {% else %}
+                                            <option selected disabled hidden value="" >انتخاب</option>
+                                        {% endif %}
 
 
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        {% for unit in units %}
 
+                                            {% if material.unit == unit %}
+                                                <option value="{{ unit.name }}" selected name="">{{ unit.name }}</option>
+                                            {% else %}
+                                                <option value="{{ unit.name }}" name="">{{ unit.name }}</option>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </select>
+                                </td>
+
+                                    {% endif %}
+
+                                <td class="">
+                                    <select required class="form-select" name="material_{{ material }}_{{ material.provider }}_provider"
+                                        style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center; ; background: none">
+                                        <option name="{{ material }}_{{ material.provider }}_provider_options" id="{{ material }}_{{ material.provider }}_provider_options">
+                                            {{ material.provider }}
+                                        </option>
+                                    </select>
+                                </td>
+
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="row ps-4">
+
+
+            <div class="row mx-auto">
+                <div class="col-12"style="padding: 0; margin: 0">
                     <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
                         <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
                             <thead class="" style="font-size: 11px;">
@@ -651,11 +630,9 @@
                     </table>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12">
-                <div class="row ps-4">
+            <div class="row mx-auto">
+                <div class="col-12" style="padding: 0; margin: 0">
                     <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
                         <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
                             <thead class="" style="font-size: 11px;">
@@ -695,10 +672,10 @@
                             {% for issueReport in issueReports %}
                                 <tr  id="{{issueReport}}">
                                     <td>
-<!--                                        <span class="badge rounded-pill"-->
-<!--                                            style="margin-left: 0pt; color: black;">-->
-<!--                                            <img src="{% static 'icons/patch-minus.svg' %}"/>-->
-<!--                                        </span>-->
+    <!--                                        <span class="badge rounded-pill"-->
+    <!--                                            style="margin-left: 0pt; color: black;">-->
+    <!--                                            <img src="{% static 'icons/patch-minus.svg' %}"/>-->
+    <!--                                        </span>-->
                                         {{ issueReport.issue.name }}
                                     </td>
 
@@ -711,8 +688,8 @@
                                     </td>
 
                                     <td>
-<!--                                        <input style="border-radius: 0; text-align: center;"  required class="form-control py-0" id="issueReport_{{issueReport}}_today"-->
-<!--                                               name="issueReport_{{issueReport}}_today" type="text" maxlength="255">-->
+    <!--                                        <input style="border-radius: 0; text-align: center;"  required class="form-control py-0" id="issueReport_{{issueReport}}_today"-->
+    <!--                                               name="issueReport_{{issueReport}}_today" type="text" maxlength="255">-->
                                         {{issueReport.description}}
                                     </td>
 
@@ -731,12 +708,12 @@
                     </table>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
+            <div class="row mx-auto">
 
-            <button type="submit" class="btn btn-success ">ذخیره</button>
+                <button type="submit" class="btn btn-success ">ذخیره</button>
 
+            </div>
         </div>
 
     </div>

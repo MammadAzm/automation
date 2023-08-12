@@ -1,0 +1,92 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+
+{% for page_number in data.page_count|arange %}
+    <div class="box">
+        {% include 'pdf_A4_dailyReport_headers.html' with data=headers %}
+
+        <div class="content">
+            <table class="table-label">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">گزارش مصالح</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="sub-content">
+                <table class="table-materials-daily" id="table-materials-daily-p01">
+                    <thead>
+                        <tr>
+                            <th colspan="4">
+                                مصالح ورودی به کارگاه
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead style="">
+                        <tr>
+                            <th style="width: 40%;">
+                                عنوان
+                            </th>
+                            <th style="width: 30%;">
+                                تامین
+                            </th>
+                            <th style="width: 15%;">
+                                مقدار
+                            </th>
+                            <th style="width: 15%;">
+                                واحد
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in data.materials.objects|getIndex:page_number %}
+                            <tr>
+                                <td>
+                                    {{obj.material.name}}
+                                </td>
+                                <td>
+                                    {{obj.provider.name}}
+                                </td>
+                                <td>
+                                    {{obj.amount}}
+                                </td>
+                                <td>
+                                    {{obj.unit.name}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if data.materials.objects|getIndex:page_number|length <  data.materials.max_count %}
+                            {% for i in data.materials.rem_rows|getIndex:page_number|arange %}
+                                <tr>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<!--        <div class="footer">-->
+<!--        </div>-->
+
+    </div>
+
+{% endfor %}

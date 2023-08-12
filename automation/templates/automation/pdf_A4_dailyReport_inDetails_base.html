@@ -1,0 +1,30 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+<html dir="rtl">
+<head>
+    {% block additionalCSS %}
+
+    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/pdfTemplateStyles.css' %}">
+    <script src="{% static 'js/pdfFuncs.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <title>{{report.short_date|date:"Y/m/d"}}</title>
+    <script>
+        $(document).ready(function() {
+            clear_up();
+            close();
+        });
+    </script>
+
+</head>
+<body>
+    {% block content %}
+
+    {% endblock %}
+</body>
+</html>

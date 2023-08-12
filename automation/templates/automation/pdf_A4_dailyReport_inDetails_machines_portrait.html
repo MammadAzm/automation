@@ -1,0 +1,164 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+{% for page_number in data.page_count|arange %}
+    <div class="box">
+        {% include 'pdf_A4_dailyReport_headers.html' with data=headers %}
+        <div class="content">
+            <table class="table-label">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">گزارش ماشین آلات</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="sub-content">
+                <table class="table-sherkati-machines-daily" id="table-sherkati-machines-daily-p01">
+                    <thead>
+                        <tr>
+                            <th colspan="4">
+                                ماشین آلات شرکتی
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead style="">
+                        <tr>
+                            <th style="width: 52%;">
+                                نوع
+                            </th>
+                            <th style="width: 16%;">
+                                فعال
+                            </th>
+                            <th style="width: 16%;">
+                                غیر فعال
+                            </th>
+                            <th style="width: 16%;">
+                                تعداد کل
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for obj in data.onOwn_machines.objects|getIndex:page_number %}
+                            <tr>
+                                <td>
+                                    {{obj.name}}
+                                </td>
+                                <td>
+                                    {{obj.activeCount}}
+                                </td>
+                                <td>
+                                    {{obj.inactiveCount}}
+                                </td>
+                                <td>
+                                    {{obj.totalCount}}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                        {% if data.onOwn_machines.objects|getIndex:page_number|length <  data.onOwn_machines.max_count %}
+
+                            {% for i in data.onOwn_machines.rem_rows|getIndex:page_number|arange %}
+                                <tr>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <table class="table-estijari-machines-daily" id="table-estijari-machines-daily-p01">
+                    <thead>
+                        <tr>
+                            <th colspan="4">
+                                ماشین آلات استیجاری
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="width: 36%" >
+                                نام دستگاه
+                            </th>
+
+                            <th style="width: 27%" >
+                                تامین کننده
+                            </th>
+
+                            <th style="width: 22%" >
+                                کارکرد (ساعت)
+                            </th>
+
+                            <th style="width: 15%">
+                                وضعیت
+                            </th>
+                        </tr>
+                    </thead>
+
+                    {% for obj in data.onRent_machines.objects|getIndex:page_number %}
+                        <tr>
+                            <td>
+                                {{obj.machine.name}}
+                            </td>
+                            <td>
+                                {{obj.provider.name}}
+                            </td>
+                            <td>
+                                {{obj.workHours}}
+                            </td>
+                            <td>
+                                {% if obj.workHours > 0 %}
+                                    فعال
+                                {% else %}
+                                    غیرفعال
+                                {% endif %}
+                            </td>
+
+
+                        </tr>
+                    {% endfor %}
+
+                    {% if data.onRent_machines.objects|getIndex:page_number|length <  data.onRent_machines.max_count %}
+
+                        {% for i in data.onRent_machines.rem_rows|getIndex:page_number|arange %}
+                            <tr>
+                                <td>
+                                    -
+                                </td>
+                                <td>
+                                    -
+                                </td>
+                                <td>
+                                    -
+                                </td>
+                                <td>
+                                    -
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+
+                </table>
+            </div>
+        </div>
+
+
+    <!--        <div class="footer">-->
+    <!--        </div>-->
+    </div>
+{% endfor %}

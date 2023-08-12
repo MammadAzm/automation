@@ -1,0 +1,194 @@
+{% load static %}
+<div class="form-title">
+    <div class="div-logo" style="">
+        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
+    </div>
+
+    <div class="div-title" style="">
+        <h1 style="background-color: white">گزارش روزانه کارگاه</h1>
+    </div>
+
+    <div class="div-logo" style="">
+        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
+    </div>
+
+    <div class="div-logo" style="">
+        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
+    </div>
+</div>
+
+<div class="header-project">
+    <table class="table-header-project">
+        <thead>
+            <tr>
+                <th colspan="6"  style="text-align: center">اطلاعات پروژه</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>
+                    نام پروژه
+                </th>
+                <td colspan="5">
+                        {{data.project.name}}
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    کارفرما
+                </th>
+                <td>
+                    {{data.project.employer}}
+                </td>
+
+                <th>
+                    پیمانکار
+                </th>
+                <td>
+                    {{data.project.employee}}
+                </td>
+
+                <th>
+                    مشاور
+                </th>
+                <td>
+                    {{data.project.advisor}}
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    موضوع قرارداد
+                </th>
+                <td>
+                    {{data.project.contract_subject}}
+                </td>
+
+                <th>
+                    نوع قرارداد
+                </th>
+                <td>
+                    {{data.project.contract_type}}
+                </td>
+
+                <th>
+                    شماره قرارداد
+                </th>
+                <td>
+                    {{data.project.contract_number}}
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    تاریخ شروع پروژه
+                </th>
+                <td>
+                    {{data.project.start_date}}
+                </td>
+
+                <th>
+                    مدت قرارداد(ماه)
+                </th>
+                <td>
+                    {{data.project.contract_duration}}
+                </td>
+
+                <th>
+                    مبلغ نهایی(ریال)
+                </th>
+                <td>
+<!--                    {{data.project.employee}}-->
+                    ########
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    آدرس
+                </th>
+                <td colspan="5">
+                    {{data.project.contract_address}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="header-daily">
+    <table class="table-header-daily">
+        <thead>
+            <tr>
+                <th colspan="7"  style="text-align: center">اطلاعات گزارش</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th colspan="3" style="width: 39%">
+                    زمان گزارش
+                </th>
+
+                <th colspan="2" style="width: 30%">
+                    وضعیت دما
+                </th>
+                <th colspan="2" style="width: 31%">
+                    آب و هوا
+                </th>
+
+            </tr>
+
+            <tr>
+                <th style="width: 13%">
+                    تاریخ
+                </th>
+                <th style="width: 13%">
+                    روز
+                </th>
+                <th style="width: 13%">
+                    شماره
+                </th>
+
+
+                <th style="width: 15%">
+                    حداکثر
+                </th>
+                <tH style="width: 15%">
+                    حداقل
+                </tH>
+
+                <th style="width: 14%">
+                    وضعیت جوی
+                </th>
+                <th style="width: 17%">
+                    میزان گرد و غبار (ppm)
+                </th>
+            </tr>
+
+            <tr>
+                <td>
+                    {{data.report.short_date}}
+                </td>
+
+                <td>
+                    {{data.helper.weekday}}
+                </td>
+
+                <td>
+                    ####
+                </td>
+                <td>
+                    {{data.report.temperature_max}}
+                </td>
+                <td>
+                    {{data.report.temperature_min}}
+                </td>
+                <td>
+                    {{data.helper.weather}}
+                </td><td>
+                    {{data.report.dust_value}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

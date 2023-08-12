@@ -22,6 +22,12 @@ from automation.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+    path("temp/", temp, name="temp"),
+    path("temp2/", temp2, name="temp2"),
+    path("temp3/", temp3, name="temp3"),
+    path("temp4/", temp4, name="temp4"),
+    path("temp5/", temp5, name="temp5"),
+
     path("home/", home, name="home"),
 
     path('login/', login_view, name='login'),
@@ -35,6 +41,7 @@ urlpatterns = [
     path("home/create-report/", create_report_template),
     path("home/daily-reports/", reports_daily),
     path("home/daily-reports/<int:idd>", report_on_day),
+    path("home/print-daily-reports/<int:idd>", print_report_on_day),
     path("home/daily-reports/compact/<idd>", compact_report_on_day),
     path("home/daily-reports/check-existence", check_dailyreport_existence),
 

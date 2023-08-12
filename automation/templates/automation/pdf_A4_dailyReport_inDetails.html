@@ -1,0 +1,37 @@
+{% extends 'pdf_A4_dailyReport_inDetails_base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+{% block content %}
+    <div class="box">
+        <!--    SECTION 01 BEGINS    -->
+        {% include 'pdf_A4_dailyReport_inDetails_humanresources_portrait.html' with data=humanresources.0 headers=headers report=report %}
+        <!--    SECTION 01 ENDS    -->
+
+        <!--    SECTION 02 BEGINS    -->
+        {% include 'pdf_A4_dailyReport_inDetails_machines_portrait.html' with data=machines headers=headers report=report  %}
+        <!--    SECTION 02 ENDS    -->
+
+        <!--    SECTION 03 BEGINS    -->
+        {% include 'pdf_A4_dailyReport_inDetails_materials_portrait.html' with data=materials headers=headers report=report  %}
+        <!--    SECTION 03 ENDS    -->
+
+        <!--    SECTION 04 BEGINS    -->
+        {% include 'pdf_A4_dailyReport_inDetails_tasks_landscape.html' with data=tasks headers=headers report=report helper=helper  %}
+        <!--    SECTION 04 ENDS    -->
+
+        <!--    SECTION 05 BEGINS    -->
+        <!--    SECTION 05 ENDS    -->
+
+
+
+
+<!--        <div class="footer">-->
+<!--        </div>-->
+
+    </div>
+{% endblock %}

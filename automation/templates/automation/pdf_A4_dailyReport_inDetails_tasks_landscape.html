@@ -1,0 +1,182 @@
+{% load static %}
+{% load bootstrap5 %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+<style>
+    /*@page {*/
+    /*    size: A4 landscape !important;*/
+    /*    margin: 0;*/
+    /*}*/
+    /*.div-title {*/
+    /*    width: 21cm !important;*/
+    /*}*/
+</style>
+
+{% for page_number in data.page_count|arange %}
+    <div class="box">
+        {% include 'pdf_A4_dailyReport_headers.html' with data=headers %}
+
+        <div class="content">
+            <table class="table-label">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">گزارش احجام</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="sub-content">
+                <table class="table-tasks-daily" id="table-tasks-daily-p01">
+                    <thead>
+                        <tr>
+                            <th colspan="14">
+                                عملیات اجرایی
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead style="">
+                        <tr>
+                            <th style="width: 7cm" rowspan="2">
+                                شرح عملیات اصلی
+                            </th>
+                            <th style="width: 6cm" rowspan="2">
+                                شرح عملیات اجرایی
+                            </th>
+                            <th style="width: 3.5cm" rowspan="2">
+                                اکیپ
+                            </th>
+                            <th style="width: 3.5cm" rowspan="2">
+                                موقعیت
+                            </th>
+                            <th style="width: 1.6cm">
+                                امروز
+                            </th>
+                            <th style="width: 1.7cm">
+                                کل ع.اجرایی
+                            </th>
+                            <th style="width: 1.2cm" rowspan="2">
+                                درصد ع.اجرایی
+                            </th>
+                            <th style="width: 1.7cm">
+                                کل ع.اصلی
+                            </th>
+                            <th style="width: 1.2cm" rowspan="2">
+                                درصد ع.اصلی
+                            </th>
+
+                            <th style="width: 1.6cm">
+                                شروع
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="">
+                                تا دیروز
+                            </th>
+                            <th style="">
+                                واحد
+                            </th>
+                            <th style="">
+                                واحد
+                            </th>
+                            <th style="">
+                                پایان
+                            </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        {% for obj in data.tasks.objects|getIndex:page_number %}
+                            <tr>
+                                <td style="width: 7cm" rowspan="2">{{obj.task.operation.operation.name}}</td>
+                                <td style="width: 6cm" rowspan="2">{{obj.task.suboperation.name}}</td>
+                                <td style="width: 3.5cm" rowspan="2">{{obj.task.equipe}}</td>
+                                <td style="width: 3.5cm" rowspan="2">{{obj.task.zone}}</td>
+
+                                <td>{{obj.todayVolume|floatformat:1}}</td> <!-- امروز -->
+
+                                <td>{{obj.task.totalVolume|floatformat:1}}</td> <!-- کل عملیات اجرایی -->
+
+                                <td rowspan="2"> <!-- درصد عملیات اجرایی -->
+                                    {% with pre=obj.preDoneVolume|div:obj.task.totalVolume|mul:100 cur=obj.todayVolume|div:obj.task.totalVolume|mul:100 %}
+                                        {{ cur|add:pre|floatformat:2 }}%
+                                    {% endwith %}
+                                </td>
+
+                                <td>{{obj.task.parent.totalVolume|floatformat:1}}</td> <!-- کل عملیات اصلی -->
+
+                                <td rowspan="2"> <!-- درصد عملیات اصلی -->
+                                    {{ helper.parentTaskPercents|return_item:obj.task.parent.id|floatformat:2}}%
+                                </td>
+
+                                <td>
+                                    {% if obj.task.start_date|date:"Y/m/d" %}
+                                        {{ obj.task.start_date|date:"Y/m/d" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ obj.preDoneVolume|floatformat:1 }}</td>
+
+                                <td>{{ obj.task.unit }}</td>
+
+
+                                <td>{{ obj.task.operation.unit }}</td>
+
+
+                                <td>
+                                    {% if obj.task.completion_date|date:"Y/m/d" %}
+                                        {{ obj.task.completion_date|date:"Y/m/d" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        {% if data.tasks.objects|getIndex:page_number|length <  data.tasks.max_count %}
+                            {% for i in data.tasks.rem_rows|getIndex:page_number|arange %}
+                                <tr>
+                                    <td style="width: 7cm" rowspan="2">-</td>
+                                    <td style="width: 6cm" rowspan="2">-</td>
+                                    <td style="width: 3.5cm" rowspan="2">-</td>
+                                    <td style="width: 3.5cm" rowspan="2">-</td>
+
+                                    <td>-</td> <!-- امروز -->
+                                    <td>-</td> <!-- کل عملیات اجرایی -->
+                                    <td rowspan="2"> <!-- درصد عملیات اجرایی -->
+                                        -
+                                    </td>
+                                    <td>-</td> <!-- کل عملیات اصلی -->
+                                    <td rowspan="2"> <!-- درصد عملیات اصلی -->
+                                        -
+                                    </td>
+
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+<!--        <div class="footer">-->
+<!--        </div>-->
+
+    </div>
+{% endfor %}

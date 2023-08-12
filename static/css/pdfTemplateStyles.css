@@ -1,0 +1,349 @@
+/* Define A4 size */
+@page {
+    size: A4;
+    margin: 0;
+}
+/* Center content vertically and horizontally */
+body {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+td {
+    font-family: "B Nazanin";
+    font-size: 10px;
+}
+
+th {
+    font-family: "B Nazanin";
+    font-weight: 1000;
+    font-size: 10px;
+}
+
+h1 {
+    font-family: "B Titr";
+    font-size: 22px;
+}
+
+.box {
+    width: 100%;
+    background-color: #fff;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+
+    /*background-color: lightseagreen;*/
+}
+
+.form-title {
+    display: flex;
+    width: 95%;
+    height: 3cm;
+    margin: 0 auto 0 auto;
+    padding: 5px 5px 0 5px;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+
+    /*background-color: #00ff0d;*/
+}
+
+.div-logo {
+    width: 3cm;
+    height: 3cm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.div-title {
+    width: 11cm;
+    height: 3cm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.header-project {
+    width: 95%;
+    margin: 5px auto 0 auto;
+    padding:  5px 5px 0 5px;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+}
+
+
+.header-daily {
+    width: 95%;
+    margin: 5px auto 0 auto;
+    padding:  5px 5px 0 5px;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+}
+
+.table-header-project {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+    /*background-color: #adadad;*/
+}
+.table-header-project tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    border: 1px solid black;
+
+}
+.table-header-project tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    width: 18%;
+    border: 1px solid black;
+}
+
+.table-header-daily {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+    /*background-color: #adadad;*/
+}
+.table-header-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-header-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.content {
+    width: 95%;
+    margin: 10px auto 0 auto;
+    padding:  0 0 0 0;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+    /*background-color: #ffdd00;*/
+}
+
+.sub-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto 10px auto;
+    padding:  0 5px 0 5px;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+    /*background-color: #ffdd00;*/
+}
+
+.table-label {
+    width: 98.5%;
+    margin: 0 5px 0 5px;
+    font-size: 11px;
+    /*border: 1px solid black;*/
+    /*background-color: #adadad;*/
+}
+
+.table-label tr th {
+    /*background-color: #adadad;*/
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    /*border: 1px solid black;*/
+    text-align: center;
+}
+.table-label tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    /*border: 1px solid black;*/
+    text-align: center;
+}
+
+.table-setadi-resources-daily {
+    width: 30%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-setadi-resources-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-setadi-resources-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-ejrayi-resources-daily {
+    width: 70%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-ejrayi-resources-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-ejrayi-resources-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-human-resources-count {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-human-resources-count tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 15%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-human-resources-count tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-sherkati-machines-daily {
+    width: 50%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-sherkati-machines-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 25%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-sherkati-machines-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-estijari-machines-daily {
+    width: 50%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-estijari-machines-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 25%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-estijari-machines-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-materials-daily {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-materials-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 25%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-materials-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-tasks-daily {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-tasks-daily tr th {
+    background-color: #adadad;
+    padding: 2px 1px 2px 1px;
+    /*width: 25%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+.table-tasks-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 1px 2px 1px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.table-issues-daily {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-issues-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 25%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-issues-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
+.footer {
+    width: 95%;
+    margin: 10px auto 0 auto;
+    padding:  5px 5px 0 5px;
+    /*border: 1px solid #000 ;*/
+    background-color: #fff;
+    text-align: center;
+
+    background-color: #006fff;
+}
