@@ -4,7 +4,12 @@
 
 
 {% include 'pdf_A4_dailyReport_inDetails_humanresources_portrait.html' with data=humanresources headers=headers report=report %}
+
 {% include 'pdf_A4_dailyReport_inDetails_machines_portrait.html' with data=machines headers=headers report=report  %}
+
 {% include 'pdf_A4_dailyReport_inDetails_materials_portrait.html' with data=materials headers=headers report=report  %}
 
 {% include 'pdf_A4_dailyReport_inDetails_tasks_landscape.html' with data=tasks headers=headers report=report  %}
+
+
+{% include 'pdf_A4_dailyReport_inDetails_machines_materials_portrait.html' with data_1=machines data_2=materials headers=headers report=report  %}

@@ -42,6 +42,7 @@ urlpatterns = [
     path("home/daily-reports/", reports_daily),
     path("home/daily-reports/<int:idd>", report_on_day),
     path("home/print-daily-reports/<int:idd>", print_report_on_day),
+    path("home/print-daily-reports/compact/<int:idd>", print_report_compact_on_day),
     path("home/daily-reports/compact/<idd>", compact_report_on_day),
     path("home/daily-reports/check-existence", check_dailyreport_existence),
 

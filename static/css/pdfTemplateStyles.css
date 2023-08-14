@@ -237,6 +237,26 @@ h1 {
     text-align: center;
 }
 
+.table-machines-daily {
+    width: 62%;
+    font-size: 11px;
+    border: 1px solid black;
+}
+.table-machines-daily tr th {
+    background-color: #adadad;
+    padding: 2px 3px 2px 3px;
+    width: 25%;
+    border: 1px solid black;
+    text-align: center;
+}
+.table-machines-daily tr td {
+    /*background-color: white;*/
+    padding: 2px 3px 2px 3px;
+    /*width: 18%;*/
+    border: 1px solid black;
+    text-align: center;
+}
+
 .table-sherkati-machines-daily {
     width: 50%;
     font-size: 11px;
@@ -278,7 +298,7 @@ h1 {
 }
 
 .table-materials-daily {
-    width: 100%;
+    width: 38%;
     font-size: 11px;
     border: 1px solid black;
 }

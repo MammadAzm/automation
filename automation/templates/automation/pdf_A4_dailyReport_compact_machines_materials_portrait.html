@@ -1,0 +1,145 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+{% for page_number in data_1.page_count|arange %}
+    <div class="box">
+        {% include 'pdf_A4_dailyReport_headers.html' with data=headers %}
+        <div class="content">
+            <table class="table-label">
+                <thead>
+                    <tr>
+                        <th style="text-align: center">گزارش ماشین آلات و مصالح</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="sub-content">
+                <table class="table-machines-daily" id="table-machines-daily-p01" style="width: 50%">
+                    <thead>
+                        <tr>
+                            <th colspan="6">
+                                ماشین آلات (شرکتی و استیجاری)
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead style="">
+                        <tr>
+                            <th style="width: 55%;">
+                                نوع دستگاه
+                            </th>
+                            <th style="width: 15%;">
+                                فعال
+                            </th>
+                            <th style="width: 15%;">
+                                غیر فعال
+                            </th>
+                            <th style="width: 15%;">
+                                تعداد کل
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for obj in data_1.machines.objects|getIndex:page_number %}
+                            <tr>
+                                <td>
+                                    {{obj.machine}}
+                                </td>
+                                <td>
+                                    {{obj.activeCount}}
+                                </td>
+                                <td>
+                                    {{obj.inactiveCount}}
+                                </td>
+                                <td>
+                                    {{obj.totalCount}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        {% if data_1.machines.objects|getIndex:page_number|length <  data_1.machines.max_count %}
+
+                            {% for i in data_1.machines.rem_rows|getIndex:page_number|arange %}
+                                <tr>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <table class="table-materials-daily" id="table-materials-daily-p01" style="width: 50%">
+                    <thead>
+                        <tr>
+                            <th colspan="4">
+                                مصالح ورودی به کارگاه
+                            </th>
+                        </tr>
+                    </thead>
+                    <thead style="">
+                        <tr>
+                            <th style="width: 55%;">
+                                عنوان
+                            </th>
+                            <th style="width: 25%;">
+                                مقدار
+                            </th>
+                            <th style="width: 20%;">
+                                واحد
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in data_2.materials.objects|getIndex:page_number %}
+                            <tr>
+                                <td>
+                                    {{obj.material}}
+                                </td>
+                                <td>
+                                    {{obj.amount}}
+                                </td>
+                                <td>
+                                    {{obj.unit}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if data_2.materials.objects|getIndex:page_number|length <  data_2.materials.max_count %}
+                            {% for i in data_2.materials.rem_rows|getIndex:page_number|arange %}
+                                <tr>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    <!--        <div class="footer">-->
+    <!--        </div>-->
+    </div>
+{% endfor %}

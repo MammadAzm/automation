@@ -59,7 +59,7 @@ def temp(request):
     return render(request, "pdf_A4_dailyReport_inDetails_humanresources_portrait.html",)
 
 def temp2(request):
-    return render(request, "pdf_A4_dailyReport_inDetails_machines_portrait.html",)
+    return render(request, "pdf_A4_dailyReport_inDetails_machines_materials_portrait.html",)
 
 def temp3(request):
     return render(request, "pdf_A4_dailyReport_inDetails_materials_portrait.html",)
@@ -389,8 +389,8 @@ def edit_base_data(request):
                                                    project=project)
             else:
                 family = None
-            
-            
+
+
             ref_hardware = new_data.get("hardware")
 
             ref_name, ref_family = instance.split("-")
@@ -2195,7 +2195,6 @@ def report_on_day(request, idd):
     return render(request, "print-report.html", context=context)
 
 
-
 @login_required
 def print_report_on_day(request, idd):
     context = {}
@@ -2250,16 +2249,19 @@ def print_report_on_day(request, idd):
         "objects": distributed_objs,
     }
 
-
-    desired_instances = Equipe.objects.filter(
-        project=project,
+    equipes = Equipe.objects.filter(project=project,)
+    desired_instances = equipes.filter(
         contractor=Contractor.objects.get(project=project, name="شرکتی")
     )
-
+    rest_instances = equipes.exclude(
+        contractor=Contractor.objects.get(project=project, name="شرکتی")
+    )
+    rest_instances = rest_instances.order_by("contractor")
     professions = professions.annotate(
         custom_order=Case(
             *[When(equipe=instance, then=Value(i)) for i, instance in enumerate(desired_instances)],
-            default=Value(len(desired_instances)),
+            *[When(equipe=instance, then=Value(len(desired_instances)+i)) for i, instance in enumerate(rest_instances)],
+            default=Value(len(desired_instances)+len(rest_instances)),
             output_field=IntegerField(),
         )
     ).order_by('custom_order')
@@ -2295,8 +2297,27 @@ def print_report_on_day(request, idd):
     # onOwn = providers.filter(name="شرکتی")
     # onRent = providers.exclude(name="شرکتی")
 
-
     machines = MachineCount.objects.filter(project=project, dailyReport=report)
+    page_count = int(len(machines) / MACHINE_MAX_COUNT) + 1
+
+    # desired_instances = MachineProvider.objects.filter(
+    #     project=project,
+    #     name="شرکتی",
+    # )
+    # machines = machines.annotate(
+    #     custom_order=Case(
+    #         *[When(provider=instance, then=Value(i)) for i, instance in enumerate(desired_instances)],
+    #         default=Value(len(desired_instances)),
+    #         output_field=IntegerField(),
+    #     )
+    # ).order_by('custom_order')
+    machines = machines.order_by('onRent')
+
+    # =================================================================================
+    # =================================================================================
+    # ---------------------Splitting onOwn and onRent machines-------------------------
+    # =================================================================================
+    """
     onOwn = machines.filter(onRent=False)
     onRent_machines = machines.filter(onRent=True)
     page_count = max(int(len(onOwn) / MACHINE_MAX_COUNT) + 1, int(len(onRent_machines) / MACHINE_MAX_COUNT) + 1)
@@ -2316,7 +2337,6 @@ def print_report_on_day(request, idd):
             onOwn_machines[machine.machine.type]["totalCount"] += machine.totalCount
 
     onOwn_machines = list(onOwn_machines.values())
-
 
     distributed_objs = []
     for i in range(page_count):
@@ -2365,6 +2385,60 @@ def print_report_on_day(request, idd):
         "onOwn_machines": context_onOwnMachines,
         "onRent_machines": context_onRentMachines,
     }
+    """
+    # =================================================================================
+    # ------------------End of Splitting onOwn and onRent machines---------------------
+    # =================================================================================
+    # =================================================================================
+
+    # =================================================================================
+    # =================================================================================
+    # ------------------------else all machines in one table---------------------------
+    # =================================================================================
+
+    # data = {}
+    # for machine in machines:
+    #     data[machine.machine.type] = {
+    #         "name": machine.machine.type,
+    #         "provider": machine.provider.name,
+    #         "activeCount": machine.activeCount,
+    #         "inactiveCount": machine.inactiveCount,
+    #         "totalCount": machine.totalCount,
+    #         "workHours": machine.workHours,
+    #     }
+    #
+    # machines = list(data.values())
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                machines[i * MACHINE_MAX_COUNT:(i + 1) * MACHINE_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                machines[i * MACHINE_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+    context_machines = {
+        "page_count": int(len(machines) / MACHINE_MAX_COUNT) + 1,
+        "obj_count": len(machines),
+        "max_count": MACHINE_MAX_COUNT,
+        "rem_rows": [MACHINE_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["machines"] = {
+        "page_count": page_count,
+        "machines": context_machines,
+    }
+
+    # =================================================================================
+    # ------------------------------------End else-------------------------------------
+    # =================================================================================
+    # =================================================================================
 
     materials = MaterialCount.objects.filter(project=project, dailyReport=report)
     page_count = int(len(materials) / MATERIAL_MAX_COUNT) + 1
@@ -2465,6 +2539,323 @@ def print_report_on_day(request, idd):
 
 
 @login_required
+def print_report_compact_on_day(request, idd):
+    context = {}
+    POSITION_MAX_COUNT = 31 #30
+    PROFESSION_MAX_COUNT = 31 #30
+    MACHINE_MAX_COUNT = 34 #33
+    MATERIAL_MAX_COUNT = 34 #33
+    TASK_MAX_COUNT = 16 #8
+
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    # report = DailyReport.objects.get(id=idd)
+    report = get_object_or_404(DailyReport, pk=idd, project=project)
+
+    context["headers"] = {
+        "project": project,
+        "report": report,
+        "helper": {
+            "weekday": report.get_weekday_display(),
+            "weather": report.get_weather_display(),
+        },
+    }
+    context["report"] = report
+    context["helper"] = {}
+
+
+    positions = PositionCount.objects.filter(dailyReport=report, project=project,)
+    # professions = ProfessionCount.objects.filter(dailyReport=report, project=project,)
+    professions = EquipeCount.objects.filter(dailyReport=report, project=project)
+
+    page_count = max(int(len(positions)/POSITION_MAX_COUNT)+1, int(len(professions) / PROFESSION_MAX_COUNT) + 1)
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count-1:
+            distributed_objs.append(
+                positions[i * POSITION_MAX_COUNT:(i + 1) * POSITION_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                positions[i * POSITION_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+            distributed_objs.append([])
+
+    context_positions = {
+        "page_count": int(len(positions)/POSITION_MAX_COUNT)+1,
+        "obj_count": len(positions),
+        "max_count": POSITION_MAX_COUNT,
+        "rem_rows": [POSITION_MAX_COUNT-len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    equipes = Equipe.objects.filter(project=project,)
+    desired_instances = equipes.filter(
+        contractor=Contractor.objects.get(project=project, name="شرکتی")
+    )
+    rest_instances = equipes.exclude(
+        contractor=Contractor.objects.get(project=project, name="شرکتی")
+    )
+    rest_instances = rest_instances.order_by("contractor")
+    professions = professions.annotate(
+        custom_order=Case(
+            *[When(equipe=instance, then=Value(i)) for i, instance in enumerate(desired_instances)],
+            *[When(equipe=instance, then=Value(len(desired_instances)+i)) for i, instance in enumerate(rest_instances)],
+            default=Value(len(desired_instances)+len(rest_instances)),
+            output_field=IntegerField(),
+        )
+    ).order_by('custom_order')
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                professions[i * PROFESSION_MAX_COUNT:(i + 1) * PROFESSION_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                professions[i * PROFESSION_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+    context_professions = {
+        "page_count": int(len(professions) / PROFESSION_MAX_COUNT) + 1,
+        "obj_count": len(professions),
+        "max_count": PROFESSION_MAX_COUNT,
+        "rem_rows": [PROFESSION_MAX_COUNT-len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["humanresources"] = {
+        "page_count": page_count,
+        "positions": context_positions,
+        "professions": context_professions,
+    },
+
+    # providers = MachineProvider.objects.all(project=project)
+    # onOwn = providers.filter(name="شرکتی")
+    # onRent = providers.exclude(name="شرکتی")
+
+    machines = MachineCount.objects.filter(project=project, dailyReport=report)
+    temp = {}
+    for machine in machines:
+        if machine.machine.type.name not in temp.keys():
+            temp[machine.machine.type.name] = {
+                "machine": machine.machine.type.name,
+                "activeCount": machine.activeCount,
+                "inactiveCount": machine.inactiveCount,
+                "totalCount": machine.totalCount,
+            }
+        else:
+            temp[machine.machine.type.name]["activeCount"] += machine.activeCount
+            temp[machine.machine.type.name]["inactiveCount"] += machine.inactiveCount
+            temp[machine.machine.type.name]["totalCount"] += machine.totalCount
+
+    machines = list(temp.values())
+    page_count = int(len(machines) / MACHINE_MAX_COUNT) + 1
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                machines[i * MACHINE_MAX_COUNT:(i + 1) * MACHINE_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                machines[i * MACHINE_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+    context_machines = {
+        "page_count": int(len(machines) / MACHINE_MAX_COUNT) + 1,
+        "obj_count": len(machines),
+        "max_count": MACHINE_MAX_COUNT,
+        "rem_rows": [MACHINE_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["machines"] = {
+        "page_count": page_count,
+        "machines": context_machines,
+    }
+
+    # =================================================================================
+    # ------------------------------------End else-------------------------------------
+    # =================================================================================
+    # =================================================================================
+
+    materials = MaterialCount.objects.filter(project=project, dailyReport=report)
+    temp = {}
+    for material in materials:
+        if material.material.name not in temp.keys():
+            temp[material.material.name] = {
+                "material": material.material.name,
+                "amount": material.amount * material.unit.coef,
+                "unit": material.unit.parent.name if material.unit.parent else material.unit.name,
+            }
+        else:
+            temp[material.material.name]["amount"] += material.amount * material.unit.coef
+
+    materials = list(temp.values())
+    page_count = int(len(materials) / MATERIAL_MAX_COUNT) + 1
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                materials[i * MATERIAL_MAX_COUNT:(i + 1) * MATERIAL_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                materials[i * MATERIAL_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+
+    context_materials = {
+        "page_count": int(len(materials) / MATERIAL_MAX_COUNT) + 1,
+        "obj_count": len(materials),
+        "max_count": MATERIAL_MAX_COUNT,
+        "rem_rows": [MATERIAL_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["materials"] = {
+        "page_count": page_count,
+        "materials": context_materials,
+    }
+
+    tasks = TaskReport.objects.filter(dailyReport=report, project=project)
+    operation_ids = TaskReport.objects.filter(dailyReport=report, project=project).values_list('operation',
+                                                                                               flat=True).distinct()
+
+    # TODO : Modify the history variable so that instead of created_at feature, it filters report date
+    history = TaskReport.objects.filter(operation_id__in=operation_ids, created_at__lt=report.created_at,
+                                        project=project)
+    history = history.exclude(id__in=tasks.values('id'), project=project)
+
+    tsks = {}
+
+    # if you want it based on Operation model==============================================
+    """
+    for task in tasks:
+        if task.task.operation.operation.name in tsks.keys():
+            tsks[task.task.operation.operation.name]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+        else:
+            tsks[task.task.operation.operation.name] = {
+                'name': task.task.operation.operation.name,
+                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                'preDoneVolume': 0.0,
+                'entire_item_vol': task.task.operation.operation.amount,
+                'entire_item_done': 0.0,
+                'entire_item_done_percent': 0.0,
+                'unit': task.task.unit,
+            }
+
+    for task in history:
+        if task.task.operation.operation.name in tsks.keys():
+            tsks[task.task.operation.operation.name]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+    # endif--------------------------------------------------------------------------------
+    """
+    # if you want it based on ZoneOperation model==============================================
+    for task in tasks:
+        if task.task.operation in tsks.keys():
+            tsks[task.task.operation][
+                'todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+            if task.parentTask.completed:
+                if task.parentTask.completion_date > tsks[task.task.operation]['completion_date']:
+                    tsks[task.task.operation][
+                        'completion_date'] = task.parentTask.completion_date
+            else:
+                tsks[task.task.operation][
+                    'completion_date'] = None
+
+        else:
+            tsks[task.task.operation] = {
+                'parentID': task.task.parent.id,
+                'name': task.task.operation.operation.name,
+                'zone': task.task.operation.zone.name,
+                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                'preDoneVolume': 0.0,
+                'entire_item_vol': task.task.operation.amount,
+                'entire_item_done': 0.0,
+                'entire_item_done_percent': 0.0,
+                'unit': task.task.unit,
+                'start_date': task.task.start_date,
+                'completion_date': task.parentTask.completion_date if task.parentTask.completed else None,
+            }
+
+    for task in history:
+        if task.task.operation in tsks.keys():
+            tsks[task.task.operation][
+                'preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+
+    # endif--------------------------------------------------------------------------------
+
+    for key, value in tsks.items():
+        tsks[key]['entire_item_done'] = tsks[key]['todayVolume'] + tsks[key]['preDoneVolume']
+        tsks[key]['entire_item_done_percent'] = tsks[key]['entire_item_done'] / tsks[key]['entire_item_vol'] * 100
+
+    tasks = list(tsks.values())
+
+    tasks = sorted(tasks, key=lambda x:x['name'])
+
+    page_count = int(len(tasks) / TASK_MAX_COUNT) + 1
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                tasks[i * TASK_MAX_COUNT:(i + 1) * TASK_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                tasks[i * TASK_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+    context_tasks = {
+        "page_count": int(len(tasks) / TASK_MAX_COUNT) + 1,
+        "obj_count": len(tasks),
+        "max_count": TASK_MAX_COUNT,
+        "rem_rows": [TASK_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["tasks"] = {
+        "page_count": page_count,
+        "tasks": context_tasks,
+    }
+
+    # context["helper"]["entire_items"] = done_task_zone
+    # context["helper"]["parentTaskPercents"] = parentTaskPercents
+
+    return render(request, "pdf_A4_dailyReport_compact.html", context=context)
+
+    # context = {
+    #     "report": report,
+    #     "positions": positions,
+    #     "professions": professions,
+    #     "machines": machines,
+    #     "materials": materials,
+    #     "equipes": equipes,
+    #     "tasks": tasks,
+    #     "other": other,
+    # }
+    # return render(request, "print-report.html", context=context)
+
+
+@login_required
 def compact_report_on_day(request, idd):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
@@ -2481,6 +2872,7 @@ def compact_report_on_day(request, idd):
     tasks = TaskReport.objects.filter(dailyReport=report, project=project)
     operation_ids = TaskReport.objects.filter(dailyReport=report, project=project).values_list('operation', flat=True).distinct()
 
+    # TODO : Modify the history variable so that instead of created_at feature, it folters report date
     history = TaskReport.objects.filter(operation_id__in=operation_ids, created_at__lt=report.created_at, project=project)
     history = history.exclude(id__in=tasks.values('id'), project=project)
 
@@ -2529,7 +2921,7 @@ def compact_report_on_day(request, idd):
 
     for task in history:
         if task.task.operation in tsks.keys():
-            tsks[task.task.operation.operation.name][
+            tsks[task.task.operation][
                 'preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
 
     # endif--------------------------------------------------------------------------------
@@ -2554,6 +2946,19 @@ def compact_report_on_day(request, idd):
             temp[machine.machine.type.name]["totalCount"] += machine.totalCount
 
     machines = [value for key, value in temp.items()]
+
+    temp = {}
+    for material in materials:
+        if material.material.name not in temp.keys():
+            temp[material.material.name] = {
+                "material": material.material.name,
+                "amount": material.amount*material.unit.coef,
+                "unit": material.unit.parent.name if material.unit.parent else material.unit.name,
+            }
+        else:
+            temp[material.material.name]["amount"] += material.amount*material.unit.coef
+
+    materials = list(temp.values())
 
     other = {
         "weather": report.get_weather_display(),
