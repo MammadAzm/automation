@@ -32,18 +32,18 @@
                             <tr class="py-1">
                                 <th class="py-1" style="width: 100px">پروژه</th>
                                 <th class="table-light py-1" style="width: 100px">
-                                    <input id="project_name" value="{{ report.project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
+                                    <input id="project_name" value="{{ project.name }}" required type="text" name="project_name" placeholder="پروژه" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1" style="width: 150px">کارفرما</th>
                                 <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employer" value="{{ report.project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
+                                    <input id="employer" value="{{ project.employer }}" required type="text" name="employer" placeholder="کارفرما" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
                                 <th class="py-1" style="width: 125px">پیمانکار</th>
                                 <th class="table-light py-1"  style="width: 100px">
-                                    <input id="employee" value="{{ report.project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
+                                    <input id="employee" value="{{ project.employee }}" required type="text" name="employee" placeholder="پیمانکار" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
@@ -52,19 +52,19 @@
                             <tr class="py-1">
                                 <th class="py-1">مشاور</th>
                                 <th class="table-light py-1">
-                                    <input id="consultor_name" value="{{ report.project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
+                                    <input id="consultor_name" value="{{ project.advisor }}" required type="text" name="consultor_name" placeholder="مشاور" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">موضوع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_subj" value="{{ report.project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
+                                    <input id="contract_subj" value="{{ project.contract_subject }}" required type="text" name="contract_subject" placeholder="موضوع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">نوع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_type" value="{{ report.project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
+                                    <input id="contract_type" value="{{ project.contract_type }}" required type="text" name="contract_type" placeholder="نوع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
@@ -74,19 +74,19 @@
                             <tr class="py-1">
                                 <th class="py-1">شماره قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_no" value="{{ report.project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
+                                    <input id="contract_no" value="{{ project.contract_number }}" required type="text" name="contract_no" placeholder="شماره قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">تاریخ شروع قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_start_date" value="{{ report.project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
+                                    <input id="contract_start_date" value="{{ project.start_date }}" required type="text" name="contract_start_date" placeholder="تاریخ شروع قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">مدت قرارداد(ماه)</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_duration" value="{{ report.project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
+                                    <input id="contract_duration" value="{{ project.contract_duration }}" required type="text" name="contract_duration" placeholder="مدت قرارداد(ماه)" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
                             </tr>
@@ -94,13 +94,13 @@
                             <tr class="py-1">
                                 <th class="py-1">آدرس قرارداد</th>
                                 <th class="table-light py-1">
-                                    <input id="contract_address" value="{{ report.project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
+                                    <input id="contract_address" value="{{ project.contract_address }}" required type="text" name="contract_address" placeholder="آدرس قرارداد" readonly
                                     style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
                                 <th class="py-1">مسئول کنترل پروژه</th>
                                 <th class="table-light py-1">
-                                    <input id="project_user" value="{{ report.project.user.user.first_name }} {{ report.project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
+                                    <input id="project_user" value="{{ project.user.user.first_name }} {{ project.user.user.last_name }}" required type="text" name="project_user" placeholder="مسئول کنترل پروژه" readonly
                                        style="outline: none; border: none; background-color: #f8f9fa; width: 125px">
                                 </th>
 
@@ -629,6 +629,86 @@
         </div>
 
         <div class="row">
+            <div class="col-12">
+                <div class="row ps-4">
+                    <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
+                        <table class="table table-bordered border-dark py-0 my-0" style="margin-top: 0;">
+                            <thead class="" style="font-size: 11px;">
+                                <tr class="py-0">
+                                    <th class="py-0" style="width: 82%; text-align: center">مشکلات کارگاهی</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <table class="table table-bordered border-dark" id="table-issueReport" style="font-size: 11px;">
+                        <thead class="">
+                            <tr class="">
+                                <th class="" style="width: 30%">
+                                    <span class="badge rounded-pill" style="margin-left: 0pt; color: black"
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdropIssueReports">
+                                        <img src="{% static 'icons/plus-circle.svg' %}"/>
+                                    </span>
+                                    نوع مشکل
+                                </th>
+                                <th class="" style="width: 7%">
+                                    رسته
+                                </th>
+                                <th class="" style="width: 8%">
+                                    موقعیت
+                                </th>
+                                <th class="" style="width: 48%">
+                                    شرح مشکل
+                                </th>
+                                <th class="text-centred" style="width: 7%">
+                                    وضعیت
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for issueReport in issueReports %}
+                                <tr  id="{{issueReport}}">
+                                    <td>
+<!--                                        <span class="badge rounded-pill"-->
+<!--                                            style="margin-left: 0pt; color: black;">-->
+<!--                                            <img src="{% static 'icons/patch-minus.svg' %}"/>-->
+<!--                                        </span>-->
+                                        {{ issueReport.issue.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ issueReport.projectField.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ issueReport.zone.name }}
+                                    </td>
+
+                                    <td>
+<!--                                        <input style="border-radius: 0; text-align: center;"  required class="form-control py-0" id="issueReport_{{issueReport}}_today"-->
+<!--                                               name="issueReport_{{issueReport}}_today" type="text" maxlength="255">-->
+                                        {{issueReport.description}}
+                                    </td>
+
+                                    <td class="text-centred">
+                                        <select required class="form-select" name="issueReport_{{ issueReport }}_status"
+                                            style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
+
+                                            <option selected value="exists" >موجود</option>
+                                            <option value="solved" >رفع</option>
+
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
 
             <button type="submit" class="btn btn-success ">ذخیره</button>
 
@@ -989,19 +1069,82 @@
                              <input hidden readonly type="text" name="unit" id="task-unit" class="form-control" placeholder="واحد">
                         </div>
 
-                        <button class="btn btn-outline-success bp3-round" onclick=""
-                                type="submit" id="button-addon11" >افزودن</button>
-
-                    </form>
-
                 </div>
 
                 <div class="modal-footer">
 
 
-                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ آیتم</button>
+                    <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 290px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">+ آیتم</button>
+
+                    <button class="btn btn-outline-success bp3-round" onclick=""
+                                type="submit" id="button-addon11" >افزودن</button>
+
+                    </form>
 
                     <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" >تکمیل</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdropIssueReports" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    <h5 class="modal-title" id="staticBackdropIssueReportsLabel" style="margin-right: auto">گزارش مشکل جدید</h5>
+                </div>
+
+                <div class="modal-body">
+                    <form id="form-issueReport_in_report">
+                        {% csrf_token %}
+                        <div class="input-group mb-3 ">
+                            <div id="issue-box" style="width: 50%;">
+                                <select required class="select2" id="select2-issue" onchange="handle_select('projectField')"
+                                        name="issue" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب عنوان مشکل
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="projectField-box" style="width: 50%;">
+                                <select required class="select2" id="select2-projectField" onchange="handle_select('zoneforissue')"
+                                        name="projectField" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب رسته
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3 ">
+                            <div id="zoneforissue-box" style="width: 100%;">
+                                <select required class="select2 w-100" id="select2-zoneforissue"
+                                        name="zone" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب موقعیت
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div id="description-box" class="mt-2" style="width: 100%;">
+                                <textarea class="form-control" rows="2" name="description" maxlength="255" placeholder="شرح مشکل (حداکثر 255 کاراکتر)"></textarea>
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="" type="submit">
+                            افزودن
+                        </button>
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" >تکمیل</button>
                 </div>
 
             </div>
@@ -1026,17 +1169,19 @@
                 <div class="modal-body">
 <!--                    <form action="/edit-db/add-position" method="post">-->
                         {% csrf_token %}
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3 w-100 py-0">
                             <input required type="text" name="position" class="form-control" placeholder="نام سمت" id="shortcut_position">
                         </div>
+
+                    <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('position', )"
+                                    type="submit" id="button-addon1">افزودن</button>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('position', )"
-                                    type="submit" id="button-addon1">افزودن</button>
+
 <!--                    </form>-->
-                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"  data-bs-dismiss="modal" data-bs-target="#staticBackdropPositions">تکمیل</button>
+                    <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-toggle="modal"  data-bs-dismiss="modal" data-bs-target="#staticBackdropPositions">تکمیل</button>
                 </div>
 
             </div>
@@ -1059,13 +1204,15 @@
                         <input required type="text" name="profession" class="form-control" placeholder="نام تخصص" id="shortcut_profession">
                     </div>
 
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('profession')"
+                                type="submit" id="button-addon2">افزودن</button>
+
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('profession')"
-                                type="submit" id="button-addon2">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal" >تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal" >تکمیل</button>
             </div>
 
         </div>
@@ -1096,13 +1243,15 @@
 
                     </div>
 
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('machine')"
+                                type="submit" id="button-addon3">افزودن</button>
+
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('machine')"
-                                type="submit" id="button-addon3">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal"  data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal"  data-bs-toggle="modal" data-bs-target="#staticBackdropMachines">تکمیل</button>
             </div>
 
         </div>
@@ -1124,13 +1273,15 @@
                     <div class="input-group mb-3">
                         <input required type="text" name="material" class="form-control" placeholder="نام مصالح" id="shortcut_material">
                     </div>
+
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('material')"
+                                type="submit" id="button-addon4">افزودن</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('material')"
-                                type="submit" id="button-addon4">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
             </div>
 
         </div>
@@ -1152,13 +1303,14 @@
                     <div class="input-group mb-3">
                         <input required type="text" name="contractor" class="form-control" placeholder="نام پیمانکار" id="shortcut_contractor">
                     </div>
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('contractor')"
+                                type="submit" id="button-addon5">افزودن</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('contractor')"
-                                type="submit" id="button-addon5">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-target="#staticBackdropBaseEquipes" data-bs-toggle="modal">تکمیل</button>
             </div>
 
         </div>
@@ -1181,13 +1333,14 @@
                         <input required type="text" name="zone" class="form-control" placeholder="نام موقعیت" id="shortcut_zone">
                     </div>
 
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('zone')"
+                                type="submit" id="button-addon6">افزودن</button>
+
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('zone')"
-                                type="submit" id="button-addon6">افزودن</button>
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
             </div>
 
         </div>
@@ -1227,13 +1380,15 @@
                         <input readonly id="unitforunit-name" required type="text" name="parent-unit" class="form-control" placeholder="نام واحد">
                         <input id="input-coef" required type="number" name="parent-coef" class="form-control" placeholder="ضریب">
                     </div>
+
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('unit')"
+                                type="submit" id="button-addon8">افزودن</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('unit')"
-                                type="submit" id="button-addon8">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseTasks">تکمیل</button>
             </div>
 
         </div>
@@ -1255,13 +1410,15 @@
                     <div class="input-group mb-3">
                         <input required type="text" name="materialprovider" class="form-control" placeholder="نام تامین کننده مصالح" id="shortcut_materialprovider">
                     </div>
+
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('materialprovider')"
+                                type="submit" id="button-addon9">افزودن</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('materialprovider')"
-                                type="submit" id="button-addon9">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMaterials">تکمیل</button>
             </div>
 
         </div>
@@ -1283,13 +1440,15 @@
                     <div class="input-group mb-3">
                         <input required type="text" name="machineprovider" class="form-control" placeholder="نام تامین کننده ماشین" id="shortcut_machineprovider">
                     </div>
+
+                <button class="btn btn-outline-success bp3-round w-100 py-0" onclick="shortcut_add('machineprovider')"
+                                type="submit" id="button-addon10">افزودن</button>
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-outline-success bp3-round" onclick="shortcut_add('machineprovider')"
-                                type="submit" id="button-addon10">افزودن</button>
+
 <!--                </form>-->
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMachines" >تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropMachines" >تکمیل</button>
             </div>
 
         </div>
@@ -1360,112 +1519,13 @@
         </div>
     </div>
 
-<!--    <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-
-<!--            <div class="modal-header">-->
-<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>-->
-<!--                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن آیتم</h5>-->
-<!--            </div>-->
-
-<!--            <div class="modal-body">-->
-<!--                <form action="/edit-db/add-task" method="post">-->
-<!--                    {% csrf_token %}-->
-<!--                    <div class="input-group mb-3 ">-->
-<!--                        <input required type="text" name="task-name" id="base-task-name" class="form-control" placeholder="نام آیتم">-->
-<!--                    </div>-->
-
-<!--                    <div class="input-group mb-3">-->
-<!--                        <div class="input-group mb-3">-->
-<!--                            <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuEquipesTasks" data-bs-toggle="dropdown" onclick='fetch_options("task", true)'>-->
-<!--                                انتخاب اکیپ-->
-<!--                            </button>-->
-<!--                            <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-tasks">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-task">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
-<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                            <input required disabled type="text" name="equipetask-name" id="base-equipetask-name" class="form-control" placeholder="اکیپ">-->
-<!--                        </div>-->
-
-<!--                         <div class="input-group mb-3">-->
-<!--                            <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuZonesTasks" data-bs-toggle="dropdown" onclick='fetch_options("zone", true)'>-->
-<!--                                انتخاب موقعیت-->
-<!--                            </button>-->
-<!--                            <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-zones">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-zone">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--    &lt;!&ndash;                                    {% for profession in professions %}&ndash;&gt;-->
-<!--    &lt;!&ndash;                                        <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--    &lt;!&ndash;                                    {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                            <input required disabled type="text" name="zone-name" id="base-zone-name" class="form-control" placeholder="موقعیت">-->
-<!--                        </div>-->
-
-<!--                         <div class="input-group mb-3">-->
-<!--                             <div class="dropdown">-->
-<!--                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"-->
-<!--                                    id="dropdownMenuUnitsTasks" data-bs-toggle="dropdown" onclick='fetch_options("unit", true)'>-->
-<!--                                انتخاب واحد-->
-<!--                            </button>-->
-<!--                            <ul style="text-align: right" class="dropdown-menu" id="dropdown-menu-base-units">-->
-<!--                                <li>-->
-<!--                                    <div class="input-group px-2 mb-3">-->
-<!--                                        <input type="text" class="form-control" placeholder="جستجو" id="search-base-unit">-->
-<!--                                    </div>-->
-<!--                                </li>-->
-<!--                                <li><hr class="dropdown-divider"></li>-->
-<!--&lt;!&ndash;                                        {% for profession in professions %}&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <li><a class="dropdown-item">{{ profession }}</a></li>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        {% endfor %}&ndash;&gt;-->
-<!--                            </ul>-->
-<!--                        </div>-->
-<!--                             <input required  type="number"  name="task-name" id="base-task-volume" class="form-control" placeholder="مقدار">-->
-<!--                             <input required disabled type="text" name="zone-name" id="base-unit-name" class="form-control" placeholder="واحد">-->
-<!--                        </div>-->
-<!--                    </div>-->
-
-<!--                </form>-->
-<!--            </div>-->
-
-<!--            <div class="modal-footer">-->
-
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseEquipes">+ اکیپ</button>-->
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseZones">+ موقعیت</button>-->
-<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 160px" data-bs-toggle="modal" data-bs-target="#staticBackdropBaseUnits">+ واحد</button>-->
-
-<!--                <button class="btn btn-outline-success bp3-round" onclick="add_task_to_base_data(true)"-->
-<!--                                type="submit" id="button-addon7" >افزودن</button>-->
-<!--                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks">تکمیل</button>-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--    </div>-->
-<!--    </div>-->
     <div class="modal fade" id="staticBackdropBaseTasks" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن آیتم اجرایی</h5>
+                <h5 class="modal-title" id="staticBackdropBaseTasksLabel" style="margin-right: auto">افزودن قرارداد</h5>
             </div>
 
             <div class="modal-body">
@@ -1521,7 +1581,7 @@
                          <input required readonly type="text" name="unit" id="task-unit-shortcut" class="form-control" placeholder="واحد">
                     </div>
 
-                    <button class="btn btn-outline-success bp3-round" onclick=""
+                    <button class="btn btn-outline-success bp3-round w-100 py-0" onclick=""
                             type="submit" id="button-addon7" >افزودن</button>
 
                 </form>
@@ -1529,10 +1589,10 @@
 
             <div class="modal-footer">
 
-                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">+ آیتم های قراردادی</button>
+<!--                <button type="button" class=" btn-color onhover shortcut-btn" style="font-size: 15px; margin-left: 270px" data-bs-toggle="modal" data-bs-target="#staticBackdropOperations">+ آیتم های قراردادی</button>-->
 
 
-                <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks" >تکمیل</button>
+                <button type="button" class="btn btn-outline-warning w-100 py-0" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#staticBackdropTasks" >تکمیل</button>
             </div>
 
         </div>
@@ -1589,23 +1649,28 @@
     </div>
 
 
+
 <script>
     handle_select(type=null)
     handle_select(type="operation")
     handle_select(type="operation-shortcut")
     handle_select(type="equipe-shortcut")
     handle_select(type="shortcut")
+    handle_select(type="issue")
+    handle_select(type="zoneforissue")
+    handle_select(type="projectField")
 
     submitForm(null, 'task_in_report')
+    submitForm(null, 'issueReport_in_report')
     submitForm(null, 'task')
     submitForm(null, 'task-shortcut')
     submitForm(null, 'operation', shortcut=true)
+
 
     $(document).ready(function(){
       $('[data-toggle="popover"]').popover();
     });
 </script>
-
 
 {% endblock %}
 

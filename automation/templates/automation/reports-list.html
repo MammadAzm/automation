@@ -2,11 +2,11 @@
 
 {% block content %}
     <div class="container" style="margin-top: 2%">
-        <div class="row">
+        <div class="row" style="">
             {% for report in reports %}
-                    <table class="table" id="table-{{ report.id }}">
-                        <thead class="">
-                            <tr class="" style="">
+                    <table class="table my-1 py-0" id="table-{{ report.id }}">
+                        <thead class=" py-0">
+                            <tr class=" py-0" style="">
                                 <th class="text-centred">گزارش</th>
                                 <th class="text-centred">{{ report.date|date:'Y/m/d' }}</th>
                                 <th class="text-centred">پروژه</th>
@@ -17,15 +17,15 @@
 <!--                                    <th class="text-centred">-->
 
                                     <a style="float: left" href="{{ report.id }}" class="">
-                                        <button type="button" class="btn btn-sm btn-success p-1 fs-18">دفتر مرکزی</button>
+                                        <button type="button" class="btn btn-sm btn-success p-1 py-0 fs-18">دفتر مرکزی</button>
                                     </a>
 
                                     <a style="float: left" href="compact/{{ report.id }}" class="mx-2">
-                                        <button type="button" class="btn btn-sm btn-success p-1 fs-18">کارفرما</button>
+                                        <button type="button" class="btn btn-sm btn-success p-1 py-0 fs-18">کارفرما</button>
                                     </a>
 
                                     <a>
-                                        <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger fs-18 me-2"
+                                        <button id="{{ report.id }}" type="button" class="btn btn-sm btn-danger fs-18 me-2 py-0"
                                                 disabled style="float: left" onclick="del_report('{{ report.id }}')">حذف</button>
                                     </a>
 
@@ -34,18 +34,18 @@
                                             {% csrf_token %}
                                             <input type="checkbox" checked hidden readonly name="template">
                                             <input type="text" hidden readonly name="id" value="{{ report.id }}">
-                                            <button id="{{ report.id }}" type="submit" class="btn btn-sm btn-primary fs-18"
+                                            <button id="{{ report.id }}" type="submit" class="btn btn-sm btn-primary fs-18 py-0"
                                                      disabled style="float: left" >ویرایش</button>
                                         </form>
                                     </a>
 
                                     <a href="/home/print-daily-reports/{{report.id}}" target="_blank">
-                                        <button id="" type="button" class="btn btn-sm btn-primary fs-18 mx-2"
-                                                style="float: left" onclick="">پرینت دفتر</button>
+                                        <button type="button" class="btn btn-sm fs-18 mx-2 py-0"
+                                                style="float: left; background-color: #4F4F4FFF; color: white" onclick="">پرینت دفتر</button>
                                     </a>
                                     <a href="/home/print-daily-reports/compact/{{report.id}}" target="_blank">
-                                        <button id="" type="button" class="btn btn-sm btn-primary fs-18"
-                                                style="float: left" onclick="">پرینت کارفرما</button>
+                                        <button type="button" class="btn btn-sm fs-18 py-0"
+                                                style="float: left; background-color: #4F4F4FFF; color: white" onclick="">پرینت کارفرما</button>
                                     </a>
 
                                 </th>
@@ -53,7 +53,7 @@
                         </thead>
                     </table>
 
-                {% endfor %}
+            {% endfor %}
 
 
         </div>

@@ -3785,24 +3785,40 @@ function check_report_date() {
     let date = document.getElementById("date")
 
     $.ajax({
-            type: 'POST',
-            url: '/home/daily-reports/check-existence',
-            data: {
-            "date": date.value,
-            },
-            beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-            },
-            success: function(response) {
-                if (response == "True") {
+        type: 'POST',
+        url: '/home/daily-reports/check-existence',
+        data: {
+        "date": date.value,
+        },
+        beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function(response) {
+            if (response == "True") {
+                alert("برای تاریخ " + date.value.split(" ")[0] + " قبلا گزارشی ثبت شده است. به آرشیو گزارشات مراجعه فرمایید.");
+                date.value = ""
+            } else {
+                // alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status==500){
+                date.value = ""
+                alert(jqXHR.responseText);
+            }
+            else if (jqXHR.status==404){
+
+                if (jqXHR.responseText == "True") {
                     alert("برای تاریخ " + date.value.split(" ")[0] + " قبلا گزارشی ثبت شده است. به آرشیو گزارشات مراجعه فرمایید.");
                     date.value = ""
-                } else {
-                    // alert("مشکلی پیش آمد. به پشتیبانی اطلاع دهید");
                 }
-            }
-    });
 
+            }
+            // alert(textStatus);
+            //
+            // print(jqXHR.status);
+        }
+    });
 }
 
 function confirmZeroValues() {
