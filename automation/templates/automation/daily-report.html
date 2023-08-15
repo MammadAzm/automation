@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<form action="/edit-db/save-daily-report" method="post" id="report-form" onsubmit="return confirmZeroValues()">
+<form id="report-form">
     {% csrf_token %}
     <div class="container-xxl px-4 " style="margin-top: 0.5%">
         <div class="row">
@@ -1648,6 +1648,7 @@
 
 
 <script>
+    submitDailyReport()
     handle_select(type=null)
     handle_select(type="operation")
     handle_select(type="operation-shortcut")

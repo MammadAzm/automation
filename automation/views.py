@@ -1471,7 +1471,6 @@ def save_daily_report_to_db(request):
         tasks = {}
         issues = {}
 
-        # print(data.items())
         for key, value in data.items():
             if "position" in key:
                 positions[key.split("_")[1]] = int(value[0])
@@ -1779,7 +1778,8 @@ def save_daily_report_to_db(request):
 
             issueReport.issueCounts.add(obj)
 
-        return redirect(to="/home/daily-reports")
+        # return redirect(to="/home/daily-reports")
+        return HttpResponse(True)
     else:
         return -1
 
@@ -1960,7 +1960,7 @@ def edit_daily_report_in_db(request):
                 employer=data["employer"][0],
                 employee=data["employee"][0],
                 contract_number=data["contract_no"][0],
-                date=jdatetime.datetime.strptime(data['date'][0], format="%Y/%m/%d").strftime(
+                date=jdatetime.datetime.strptime(data['date'][0], format="%Y-%m-%d").strftime(
                     "%Y-%m-%d %H:%M:%S"),
                 temperature_min=data["minTemp"][0],
                 temperature_max=data["maxTemp"][0],
@@ -2017,27 +2017,64 @@ def edit_daily_report_in_db(request):
                     continue
 
             for machine, count in machines.items():
+                machine = machine.split("_")[0]
                 if count[0] > 0 or count[1] > 0:
                     machine = machine.strip()
-                    # machine = machine.split("-")[1].strip()
-                    mach = Machine.objects.get(name=machine, project=project)
-                    provider = MachineProvider.objects.get(name=count[3], project=project)
-                    obj = MachineCount.objects.create(
+                    machine = re.sub(r'[\[\]]', '', machine)
+                    machine, family, hardware = machine.split("-")
+
+                    hardware = Hardware.objects.get(
                         project=project,
-                        machine=mach,
-                        dailyReport=report,
-                        activeCount=count[1],
-                        inactiveCount=count[2],
-                        workHours=count[0],
-                        provider=provider,
-                        totalCount=sum(count[1:3]),
+                        name=hardware
                     )
+                    family = MachineFamily.objects.get(
+                        project=project,
+                        name=family,
+                        hardware=hardware,
+                    )
+                    mach = Machine.objects.get(name=machine,
+                                               type=family,
+                                               hardware=hardware,
+                                               project=project)
+
+                    provider = MachineProvider.objects.get(name=count[3], project=project)
+                    if provider.name == "شرکتی":
+                        obj = MachineCount.objects.create(
+                            project=project,
+                            machine=mach,
+                            dailyReport=report,
+                            activeCount=count[1],
+                            inactiveCount=count[2],
+                            workHours=count[0],
+                            provider=provider,
+                            totalCount=sum(count[1:3]),
+                            onRent=False,
+                            hardware=hardware,
+                            type=family,
+                        )
+                    else:
+                        obj = MachineCount.objects.create(
+                            project=project,
+                            machine=mach,
+                            dailyReport=report,
+                            activeCount=1 if count[0] > 0 else 0,
+                            inactiveCount=0 if count[0] > 0 else 1,
+                            workHours=count[0],
+                            provider=provider,
+                            totalCount=1,
+                            onRent=True,
+                            hardware=hardware,
+                            type=family,
+
+                        )
+
                     report.machines.add(obj.machine)
 
                 else:
                     continue
 
             for material, amount in materials.items():
+                material = material.split("_")[0]
                 if amount[0] > 0:
                     material = material.strip()
 
@@ -2120,7 +2157,8 @@ def edit_daily_report_in_db(request):
             report.cal_countPeople()
             report.cal_countMachines()
 
-            return redirect(to="/home/daily-reports")
+            # return redirect(to="/home/daily-reports")
+            return HttpResponse(True)
 
 
 @login_required
@@ -3722,6 +3760,7 @@ def check_dailyreport_existence(request):
         if len(DailyReport.objects.filter(project=project)):
             if jdatetime.datetime.strptime(date, format="%Y-%m-%d").date() < DailyReport.objects.filter(project=project).last().short_date:
                 return HttpResponse("تاریخ نامعتبر. تاریخ ورودی نمیتواند قبل تر از آخرین گزارش ثبت شده باشد.", status=500)
+
 
 
 def findOutputTarget(pivot_fields):

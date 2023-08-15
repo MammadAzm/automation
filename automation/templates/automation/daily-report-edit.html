@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<form action="/edit-db/save-edit-daily-report" method="post" id="report-form" onsubmit="return confirmZeroValues()">
+<form id="edit-report-form">
     {% csrf_token %}
     <input type="checkbox" hidden readonly name="template">
     <input type="text" hidden readonly name="report_id" value="{{ report.id }}">
@@ -107,7 +107,7 @@
 
                                 <th class="py-1">تاریخ</th>
                                 <th class="table-light py-1">
-                                    <input required name="date" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
+                                    <input required name="date" value="{{report.short_date}}" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
                                 </th>
 
                             </tr>
@@ -1651,6 +1651,7 @@
 
 
 <script>
+    submitEditDailyReport()
     handle_select(type=null)
     handle_select(type="operation")
     handle_select(type="operation-shortcut")

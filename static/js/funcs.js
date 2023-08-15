@@ -3862,6 +3862,63 @@ function clear_div_hide_popup(divID, popupID) {
 
 }
 
+function submitDailyReport() {
+    $('#report-form').submit(function(event) {
+        event.preventDefault();
+        if (confirmZeroValues()) {
+            document.getElementById("staticBackdropLoading").style.display = "block"
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/edit-db/save-daily-report',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function (response) {
+                    document.getElementById("staticBackdropLoading").style.display = "none"
+                    window.location.href = "/home/daily-reports";
+                },
+                error: function (err) {
+                    print("something went wrong...")
+                }
+            })
+
+        }
+    })
+}
+
+function submitEditDailyReport() {
+    $('#edit-report-form').submit(function(event) {
+        event.preventDefault();
+        if (confirmZeroValues()) {
+            document.getElementById("staticBackdropLoading").style.display = "block"
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/edit-db/save-edit-daily-report',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function (response) {
+                    document.getElementById("staticBackdropLoading").style.display = "none"
+                    window.location.href = "/home/daily-reports";
+                },
+                error: function (err) {
+                    print("something went wrong...")
+                }
+            })
+
+        }
+    })
+}
 
 function submitForm(ID, type, shortcut=null,) {
     if (type === "suboperation") {
@@ -3935,7 +3992,7 @@ function submitForm(ID, type, shortcut=null,) {
         var target = "form-filtering-task"
     }
     $('#'+target).submit(function(event) {
-
+        document.getElementById("staticBackdropLoading").style.display = "block"
         // Prevent form submission
         event.preventDefault();
 
@@ -3974,8 +4031,8 @@ function submitForm(ID, type, shortcut=null,) {
             if (
                 document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
             ) {
-                alert('آیتم  انتخابی در جدول وجود دارد')
 
+                alert('آیتم  انتخابی در جدول وجود دارد')
                 return 0
             }
 
@@ -4099,6 +4156,8 @@ function submitForm(ID, type, shortcut=null,) {
                         }
                     }
                     tbody.appendChild(newRow)
+
+                    document.getElementById("staticBackdropLoading").style.display = "none"
                 }
             })
 
@@ -4106,7 +4165,6 @@ function submitForm(ID, type, shortcut=null,) {
         }
 
         else if (type === "issueReport_in_report") {
-            print("AAA")
             var issue = formData.get("issue")
             var projectField = formData.get("projectField")
             var zone = formData.get("zone")
@@ -4170,11 +4228,17 @@ function submitForm(ID, type, shortcut=null,) {
                     let tbody = table.querySelector("tbody")
                     tbody.appendChild(tr)
 
+
+
                     alert("با موفقیت افزوده شد")
+
+                    document.getElementById("staticBackdropLoading").style.display = "none"
 
                 },
                 error: function (response) {
                     alert(response)
+
+                    document.getElementById("staticBackdropLoading").style.display = "none"
                 }
             })
 
@@ -4283,9 +4347,10 @@ function submitForm(ID, type, shortcut=null,) {
 
                     filter_div.appendChild(table)
 
+                    document.getElementById("staticBackdropLoading").style.display = "none"
+
                 }
             })
-
             return 0
         }
 
@@ -4316,6 +4381,7 @@ function submitForm(ID, type, shortcut=null,) {
 
                 handle_select(type+"-shortcut")
 
+                document.getElementById("staticBackdropLoading").style.display = "none"
                 return 0
             }
 
@@ -4634,6 +4700,8 @@ function submitForm(ID, type, shortcut=null,) {
                     alert(
                         "این مورد قبلا ایجاد شده است"
                     )
+
+                    document.getElementById("staticBackdropLoading").style.display = "none"
                     return 0
                 }
 
@@ -4684,7 +4752,7 @@ function submitForm(ID, type, shortcut=null,) {
                     temp.value = ""
                     temp.setAttribute('placeholder' , "مقدار")
 
-
+                    document.getElementById("staticBackdropLoading").style.display = "none"
                     return 0
                 }
 
@@ -5489,11 +5557,13 @@ function submitForm(ID, type, shortcut=null,) {
 
 
             alert("با موفقیت افزوده شد")
+            document.getElementById("staticBackdropLoading").style.display = "none"
 
         },
         error: function(xhr, status, error) {
             // alert("مشکلی در ارتباط با سرور ایجاد شده است:" + "\n" + error)
             alert("این مورد قبلا ایجاد شده است")
+            document.getElementById("staticBackdropLoading").style.display = "none"
           // console.error(error);
         }
         });
@@ -7694,6 +7764,7 @@ function fetch_options_in_priority(priority, selectID, providerType=null, owners
                     $("#" + selectID).empty().append(
                         '<option selected value="' + id + '">' + 'شرکتی' + '</option>'
                     )
+                    document.getElementById("staticBackdropLoading").style.display = "none"
                 }
             })
             return 0
