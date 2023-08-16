@@ -119,5 +119,8 @@ def returnList(obj):
 register.filter("returnList", returnList)
 
 
+def addd(a, b):
+    return a+b
 
 
+register.filter("addd", addd)

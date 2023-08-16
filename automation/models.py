@@ -337,7 +337,6 @@ class Operation(models.Model):
             self.doneAmount = 0.0
             for item in self.zones.all():
                 self.doneAmount += item.doneAmount
-
         else:
             if action == "+":
                 self.doneAmount += amount
@@ -360,7 +359,7 @@ class Operation(models.Model):
 
         self.assignedAmount = assigned
         self.freeAmount = float(self.amount) - assigned
-
+        # print(f">>>> {float(self.amount)} - {assigned} = {float(self.amount) - assigned}")
         if float(self.amount) - assigned > 0:
             self.fullyAssigned = False
         else:

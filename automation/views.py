@@ -328,11 +328,20 @@ def edit_base_data(request):
                 object.name = name
             if weight and float(weight) != float(object.weight):
                 object.weight = weight
+                object.save()
+                for zoneoperation in object.parent.zones.all():
+                    for parentTask in zoneoperation.parentTasks.all():
+                        parentTask.update_doneVolume()
+                    zoneoperation.update_doneAmount()
+                object.parent.update_doneAmount()
+
+            operation.refresh_from_db()
             if amount and float(amount) != float(object.amount):
                 object.amount = amount
                 for task in Task.objects.filter(suboperation=object, project=project):
                     task.totalVolume = (float(task.parent.totalVolume)/float(operation.amount))*float(object.amount)
                     task.save()
+                    task.update_percentage()
                 object.save()
 
                 for item in TaskReport.objects.filter(operation=object.parent, project=project):
@@ -440,6 +449,7 @@ def create_report_template(request):
         # materialproviders = MaterialProvider.objects.all()
         # machineproviders = MachineProvider.objects.all()
         # tasks = Task.objects.all()
+        issueReports = IssueReport.objects.filter(project=project, solved=False)
 
         # context = {
         #     "positions": positions,
@@ -457,6 +467,7 @@ def create_report_template(request):
         context = {
             "project": project,
             "machine_types": MACHINE_TYPES,
+            "issueReports": issueReports,
         }
 
     else:
@@ -2226,9 +2237,9 @@ def report_on_day(request, idd):
         done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
 
         if task.task.parent.id in parentTaskPercents.keys():
-            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.totalVolume * 100 + task.todayVolume / task.task.totalVolume * 100) * task.task.suboperation.weight / 100
+            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
         else:
-            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.totalVolume*100 + task.todayVolume/task.task.totalVolume*100)*task.task.suboperation.weight/100
+            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.parent.totalVolume*100 + task.todayVolume/task.task.parent.totalVolume*100)*task.task.suboperation.weight/100
 
     machines = machines.order_by('-provider',)
 
@@ -2933,7 +2944,6 @@ def compact_report_on_day(request, idd):
     # TODO : Modify the history variable so that instead of created_at feature, it folters report date
     history = TaskReport.objects.filter(operation_id__in=operation_ids, created_at__lt=report.created_at, project=project)
     history = history.exclude(id__in=tasks.values('id'), project=project)
-
     tsks = {}
 
     # if you want it based on Operation model==============================================
@@ -2971,7 +2981,7 @@ def compact_report_on_day(request, idd):
                 'zone': task.task.operation.zone.name,
                 'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
                 'preDoneVolume': 0.0,
-                'entire_item_vol': task.task.operation.operation.amount,
+                'entire_item_vol': task.task.operation.amount,
                 'entire_item_done': 0.0,
                 'entire_item_done_percent': 0.0,
                 'unit': task.task.unit,
@@ -3622,10 +3632,11 @@ def get_freeAmount(request):
         model = request.GET.get('model')
         if model == "zoneoperation":
             operation = request.GET.get('operation')
+            operation = Operation.objects.get(name=operation, project=project)
             zone = request.GET.get('zone')
             zoneoperation = ZoneOperation.objects.get(
                 project=project,
-                operation=Operation.objects.get(name=operation, project=project),
+                operation=operation,
                 zone=Zone.objects.get(name=zone, project=project),
             )
 
@@ -3649,6 +3660,7 @@ def get_freeAmount(request):
                     operation=operation,
                     zone=Zone.objects.get(name=zone, project=project)
                 )
+                # print(f"free amount for {operation} is:{freeAmount} + {zoneoperation.amount} = {freeAmount + zoneoperation.amount}")
                 freeAmount += zoneoperation.amount
 
                 return HttpResponse(freeAmount)

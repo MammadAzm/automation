@@ -364,7 +364,7 @@
 
                             <td class="text-centred">
                                 {% with pre=task.preDoneVolume|div:task.task.totalVolume|mul:100 cur=task.todayVolume|div:task.task.totalVolume|mul:100 %}
-                                    {{ cur|add:pre|floatformat:2 }} %
+                                    {{ cur|addd:pre|floatformat:2 }} %
                                 {% endwith %}
 
                             </td>
