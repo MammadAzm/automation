@@ -3949,7 +3949,10 @@ function submitForm(ID, type, shortcut=null,) {
     else if (type === "task_in_report") {
         var target = "form-task_in_report"
     }
-    else if (type === "task_in_report") {
+    else if (type === "task_in_edit_report") {
+        var target = "form-task_in_report"
+    }
+    else if (type === "issueReport_in_report") {
         var target = "form-issueReport_in_report"
     }
     else if (type === "position") {
@@ -4172,6 +4175,174 @@ function submitForm(ID, type, shortcut=null,) {
 
             return 0
         }
+
+        else if (type === "task_in_edit_report") {
+            let opr = formData.get("operation")
+            let subopr = formData.get("suboperation")
+            let zoneopr = formData.get("zoneoperation")
+            let equipe = formData.get("equipe")
+            let unit = formData.get("unit")
+
+            let select = document.getElementById("select2-equipe")
+
+            $("#select2-equipe").empty().append(
+                '<option value="" selected disabled>انتخاب اکیپ</option>'
+            )
+
+            let select2 = document.getElementById("select2-zoneoperation")
+            $("#select2-zoneoperation").empty().append(
+                '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
+            )
+            fetch_zoneoperations(opr, function (zoneoperations) {
+                zoneoperations.forEach(zoneoperation => {
+                    let option = document.createElement('option',)
+                    option.value = zoneoperation.zone
+                    option.innerHTML = zoneoperation.zone
+                    select2.appendChild(option)
+                })
+            })
+            $('#select2-zoneoperation').select2({
+                dropdownParent: $("#zoneoperation-box")
+            });
+
+            if (
+                document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
+            ) {
+
+                alert('آیتم  انتخابی در جدول وجود دارد')
+                return 0
+            }
+
+            $.ajax({
+                url: '/edit-db/get-subtask-in-report/',
+                type: 'POST',
+                data: {
+                    'operation': opr,
+                    'suboperation': subopr,
+                    'zone': zoneopr,
+                    'equipe': equipe,
+                    'date': document.getElementById("date").value,
+                },
+                beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+                },
+                success: function(response) {
+                    response = response[0]
+
+                    let table = document.getElementById("table-task")
+                    let tbody = table.querySelector("tbody")
+
+                    let newRow = document.createElement("tr")
+                    newRow.id =  opr + "-" + subopr + "-" + equipe + "-" + zoneopr
+
+                    for (let i=0; i<10; i++) {
+                        let td = document.createElement('td')
+                        switch (i) {
+                            case 0:
+                                td.innerText = response.operation.name
+
+                                let span = document.createElement('span',);
+                                Object.assign(span.style, {
+                                    float: 'right',
+                                    color: 'black',
+                                });
+                                span.className = "badge rounded-pill";
+                                span.innerHTML = '<img src="/static/icons/patch-minus.svg"/>';
+                                span.style.marginLeft = "5pt"
+                                span.addEventListener('click', function () {
+                                    del_task_in_report(
+                                        opr,
+                                        subopr,
+                                        equipe,
+                                        zoneopr,
+                                        false,
+                                    );
+                                });
+                                td.appendChild(span)
+                                newRow.appendChild(td)
+
+                                break;
+                            case 1:
+                                td.innerText = response.suboperation.name
+                                newRow.appendChild(td)
+
+                                break;
+                            case 2:
+                                td.innerText = response.equipe
+                                newRow.appendChild(td)
+
+                                break;
+                            case 3:
+                                td.innerText = response.zone
+                                newRow.appendChild(td)
+
+                                break;
+                            case 4:
+                                td.className = "text-centred"
+                                let input = document.createElement('input')
+                                input.required = true
+                                input.className = "small-input-integer"
+                                input.style = "border-radius: 0; text-align: center;"
+                                input.id = "task_"+newRow.id+"_today"
+                                input.name = "task_"+newRow.id+"_today"
+                                input.min = '0'
+                                input.max = response.freeVolume + response.todayVolume
+                                input.value = '0'
+                                input.type = 'number'
+                                input.addEventListener('keyup', function () {
+                                    update_live_total_done(
+                                        "task_"+newRow.id+"_today"
+                                    )
+                                })
+                                td.appendChild(input)
+                                newRow.appendChild(td)
+
+                                break;
+                            case 5:
+                                td.className = "text-centred"
+                                td.innerText = response.doneVolume - response.todayVolume
+                                td.id = "doneVolume_task_" + opr + "-" + subopr + "-" + equipe + "-" + zoneopr + "_today"
+                                newRow.appendChild(td)
+
+                                break;
+                            case 6:
+                                td.className = "text-centred"
+                                td.id = "live_total_done_task_" + opr + "-" + subopr + "-" + equipe + "-" + zoneopr + "_today"
+
+                                newRow.appendChild(td)
+
+                                break;
+                            case 7:
+                                td.className = "text-centred"
+                                td.innerText = response.totalVolume
+                                newRow.appendChild(td)
+
+                                break;
+                            case 8:
+                                td.className = "text-centred"
+                                td.innerText = ((response.doneVolume - response.todayVolume) / response.totalVolume * 100).toFixed(2) + " %"
+                                newRow.appendChild(td)
+
+                                break;
+                            case 9:
+                                td.className = "text-centred"
+                                td.innerText = response.unit
+                                newRow.appendChild(td)
+
+                                break;
+
+                        }
+                    }
+                    tbody.appendChild(newRow)
+
+                    document.getElementById("staticBackdropLoading").style.display = "none"
+                }
+            })
+
+            return 0
+        }
+
+
 
         else if (type === "issueReport_in_report") {
             var issue = formData.get("issue")

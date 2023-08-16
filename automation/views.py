@@ -3489,6 +3489,12 @@ def get_subtask_in_report(request):
         zone = request.POST.get("zone")
         equipe = request.POST.get("equipe")
 
+        date = request.POST.get("date")
+        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d")
+        report = DailyReport.objects.get(
+            project=project,
+            short_date=date.date(),
+        )
 
         operation = Operation.objects.get(name=operation, project=project)
         zone = Zone.objects.get(name=zone, project=project)
@@ -3535,6 +3541,16 @@ def get_subtask_in_report(request):
             'operation': operation_fields,
             'suboperation': suboperation_fields,
         }
+
+        for task in report.tasks.all():
+            if task == subtask:
+                taskReport = TaskReport.objects.get(
+                    project=project,
+                    dailyReport=report,
+                    task=task,
+                )
+
+                instance_fields['todayVolume'] = taskReport.todayVolume
 
         data.append(instance_fields)
 

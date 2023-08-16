@@ -594,7 +594,7 @@
                                     <td class="text-centred">
                                         <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}_today"
                                                name="task_{{ task.task.unique_str }}_today" min="0" type="number"
-                                               max="{{ task.task.totalVolume|sub:task.task.doneVolume }}"
+                                               max="{{ task.task.totalVolume|sub:task.task.doneVolume|addd:task.todayVolume }}"
                                                value="{{ task.todayVolume }}"
                                                 onkeyup="update_live_total_done('task_{{ task.task.unique_str }}{{ task.unique_str }}_today')">
                                     </td>
@@ -1662,7 +1662,8 @@
     handle_select(type="zoneforissue")
     handle_select(type="projectField")
 
-    submitForm(null, 'task_in_report')
+    // submitForm(null, 'task_in_report')
+    submitForm(null, 'task_in_edit_report')
     submitForm(null, 'issueReport_in_report')
     submitForm(null, 'task')
     submitForm(null, 'task-shortcut')
