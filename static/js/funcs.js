@@ -3344,6 +3344,7 @@ function fetch_tasks(){
 }
 
 function del_report(reportID){
+    document.getElementById("staticBackdropLoading").style.display = "block"
     $.ajax({
         type: 'POST',
         url: '/edit-db/del-daily-report/',
@@ -3357,6 +3358,8 @@ function del_report(reportID){
             // location.reload(true);
             document.getElementById("table-"+reportID).remove();
             iter_reports();
+
+            document.getElementById("staticBackdropLoading").style.display = "none"
         }
     });
 
@@ -3625,6 +3628,9 @@ function toggle_requirement(toggleID, conditionID) {
 
 function iter_reports() {
     let btns = document.querySelectorAll('.btn-danger')
+    if (btns.length==0) {
+        return
+    }
     let btn = btns[btns.length - 1]
     $.ajax({
         type: 'POST',
