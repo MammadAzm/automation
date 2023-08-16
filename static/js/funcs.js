@@ -17,93 +17,96 @@ function print(entry) {
 }
 
 function submitEditingFormHandler(event) {
-        event.preventDefault();
-        let formData = new FormData(event.target);
-        let model = formData.get('model')
-        $.ajax({
-            url: '/edit-db/edit-base-data',
-            type: 'POST',
-            data: formData,
-            // dataType: 'json',
-            contentType: false,
-            processData: false,
-            beforeSend: function (xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-            },
-            success: function (response) {
-                alert("عملیات  موفق")
-                if (ONLY_NAME_MODELS.includes(model)) {
-                    let table = document.getElementById("table-"+model)
-                    let instance = formData.get('instance')
-                    instance = instance.replace(/[ -/\\^$*+?.()|[\]{}]/g, '\\$&');
-                    let row = table.querySelector("#"+instance)
-                    let td = row.querySelector("td")
+    document.getElementById("staticBackdropLoading").style.display = "block"
+    event.preventDefault();
+    let formData = new FormData(event.target);
+    let model = formData.get('model')
+    $.ajax({
+        url: '/edit-db/edit-base-data',
+        type: 'POST',
+        data: formData,
+        // dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+        },
+        success: function (response) {
+            document.getElementById("staticBackdropLoading").style.display = "none"
+            alert("عملیات  موفق")
+            if (ONLY_NAME_MODELS.includes(model)) {
+                let table = document.getElementById("table-"+model)
+                let instance = formData.get('instance')
+                instance = instance.replace(/[ -/\\^$*+?.()|[\]{}]/g, '\\$&');
+                let row = table.querySelector("#"+instance)
+                let td = row.querySelector("td")
 
-                    let newText = td.innerHTML.replace(new RegExp(instance, 'g'), formData.get('name'));
-                    td.innerHTML = newText
-                    row.id = formData.get('name')
+                let newText = td.innerHTML.replace(new RegExp(instance, 'g'), formData.get('name'));
+                td.innerHTML = newText
+                row.id = formData.get('name')
 
-                    if (model === "zone") {
-                        let selects = document.getElementsByTagName("select")
-                        for (let i=0; i<selects.length; i++) {
-                            if (selects[i].id.includes("select2-zone-")) {
-                                let id = selects[i].id
-                                $("#"+id).empty().append(
-                                    '<option value="" selected disabled>انتخاب</option>'
-                                )
-                                fetch_zones(function (zones) {
-                                    zones.forEach(zone => {
-                                        let option = document.createElement('option',)
-                                        option.value = zone.name
-                                        option.innerHTML = zone.name
-                                        selects[i].appendChild(option)
-                                    });
+                if (model === "zone") {
+                    let selects = document.getElementsByTagName("select")
+                    for (let i=0; i<selects.length; i++) {
+                        if (selects[i].id.includes("select2-zone-")) {
+                            let id = selects[i].id
+                            $("#"+id).empty().append(
+                                '<option value="" selected disabled>انتخاب</option>'
+                            )
+                            fetch_zones(function (zones) {
+                                zones.forEach(zone => {
+                                    let option = document.createElement('option',)
+                                    option.value = zone.name
+                                    option.innerHTML = zone.name
+                                    selects[i].appendChild(option)
                                 });
-                            }
+                            });
                         }
                     }
-                    else if (model === "profession") {
-                        location.reload();
-                    }
-                    else if (model === "contractor") {
-                        location.reload();
-                    }
                 }
-
-                else if (model === "equipe") {
+                else if (model === "profession") {
                     location.reload();
                 }
-
-                else if (model === "operation") {
+                else if (model === "contractor") {
                     location.reload();
                 }
-
-                else if (model === "zoneoperation") {
-                    let modalID = formData.get("modalID")
-                    localStorage.setItem('showModal', modalID);
-                    location.reload();
-                }
-
-                else if (model === "suboperation") {
-                    let modalID = formData.get("modalID")
-                    localStorage.setItem('showModal', modalID);
-                    location.reload();
-                }
-
-                else if (model === "machineFamily") {
-                    location.reload();
-                }
-
-                else if (model === "machine") {
-                    location.reload();
-                }
-
-                hidePopup("editing");
-            },
-            error: function (err) {
-                alert("این مورد قبلا ایجاد شده است")
             }
-        })
+
+            else if (model === "equipe") {
+                location.reload();
+            }
+
+            else if (model === "operation") {
+                location.reload();
+            }
+
+            else if (model === "zoneoperation") {
+                let modalID = formData.get("modalID")
+                localStorage.setItem('showModal', modalID);
+                location.reload();
+            }
+
+            else if (model === "suboperation") {
+                let modalID = formData.get("modalID")
+                localStorage.setItem('showModal', modalID);
+                location.reload();
+            }
+
+            else if (model === "machineFamily") {
+                location.reload();
+            }
+
+            else if (model === "machine") {
+                location.reload();
+            }
+
+            hidePopup("editing");
+        },
+        error: function (err) {
+            document.getElementById("staticBackdropLoading").style.display = "none"
+            alert("این مورد قبلا ایجاد شده است")
+        }
+    })
 }
 function submitEditingForm() {
     document.getElementById('editing-form').addEventListener('submit', submitEditingFormHandler);
