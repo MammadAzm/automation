@@ -107,7 +107,8 @@
 
                                 <th class="py-1">تاریخ</th>
                                 <th class="table-light py-1">
-                                    <input required name="date" value="{{report.short_date}}" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">
+<!--                                    <input required readonly name="date" value="{{report.short_date}}" id="date" class="bg-light" placeholder="تاریخ" data-jdp onchange="check_report_date()">-->
+                                    <input required readonly name="date" value="{{report.short_date}}" id="date" class="bg-light" placeholder="تاریخ" onchange="check_report_date()">
                                 </th>
 
                             </tr>
