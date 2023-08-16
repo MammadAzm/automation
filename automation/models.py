@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class MyUser(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
     projects = models.ManyToManyField('Project', related_name="projects")
 
@@ -45,7 +45,7 @@ class Project(models.Model):
 
 class Position(models.Model):
     name = models.CharField(max_length=250,)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
 
     class Meta:
         unique_together = ("name", "project")
@@ -55,8 +55,8 @@ class Position(models.Model):
 
 
 class PositionCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    position = models.ForeignKey(Position, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     count = models.PositiveIntegerField()
 
@@ -68,7 +68,7 @@ class PositionCount(models.Model):
 
 
 class Profession(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
     class Meta:
@@ -79,8 +79,8 @@ class Profession(models.Model):
 
 
 class ProfessionCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    profession = models.ForeignKey(Profession, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     countExpert = models.PositiveIntegerField()
@@ -101,7 +101,7 @@ class ProfessionCount(models.Model):
 
 
 class Hardware(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250, )
 
     class Meta:
@@ -112,10 +112,10 @@ class Hardware(models.Model):
 
 
 class MachineFamily(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
-    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE, null=True, blank=True)
+    hardware = models.ForeignKey(Hardware, on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         unique_together = ("name", "project")
@@ -126,11 +126,11 @@ class MachineFamily(models.Model):
 
 
 class Machine(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    type = models.ForeignKey(MachineFamily, on_delete=models.CASCADE, null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    type = models.ForeignKey(MachineFamily, on_delete=models.PROTECT, null=True, blank=True)
     name = models.CharField(max_length=250,)
 
-    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE, null=True, blank=True)
+    hardware = models.ForeignKey(Hardware, on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         unique_together = ("name", "project")
@@ -141,7 +141,7 @@ class Machine(models.Model):
 
 
 class MachineProvider(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
     class Meta:
@@ -152,8 +152,8 @@ class MachineProvider(models.Model):
 
 
 class MachineCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    machine = models.ForeignKey(Machine, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     workHours = models.PositiveIntegerField(default=0.0)
@@ -164,10 +164,10 @@ class MachineCount(models.Model):
 
     onRent = models.BooleanField(default=True)
 
-    provider = models.ForeignKey(MachineProvider, on_delete=models.CASCADE, null=True, blank=True)
+    provider = models.ForeignKey(MachineProvider, on_delete=models.PROTECT, null=True, blank=True)
 
-    hardware = models.ForeignKey(Hardware, on_delete=models.CASCADE)
-    type = models.ForeignKey(MachineFamily, on_delete=models.CASCADE)
+    hardware = models.ForeignKey(Hardware, on_delete=models.PROTECT)
+    type = models.ForeignKey(MachineFamily, on_delete=models.PROTECT)
 
     class Meta:
         unique_together = ('dailyReport', 'machine', 'provider', 'project')
@@ -178,9 +178,9 @@ class MachineCount(models.Model):
 
 
 class Unit(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=25,)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.PROTECT)
     coef = models.FloatField(default=1.0)
 
     class Meta:
@@ -191,7 +191,7 @@ class Unit(models.Model):
 
 
 class Material(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
     class Meta:
@@ -202,7 +202,7 @@ class Material(models.Model):
 
 
 class MaterialProvider(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
     class Meta:
@@ -213,13 +213,13 @@ class MaterialProvider(models.Model):
 
 
 class MaterialCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    material = models.ForeignKey(Material, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     amount = models.FloatField(default=0.0,)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    provider = models.ForeignKey(MaterialProvider, on_delete=models.CASCADE, null=True, blank=True)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    provider = models.ForeignKey(MaterialProvider, on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         unique_together = ('dailyReport', 'material', 'provider', 'project')
@@ -229,7 +229,7 @@ class MaterialCount(models.Model):
 
 
 class Contractor(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=150,)
 
     class Meta:
@@ -240,8 +240,8 @@ class Contractor(models.Model):
 
 
 class ContractorCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    contractor = models.ForeignKey(Contractor, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     countExpert = models.PositiveIntegerField()
@@ -262,9 +262,9 @@ class ContractorCount(models.Model):
 
 
 class Equipe(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
-    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    profession = models.ForeignKey(Profession, on_delete=models.PROTECT)
+    contractor = models.ForeignKey(Contractor, on_delete=models.PROTECT)
     name = models.CharField(max_length=150, unique=True, blank=True)
 
     def set_name(self):
@@ -279,8 +279,8 @@ class Equipe(models.Model):
 
 
 class EquipeCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     countExpert = models.PositiveIntegerField()
@@ -301,7 +301,7 @@ class EquipeCount(models.Model):
 
 
 class Zone(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
 
     class Meta:
@@ -312,9 +312,9 @@ class Zone(models.Model):
 
 
 class Operation(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="operation_unit")
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT, related_name="operation_unit")
 
     amount = models.FloatField(default=0.0, )
     assignedAmount = models.FloatField(default=0.0,)
@@ -398,11 +398,11 @@ class Operation(models.Model):
 
 
 class SubOperation(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250,)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
-    parent = models.ForeignKey(Operation, on_delete=models.CASCADE, )
+    parent = models.ForeignKey(Operation, on_delete=models.PROTECT, )
 
     weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(100.0)], default=0.0)
 
@@ -426,10 +426,10 @@ class SubOperation(models.Model):
 
 
 class ZoneOperation(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    operation = models.ForeignKey(Operation, on_delete=models.PROTECT)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
     amount = models.FloatField(default=0.0, )
     assignedAmount = models.FloatField(default=0.0, )
@@ -492,11 +492,11 @@ class ZoneOperation(models.Model):
 
 
 class ParentTask(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    operation = models.ForeignKey(ZoneOperation, on_delete=models.PROTECT)
+    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
     unique_str = models.CharField(max_length=250, unique=True)
 
@@ -583,13 +583,13 @@ class ParentTask(models.Model):
 
 
 class Task(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE)
-    operation = models.ForeignKey(ZoneOperation, on_delete=models.CASCADE)
-    suboperation = models.ForeignKey(SubOperation, on_delete=models.CASCADE, null=True, blank=True)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    parent = models.ForeignKey(ParentTask, on_delete=models.PROTECT)
+    operation = models.ForeignKey(ZoneOperation, on_delete=models.PROTECT)
+    suboperation = models.ForeignKey(SubOperation, on_delete=models.PROTECT, null=True, blank=True)
+    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
     unique_str = models.CharField(max_length=250, unique=True)
     totalVolume = models.FloatField(default=0.1,)
@@ -669,10 +669,10 @@ class Task(models.Model):
 
 
 class TaskReport(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    parentTask = models.ForeignKey(ParentTask, on_delete=models.CASCADE, null=True, blank=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    task = models.ForeignKey(Task, on_delete=models.PROTECT)
+    parentTask = models.ForeignKey(ParentTask, on_delete=models.PROTECT, null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT, blank=True, null=True)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
     todayVolume = models.FloatField(default=0.0,)
     preDoneVolume = models.FloatField(default=0.0, )
@@ -685,9 +685,9 @@ class TaskReport(models.Model):
     reportDate = jmodels.jDateTimeField()
 
     # Filtering required fields -------------------------------------------------------------------
-    operation = models.ForeignKey(Operation, on_delete=models.CASCADE, null=True, blank=True)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE, null=True, blank=True)
-    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE, null=True, blank=True)
+    operation = models.ForeignKey(Operation, on_delete=models.PROTECT, null=True, blank=True)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT, null=True, blank=True)
+    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT, null=True, blank=True)
 
     def update_filtering_fields(self):
         self.operation = self.task.operation.operation
@@ -738,7 +738,7 @@ class TaskReport(models.Model):
 
 
 class DailyReport(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     # --------------------Header----------------------
     project_name = models.CharField(max_length=250, default="Automation Project")
     employer = models.CharField(max_length=250, default="Default Employer")
@@ -855,7 +855,7 @@ class DailyReport(models.Model):
 
 
 class ProjectField(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250, )
 
     class Meta:
@@ -866,7 +866,7 @@ class ProjectField(models.Model):
 
 
 class Issue(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
     name = models.CharField(max_length=250, )
 
     class Meta:
@@ -877,12 +877,12 @@ class Issue(models.Model):
 
 
 class IssueReport(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    issue = models.ForeignKey(Issue, on_delete=models.PROTECT)
     description = models.CharField(max_length=255, )
 
-    projectField = models.ForeignKey(ProjectField, on_delete=models.CASCADE)
-    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    projectField = models.ForeignKey(ProjectField, on_delete=models.PROTECT)
+    zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
 
     start_date = jmodels.jDateField(null=True, blank=True)
     completion_date = jmodels.jDateField(null=True, blank=True)
@@ -920,8 +920,8 @@ class IssueReport(models.Model):
 
 
 class IssueCount(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    issue = models.ForeignKey(IssueReport, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    issue = models.ForeignKey(IssueReport, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
 
     class Meta:

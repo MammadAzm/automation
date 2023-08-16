@@ -3750,10 +3750,6 @@ def check_dailyreport_existence(request):
         date, time = date.split(" ")
         date = date.replace("/", "-")
 
-        report = get_object_or_404(DailyReport, short_date=date, project=project)
-        if report:
-            return HttpResponse(True)
-
         if jdatetime.datetime.strptime(date, format="%Y-%m-%d").date() > jdatetime.date.today():
             return HttpResponse("تاریخ نامعتبر. تاریخ ورودی نمیتواند مربوط به روزهای آینده باشد.", status=500)
 
@@ -3761,7 +3757,9 @@ def check_dailyreport_existence(request):
             if jdatetime.datetime.strptime(date, format="%Y-%m-%d").date() < DailyReport.objects.filter(project=project).last().short_date:
                 return HttpResponse("تاریخ نامعتبر. تاریخ ورودی نمیتواند قبل تر از آخرین گزارش ثبت شده باشد.", status=500)
 
-
+        report = get_object_or_404(DailyReport, short_date=date, project=project)
+        if report:
+            return HttpResponse(True)
 
 def findOutputTarget(pivot_fields):
     target = 0
