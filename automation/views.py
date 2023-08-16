@@ -3489,12 +3489,15 @@ def get_subtask_in_report(request):
         zone = request.POST.get("zone")
         equipe = request.POST.get("equipe")
 
-        date = request.POST.get("date")
-        date = jdatetime.datetime.strptime(date, format="%Y-%m-%d")
-        report = DailyReport.objects.get(
-            project=project,
-            short_date=date.date(),
-        )
+        if "date" in request.POST:
+            date = request.POST.get("date")
+            date = jdatetime.datetime.strptime(date, format="%Y-%m-%d")
+            report = DailyReport.objects.get(
+                project=project,
+                short_date=date.date(),
+            )
+        else:
+            report = None
 
         operation = Operation.objects.get(name=operation, project=project)
         zone = Zone.objects.get(name=zone, project=project)
@@ -3536,21 +3539,22 @@ def get_subtask_in_report(request):
             'start_date': subtask.start_date.strftime(format="%Y/%m/%d") if subtask.start_date is not None else None,
             'completion_date': subtask.completion_date.strftime(format="%Y/%m/%d") if subtask.completion_date is not None else None,
             'freeVolume': subtask.totalVolume - subtask.doneVolume,
-
+            'todayVolume':0,
             # Add more fields as needed
             'operation': operation_fields,
             'suboperation': suboperation_fields,
         }
 
-        for task in report.tasks.all():
-            if task == subtask:
-                taskReport = TaskReport.objects.get(
-                    project=project,
-                    dailyReport=report,
-                    task=task,
-                )
+        if report:
+            for task in report.tasks.all():
+                if task == subtask:
+                    taskReport = TaskReport.objects.get(
+                        project=project,
+                        dailyReport=report,
+                        task=task,
+                    )
 
-                instance_fields['todayVolume'] = taskReport.todayVolume
+                    instance_fields['todayVolume'] = taskReport.todayVolume
 
         data.append(instance_fields)
 

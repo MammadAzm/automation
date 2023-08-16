@@ -4043,7 +4043,7 @@ function submitForm(ID, type, shortcut=null,) {
             if (
                 document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
             ) {
-
+                document.getElementById("staticBackdropLoading").style.display = "none"
                 alert('آیتم  انتخابی در جدول وجود دارد')
                 return 0
             }
@@ -4208,7 +4208,7 @@ function submitForm(ID, type, shortcut=null,) {
             if (
                 document.getElementById(opr + "-" + subopr + "-" + equipe + "-" + zoneopr)
             ) {
-
+                document.getElementById("staticBackdropLoading").style.display = "none"
                 alert('آیتم  انتخابی در جدول وجود دارد')
                 return 0
             }
