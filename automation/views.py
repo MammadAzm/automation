@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -1458,7 +1459,6 @@ def save_daily_report_to_db(request):
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
 
-    # TODO : Modify this service usage in the front-side to be called through AJAX Request
     if request.method == "POST":
         data = dict(request.POST)
 
@@ -1553,233 +1553,239 @@ def save_daily_report_to_db(request):
         # print(materials.items())
         # return HttpResponse(1)
 
-        report = DailyReport.objects.create(
-            project=project,
-            project_name=data['project_name'][0],
-            employer=data["employer"][0],
-            employee=data["employee"][0],
-            contract_number=data["contract_no"][0],
-            date=jdatetime.datetime.strptime(data['date'][0], format="%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S"),
-            temperature_min=data["minTemp"][0],
-            temperature_max=data["maxTemp"][0],
-            weather=data["weather_status"][0],
-            dust_value=data["dust_value"][0],
-            consultor_name=data["consultor_name"][0],
-        )
-        report.set_weekday()
+        try:
+            with transaction.atomic():
 
-        for position, count in positions.items():
-            if count > 0:
-                pos = Position.objects.get(name=position, project=project)
-                obj = PositionCount.objects.create(
+                report = DailyReport.objects.create(
                     project=project,
-                    position=pos,
-                    dailyReport=report,
-                    count=count,
+                    project_name=data['project_name'][0],
+                    employer=data["employer"][0],
+                    employee=data["employee"][0],
+                    contract_number=data["contract_no"][0],
+                    date=jdatetime.datetime.strptime(data['date'][0], format="%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%d %H:%M:%S"),
+                    temperature_min=data["minTemp"][0],
+                    temperature_max=data["maxTemp"][0],
+                    weather=data["weather_status"][0],
+                    dust_value=data["dust_value"][0],
+                    consultor_name=data["consultor_name"][0],
                 )
-                report.positions.add(obj.position)
-            else:
-                continue
+                report.set_weekday()
 
-        for profession, count in professions.items():
-            if sum(count) > 0:
-                prof = Profession.objects.get(name=profession, project=project)
-                obj = ProfessionCount.objects.create(
-                    project=project,
-                    profession=prof,
-                    dailyReport=report,
-                    countExpert=count[0],
-                    countSemiExpert=count[1],
-                    countNonExpert=count[2],
-                )
-                obj.cal_countTotal()
+                for position, count in positions.items():
+                    if count > 0:
+                        pos = Position.objects.get(name=position, project=project)
+                        obj = PositionCount.objects.create(
+                            project=project,
+                            position=pos,
+                            dailyReport=report,
+                            count=count,
+                        )
+                        report.positions.add(obj.position)
+                    else:
+                        continue
 
-                report.professions.add(obj.profession)
+                for profession, count in professions.items():
+                    if sum(count) > 0:
+                        prof = Profession.objects.get(name=profession, project=project)
+                        obj = ProfessionCount.objects.create(
+                            project=project,
+                            profession=prof,
+                            dailyReport=report,
+                            countExpert=count[0],
+                            countSemiExpert=count[1],
+                            countNonExpert=count[2],
+                        )
+                        obj.cal_countTotal()
 
-            else:
-                continue
+                        report.professions.add(obj.profession)
 
-        for machine, count in machines.items():
-            machine = machine.split("_")[0]
-            if count[0] >= 0 or count[1] > 0:
-                machine = machine.strip()
-                machine = re.sub(r'[\[\]]', '', machine)
-                machine, family, hardware = machine.split("-")
+                    else:
+                        continue
 
-                hardware = Hardware.objects.get(
-                    project=project,
-                    name=hardware
-                )
-                family = MachineFamily.objects.get(
-                    project=project,
-                    name=family,
-                    hardware=hardware,
-                )
-                mach = Machine.objects.get(name=machine,
-                                           type=family,
-                                           hardware=hardware,
-                                           project=project)
+                for machine, count in machines.items():
+                    machine = machine.split("_")[0]
+                    if count[0] >= 0 or count[1] > 0:
+                        machine = machine.strip()
+                        machine = re.sub(r'[\[\]]', '', machine)
+                        machine, family, hardware = machine.split("-")
 
-                provider = MachineProvider.objects.get(name=count[3], project=project)
-                if provider.name == "شرکتی":
-                    obj = MachineCount.objects.create(
+                        hardware = Hardware.objects.get(
+                            project=project,
+                            name=hardware
+                        )
+                        family = MachineFamily.objects.get(
+                            project=project,
+                            name=family,
+                            hardware=hardware,
+                        )
+                        mach = Machine.objects.get(name=machine,
+                                                   type=family,
+                                                   hardware=hardware,
+                                                   project=project)
+
+                        provider = MachineProvider.objects.get(name=count[3], project=project)
+                        if provider.name == "شرکتی":
+                            obj = MachineCount.objects.create(
+                                project=project,
+                                machine=mach,
+                                dailyReport=report,
+                                activeCount=count[1],
+                                inactiveCount=count[2],
+                                workHours=count[0],
+                                provider=provider,
+                                totalCount=sum(count[1:3]),
+                                onRent=False,
+                                hardware=hardware,
+                                type=family,
+                            )
+                        else:
+                            obj = MachineCount.objects.create(
+                                project=project,
+                                machine=mach,
+                                dailyReport=report,
+                                activeCount=1 if count[0] > 0 else 0,
+                                inactiveCount=0 if count[0] > 0 else 1,
+                                workHours=count[0],
+                                provider=provider,
+                                totalCount=1,
+                                onRent=True,
+                                hardware=hardware,
+                                type=family,
+
+                            )
+
+                        report.machines.add(obj.machine)
+
+                    else:
+                        continue
+
+                for material, amount in materials.items():
+                    material = material.split("_")[0]
+                    if amount[0] > 0:
+                        material = material.strip()
+
+                        mat = Material.objects.get(name=material, project=project)
+                        unit = Unit.objects.get(name=amount[1], project=project)
+                        materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
+                        obj = MaterialCount.objects.create(
+                            project=project,
+                            material=mat,
+                            dailyReport=report,
+                            amount=amount[0],
+                            unit=unit,
+                            provider=materialprovider,
+                        )
+                        report.materials.add(obj.material)
+                    else:
+                        continue
+
+                for contractor, count in contractors.items():
+                    if sum(count) > 0:
+                        cont = Contractor.objects.get(name=contractor, project=project)
+                        obj = ContractorCount.objects.create(
+                            project=project,
+                            contractor=cont,
+                            dailyReport=report,
+                            countExpert=count[0],
+                            countSemiExpert=count[1],
+                            countNonExpert=count[2],
+                        )
+                        obj.cal_countTotal()
+
+                        report.contractors.add(obj.contractor)
+                    else:
+                        continue
+
+                for equipe, count in equipes.items():
+                    if sum(count) > 0:
+                        prof, cont = equipe.split("-")
+                        equ = Equipe.objects.get(
+                            project=project,
+                            profession=Profession.objects.get(name=prof, project=project),
+                            contractor=Contractor.objects.get(name=cont, project=project),
+                        )
+                        obj = EquipeCount.objects.create(
+                            project=project,
+                            equipe=equ,
+                            dailyReport=report,
+                            countExpert=count[0],
+                            countSemiExpert=count[1],
+                            countNonExpert=count[2],
+                        )
+                        obj.cal_countTotal()
+
+                        report.equipes.add(obj.equipe)
+                    else:
+                        continue
+
+                for task, amount in tasks.items():
+                    if amount > 0:
+                        tsk = Task.objects.get(unique_str=task, project=project)
+
+                        if not tsk.started:
+                            tsk.start(date=report.date)
+
+                        parent = TaskReport.objects.filter(task=tsk, project=project).last()
+                        tsk_rep = TaskReport.objects.create(
+                            project=project,
+                            task=tsk,
+                            operation=tsk.operation.operation,
+                            parent=parent,
+                            dailyReport=report,
+                            todayVolume=amount,
+                            reportDate=report.date,
+                            parentTask=tsk.parent,
+                        )
+
+                        tsk_rep.update_percentage(False, date=report.date)
+                        tsk_rep.update_filtering_fields()
+                        report.tasks.add(tsk_rep.task)
+
+                report.cal_countPeople()
+                report.cal_countMachines()
+
+                for issue, status in issues.items():
+                    issue_name, projectField, zone, description = issue.split(" - ")
+
+                    issue = Issue.objects.get(
                         project=project,
-                        machine=mach,
-                        dailyReport=report,
-                        activeCount=count[1],
-                        inactiveCount=count[2],
-                        workHours=count[0],
-                        provider=provider,
-                        totalCount=sum(count[1:3]),
-                        onRent=False,
-                        hardware=hardware,
-                        type=family,
+                        name=issue_name
                     )
-                else:
-                    obj = MachineCount.objects.create(
+                    projectField = ProjectField.objects.get(
                         project=project,
-                        machine=mach,
-                        dailyReport=report,
-                        activeCount=1 if count[0] > 0 else 0,
-                        inactiveCount=0 if count[0] > 0 else 1,
-                        workHours=count[0],
-                        provider=provider,
-                        totalCount=1,
-                        onRent=True,
-                        hardware=hardware,
-                        type=family,
-
+                        name=projectField,
+                    )
+                    zone = Zone.objects.get(
+                        project=project,
+                        name=zone,
                     )
 
-                report.machines.add(obj.machine)
+                    issueReport = IssueReport.objects.get(project=project,
+                                                          issue=issue,
+                                                          projectField=projectField,
+                                                          zone=zone,
+                                                          description=description)
 
-            else:
-                continue
+                    if not issueReport.started:
+                        issueReport.start(report.date)
 
-        for material, amount in materials.items():
-            material = material.split("_")[0]
-            if amount[0] > 0:
-                material = material.strip()
+                    if status == "solved":
+                        issueReport.complete(report.date)
 
-                mat = Material.objects.get(name=material, project=project)
-                unit = Unit.objects.get(name=amount[1], project=project)
-                materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
-                obj = MaterialCount.objects.create(
-                    project=project,
-                    material=mat,
-                    dailyReport=report,
-                    amount=amount[0],
-                    unit=unit,
-                    provider=materialprovider,
-                )
-                report.materials.add(obj.material)
-            else:
-                continue
+                    obj = IssueCount.objects.create(
+                        project=project,
+                        dailyReport=report,
+                        issue=issueReport,
+                    )
+                    report.issues.add(obj.issue)
 
-        for contractor, count in contractors.items():
-            if sum(count) > 0:
-                cont = Contractor.objects.get(name=contractor, project=project)
-                obj = ContractorCount.objects.create(
-                    project=project,
-                    contractor=cont,
-                    dailyReport=report,
-                    countExpert=count[0],
-                    countSemiExpert=count[1],
-                    countNonExpert=count[2],
-                )
-                obj.cal_countTotal()
-
-                report.contractors.add(obj.contractor)
-            else:
-                continue
-
-        for equipe, count in equipes.items():
-            if sum(count) > 0:
-                prof, cont = equipe.split("-")
-                equ = Equipe.objects.get(
-                    project=project,
-                    profession=Profession.objects.get(name=prof, project=project),
-                    contractor=Contractor.objects.get(name=cont, project=project),
-                )
-                obj = EquipeCount.objects.create(
-                    project=project,
-                    equipe=equ,
-                    dailyReport=report,
-                    countExpert=count[0],
-                    countSemiExpert=count[1],
-                    countNonExpert=count[2],
-                )
-                obj.cal_countTotal()
-
-                report.equipes.add(obj.equipe)
-            else:
-                continue
-
-        for task, amount in tasks.items():
-            if amount > 0:
-                tsk = Task.objects.get(unique_str=task, project=project)
-
-                if not tsk.started:
-                    tsk.start(date=report.date)
-
-                parent = TaskReport.objects.filter(task=tsk, project=project).last()
-                tsk_rep = TaskReport.objects.create(
-                    project=project,
-                    task=tsk,
-                    operation=tsk.operation.operation,
-                    parent=parent,
-                    dailyReport=report,
-                    todayVolume=amount,
-                    reportDate=report.date,
-                    parentTask=tsk.parent,
-                )
-
-                tsk_rep.update_percentage(False, date=report.date)
-                tsk_rep.update_filtering_fields()
-                report.tasks.add(tsk_rep.task)
-
-        report.cal_countPeople()
-        report.cal_countMachines()
-
-        for issue, status in issues.items():
-            issue_name, projectField, zone, description = issue.split(" - ")
-
-            issue = Issue.objects.get(
-                project=project,
-                name=issue_name
-            )
-            projectField = ProjectField.objects.get(
-                project=project,
-                name=projectField,
-            )
-            zone = Zone.objects.get(
-                project=project,
-                name=zone,
-            )
-
-            issueReport = IssueReport.objects.get(project=project,
-                                                  issue=issue,
-                                                  projectField=projectField,
-                                                  zone=zone,
-                                                  description=description)
-
-            if not issueReport.started:
-                issueReport.start(report.date)
-
-            if status == "solved":
-                issueReport.complete(report.date)
-
-            obj = IssueCount.objects.create(
-                project=project,
-                dailyReport=report,
-                issue=issueReport,
-            )
-            report.issues.add(obj.issue)
-
-            issueReport.issueCounts.add(obj)
+                    issueReport.issueCounts.add(obj)
 
         # return redirect(to="/home/daily-reports")
-        return HttpResponse(True)
+            return HttpResponse(True)
+
+        except:
+            return HttpResponse("Something went wrong", status=500)
     else:
         return -1
 
@@ -1791,32 +1797,38 @@ def del_daily_report_from_db(request):
 
 
     if request.method == "POST":
+
         rep = DailyReport.objects.get(id=request.POST["id"], project=project)
 
         if rep.deletable:
-            for item in rep.taskreport_set.all():
-                item.update_percentage(True, date=rep.date)
+            try:
+                with transaction.atomic():
+                    for item in rep.taskreport_set.all():
+                        item.update_percentage(True, date=rep.date)
 
-            for issue in rep.issues.all():
-                if issue.solved:
-                    issue.solved = False
-                    issue.save()
+                    for issue in rep.issues.all():
+                        if issue.solved:
+                            issue.solved = False
+                            issue.save()
 
-                print()
-                if len(issue.issueCounts.all()) > 1:
-                    continue
-                else:
-                    if issue.started:
-                        issue.started = False
-                        issue.save()
+                        if len(issue.issueCounts.all()) > 1:
+                            continue
+                        else:
+                            if issue.started:
+                                issue.started = False
+                                issue.save()
 
-            rep.delete()
+                    rep.delete()
 
-            return redirect(to="/home/daily-reports")
+                return redirect(to="/home/daily-reports")
+
+            except:
+                return HttpResponse("Something went wrong", status=500)
+
         else:
-            raise PermissionDenied
+            return HttpResponse(PermissionDenied, status=500)
     else:
-        return -1
+            return -1
 
 
 @login_required
@@ -1875,6 +1887,7 @@ def edit_daily_report_in_db(request):
             equipes = {}
             contractors = {}
             tasks = {}
+            issues = {}
 
             for key, value in data.items():
                 if "position" in key:
@@ -1922,6 +1935,9 @@ def edit_daily_report_in_db(request):
                         equipes[key.split("_")[2]] = []
                         equipes[key.split("_")[2]].append(int(value[0]))
 
+                elif "issueReport" in key:
+                    issues[key.split("_")[1]] = value[0]
+
                 elif "machine" in key:
                     if key.split("_")[1] in machines.keys():
                         if "provider" in key:
@@ -1941,224 +1957,228 @@ def edit_daily_report_in_db(request):
                 elif "task" in key:
                     tasks[key.split("_")[1]] = float(value[0])
 
+            try:
+                with transaction.atomic():
+                    report = DailyReport.objects.get(id=request.POST.get("report_id"), project=project)
+                    ID = report.id
+                    DATE_CREATED = report.date_created
 
-            report = DailyReport.objects.get(id=request.POST.get("report_id"), project=project)
-            ID = report.id
-            DATE_CREATED = report.date_created
-
-            if report.deletable and report.editable:
-                for item in report.taskreport_set.all():
-                    item.update_percentage(True, date=report.date)
-                report.delete()
-            else:
-                raise PermissionDenied
-
-            report = DailyReport.objects.create(
-                project=project,
-                id=ID,
-                project_name=data['project_name'][0],
-                employer=data["employer"][0],
-                employee=data["employee"][0],
-                contract_number=data["contract_no"][0],
-                date=jdatetime.datetime.strptime(data['date'][0], format="%Y-%m-%d").strftime(
-                    "%Y-%m-%d %H:%M:%S"),
-                temperature_min=data["minTemp"][0],
-                temperature_max=data["maxTemp"][0],
-                weather=data["weather_status"][0],
-                dust_value=data["dust_value"][0],
-                consultor_name=data["consultor_name"][0],
-                date_created=DATE_CREATED,
-                edited=True,
-            )
-            report.set_weekday()
-
-            report.project_name = data['project_name'][0]
-            report.employer = data["employer"][0]
-            report.employee = data["employee"][0]
-            report.contract_number = data["contract_no"][0]
-            # report.date =
-            report.temperature_min = data["minTemp"][0]
-            report.temperature_max = data["maxTemp"][0]
-            report.weather = data["weather_status"][0]
-            report.dust_value = data["dust_value"][0]
-            report.consultor_name = data["consultor_name"][0]
-            report.save()
-            report.set_weekday()
-
-            for position, count in positions.items():
-                if count > 0:
-                    pos = Position.objects.get(name=position, project=project)
-                    obj = PositionCount.objects.create(
-                        project=project,
-                        position=pos,
-                        dailyReport=report,
-                        count=count,
-                    )
-                    report.positions.add(obj.position)
-                else:
-                    continue
-
-            for profession, count in professions.items():
-                if sum(count) > 0:
-                    prof = Profession.objects.get(name=profession, project=project)
-                    obj = ProfessionCount.objects.create(
-                        project=project,
-                        profession=prof,
-                        dailyReport=report,
-                        countExpert=count[0],
-                        countSemiExpert=count[1],
-                        countNonExpert=count[2],
-                    )
-                    obj.cal_countTotal()
-
-                    report.professions.add(obj.profession)
-
-                else:
-                    continue
-
-            for machine, count in machines.items():
-                machine = machine.split("_")[0]
-                if count[0] > 0 or count[1] > 0:
-                    machine = machine.strip()
-                    machine = re.sub(r'[\[\]]', '', machine)
-                    machine, family, hardware = machine.split("-")
-
-                    hardware = Hardware.objects.get(
-                        project=project,
-                        name=hardware
-                    )
-                    family = MachineFamily.objects.get(
-                        project=project,
-                        name=family,
-                        hardware=hardware,
-                    )
-                    mach = Machine.objects.get(name=machine,
-                                               type=family,
-                                               hardware=hardware,
-                                               project=project)
-
-                    provider = MachineProvider.objects.get(name=count[3], project=project)
-                    if provider.name == "شرکتی":
-                        obj = MachineCount.objects.create(
-                            project=project,
-                            machine=mach,
-                            dailyReport=report,
-                            activeCount=count[1],
-                            inactiveCount=count[2],
-                            workHours=count[0],
-                            provider=provider,
-                            totalCount=sum(count[1:3]),
-                            onRent=False,
-                            hardware=hardware,
-                            type=family,
-                        )
+                    if report.deletable and report.editable:
+                        for item in report.taskreport_set.all():
+                            item.update_percentage(True, date=report.date)
+                        report.delete()
                     else:
-                        obj = MachineCount.objects.create(
-                            project=project,
-                            machine=mach,
-                            dailyReport=report,
-                            activeCount=1 if count[0] > 0 else 0,
-                            inactiveCount=0 if count[0] > 0 else 1,
-                            workHours=count[0],
-                            provider=provider,
-                            totalCount=1,
-                            onRent=True,
-                            hardware=hardware,
-                            type=family,
+                        raise PermissionDenied
 
-                        )
-
-                    report.machines.add(obj.machine)
-
-                else:
-                    continue
-
-            for material, amount in materials.items():
-                material = material.split("_")[0]
-                if amount[0] > 0:
-                    material = material.strip()
-
-                    mat = Material.objects.get(name=material, project=project)
-                    unit = Unit.objects.get(name=amount[1], project=project)
-                    materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
-                    obj = MaterialCount.objects.create(
+                    report = DailyReport.objects.create(
                         project=project,
-                        material=mat,
-                        dailyReport=report,
-                        amount=amount[0],
-                        unit=unit,
-                        provider=materialprovider,
+                        id=ID,
+                        project_name=data['project_name'][0],
+                        employer=data["employer"][0],
+                        employee=data["employee"][0],
+                        contract_number=data["contract_no"][0],
+                        date=jdatetime.datetime.strptime(data['date'][0], format="%Y-%m-%d").strftime(
+                            "%Y-%m-%d %H:%M:%S"),
+                        temperature_min=data["minTemp"][0],
+                        temperature_max=data["maxTemp"][0],
+                        weather=data["weather_status"][0],
+                        dust_value=data["dust_value"][0],
+                        consultor_name=data["consultor_name"][0],
+                        date_created=DATE_CREATED,
+                        edited=True,
                     )
-                    report.materials.add(obj.material)
-                else:
-                    continue
+                    report.set_weekday()
 
-            for contractor, count in contractors.items():
-                if sum(count) > 0:
-                    cont = Contractor.objects.get(name=contractor, project=project)
-                    obj = ContractorCount.objects.create(
-                        project=project,
-                        contractor=cont,
-                        dailyReport=report,
-                        countExpert=count[0],
-                        countSemiExpert=count[1],
-                        countNonExpert=count[2],
-                    )
-                    obj.cal_countTotal()
+                    report.project_name = data['project_name'][0]
+                    report.employer = data["employer"][0]
+                    report.employee = data["employee"][0]
+                    report.contract_number = data["contract_no"][0]
+                    # report.date =
+                    report.temperature_min = data["minTemp"][0]
+                    report.temperature_max = data["maxTemp"][0]
+                    report.weather = data["weather_status"][0]
+                    report.dust_value = data["dust_value"][0]
+                    report.consultor_name = data["consultor_name"][0]
+                    report.save()
+                    report.set_weekday()
 
-                    report.contractors.add(obj.contractor)
-                else:
-                    continue
+                    for position, count in positions.items():
+                        if count > 0:
+                            pos = Position.objects.get(name=position, project=project)
+                            obj = PositionCount.objects.create(
+                                project=project,
+                                position=pos,
+                                dailyReport=report,
+                                count=count,
+                            )
+                            report.positions.add(obj.position)
+                        else:
+                            continue
 
-            for equipe, count in equipes.items():
-                if sum(count) > 0:
-                    prof, cont = equipe.split("-")
-                    equ = Equipe.objects.get(
-                        project=project,
-                        profession=Profession.objects.get(name=prof, project=project),
-                        contractor=Contractor.objects.get(name=cont, project=project),
-                    )
-                    obj = EquipeCount.objects.create(
-                        project=project,
-                        equipe=equ,
-                        dailyReport=report,
-                        countExpert=count[0],
-                        countSemiExpert=count[1],
-                        countNonExpert=count[2],
-                    )
-                    obj.cal_countTotal()
+                    for profession, count in professions.items():
+                        if sum(count) > 0:
+                            prof = Profession.objects.get(name=profession, project=project)
+                            obj = ProfessionCount.objects.create(
+                                project=project,
+                                profession=prof,
+                                dailyReport=report,
+                                countExpert=count[0],
+                                countSemiExpert=count[1],
+                                countNonExpert=count[2],
+                            )
+                            obj.cal_countTotal()
 
-                    report.equipes.add(obj.equipe)
-                else:
-                    continue
+                            report.professions.add(obj.profession)
 
-            for task, amount in tasks.items():
-                if amount > 0:
-                    tsk = Task.objects.get(unique_str=task, project=project)
+                        else:
+                            continue
 
-                    if not tsk.started:
-                        tsk.start(date=report.date)
+                    for machine, count in machines.items():
+                        machine = machine.split("_")[0]
+                        if count[0] > 0 or count[1] > 0:
+                            machine = machine.strip()
+                            machine = re.sub(r'[\[\]]', '', machine)
+                            machine, family, hardware = machine.split("-")
 
-                    parent = TaskReport.objects.filter(task=tsk, project=project).last()
-                    tsk_rep = TaskReport.objects.create(
-                        project=project,
-                        task=tsk,
-                        operation=tsk.operation.operation,
-                        parent=parent,
-                        dailyReport=report,
-                        todayVolume=amount,
-                        reportDate=report.date,
-                        parentTask=tsk.parent,
-                    )
-                    tsk_rep.update_percentage(False, date=report.date)
-                    tsk_rep.update_filtering_fields()
-                    report.tasks.add(tsk_rep.task)
+                            hardware = Hardware.objects.get(
+                                project=project,
+                                name=hardware
+                            )
+                            family = MachineFamily.objects.get(
+                                project=project,
+                                name=family,
+                                hardware=hardware,
+                            )
+                            mach = Machine.objects.get(name=machine,
+                                                       type=family,
+                                                       hardware=hardware,
+                                                       project=project)
 
-            report.cal_countPeople()
-            report.cal_countMachines()
+                            provider = MachineProvider.objects.get(name=count[3], project=project)
+                            if provider.name == "شرکتی":
+                                obj = MachineCount.objects.create(
+                                    project=project,
+                                    machine=mach,
+                                    dailyReport=report,
+                                    activeCount=count[1],
+                                    inactiveCount=count[2],
+                                    workHours=count[0],
+                                    provider=provider,
+                                    totalCount=sum(count[1:3]),
+                                    onRent=False,
+                                    hardware=hardware,
+                                    type=family,
+                                )
+                            else:
+                                obj = MachineCount.objects.create(
+                                    project=project,
+                                    machine=mach,
+                                    dailyReport=report,
+                                    activeCount=1 if count[0] > 0 else 0,
+                                    inactiveCount=0 if count[0] > 0 else 1,
+                                    workHours=count[0],
+                                    provider=provider,
+                                    totalCount=1,
+                                    onRent=True,
+                                    hardware=hardware,
+                                    type=family,
 
-            # return redirect(to="/home/daily-reports")
-            return HttpResponse(True)
+                                )
+
+                            report.machines.add(obj.machine)
+
+                        else:
+                            continue
+
+                    for material, amount in materials.items():
+                        material = material.split("_")[0]
+                        if amount[0] > 0:
+                            material = material.strip()
+
+                            mat = Material.objects.get(name=material, project=project)
+                            unit = Unit.objects.get(name=amount[1], project=project)
+                            materialprovider = MaterialProvider.objects.get(name=amount[2], project=project)
+                            obj = MaterialCount.objects.create(
+                                project=project,
+                                material=mat,
+                                dailyReport=report,
+                                amount=amount[0],
+                                unit=unit,
+                                provider=materialprovider,
+                            )
+                            report.materials.add(obj.material)
+                        else:
+                            continue
+
+                    for contractor, count in contractors.items():
+                        if sum(count) > 0:
+                            cont = Contractor.objects.get(name=contractor, project=project)
+                            obj = ContractorCount.objects.create(
+                                project=project,
+                                contractor=cont,
+                                dailyReport=report,
+                                countExpert=count[0],
+                                countSemiExpert=count[1],
+                                countNonExpert=count[2],
+                            )
+                            obj.cal_countTotal()
+
+                            report.contractors.add(obj.contractor)
+                        else:
+                            continue
+
+                    for equipe, count in equipes.items():
+                        if sum(count) > 0:
+                            prof, cont = equipe.split("-")
+                            equ = Equipe.objects.get(
+                                project=project,
+                                profession=Profession.objects.get(name=prof, project=project),
+                                contractor=Contractor.objects.get(name=cont, project=project),
+                            )
+                            obj = EquipeCount.objects.create(
+                                project=project,
+                                equipe=equ,
+                                dailyReport=report,
+                                countExpert=count[0],
+                                countSemiExpert=count[1],
+                                countNonExpert=count[2],
+                            )
+                            obj.cal_countTotal()
+
+                            report.equipes.add(obj.equipe)
+                        else:
+                            continue
+
+                    for task, amount in tasks.items():
+                        if amount > 0:
+                            tsk = Task.objects.get(unique_str=task, project=project)
+
+                            if not tsk.started:
+                                tsk.start(date=report.date)
+
+                            parent = TaskReport.objects.filter(task=tsk, project=project).last()
+                            tsk_rep = TaskReport.objects.create(
+                                project=project,
+                                task=tsk,
+                                operation=tsk.operation.operation,
+                                parent=parent,
+                                dailyReport=report,
+                                todayVolume=amount,
+                                reportDate=report.date,
+                                parentTask=tsk.parent,
+                            )
+                            tsk_rep.update_percentage(False, date=report.date)
+                            tsk_rep.update_filtering_fields()
+                            report.tasks.add(tsk_rep.task)
+
+                    report.cal_countPeople()
+                    report.cal_countMachines()
+
+                # return redirect(to="/home/daily-reports")
+                return HttpResponse(True)
+
+            except:
+                return HttpResponse("Something went wrong", status=500)
 
 
 @login_required
