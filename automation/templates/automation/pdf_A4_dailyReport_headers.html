@@ -1,20 +1,47 @@
 {% load static %}
+{% load custom_tags %}
 <div class="form-title">
-    <div class="div-logo" style="">
-        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
-    </div>
+    {% if data.project.temp_code|equals:"#" %}
+
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/logo-kelvin.png' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+    {% elif data.project.temp_code|equals:"*" %}
+
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/logo-kpc.jpg' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+    {% endif %}
+
 
     <div class="div-title" style="">
         <h1 style="background-color: white">گزارش روزانه کارگاه</h1>
     </div>
 
-    <div class="div-logo" style="">
-        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
-    </div>
+    {% if data.project.temp_code|equals:"#" %}
 
-    <div class="div-logo" style="">
-        <img src="{% static 'images/bg.jpg' %}" style="width: 2.8cm; height: 3cm; ">
-    </div>
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/alumina-logo.png' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/alumina-logo.png' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+    {% elif data.project.temp_code|equals:"*" %}
+
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/logo-pamidco.png' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+        <div class="div-logo" style="">
+            <img src="{% static 'logo/logo-ghadir.jpg' %}" style="width: 2.8cm; height: 3cm; ">
+        </div>
+
+    {% endif %}
+
 </div>
 
 <div class="header-project">

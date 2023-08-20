@@ -21,6 +21,7 @@ class MyUser(models.Model):
 
 
 class Project(models.Model):
+    temp_code = models.CharField(max_length=5, default="*")
     name = models.CharField(max_length=250, unique=True, )
     employer = models.CharField(max_length=250,)
     employee = models.CharField(max_length=250,)

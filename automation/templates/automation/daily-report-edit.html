@@ -13,9 +13,19 @@
         <div class="row">
 
             <div class="row">
-                <div class="col-2 h-75">
-                    <img class="h-100 mx-auto" src="{% static 'logo/jpc.jpg' %}" style="max-width: 100%; display: block;">
-                </div>
+                {% if project.temp_code|equals:"#" %}
+
+                    <div class="col-2 h-75">
+                        <img class="h-100 mx-auto" src="{% static 'logo/logo-kelvin.png' %}" style="max-width: 100%; display: block;">
+                    </div>
+
+                {% elif project.temp_code|equals:"*" %}
+
+                    <div class="col-2 h-75">
+                        <img class="h-100 mx-auto" src="{% static 'logo/logo-kpc.jpg' %}" style="max-width: 100%; display: block;">
+                    </div>
+
+                {% endif %}
 
                 <div class="col-8">
                     <div class="col-12" style="padding: 0 0 0 0; margin: 0;">
@@ -146,9 +156,19 @@
                     </table>
                 </div>
 
-                <div class="col-2  h-75">
-                    <img class="h-100 mx-auto" src="{% static 'logo/pamidco.png' %}" style="max-width: 100%; display: block;">
-                </div>
+                {% if project.temp_code|equals:"#" %}
+
+                    <div class="col-2  h-75">
+                        <img class="h-100 mx-auto" src="{% static 'logo/alumina-logo.png' %}" style="max-width: 100%; display: block;">
+                    </div>
+
+                {% elif project.temp_code|equals:"*" %}
+
+                    <div class="col-2  h-75">
+                        <img class="h-100 mx-auto" src="{% static 'logo/alumina-logo.png' %}" style="max-width: 100%; display: block;">
+                    </div>
+
+                {% endif %}
 
             </div>
 
