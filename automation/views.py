@@ -4440,7 +4440,7 @@ def get_task_filters(request):
                     data[task.operation.operation.name].append({
                         "target": task.equipe.contractor.name,
                         "zone": task.operation.zone.name,
-                        "amount": task.operation.amount,
+                        "amount": task.totalVolume,
                         "unit": task.operation.unit.name,
                     })
             elif model == "contractor":
@@ -4449,7 +4449,7 @@ def get_task_filters(request):
                     data[task.equipe.contractor.name].append({
                         "target": task.operation.operation.name,
                         "zone": task.operation.zone.name,
-                        "amount": task.operation.amount,
+                        "amount": task.totalVolume,
                         "unit": task.operation.unit.name,
                     })
 
