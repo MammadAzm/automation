@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-171bd8c+)*#60-x)7l_r=&57%0(zh4of98ja4w^2n(oj4gzz(9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", '192.168.1.6']
+ALLOWED_HOSTS = ['*', 'karpayesh.ir']
 
 
 # Application definition
@@ -90,6 +90,19 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "mysql.connector.django",
+#         "NAME": "karpayes_karpayesh",
+#         "USER": "karpayes_karpayesh",
+#         "PASSWORD": "25Mk34HsbdYZDPX",
+#         "HOST": "localhost",
+#         "Port": "3306",
+#     }
+# }
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -122,10 +135,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+STATIC_ROOT = "/home/karpayes/public_html/karpayesh.ir/static"
 
 
 

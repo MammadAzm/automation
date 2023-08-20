@@ -1,0 +1,4519 @@
+{
+    "new": [
+        {
+            "path2": "manage.py"
+        },
+        {
+            "path2": "requirements.txt"
+        },
+        {
+            "path2": "alphaProject"
+        },
+        {
+            "path2": "automation"
+        },
+        {
+            "path2": "static"
+        },
+        {
+            "path2": "alphaProject/asgi.py"
+        },
+        {
+            "path2": "alphaProject/settings.py"
+        },
+        {
+            "path2": "alphaProject/urls.py"
+        },
+        {
+            "path2": "alphaProject/wsgi.py"
+        },
+        {
+            "path2": "alphaProject/__init__.py"
+        },
+        {
+            "path2": "alphaProject/__pycache__"
+        },
+        {
+            "path2": "automation/admin.py"
+        },
+        {
+            "path2": "automation/apps.py"
+        },
+        {
+            "path2": "automation/CONSTANTS.py"
+        },
+        {
+            "path2": "automation/converters.py"
+        },
+        {
+            "path2": "automation/custom_filters.py"
+        },
+        {
+            "path2": "automation/models.py"
+        },
+        {
+            "path2": "automation/signals.py"
+        },
+        {
+            "path2": "automation/tests.py"
+        },
+        {
+            "path2": "automation/views.py"
+        },
+        {
+            "path2": "automation/__init__.py"
+        },
+        {
+            "path2": "automation/migrations"
+        },
+        {
+            "path2": "automation/templates"
+        },
+        {
+            "path2": "automation/templatetags"
+        },
+        {
+            "path2": "automation/__pycache__"
+        },
+        {
+            "path2": "automation/migrations/0001_initial.py"
+        },
+        {
+            "path2": "automation/migrations/0002_dailyreport_professioncount_positioncount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0003_rename_position_position_name.py"
+        },
+        {
+            "path2": "automation/migrations/0004_rename_profession_profession_name.py"
+        },
+        {
+            "path2": "automation/migrations/0005_alter_professioncount_counttotal.py"
+        },
+        {
+            "path2": "automation/migrations/0006_dailyreport_countpositions_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0007_dailyreport_contract_number_dailyreport_employee_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0008_alter_position_name_alter_profession_name.py"
+        },
+        {
+            "path2": "automation/migrations/0009_machine_machinecount.py"
+        },
+        {
+            "path2": "automation/migrations/0010_alter_machine_name_alter_machine_type.py"
+        },
+        {
+            "path2": "automation/migrations/0011_dailyreport_countmachines_dailyreport_machines_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0012_alter_machinecount_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0013_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0014_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0015_alter_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0016_alter_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0017_material_unit_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0018_rename_count_machinecount_activecount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0019_remove_machinecount_activecount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0020_machinecount_totalcount.py"
+        },
+        {
+            "path2": "automation/migrations/0021_remove_dailyreport_countmachines_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0022_equipe_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0023_rename_equipe_contractor.py"
+        },
+        {
+            "path2": "automation/migrations/0024_equipe.py"
+        },
+        {
+            "path2": "automation/migrations/0025_alter_equipe_unique_together.py"
+        },
+        {
+            "path2": "automation/migrations/0026_eqquipecount.py"
+        },
+        {
+            "path2": "automation/migrations/0027_contractorcount_equipecount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0028_equipe_name.py"
+        },
+        {
+            "path2": "automation/migrations/0029_alter_equipe_name.py"
+        },
+        {
+            "path2": "automation/migrations/0030_alter_equipe_name.py"
+        },
+        {
+            "path2": "automation/migrations/0031_alter_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0032_zone_alter_machine_type.py"
+        },
+        {
+            "path2": "automation/migrations/0033_task_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0034_alter_task_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0035_task_unique_str.py"
+        },
+        {
+            "path2": "automation/migrations/0036_alter_task_unique_str.py"
+        },
+        {
+            "path2": "automation/migrations/0037_alter_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0038_alter_dailyreport_date_alter_dailyreport_weekday.py"
+        },
+        {
+            "path2": "automation/migrations/0039_taskreport_predonepercentage_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0040_task_predonevolume.py"
+        },
+        {
+            "path2": "automation/migrations/0041_rename_predonevolume_task_predonevolume.py"
+        },
+        {
+            "path2": "automation/migrations/0042_taskreport_parent.py"
+        },
+        {
+            "path2": "automation/migrations/0043_remove_task_predonevolume_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0044_taskreport_predonepercentage.py"
+        },
+        {
+            "path2": "automation/migrations/0045_dailyreport_deletable.py"
+        },
+        {
+            "path2": "automation/migrations/0046_alter_dailyreport_date.py"
+        },
+        {
+            "path2": "automation/migrations/0047_alter_dailyreport_date.py"
+        },
+        {
+            "path2": "automation/migrations/0048_alter_dailyreport_date.py"
+        },
+        {
+            "path2": "automation/migrations/0049_alter_dailyreport_date.py"
+        },
+        {
+            "path2": "automation/migrations/0050_dailyreport_date_created_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0051_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0052_dailyreport_temperature_max_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0053_dailyreport_weather_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0054_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0055_dailyreport_dust_value_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0056_dailyreport_consultor_name_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0057_provider_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0058_rename_provider_materialprovider_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0059_machineprovider_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0060_machinecount_workhours_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0061_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0062_task_completion_date_task_start_date_task_started_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0063_task_completed_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0064_dailyreport_short_date_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0065_dailyreport_date_edited_dailyreport_editable_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0066_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0067_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0068_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0069_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0070_operation_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0071_remove_suboperation_parentplussubs_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0072_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0073_suboperation_name_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0074_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0075_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0076_alter_suboperation_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0077_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0078_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0079_remove_operationbreak_operation_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0080_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0081_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0082_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0083_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0084_operation_suboperations_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0085_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0086_operation_assignedweight_operation_freeamount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0087_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0088_operation_zones_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0089_zoneoperation_unit_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0090_zoneoperation_assignedamount_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0091_rename_name_task_operation_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0092_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0093_zoneoperation_tasks_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0094_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0095_zoneoperation_parenttasks_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0096_parenttask_subtasks_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0097_operation_donepercentage_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0098_taskreport_parenttask_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0099_remove_taskreport_parenttask_taskreport_operation_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0100_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0101_dailyreport_created_at_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0102_taskreport_created_at_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0103_book_movie_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0104_delete_book_delete_movie_taskreport_parenttask_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0105_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0106_taskreport_reportdate_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0107_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0108_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0109_taskreport_equipe_taskreport_zone_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0110_alter_dailyreport_created_at_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0111_unit_coef_unit_parent_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0112_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0113_project_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0114_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0115_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0116_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0117_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0118_projectuser_is_superuser_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0119_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0120_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0121_myuser_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0122_remove_project_projectuser_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0123_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0124_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0125_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0126_project_user_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0127_position_project_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0128_alter_positioncount_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0129_alter_professioncount_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0130_alter_machinecount_unique_together_machine_project_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0131_alter_contractorcount_unique_together_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0132_project_dailyreports_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0133_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0134_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0135_remove_machine_type_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0136_machine_type_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0137_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0138_machinefamily_hardware_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0139_machine_hardware_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0140_machinecount_hardware_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0141_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0142_machinecount_type_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0143_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0144_machinecount_onrent_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0145_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0146_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0147_issuereport_completion_date_issuereport_solved_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0148_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0149_issuereport_started_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0150_issuereport_issuecounts_alter_dailyreport_date_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/0151_alter_contractor_project_and_more.py"
+        },
+        {
+            "path2": "automation/migrations/__init__.py"
+        },
+        {
+            "path2": "automation/migrations/__pycache__"
+        },
+        {
+            "path2": "automation/templates/automation"
+        },
+        {
+            "path2": "automation/templates/automation/analyzer.html"
+        },
+        {
+            "path2": "automation/templates/automation/base.html"
+        },
+        {
+            "path2": "automation/templates/automation/daily-report-edit.html"
+        },
+        {
+            "path2": "automation/templates/automation/daily-report.html"
+        },
+        {
+            "path2": "automation/templates/automation/home.html"
+        },
+        {
+            "path2": "automation/templates/automation/modify-base-data.html"
+        },
+        {
+            "path2": "automation/templates/automation/one_column_daily_report.html"
+        },
+        {
+            "path2": "automation/templates/automation/operation-breaks.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_base.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_compact.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_compact_machines_materials_portrait.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_compact_tasks_landscape.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_headers.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_humanresources_portrait.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_issues_portrait.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_landscape.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_machines_materials_portrait.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_machines_portrait_oldVersion.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_materials_portrait.html"
+        },
+        {
+            "path2": "automation/templates/automation/pdf_A4_dailyReport_inDetails_tasks_landscape.html"
+        },
+        {
+            "path2": "automation/templates/automation/print-report.html"
+        },
+        {
+            "path2": "automation/templates/automation/print-short-report.html"
+        },
+        {
+            "path2": "automation/templates/automation/recursive_table.html"
+        },
+        {
+            "path2": "automation/templates/automation/reports-list.html"
+        },
+        {
+            "path2": "automation/templates/automation/temp.html"
+        },
+        {
+            "path2": "automation/templates/automation/temp2.html"
+        },
+        {
+            "path2": "automation/templatetags/custom_tags.py"
+        },
+        {
+            "path2": "automation/templatetags/__init__.py"
+        },
+        {
+            "path2": "automation/templatetags/__pycache__"
+        },
+        {
+            "path2": "static/css"
+        },
+        {
+            "path2": "static/icons"
+        },
+        {
+            "path2": "static/images"
+        },
+        {
+            "path2": "static/js"
+        },
+        {
+            "path2": "static/logo"
+        },
+        {
+            "path2": "static/css/homeStyle.css"
+        },
+        {
+            "path2": "static/css/jalalidatepicker.css"
+        },
+        {
+            "path2": "static/css/jalalidatepicker.min.css"
+        },
+        {
+            "path2": "static/css/myStyle.css"
+        },
+        {
+            "path2": "static/css/pdfTemplateStyles.css"
+        },
+        {
+            "path2": "static/css/style01.css"
+        },
+        {
+            "path2": "static/css/temp.css"
+        },
+        {
+            "path2": "static/icons/alarm-fill.svg"
+        },
+        {
+            "path2": "static/icons/alarm.svg"
+        },
+        {
+            "path2": "static/icons/align-bottom.svg"
+        },
+        {
+            "path2": "static/icons/align-center.svg"
+        },
+        {
+            "path2": "static/icons/align-end.svg"
+        },
+        {
+            "path2": "static/icons/align-middle.svg"
+        },
+        {
+            "path2": "static/icons/align-start.svg"
+        },
+        {
+            "path2": "static/icons/align-top.svg"
+        },
+        {
+            "path2": "static/icons/alt.svg"
+        },
+        {
+            "path2": "static/icons/app-indicator.svg"
+        },
+        {
+            "path2": "static/icons/app.svg"
+        },
+        {
+            "path2": "static/icons/archive-fill.svg"
+        },
+        {
+            "path2": "static/icons/archive.svg"
+        },
+        {
+            "path2": "static/icons/arrow-90deg-down.svg"
+        },
+        {
+            "path2": "static/icons/arrow-90deg-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-90deg-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-90deg-up.svg"
+        },
+        {
+            "path2": "static/icons/arrow-bar-down.svg"
+        },
+        {
+            "path2": "static/icons/arrow-bar-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-bar-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-bar-up.svg"
+        },
+        {
+            "path2": "static/icons/arrow-clockwise.svg"
+        },
+        {
+            "path2": "static/icons/arrow-counterclockwise.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-left-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-left-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-left-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-left-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-right-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-right-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-right-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-right-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-short.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down-up.svg"
+        },
+        {
+            "path2": "static/icons/arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-short.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-repeat.svg"
+        },
+        {
+            "path2": "static/icons/arrow-return-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-return-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right-short.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-left-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-left-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-left-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-left-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-left.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-right-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-right-circle.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-right-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-right-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-right.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-short.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up-square.svg"
+        },
+        {
+            "path2": "static/icons/arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/arrows-angle-contract.svg"
+        },
+        {
+            "path2": "static/icons/arrows-angle-expand.svg"
+        },
+        {
+            "path2": "static/icons/arrows-collapse.svg"
+        },
+        {
+            "path2": "static/icons/arrows-expand.svg"
+        },
+        {
+            "path2": "static/icons/arrows-fullscreen.svg"
+        },
+        {
+            "path2": "static/icons/arrows-move.svg"
+        },
+        {
+            "path2": "static/icons/aspect-ratio-fill.svg"
+        },
+        {
+            "path2": "static/icons/aspect-ratio.svg"
+        },
+        {
+            "path2": "static/icons/asterisk.svg"
+        },
+        {
+            "path2": "static/icons/at.svg"
+        },
+        {
+            "path2": "static/icons/award-fill.svg"
+        },
+        {
+            "path2": "static/icons/award.svg"
+        },
+        {
+            "path2": "static/icons/back.svg"
+        },
+        {
+            "path2": "static/icons/backspace-fill.svg"
+        },
+        {
+            "path2": "static/icons/backspace-reverse-fill.svg"
+        },
+        {
+            "path2": "static/icons/backspace-reverse.svg"
+        },
+        {
+            "path2": "static/icons/backspace.svg"
+        },
+        {
+            "path2": "static/icons/badge-3d-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-3d.svg"
+        },
+        {
+            "path2": "static/icons/badge-4k-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-4k.svg"
+        },
+        {
+            "path2": "static/icons/badge-8k-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-8k.svg"
+        },
+        {
+            "path2": "static/icons/badge-ad-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-ad.svg"
+        },
+        {
+            "path2": "static/icons/badge-ar-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-ar.svg"
+        },
+        {
+            "path2": "static/icons/badge-cc-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-cc.svg"
+        },
+        {
+            "path2": "static/icons/badge-hd-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-hd.svg"
+        },
+        {
+            "path2": "static/icons/badge-tm-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-tm.svg"
+        },
+        {
+            "path2": "static/icons/badge-vo-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-vo.svg"
+        },
+        {
+            "path2": "static/icons/badge-vr-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-vr.svg"
+        },
+        {
+            "path2": "static/icons/badge-wc-fill.svg"
+        },
+        {
+            "path2": "static/icons/badge-wc.svg"
+        },
+        {
+            "path2": "static/icons/bag-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/bag-check.svg"
+        },
+        {
+            "path2": "static/icons/bag-dash-fill.svg"
+        },
+        {
+            "path2": "static/icons/bag-dash.svg"
+        },
+        {
+            "path2": "static/icons/bag-fill.svg"
+        },
+        {
+            "path2": "static/icons/bag-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/bag-plus.svg"
+        },
+        {
+            "path2": "static/icons/bag-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/bag-x.svg"
+        },
+        {
+            "path2": "static/icons/bag.svg"
+        },
+        {
+            "path2": "static/icons/bar-chart-fill.svg"
+        },
+        {
+            "path2": "static/icons/bar-chart-line-fill.svg"
+        },
+        {
+            "path2": "static/icons/bar-chart-line.svg"
+        },
+        {
+            "path2": "static/icons/bar-chart-steps.svg"
+        },
+        {
+            "path2": "static/icons/bar-chart.svg"
+        },
+        {
+            "path2": "static/icons/basket-fill.svg"
+        },
+        {
+            "path2": "static/icons/basket.svg"
+        },
+        {
+            "path2": "static/icons/basket2-fill.svg"
+        },
+        {
+            "path2": "static/icons/basket2.svg"
+        },
+        {
+            "path2": "static/icons/basket3-fill.svg"
+        },
+        {
+            "path2": "static/icons/basket3.svg"
+        },
+        {
+            "path2": "static/icons/battery-charging.svg"
+        },
+        {
+            "path2": "static/icons/battery-full.svg"
+        },
+        {
+            "path2": "static/icons/battery-half.svg"
+        },
+        {
+            "path2": "static/icons/battery.svg"
+        },
+        {
+            "path2": "static/icons/bell-fill.svg"
+        },
+        {
+            "path2": "static/icons/bell.svg"
+        },
+        {
+            "path2": "static/icons/bezier.svg"
+        },
+        {
+            "path2": "static/icons/bezier2.svg"
+        },
+        {
+            "path2": "static/icons/bicycle.svg"
+        },
+        {
+            "path2": "static/icons/binoculars-fill.svg"
+        },
+        {
+            "path2": "static/icons/binoculars.svg"
+        },
+        {
+            "path2": "static/icons/blockquote-left.svg"
+        },
+        {
+            "path2": "static/icons/blockquote-right.svg"
+        },
+        {
+            "path2": "static/icons/book-fill.svg"
+        },
+        {
+            "path2": "static/icons/book-half.svg"
+        },
+        {
+            "path2": "static/icons/book.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-check.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-dash-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-dash.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-heart-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-heart.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-plus.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-star-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-star.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmark-x.svg"
+        },
+        {
+            "path2": "static/icons/bookmark.svg"
+        },
+        {
+            "path2": "static/icons/bookmarks-fill.svg"
+        },
+        {
+            "path2": "static/icons/bookmarks.svg"
+        },
+        {
+            "path2": "static/icons/bookshelf.svg"
+        },
+        {
+            "path2": "static/icons/bootstrap-fill.svg"
+        },
+        {
+            "path2": "static/icons/bootstrap-reboot.svg"
+        },
+        {
+            "path2": "static/icons/bootstrap.svg"
+        },
+        {
+            "path2": "static/icons/border-all.svg"
+        },
+        {
+            "path2": "static/icons/border-bottom.svg"
+        },
+        {
+            "path2": "static/icons/border-center.svg"
+        },
+        {
+            "path2": "static/icons/border-inner.svg"
+        },
+        {
+            "path2": "static/icons/border-left.svg"
+        },
+        {
+            "path2": "static/icons/border-middle.svg"
+        },
+        {
+            "path2": "static/icons/border-outer.svg"
+        },
+        {
+            "path2": "static/icons/border-right.svg"
+        },
+        {
+            "path2": "static/icons/border-style.svg"
+        },
+        {
+            "path2": "static/icons/border-top.svg"
+        },
+        {
+            "path2": "static/icons/border-width.svg"
+        },
+        {
+            "path2": "static/icons/border.svg"
+        },
+        {
+            "path2": "static/icons/bounding-box-circles.svg"
+        },
+        {
+            "path2": "static/icons/bounding-box.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-down-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-down-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-down-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-down-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-down.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-up-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-up-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-in-up.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-up-left.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-up-right.svg"
+        },
+        {
+            "path2": "static/icons/box-arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/box-seam.svg"
+        },
+        {
+            "path2": "static/icons/box.svg"
+        },
+        {
+            "path2": "static/icons/braces.svg"
+        },
+        {
+            "path2": "static/icons/bricks.svg"
+        },
+        {
+            "path2": "static/icons/briefcase-fill.svg"
+        },
+        {
+            "path2": "static/icons/briefcase.svg"
+        },
+        {
+            "path2": "static/icons/brightness-alt-high-fill.svg"
+        },
+        {
+            "path2": "static/icons/brightness-alt-high.svg"
+        },
+        {
+            "path2": "static/icons/brightness-alt-low-fill.svg"
+        },
+        {
+            "path2": "static/icons/brightness-alt-low.svg"
+        },
+        {
+            "path2": "static/icons/brightness-high-fill.svg"
+        },
+        {
+            "path2": "static/icons/brightness-high.svg"
+        },
+        {
+            "path2": "static/icons/brightness-low-fill.svg"
+        },
+        {
+            "path2": "static/icons/brightness-low.svg"
+        },
+        {
+            "path2": "static/icons/broadcast-pin.svg"
+        },
+        {
+            "path2": "static/icons/broadcast.svg"
+        },
+        {
+            "path2": "static/icons/brush-fill.svg"
+        },
+        {
+            "path2": "static/icons/brush.svg"
+        },
+        {
+            "path2": "static/icons/bucket-fill.svg"
+        },
+        {
+            "path2": "static/icons/bucket.svg"
+        },
+        {
+            "path2": "static/icons/bug-fill.svg"
+        },
+        {
+            "path2": "static/icons/bug.svg"
+        },
+        {
+            "path2": "static/icons/building-down.svg"
+        },
+        {
+            "path2": "static/icons/building-fill-down.svg"
+        },
+        {
+            "path2": "static/icons/building.svg"
+        },
+        {
+            "path2": "static/icons/bullseye.svg"
+        },
+        {
+            "path2": "static/icons/calculator-fill.svg"
+        },
+        {
+            "path2": "static/icons/calculator.svg"
+        },
+        {
+            "path2": "static/icons/calendar-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-check.svg"
+        },
+        {
+            "path2": "static/icons/calendar-date-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-date.svg"
+        },
+        {
+            "path2": "static/icons/calendar-day-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-day.svg"
+        },
+        {
+            "path2": "static/icons/calendar-event-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-event.svg"
+        },
+        {
+            "path2": "static/icons/calendar-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-minus.svg"
+        },
+        {
+            "path2": "static/icons/calendar-month-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-month.svg"
+        },
+        {
+            "path2": "static/icons/calendar-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-plus.svg"
+        },
+        {
+            "path2": "static/icons/calendar-range-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-range.svg"
+        },
+        {
+            "path2": "static/icons/calendar-week-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-week.svg"
+        },
+        {
+            "path2": "static/icons/calendar-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar-x.svg"
+        },
+        {
+            "path2": "static/icons/calendar.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-check.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-date-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-date.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-day-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-day.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-event-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-event.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-minus.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-month-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-month.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-plus.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-range-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-range.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-week-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-week.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar2-x.svg"
+        },
+        {
+            "path2": "static/icons/calendar2.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-event-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-event.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-range-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-range.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-week-fill.svg"
+        },
+        {
+            "path2": "static/icons/calendar3-week.svg"
+        },
+        {
+            "path2": "static/icons/calendar3.svg"
+        },
+        {
+            "path2": "static/icons/calendar4-event.svg"
+        },
+        {
+            "path2": "static/icons/calendar4-range.svg"
+        },
+        {
+            "path2": "static/icons/calendar4-week.svg"
+        },
+        {
+            "path2": "static/icons/calendar4.svg"
+        },
+        {
+            "path2": "static/icons/camera-fill.svg"
+        },
+        {
+            "path2": "static/icons/camera-reels-fill.svg"
+        },
+        {
+            "path2": "static/icons/camera-reels.svg"
+        },
+        {
+            "path2": "static/icons/camera-video-fill.svg"
+        },
+        {
+            "path2": "static/icons/camera-video-off-fill.svg"
+        },
+        {
+            "path2": "static/icons/camera-video-off.svg"
+        },
+        {
+            "path2": "static/icons/camera-video.svg"
+        },
+        {
+            "path2": "static/icons/camera.svg"
+        },
+        {
+            "path2": "static/icons/camera2.svg"
+        },
+        {
+            "path2": "static/icons/capslock-fill.svg"
+        },
+        {
+            "path2": "static/icons/capslock.svg"
+        },
+        {
+            "path2": "static/icons/card-checklist.svg"
+        },
+        {
+            "path2": "static/icons/card-heading.svg"
+        },
+        {
+            "path2": "static/icons/card-image.svg"
+        },
+        {
+            "path2": "static/icons/card-list.svg"
+        },
+        {
+            "path2": "static/icons/card-text.svg"
+        },
+        {
+            "path2": "static/icons/caret-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-down-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-down-square.svg"
+        },
+        {
+            "path2": "static/icons/caret-down.svg"
+        },
+        {
+            "path2": "static/icons/caret-left-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-left-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-left-square.svg"
+        },
+        {
+            "path2": "static/icons/caret-left.svg"
+        },
+        {
+            "path2": "static/icons/caret-right-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-right-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-right-square.svg"
+        },
+        {
+            "path2": "static/icons/caret-right.svg"
+        },
+        {
+            "path2": "static/icons/caret-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-up-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/caret-up-square.svg"
+        },
+        {
+            "path2": "static/icons/caret-up.svg"
+        },
+        {
+            "path2": "static/icons/cart-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/cart-check.svg"
+        },
+        {
+            "path2": "static/icons/cart-dash-fill.svg"
+        },
+        {
+            "path2": "static/icons/cart-dash.svg"
+        },
+        {
+            "path2": "static/icons/cart-fill.svg"
+        },
+        {
+            "path2": "static/icons/cart-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/cart-plus.svg"
+        },
+        {
+            "path2": "static/icons/cart-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/cart-x.svg"
+        },
+        {
+            "path2": "static/icons/cart.svg"
+        },
+        {
+            "path2": "static/icons/cart2.svg"
+        },
+        {
+            "path2": "static/icons/cart3.svg"
+        },
+        {
+            "path2": "static/icons/cart4.svg"
+        },
+        {
+            "path2": "static/icons/cash-stack.svg"
+        },
+        {
+            "path2": "static/icons/cash.svg"
+        },
+        {
+            "path2": "static/icons/cast.svg"
+        },
+        {
+            "path2": "static/icons/chat-dots-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-dots.svg"
+        },
+        {
+            "path2": "static/icons/chat-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-dots-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-dots.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-quote-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-quote.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-left-text.svg"
+        },
+        {
+            "path2": "static/icons/chat-left.svg"
+        },
+        {
+            "path2": "static/icons/chat-quote-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-quote.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-dots-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-dots.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-quote-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-quote.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-right-text.svg"
+        },
+        {
+            "path2": "static/icons/chat-right.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-dots-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-dots.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-quote-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-quote.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-square-text.svg"
+        },
+        {
+            "path2": "static/icons/chat-square.svg"
+        },
+        {
+            "path2": "static/icons/chat-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/chat-text.svg"
+        },
+        {
+            "path2": "static/icons/chat.svg"
+        },
+        {
+            "path2": "static/icons/check-all.svg"
+        },
+        {
+            "path2": "static/icons/check-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/check-circle.svg"
+        },
+        {
+            "path2": "static/icons/check-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/check-square.svg"
+        },
+        {
+            "path2": "static/icons/check.svg"
+        },
+        {
+            "path2": "static/icons/check2-all.svg"
+        },
+        {
+            "path2": "static/icons/check2-circle.svg"
+        },
+        {
+            "path2": "static/icons/check2-square.svg"
+        },
+        {
+            "path2": "static/icons/check2.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-contract.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-down.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-expand.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-left.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-right.svg"
+        },
+        {
+            "path2": "static/icons/chevron-bar-up.svg"
+        },
+        {
+            "path2": "static/icons/chevron-compact-down.svg"
+        },
+        {
+            "path2": "static/icons/chevron-compact-left.svg"
+        },
+        {
+            "path2": "static/icons/chevron-compact-right.svg"
+        },
+        {
+            "path2": "static/icons/chevron-compact-up.svg"
+        },
+        {
+            "path2": "static/icons/chevron-contract.svg"
+        },
+        {
+            "path2": "static/icons/chevron-double-down.svg"
+        },
+        {
+            "path2": "static/icons/chevron-double-left.svg"
+        },
+        {
+            "path2": "static/icons/chevron-double-right.svg"
+        },
+        {
+            "path2": "static/icons/chevron-double-up.svg"
+        },
+        {
+            "path2": "static/icons/chevron-down.svg"
+        },
+        {
+            "path2": "static/icons/chevron-expand.svg"
+        },
+        {
+            "path2": "static/icons/chevron-left.svg"
+        },
+        {
+            "path2": "static/icons/chevron-right.svg"
+        },
+        {
+            "path2": "static/icons/chevron-up.svg"
+        },
+        {
+            "path2": "static/icons/circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/circle-half.svg"
+        },
+        {
+            "path2": "static/icons/circle-square.svg"
+        },
+        {
+            "path2": "static/icons/circle.svg"
+        },
+        {
+            "path2": "static/icons/clipboard-check.svg"
+        },
+        {
+            "path2": "static/icons/clipboard-data.svg"
+        },
+        {
+            "path2": "static/icons/clipboard-minus.svg"
+        },
+        {
+            "path2": "static/icons/clipboard-plus.svg"
+        },
+        {
+            "path2": "static/icons/clipboard-x.svg"
+        },
+        {
+            "path2": "static/icons/clipboard.svg"
+        },
+        {
+            "path2": "static/icons/clock-fill.svg"
+        },
+        {
+            "path2": "static/icons/clock-history.svg"
+        },
+        {
+            "path2": "static/icons/clock.svg"
+        },
+        {
+            "path2": "static/icons/cloud-arrow-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/cloud-arrow-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/cloud-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-check.svg"
+        },
+        {
+            "path2": "static/icons/cloud-download-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-download.svg"
+        },
+        {
+            "path2": "static/icons/cloud-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-minus.svg"
+        },
+        {
+            "path2": "static/icons/cloud-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-plus.svg"
+        },
+        {
+            "path2": "static/icons/cloud-slash-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-slash.svg"
+        },
+        {
+            "path2": "static/icons/cloud-upload-fill.svg"
+        },
+        {
+            "path2": "static/icons/cloud-upload.svg"
+        },
+        {
+            "path2": "static/icons/cloud.svg"
+        },
+        {
+            "path2": "static/icons/code-slash.svg"
+        },
+        {
+            "path2": "static/icons/code-square.svg"
+        },
+        {
+            "path2": "static/icons/code.svg"
+        },
+        {
+            "path2": "static/icons/collection-fill.svg"
+        },
+        {
+            "path2": "static/icons/collection-play-fill.svg"
+        },
+        {
+            "path2": "static/icons/collection-play.svg"
+        },
+        {
+            "path2": "static/icons/collection.svg"
+        },
+        {
+            "path2": "static/icons/columns-gap.svg"
+        },
+        {
+            "path2": "static/icons/columns.svg"
+        },
+        {
+            "path2": "static/icons/command.svg"
+        },
+        {
+            "path2": "static/icons/compass-fill.svg"
+        },
+        {
+            "path2": "static/icons/compass.svg"
+        },
+        {
+            "path2": "static/icons/cone-striped.svg"
+        },
+        {
+            "path2": "static/icons/cone.svg"
+        },
+        {
+            "path2": "static/icons/controller.svg"
+        },
+        {
+            "path2": "static/icons/cpu-fill.svg"
+        },
+        {
+            "path2": "static/icons/cpu.svg"
+        },
+        {
+            "path2": "static/icons/credit-card-2-back-fill.svg"
+        },
+        {
+            "path2": "static/icons/credit-card-2-back.svg"
+        },
+        {
+            "path2": "static/icons/credit-card-2-front-fill.svg"
+        },
+        {
+            "path2": "static/icons/credit-card-2-front.svg"
+        },
+        {
+            "path2": "static/icons/credit-card-fill.svg"
+        },
+        {
+            "path2": "static/icons/credit-card.svg"
+        },
+        {
+            "path2": "static/icons/crop.svg"
+        },
+        {
+            "path2": "static/icons/cup-fill.svg"
+        },
+        {
+            "path2": "static/icons/cup-straw.svg"
+        },
+        {
+            "path2": "static/icons/cup.svg"
+        },
+        {
+            "path2": "static/icons/cursor-fill.svg"
+        },
+        {
+            "path2": "static/icons/cursor-text.svg"
+        },
+        {
+            "path2": "static/icons/cursor.svg"
+        },
+        {
+            "path2": "static/icons/dash-circle-dotted.svg"
+        },
+        {
+            "path2": "static/icons/dash-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/dash-circle.svg"
+        },
+        {
+            "path2": "static/icons/dash-square-dotted.svg"
+        },
+        {
+            "path2": "static/icons/dash-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/dash-square.svg"
+        },
+        {
+            "path2": "static/icons/dash.svg"
+        },
+        {
+            "path2": "static/icons/diagram-2-fill.svg"
+        },
+        {
+            "path2": "static/icons/diagram-2.svg"
+        },
+        {
+            "path2": "static/icons/diagram-3-fill.svg"
+        },
+        {
+            "path2": "static/icons/diagram-3.svg"
+        },
+        {
+            "path2": "static/icons/diamond-fill.svg"
+        },
+        {
+            "path2": "static/icons/diamond-half.svg"
+        },
+        {
+            "path2": "static/icons/diamond.svg"
+        },
+        {
+            "path2": "static/icons/dice-1-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-1.svg"
+        },
+        {
+            "path2": "static/icons/dice-2-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-2.svg"
+        },
+        {
+            "path2": "static/icons/dice-3-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-3.svg"
+        },
+        {
+            "path2": "static/icons/dice-4-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-4.svg"
+        },
+        {
+            "path2": "static/icons/dice-5-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-5.svg"
+        },
+        {
+            "path2": "static/icons/dice-6-fill.svg"
+        },
+        {
+            "path2": "static/icons/dice-6.svg"
+        },
+        {
+            "path2": "static/icons/disc-fill.svg"
+        },
+        {
+            "path2": "static/icons/disc.svg"
+        },
+        {
+            "path2": "static/icons/discord.svg"
+        },
+        {
+            "path2": "static/icons/display-fill.svg"
+        },
+        {
+            "path2": "static/icons/display.svg"
+        },
+        {
+            "path2": "static/icons/distribute-horizontal.svg"
+        },
+        {
+            "path2": "static/icons/distribute-vertical.svg"
+        },
+        {
+            "path2": "static/icons/door-closed-fill.svg"
+        },
+        {
+            "path2": "static/icons/door-closed.svg"
+        },
+        {
+            "path2": "static/icons/door-open-fill.svg"
+        },
+        {
+            "path2": "static/icons/door-open.svg"
+        },
+        {
+            "path2": "static/icons/dot.svg"
+        },
+        {
+            "path2": "static/icons/download.svg"
+        },
+        {
+            "path2": "static/icons/droplet-fill.svg"
+        },
+        {
+            "path2": "static/icons/droplet-half.svg"
+        },
+        {
+            "path2": "static/icons/droplet.svg"
+        },
+        {
+            "path2": "static/icons/earbuds.svg"
+        },
+        {
+            "path2": "static/icons/easel-fill.svg"
+        },
+        {
+            "path2": "static/icons/easel.svg"
+        },
+        {
+            "path2": "static/icons/egg-fill.svg"
+        },
+        {
+            "path2": "static/icons/egg-fried.svg"
+        },
+        {
+            "path2": "static/icons/egg.svg"
+        },
+        {
+            "path2": "static/icons/eject-fill.svg"
+        },
+        {
+            "path2": "static/icons/eject.svg"
+        },
+        {
+            "path2": "static/icons/emoji-angry-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-angry.svg"
+        },
+        {
+            "path2": "static/icons/emoji-dizzy-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-dizzy.svg"
+        },
+        {
+            "path2": "static/icons/emoji-expressionless-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-expressionless.svg"
+        },
+        {
+            "path2": "static/icons/emoji-frown-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-frown.svg"
+        },
+        {
+            "path2": "static/icons/emoji-heart-eyes-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-heart-eyes.svg"
+        },
+        {
+            "path2": "static/icons/emoji-laughing-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-laughing.svg"
+        },
+        {
+            "path2": "static/icons/emoji-neutral-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-neutral.svg"
+        },
+        {
+            "path2": "static/icons/emoji-smile-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-smile-upside-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-smile-upside-down.svg"
+        },
+        {
+            "path2": "static/icons/emoji-smile.svg"
+        },
+        {
+            "path2": "static/icons/emoji-sunglasses-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-sunglasses.svg"
+        },
+        {
+            "path2": "static/icons/emoji-wink-fill.svg"
+        },
+        {
+            "path2": "static/icons/emoji-wink.svg"
+        },
+        {
+            "path2": "static/icons/envelope-fill.svg"
+        },
+        {
+            "path2": "static/icons/envelope-open-fill.svg"
+        },
+        {
+            "path2": "static/icons/envelope-open.svg"
+        },
+        {
+            "path2": "static/icons/envelope.svg"
+        },
+        {
+            "path2": "static/icons/eraser-fill.svg"
+        },
+        {
+            "path2": "static/icons/eraser.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-circle.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-diamond-fill.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-diamond.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-octagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-octagon.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-square.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-triangle-fill.svg"
+        },
+        {
+            "path2": "static/icons/exclamation-triangle.svg"
+        },
+        {
+            "path2": "static/icons/exclamation.svg"
+        },
+        {
+            "path2": "static/icons/exclude.svg"
+        },
+        {
+            "path2": "static/icons/eye-fill.svg"
+        },
+        {
+            "path2": "static/icons/eye-slash-fill.svg"
+        },
+        {
+            "path2": "static/icons/eye-slash.svg"
+        },
+        {
+            "path2": "static/icons/eye.svg"
+        },
+        {
+            "path2": "static/icons/eyedropper.svg"
+        },
+        {
+            "path2": "static/icons/eyeglasses.svg"
+        },
+        {
+            "path2": "static/icons/facebook.svg"
+        },
+        {
+            "path2": "static/icons/file-arrow-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/file-arrow-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/file-bar-graph-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-bar-graph.svg"
+        },
+        {
+            "path2": "static/icons/file-binary-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-binary.svg"
+        },
+        {
+            "path2": "static/icons/file-break-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-break.svg"
+        },
+        {
+            "path2": "static/icons/file-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-check.svg"
+        },
+        {
+            "path2": "static/icons/file-code-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-code.svg"
+        },
+        {
+            "path2": "static/icons/file-diff-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-diff.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-arrow-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-arrow-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-bar-graph-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-bar-graph.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-binary-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-binary.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-break-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-break.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-check.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-code-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-code.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-diff-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-diff.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-easel-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-easel.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-excel-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-excel.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-font-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-font.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-image-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-image.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-lock-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-lock.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-lock2-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-lock2.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-medical-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-medical.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-minus.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-music-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-music.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-person-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-person.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-play-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-play.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-plus.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-post-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-post.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-ppt-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-ppt.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-richtext-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-richtext.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-ruled-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-ruled.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-slides-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-slides.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-spreadsheet-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-spreadsheet.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-text.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-word-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-word.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-x.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-zip-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark-zip.svg"
+        },
+        {
+            "path2": "static/icons/file-earmark.svg"
+        },
+        {
+            "path2": "static/icons/file-easel-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-easel.svg"
+        },
+        {
+            "path2": "static/icons/file-excel-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-excel.svg"
+        },
+        {
+            "path2": "static/icons/file-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-font-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-font.svg"
+        },
+        {
+            "path2": "static/icons/file-image-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-image.svg"
+        },
+        {
+            "path2": "static/icons/file-lock-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-lock.svg"
+        },
+        {
+            "path2": "static/icons/file-lock2-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-lock2.svg"
+        },
+        {
+            "path2": "static/icons/file-medical-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-medical.svg"
+        },
+        {
+            "path2": "static/icons/file-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-minus.svg"
+        },
+        {
+            "path2": "static/icons/file-music-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-music.svg"
+        },
+        {
+            "path2": "static/icons/file-person-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-person.svg"
+        },
+        {
+            "path2": "static/icons/file-play-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-play.svg"
+        },
+        {
+            "path2": "static/icons/file-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-plus.svg"
+        },
+        {
+            "path2": "static/icons/file-post-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-post.svg"
+        },
+        {
+            "path2": "static/icons/file-ppt-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-ppt.svg"
+        },
+        {
+            "path2": "static/icons/file-richtext-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-richtext.svg"
+        },
+        {
+            "path2": "static/icons/file-ruled-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-ruled.svg"
+        },
+        {
+            "path2": "static/icons/file-slides-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-slides.svg"
+        },
+        {
+            "path2": "static/icons/file-spreadsheet-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-spreadsheet.svg"
+        },
+        {
+            "path2": "static/icons/file-text-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-text.svg"
+        },
+        {
+            "path2": "static/icons/file-word-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-word.svg"
+        },
+        {
+            "path2": "static/icons/file-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-x.svg"
+        },
+        {
+            "path2": "static/icons/file-zip-fill.svg"
+        },
+        {
+            "path2": "static/icons/file-zip.svg"
+        },
+        {
+            "path2": "static/icons/file.svg"
+        },
+        {
+            "path2": "static/icons/files-alt.svg"
+        },
+        {
+            "path2": "static/icons/files.svg"
+        },
+        {
+            "path2": "static/icons/film.svg"
+        },
+        {
+            "path2": "static/icons/filter-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/filter-circle.svg"
+        },
+        {
+            "path2": "static/icons/filter-left.svg"
+        },
+        {
+            "path2": "static/icons/filter-right.svg"
+        },
+        {
+            "path2": "static/icons/filter-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/filter-square.svg"
+        },
+        {
+            "path2": "static/icons/filter.svg"
+        },
+        {
+            "path2": "static/icons/flag-fill.svg"
+        },
+        {
+            "path2": "static/icons/flag.svg"
+        },
+        {
+            "path2": "static/icons/flower1.svg"
+        },
+        {
+            "path2": "static/icons/flower2.svg"
+        },
+        {
+            "path2": "static/icons/flower3.svg"
+        },
+        {
+            "path2": "static/icons/folder-check.svg"
+        },
+        {
+            "path2": "static/icons/folder-fill.svg"
+        },
+        {
+            "path2": "static/icons/folder-minus.svg"
+        },
+        {
+            "path2": "static/icons/folder-plus.svg"
+        },
+        {
+            "path2": "static/icons/folder-symlink-fill.svg"
+        },
+        {
+            "path2": "static/icons/folder-symlink.svg"
+        },
+        {
+            "path2": "static/icons/folder-x.svg"
+        },
+        {
+            "path2": "static/icons/folder.svg"
+        },
+        {
+            "path2": "static/icons/folder2-open.svg"
+        },
+        {
+            "path2": "static/icons/folder2.svg"
+        },
+        {
+            "path2": "static/icons/fonts.svg"
+        },
+        {
+            "path2": "static/icons/forward-fill.svg"
+        },
+        {
+            "path2": "static/icons/forward.svg"
+        },
+        {
+            "path2": "static/icons/front.svg"
+        },
+        {
+            "path2": "static/icons/fullscreen-exit.svg"
+        },
+        {
+            "path2": "static/icons/fullscreen.svg"
+        },
+        {
+            "path2": "static/icons/funnel-fill.svg"
+        },
+        {
+            "path2": "static/icons/funnel.svg"
+        },
+        {
+            "path2": "static/icons/gear-fill.svg"
+        },
+        {
+            "path2": "static/icons/gear-wide-connected.svg"
+        },
+        {
+            "path2": "static/icons/gear-wide.svg"
+        },
+        {
+            "path2": "static/icons/gear.svg"
+        },
+        {
+            "path2": "static/icons/gem.svg"
+        },
+        {
+            "path2": "static/icons/geo-alt-fill.svg"
+        },
+        {
+            "path2": "static/icons/geo-alt.svg"
+        },
+        {
+            "path2": "static/icons/geo-fill.svg"
+        },
+        {
+            "path2": "static/icons/geo.svg"
+        },
+        {
+            "path2": "static/icons/gift-fill.svg"
+        },
+        {
+            "path2": "static/icons/gift.svg"
+        },
+        {
+            "path2": "static/icons/github.svg"
+        },
+        {
+            "path2": "static/icons/globe.svg"
+        },
+        {
+            "path2": "static/icons/globe2.svg"
+        },
+        {
+            "path2": "static/icons/google.svg"
+        },
+        {
+            "path2": "static/icons/graph-down.svg"
+        },
+        {
+            "path2": "static/icons/graph-up.svg"
+        },
+        {
+            "path2": "static/icons/grid-1x2-fill.svg"
+        },
+        {
+            "path2": "static/icons/grid-1x2.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x2-gap-fill.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x2-gap.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x2.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x3-gap-fill.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x3-gap.svg"
+        },
+        {
+            "path2": "static/icons/grid-3x3.svg"
+        },
+        {
+            "path2": "static/icons/grid-fill.svg"
+        },
+        {
+            "path2": "static/icons/grid.svg"
+        },
+        {
+            "path2": "static/icons/grip-horizontal.svg"
+        },
+        {
+            "path2": "static/icons/grip-vertical.svg"
+        },
+        {
+            "path2": "static/icons/hammer.svg"
+        },
+        {
+            "path2": "static/icons/hand-index-fill.svg"
+        },
+        {
+            "path2": "static/icons/hand-index-thumb-fill.svg"
+        },
+        {
+            "path2": "static/icons/hand-index-thumb.svg"
+        },
+        {
+            "path2": "static/icons/hand-index.svg"
+        },
+        {
+            "path2": "static/icons/hand-thumbs-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/hand-thumbs-down.svg"
+        },
+        {
+            "path2": "static/icons/hand-thumbs-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/hand-thumbs-up.svg"
+        },
+        {
+            "path2": "static/icons/handbag-fill.svg"
+        },
+        {
+            "path2": "static/icons/handbag.svg"
+        },
+        {
+            "path2": "static/icons/hash.svg"
+        },
+        {
+            "path2": "static/icons/hdd-fill.svg"
+        },
+        {
+            "path2": "static/icons/hdd-network-fill.svg"
+        },
+        {
+            "path2": "static/icons/hdd-network.svg"
+        },
+        {
+            "path2": "static/icons/hdd-rack-fill.svg"
+        },
+        {
+            "path2": "static/icons/hdd-rack.svg"
+        },
+        {
+            "path2": "static/icons/hdd-stack-fill.svg"
+        },
+        {
+            "path2": "static/icons/hdd-stack.svg"
+        },
+        {
+            "path2": "static/icons/hdd.svg"
+        },
+        {
+            "path2": "static/icons/headphones.svg"
+        },
+        {
+            "path2": "static/icons/headset.svg"
+        },
+        {
+            "path2": "static/icons/heart-fill.svg"
+        },
+        {
+            "path2": "static/icons/heart-half.svg"
+        },
+        {
+            "path2": "static/icons/heart.svg"
+        },
+        {
+            "path2": "static/icons/heptagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/heptagon-half.svg"
+        },
+        {
+            "path2": "static/icons/heptagon.svg"
+        },
+        {
+            "path2": "static/icons/hexagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/hexagon-half.svg"
+        },
+        {
+            "path2": "static/icons/hexagon.svg"
+        },
+        {
+            "path2": "static/icons/hourglass-bottom.svg"
+        },
+        {
+            "path2": "static/icons/hourglass-split.svg"
+        },
+        {
+            "path2": "static/icons/hourglass-top.svg"
+        },
+        {
+            "path2": "static/icons/hourglass.svg"
+        },
+        {
+            "path2": "static/icons/house-door-fill.svg"
+        },
+        {
+            "path2": "static/icons/house-door.svg"
+        },
+        {
+            "path2": "static/icons/house-fill.svg"
+        },
+        {
+            "path2": "static/icons/house.svg"
+        },
+        {
+            "path2": "static/icons/hr.svg"
+        },
+        {
+            "path2": "static/icons/image-alt.svg"
+        },
+        {
+            "path2": "static/icons/image-fill.svg"
+        },
+        {
+            "path2": "static/icons/image.svg"
+        },
+        {
+            "path2": "static/icons/images.svg"
+        },
+        {
+            "path2": "static/icons/inbox-fill.svg"
+        },
+        {
+            "path2": "static/icons/inbox.svg"
+        },
+        {
+            "path2": "static/icons/inboxes-fill.svg"
+        },
+        {
+            "path2": "static/icons/inboxes.svg"
+        },
+        {
+            "path2": "static/icons/info-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/info-circle.svg"
+        },
+        {
+            "path2": "static/icons/info-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/info-square.svg"
+        },
+        {
+            "path2": "static/icons/info.svg"
+        },
+        {
+            "path2": "static/icons/input-cursor-text.svg"
+        },
+        {
+            "path2": "static/icons/input-cursor.svg"
+        },
+        {
+            "path2": "static/icons/instagram.svg"
+        },
+        {
+            "path2": "static/icons/intersect.svg"
+        },
+        {
+            "path2": "static/icons/journal-album.svg"
+        },
+        {
+            "path2": "static/icons/journal-arrow-down.svg"
+        },
+        {
+            "path2": "static/icons/journal-arrow-up.svg"
+        },
+        {
+            "path2": "static/icons/journal-bookmark-fill.svg"
+        },
+        {
+            "path2": "static/icons/journal-bookmark.svg"
+        },
+        {
+            "path2": "static/icons/journal-check.svg"
+        },
+        {
+            "path2": "static/icons/journal-code.svg"
+        },
+        {
+            "path2": "static/icons/journal-medical.svg"
+        },
+        {
+            "path2": "static/icons/journal-minus.svg"
+        },
+        {
+            "path2": "static/icons/journal-plus.svg"
+        },
+        {
+            "path2": "static/icons/journal-richtext.svg"
+        },
+        {
+            "path2": "static/icons/journal-text.svg"
+        },
+        {
+            "path2": "static/icons/journal-x.svg"
+        },
+        {
+            "path2": "static/icons/journal.svg"
+        },
+        {
+            "path2": "static/icons/journals.svg"
+        },
+        {
+            "path2": "static/icons/joystick.svg"
+        },
+        {
+            "path2": "static/icons/justify-left.svg"
+        },
+        {
+            "path2": "static/icons/justify-right.svg"
+        },
+        {
+            "path2": "static/icons/justify.svg"
+        },
+        {
+            "path2": "static/icons/kanban-fill.svg"
+        },
+        {
+            "path2": "static/icons/kanban.svg"
+        },
+        {
+            "path2": "static/icons/key-fill.svg"
+        },
+        {
+            "path2": "static/icons/key.svg"
+        },
+        {
+            "path2": "static/icons/keyboard-fill.svg"
+        },
+        {
+            "path2": "static/icons/keyboard.svg"
+        },
+        {
+            "path2": "static/icons/ladder.svg"
+        },
+        {
+            "path2": "static/icons/lamp-fill.svg"
+        },
+        {
+            "path2": "static/icons/lamp.svg"
+        },
+        {
+            "path2": "static/icons/laptop-fill.svg"
+        },
+        {
+            "path2": "static/icons/laptop.svg"
+        },
+        {
+            "path2": "static/icons/layer-backward.svg"
+        },
+        {
+            "path2": "static/icons/layer-forward.svg"
+        },
+        {
+            "path2": "static/icons/layers-fill.svg"
+        },
+        {
+            "path2": "static/icons/layers-half.svg"
+        },
+        {
+            "path2": "static/icons/layers.svg"
+        },
+        {
+            "path2": "static/icons/layout-sidebar-inset-reverse.svg"
+        },
+        {
+            "path2": "static/icons/layout-sidebar-inset.svg"
+        },
+        {
+            "path2": "static/icons/layout-sidebar-reverse.svg"
+        },
+        {
+            "path2": "static/icons/layout-sidebar.svg"
+        },
+        {
+            "path2": "static/icons/layout-split.svg"
+        },
+        {
+            "path2": "static/icons/layout-text-sidebar-reverse.svg"
+        },
+        {
+            "path2": "static/icons/layout-text-sidebar.svg"
+        },
+        {
+            "path2": "static/icons/layout-text-window-reverse.svg"
+        },
+        {
+            "path2": "static/icons/layout-text-window.svg"
+        },
+        {
+            "path2": "static/icons/layout-three-columns.svg"
+        },
+        {
+            "path2": "static/icons/layout-wtf.svg"
+        },
+        {
+            "path2": "static/icons/life-preserver.svg"
+        },
+        {
+            "path2": "static/icons/lightbulb-fill.svg"
+        },
+        {
+            "path2": "static/icons/lightbulb-off-fill.svg"
+        },
+        {
+            "path2": "static/icons/lightbulb-off.svg"
+        },
+        {
+            "path2": "static/icons/lightbulb.svg"
+        },
+        {
+            "path2": "static/icons/lightning-fill.svg"
+        },
+        {
+            "path2": "static/icons/lightning.svg"
+        },
+        {
+            "path2": "static/icons/link-45deg.svg"
+        },
+        {
+            "path2": "static/icons/link.svg"
+        },
+        {
+            "path2": "static/icons/linkedin.svg"
+        },
+        {
+            "path2": "static/icons/list-check.svg"
+        },
+        {
+            "path2": "static/icons/list-nested.svg"
+        },
+        {
+            "path2": "static/icons/list-ol.svg"
+        },
+        {
+            "path2": "static/icons/list-stars.svg"
+        },
+        {
+            "path2": "static/icons/list-task.svg"
+        },
+        {
+            "path2": "static/icons/list-ul.svg"
+        },
+        {
+            "path2": "static/icons/list.svg"
+        },
+        {
+            "path2": "static/icons/lock-fill.svg"
+        },
+        {
+            "path2": "static/icons/lock.svg"
+        },
+        {
+            "path2": "static/icons/mailbox.svg"
+        },
+        {
+            "path2": "static/icons/mailbox2.svg"
+        },
+        {
+            "path2": "static/icons/map-fill.svg"
+        },
+        {
+            "path2": "static/icons/map.svg"
+        },
+        {
+            "path2": "static/icons/markdown-fill.svg"
+        },
+        {
+            "path2": "static/icons/markdown.svg"
+        },
+        {
+            "path2": "static/icons/mask.svg"
+        },
+        {
+            "path2": "static/icons/megaphone-fill.svg"
+        },
+        {
+            "path2": "static/icons/megaphone.svg"
+        },
+        {
+            "path2": "static/icons/menu-app-fill.svg"
+        },
+        {
+            "path2": "static/icons/menu-app.svg"
+        },
+        {
+            "path2": "static/icons/menu-button-fill.svg"
+        },
+        {
+            "path2": "static/icons/menu-button-wide-fill.svg"
+        },
+        {
+            "path2": "static/icons/menu-button-wide.svg"
+        },
+        {
+            "path2": "static/icons/menu-button.svg"
+        },
+        {
+            "path2": "static/icons/menu-down.svg"
+        },
+        {
+            "path2": "static/icons/menu-up.svg"
+        },
+        {
+            "path2": "static/icons/mic-fill.svg"
+        },
+        {
+            "path2": "static/icons/mic-mute-fill.svg"
+        },
+        {
+            "path2": "static/icons/mic-mute.svg"
+        },
+        {
+            "path2": "static/icons/mic.svg"
+        },
+        {
+            "path2": "static/icons/minecart-loaded.svg"
+        },
+        {
+            "path2": "static/icons/minecart.svg"
+        },
+        {
+            "path2": "static/icons/moon.svg"
+        },
+        {
+            "path2": "static/icons/mouse-fill.svg"
+        },
+        {
+            "path2": "static/icons/mouse.svg"
+        },
+        {
+            "path2": "static/icons/mouse2-fill.svg"
+        },
+        {
+            "path2": "static/icons/mouse2.svg"
+        },
+        {
+            "path2": "static/icons/mouse3-fill.svg"
+        },
+        {
+            "path2": "static/icons/mouse3.svg"
+        },
+        {
+            "path2": "static/icons/music-note-beamed.svg"
+        },
+        {
+            "path2": "static/icons/music-note-list.svg"
+        },
+        {
+            "path2": "static/icons/music-note.svg"
+        },
+        {
+            "path2": "static/icons/music-player-fill.svg"
+        },
+        {
+            "path2": "static/icons/music-player.svg"
+        },
+        {
+            "path2": "static/icons/newspaper.svg"
+        },
+        {
+            "path2": "static/icons/node-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/node-minus.svg"
+        },
+        {
+            "path2": "static/icons/node-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/node-plus.svg"
+        },
+        {
+            "path2": "static/icons/nut-fill.svg"
+        },
+        {
+            "path2": "static/icons/nut.svg"
+        },
+        {
+            "path2": "static/icons/octagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/octagon-half.svg"
+        },
+        {
+            "path2": "static/icons/octagon.svg"
+        },
+        {
+            "path2": "static/icons/option.svg"
+        },
+        {
+            "path2": "static/icons/outlet.svg"
+        },
+        {
+            "path2": "static/icons/paint-bucket.svg"
+        },
+        {
+            "path2": "static/icons/palette-fill.svg"
+        },
+        {
+            "path2": "static/icons/palette.svg"
+        },
+        {
+            "path2": "static/icons/palette2.svg"
+        },
+        {
+            "path2": "static/icons/paperclip.svg"
+        },
+        {
+            "path2": "static/icons/paragraph.svg"
+        },
+        {
+            "path2": "static/icons/patch-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/patch-check.svg"
+        },
+        {
+            "path2": "static/icons/patch-exclamation-fill.svg"
+        },
+        {
+            "path2": "static/icons/patch-exclamation.svg"
+        },
+        {
+            "path2": "static/icons/patch-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/patch-minus.svg"
+        },
+        {
+            "path2": "static/icons/patch-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/patch-plus.svg"
+        },
+        {
+            "path2": "static/icons/patch-question-fill.svg"
+        },
+        {
+            "path2": "static/icons/patch-question.svg"
+        },
+        {
+            "path2": "static/icons/pause-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/pause-btn.svg"
+        },
+        {
+            "path2": "static/icons/pause-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/pause-circle.svg"
+        },
+        {
+            "path2": "static/icons/pause-fill.svg"
+        },
+        {
+            "path2": "static/icons/pause.svg"
+        },
+        {
+            "path2": "static/icons/peace-fill.svg"
+        },
+        {
+            "path2": "static/icons/peace.svg"
+        },
+        {
+            "path2": "static/icons/pen-fill.svg"
+        },
+        {
+            "path2": "static/icons/pen.svg"
+        },
+        {
+            "path2": "static/icons/pencil-fill.svg"
+        },
+        {
+            "path2": "static/icons/pencil-square.svg"
+        },
+        {
+            "path2": "static/icons/pencil.svg"
+        },
+        {
+            "path2": "static/icons/pentagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/pentagon-half.svg"
+        },
+        {
+            "path2": "static/icons/pentagon.svg"
+        },
+        {
+            "path2": "static/icons/people-fill.svg"
+        },
+        {
+            "path2": "static/icons/people.svg"
+        },
+        {
+            "path2": "static/icons/percent.svg"
+        },
+        {
+            "path2": "static/icons/person-badge-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-badge.svg"
+        },
+        {
+            "path2": "static/icons/person-bounding-box.svg"
+        },
+        {
+            "path2": "static/icons/person-check-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-check.svg"
+        },
+        {
+            "path2": "static/icons/person-circle.svg"
+        },
+        {
+            "path2": "static/icons/person-dash-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-dash.svg"
+        },
+        {
+            "path2": "static/icons/person-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-lines-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-plus.svg"
+        },
+        {
+            "path2": "static/icons/person-square.svg"
+        },
+        {
+            "path2": "static/icons/person-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/person-x.svg"
+        },
+        {
+            "path2": "static/icons/person.svg"
+        },
+        {
+            "path2": "static/icons/phone-fill.svg"
+        },
+        {
+            "path2": "static/icons/phone-landscape-fill.svg"
+        },
+        {
+            "path2": "static/icons/phone-landscape.svg"
+        },
+        {
+            "path2": "static/icons/phone-vibrate-fill.svg"
+        },
+        {
+            "path2": "static/icons/phone-vibrate.svg"
+        },
+        {
+            "path2": "static/icons/phone.svg"
+        },
+        {
+            "path2": "static/icons/pie-chart-fill.svg"
+        },
+        {
+            "path2": "static/icons/pie-chart.svg"
+        },
+        {
+            "path2": "static/icons/pin-angle-fill.svg"
+        },
+        {
+            "path2": "static/icons/pin-angle.svg"
+        },
+        {
+            "path2": "static/icons/pin-fill.svg"
+        },
+        {
+            "path2": "static/icons/pin.svg"
+        },
+        {
+            "path2": "static/icons/pip-fill.svg"
+        },
+        {
+            "path2": "static/icons/pip.svg"
+        },
+        {
+            "path2": "static/icons/play-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/play-btn.svg"
+        },
+        {
+            "path2": "static/icons/play-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/play-circle.svg"
+        },
+        {
+            "path2": "static/icons/play-fill.svg"
+        },
+        {
+            "path2": "static/icons/play.svg"
+        },
+        {
+            "path2": "static/icons/plug-fill.svg"
+        },
+        {
+            "path2": "static/icons/plug.svg"
+        },
+        {
+            "path2": "static/icons/plus-circle-dotted.svg"
+        },
+        {
+            "path2": "static/icons/plus-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/plus-circle.svg"
+        },
+        {
+            "path2": "static/icons/plus-square-dotted.svg"
+        },
+        {
+            "path2": "static/icons/plus-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/plus-square.svg"
+        },
+        {
+            "path2": "static/icons/plus.svg"
+        },
+        {
+            "path2": "static/icons/power.svg"
+        },
+        {
+            "path2": "static/icons/printer-fill.svg"
+        },
+        {
+            "path2": "static/icons/printer.svg"
+        },
+        {
+            "path2": "static/icons/puzzle-fill.svg"
+        },
+        {
+            "path2": "static/icons/puzzle.svg"
+        },
+        {
+            "path2": "static/icons/question-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/question-circle.svg"
+        },
+        {
+            "path2": "static/icons/question-diamond-fill.svg"
+        },
+        {
+            "path2": "static/icons/question-diamond.svg"
+        },
+        {
+            "path2": "static/icons/question-octagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/question-octagon.svg"
+        },
+        {
+            "path2": "static/icons/question-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/question-square.svg"
+        },
+        {
+            "path2": "static/icons/question.svg"
+        },
+        {
+            "path2": "static/icons/receipt-cutoff.svg"
+        },
+        {
+            "path2": "static/icons/receipt.svg"
+        },
+        {
+            "path2": "static/icons/reception-0.svg"
+        },
+        {
+            "path2": "static/icons/reception-1.svg"
+        },
+        {
+            "path2": "static/icons/reception-2.svg"
+        },
+        {
+            "path2": "static/icons/reception-3.svg"
+        },
+        {
+            "path2": "static/icons/reception-4.svg"
+        },
+        {
+            "path2": "static/icons/record-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/record-btn.svg"
+        },
+        {
+            "path2": "static/icons/record-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/record-circle.svg"
+        },
+        {
+            "path2": "static/icons/record-fill.svg"
+        },
+        {
+            "path2": "static/icons/record.svg"
+        },
+        {
+            "path2": "static/icons/record2-fill.svg"
+        },
+        {
+            "path2": "static/icons/record2.svg"
+        },
+        {
+            "path2": "static/icons/reply-all-fill.svg"
+        },
+        {
+            "path2": "static/icons/reply-all.svg"
+        },
+        {
+            "path2": "static/icons/reply-fill.svg"
+        },
+        {
+            "path2": "static/icons/reply.svg"
+        },
+        {
+            "path2": "static/icons/rss-fill.svg"
+        },
+        {
+            "path2": "static/icons/rss.svg"
+        },
+        {
+            "path2": "static/icons/rulers.svg"
+        },
+        {
+            "path2": "static/icons/save-fill.svg"
+        },
+        {
+            "path2": "static/icons/save.svg"
+        },
+        {
+            "path2": "static/icons/save2-fill.svg"
+        },
+        {
+            "path2": "static/icons/save2.svg"
+        },
+        {
+            "path2": "static/icons/scissors.svg"
+        },
+        {
+            "path2": "static/icons/screwdriver.svg"
+        },
+        {
+            "path2": "static/icons/search.svg"
+        },
+        {
+            "path2": "static/icons/segmented-nav.svg"
+        },
+        {
+            "path2": "static/icons/server.svg"
+        },
+        {
+            "path2": "static/icons/share-fill.svg"
+        },
+        {
+            "path2": "static/icons/share.svg"
+        },
+        {
+            "path2": "static/icons/shield-check.svg"
+        },
+        {
+            "path2": "static/icons/shield-exclamation.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill-check.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill-exclamation.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill-minus.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill-plus.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill-x.svg"
+        },
+        {
+            "path2": "static/icons/shield-fill.svg"
+        },
+        {
+            "path2": "static/icons/shield-lock-fill.svg"
+        },
+        {
+            "path2": "static/icons/shield-lock.svg"
+        },
+        {
+            "path2": "static/icons/shield-minus.svg"
+        },
+        {
+            "path2": "static/icons/shield-plus.svg"
+        },
+        {
+            "path2": "static/icons/shield-shaded.svg"
+        },
+        {
+            "path2": "static/icons/shield-slash-fill.svg"
+        },
+        {
+            "path2": "static/icons/shield-slash.svg"
+        },
+        {
+            "path2": "static/icons/shield-x.svg"
+        },
+        {
+            "path2": "static/icons/shield.svg"
+        },
+        {
+            "path2": "static/icons/shift-fill.svg"
+        },
+        {
+            "path2": "static/icons/shift.svg"
+        },
+        {
+            "path2": "static/icons/shop-window.svg"
+        },
+        {
+            "path2": "static/icons/shop.svg"
+        },
+        {
+            "path2": "static/icons/shuffle.svg"
+        },
+        {
+            "path2": "static/icons/signpost-2-fill.svg"
+        },
+        {
+            "path2": "static/icons/signpost-2.svg"
+        },
+        {
+            "path2": "static/icons/signpost-fill.svg"
+        },
+        {
+            "path2": "static/icons/signpost-split-fill.svg"
+        },
+        {
+            "path2": "static/icons/signpost-split.svg"
+        },
+        {
+            "path2": "static/icons/signpost.svg"
+        },
+        {
+            "path2": "static/icons/sim-fill.svg"
+        },
+        {
+            "path2": "static/icons/sim.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward-btn.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward-circle.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-backward.svg"
+        },
+        {
+            "path2": "static/icons/skip-end-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-end-btn.svg"
+        },
+        {
+            "path2": "static/icons/skip-end-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-end-circle.svg"
+        },
+        {
+            "path2": "static/icons/skip-end-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-end.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward-btn.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward-circle.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-forward.svg"
+        },
+        {
+            "path2": "static/icons/skip-start-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-start-btn.svg"
+        },
+        {
+            "path2": "static/icons/skip-start-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-start-circle.svg"
+        },
+        {
+            "path2": "static/icons/skip-start-fill.svg"
+        },
+        {
+            "path2": "static/icons/skip-start.svg"
+        },
+        {
+            "path2": "static/icons/slack.svg"
+        },
+        {
+            "path2": "static/icons/slash-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/slash-circle.svg"
+        },
+        {
+            "path2": "static/icons/slash-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/slash-square.svg"
+        },
+        {
+            "path2": "static/icons/slash.svg"
+        },
+        {
+            "path2": "static/icons/sliders.svg"
+        },
+        {
+            "path2": "static/icons/smartwatch.svg"
+        },
+        {
+            "path2": "static/icons/sort-alpha-down-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-alpha-down.svg"
+        },
+        {
+            "path2": "static/icons/sort-alpha-up-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-alpha-up.svg"
+        },
+        {
+            "path2": "static/icons/sort-down-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-down.svg"
+        },
+        {
+            "path2": "static/icons/sort-numeric-down-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-numeric-down.svg"
+        },
+        {
+            "path2": "static/icons/sort-numeric-up-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-numeric-up.svg"
+        },
+        {
+            "path2": "static/icons/sort-up-alt.svg"
+        },
+        {
+            "path2": "static/icons/sort-up.svg"
+        },
+        {
+            "path2": "static/icons/soundwave.svg"
+        },
+        {
+            "path2": "static/icons/speaker-fill.svg"
+        },
+        {
+            "path2": "static/icons/speaker.svg"
+        },
+        {
+            "path2": "static/icons/speedometer.svg"
+        },
+        {
+            "path2": "static/icons/speedometer2.svg"
+        },
+        {
+            "path2": "static/icons/spellcheck.svg"
+        },
+        {
+            "path2": "static/icons/square-fill.svg"
+        },
+        {
+            "path2": "static/icons/square-half.svg"
+        },
+        {
+            "path2": "static/icons/square.svg"
+        },
+        {
+            "path2": "static/icons/stack.svg"
+        },
+        {
+            "path2": "static/icons/star-fill.svg"
+        },
+        {
+            "path2": "static/icons/star-half.svg"
+        },
+        {
+            "path2": "static/icons/star.svg"
+        },
+        {
+            "path2": "static/icons/stickies-fill.svg"
+        },
+        {
+            "path2": "static/icons/stickies.svg"
+        },
+        {
+            "path2": "static/icons/sticky-fill.svg"
+        },
+        {
+            "path2": "static/icons/sticky.svg"
+        },
+        {
+            "path2": "static/icons/stop-btn-fill.svg"
+        },
+        {
+            "path2": "static/icons/stop-btn.svg"
+        },
+        {
+            "path2": "static/icons/stop-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/stop-circle.svg"
+        },
+        {
+            "path2": "static/icons/stop-fill.svg"
+        },
+        {
+            "path2": "static/icons/stop.svg"
+        },
+        {
+            "path2": "static/icons/stoplights-fill.svg"
+        },
+        {
+            "path2": "static/icons/stoplights.svg"
+        },
+        {
+            "path2": "static/icons/stopwatch-fill.svg"
+        },
+        {
+            "path2": "static/icons/stopwatch.svg"
+        },
+        {
+            "path2": "static/icons/subtract.svg"
+        },
+        {
+            "path2": "static/icons/suit-club-fill.svg"
+        },
+        {
+            "path2": "static/icons/suit-club.svg"
+        },
+        {
+            "path2": "static/icons/suit-diamond-fill.svg"
+        },
+        {
+            "path2": "static/icons/suit-diamond.svg"
+        },
+        {
+            "path2": "static/icons/suit-heart-fill.svg"
+        },
+        {
+            "path2": "static/icons/suit-heart.svg"
+        },
+        {
+            "path2": "static/icons/suit-spade-fill.svg"
+        },
+        {
+            "path2": "static/icons/suit-spade.svg"
+        },
+        {
+            "path2": "static/icons/sun.svg"
+        },
+        {
+            "path2": "static/icons/sunglasses.svg"
+        },
+        {
+            "path2": "static/icons/symmetry-horizontal.svg"
+        },
+        {
+            "path2": "static/icons/symmetry-vertical.svg"
+        },
+        {
+            "path2": "static/icons/table.svg"
+        },
+        {
+            "path2": "static/icons/tablet-fill.svg"
+        },
+        {
+            "path2": "static/icons/tablet-landscape-fill.svg"
+        },
+        {
+            "path2": "static/icons/tablet-landscape.svg"
+        },
+        {
+            "path2": "static/icons/tablet.svg"
+        },
+        {
+            "path2": "static/icons/tag-fill.svg"
+        },
+        {
+            "path2": "static/icons/tag.svg"
+        },
+        {
+            "path2": "static/icons/tags-fill.svg"
+        },
+        {
+            "path2": "static/icons/tags.svg"
+        },
+        {
+            "path2": "static/icons/telegram.svg"
+        },
+        {
+            "path2": "static/icons/telephone-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-forward-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-forward.svg"
+        },
+        {
+            "path2": "static/icons/telephone-inbound-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-inbound.svg"
+        },
+        {
+            "path2": "static/icons/telephone-minus-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-minus.svg"
+        },
+        {
+            "path2": "static/icons/telephone-outbound-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-outbound.svg"
+        },
+        {
+            "path2": "static/icons/telephone-plus-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-plus.svg"
+        },
+        {
+            "path2": "static/icons/telephone-x-fill.svg"
+        },
+        {
+            "path2": "static/icons/telephone-x.svg"
+        },
+        {
+            "path2": "static/icons/telephone.svg"
+        },
+        {
+            "path2": "static/icons/terminal-fill.svg"
+        },
+        {
+            "path2": "static/icons/terminal.svg"
+        },
+        {
+            "path2": "static/icons/text-center.svg"
+        },
+        {
+            "path2": "static/icons/text-indent-left.svg"
+        },
+        {
+            "path2": "static/icons/text-indent-right.svg"
+        },
+        {
+            "path2": "static/icons/text-left.svg"
+        },
+        {
+            "path2": "static/icons/text-paragraph.svg"
+        },
+        {
+            "path2": "static/icons/text-right.svg"
+        },
+        {
+            "path2": "static/icons/textarea-resize.svg"
+        },
+        {
+            "path2": "static/icons/textarea-t.svg"
+        },
+        {
+            "path2": "static/icons/textarea.svg"
+        },
+        {
+            "path2": "static/icons/thermometer-half.svg"
+        },
+        {
+            "path2": "static/icons/thermometer.svg"
+        },
+        {
+            "path2": "static/icons/three-dots-vertical.svg"
+        },
+        {
+            "path2": "static/icons/three-dots.svg"
+        },
+        {
+            "path2": "static/icons/toggle-off.svg"
+        },
+        {
+            "path2": "static/icons/toggle-on.svg"
+        },
+        {
+            "path2": "static/icons/toggle2-off.svg"
+        },
+        {
+            "path2": "static/icons/toggle2-on.svg"
+        },
+        {
+            "path2": "static/icons/toggles.svg"
+        },
+        {
+            "path2": "static/icons/toggles2.svg"
+        },
+        {
+            "path2": "static/icons/tools.svg"
+        },
+        {
+            "path2": "static/icons/trash-fill.svg"
+        },
+        {
+            "path2": "static/icons/trash.svg"
+        },
+        {
+            "path2": "static/icons/trash2-fill.svg"
+        },
+        {
+            "path2": "static/icons/trash2.svg"
+        },
+        {
+            "path2": "static/icons/tree-fill.svg"
+        },
+        {
+            "path2": "static/icons/tree.svg"
+        },
+        {
+            "path2": "static/icons/triangle-fill.svg"
+        },
+        {
+            "path2": "static/icons/triangle-half.svg"
+        },
+        {
+            "path2": "static/icons/triangle.svg"
+        },
+        {
+            "path2": "static/icons/trophy-fill.svg"
+        },
+        {
+            "path2": "static/icons/trophy.svg"
+        },
+        {
+            "path2": "static/icons/truck-flatbed.svg"
+        },
+        {
+            "path2": "static/icons/truck.svg"
+        },
+        {
+            "path2": "static/icons/tv-fill.svg"
+        },
+        {
+            "path2": "static/icons/tv.svg"
+        },
+        {
+            "path2": "static/icons/twitch.svg"
+        },
+        {
+            "path2": "static/icons/twitter.svg"
+        },
+        {
+            "path2": "static/icons/type-bold.svg"
+        },
+        {
+            "path2": "static/icons/type-h1.svg"
+        },
+        {
+            "path2": "static/icons/type-h2.svg"
+        },
+        {
+            "path2": "static/icons/type-h3.svg"
+        },
+        {
+            "path2": "static/icons/type-italic.svg"
+        },
+        {
+            "path2": "static/icons/type-strikethrough.svg"
+        },
+        {
+            "path2": "static/icons/type-underline.svg"
+        },
+        {
+            "path2": "static/icons/type.svg"
+        },
+        {
+            "path2": "static/icons/ui-checks-grid.svg"
+        },
+        {
+            "path2": "static/icons/ui-checks.svg"
+        },
+        {
+            "path2": "static/icons/ui-radios-grid.svg"
+        },
+        {
+            "path2": "static/icons/ui-radios.svg"
+        },
+        {
+            "path2": "static/icons/union.svg"
+        },
+        {
+            "path2": "static/icons/unlock-fill.svg"
+        },
+        {
+            "path2": "static/icons/unlock.svg"
+        },
+        {
+            "path2": "static/icons/upc-scan.svg"
+        },
+        {
+            "path2": "static/icons/upc.svg"
+        },
+        {
+            "path2": "static/icons/upload.svg"
+        },
+        {
+            "path2": "static/icons/vector-pen.svg"
+        },
+        {
+            "path2": "static/icons/view-list.svg"
+        },
+        {
+            "path2": "static/icons/view-stacked.svg"
+        },
+        {
+            "path2": "static/icons/vinyl-fill.svg"
+        },
+        {
+            "path2": "static/icons/vinyl.svg"
+        },
+        {
+            "path2": "static/icons/voicemail.svg"
+        },
+        {
+            "path2": "static/icons/volume-down-fill.svg"
+        },
+        {
+            "path2": "static/icons/volume-down.svg"
+        },
+        {
+            "path2": "static/icons/volume-mute-fill.svg"
+        },
+        {
+            "path2": "static/icons/volume-mute.svg"
+        },
+        {
+            "path2": "static/icons/volume-off-fill.svg"
+        },
+        {
+            "path2": "static/icons/volume-off.svg"
+        },
+        {
+            "path2": "static/icons/volume-up-fill.svg"
+        },
+        {
+            "path2": "static/icons/volume-up.svg"
+        },
+        {
+            "path2": "static/icons/vr.svg"
+        },
+        {
+            "path2": "static/icons/wallet-fill.svg"
+        },
+        {
+            "path2": "static/icons/wallet.svg"
+        },
+        {
+            "path2": "static/icons/wallet2.svg"
+        },
+        {
+            "path2": "static/icons/watch.svg"
+        },
+        {
+            "path2": "static/icons/whatsapp.svg"
+        },
+        {
+            "path2": "static/icons/wifi-1.svg"
+        },
+        {
+            "path2": "static/icons/wifi-2.svg"
+        },
+        {
+            "path2": "static/icons/wifi-off.svg"
+        },
+        {
+            "path2": "static/icons/wifi.svg"
+        },
+        {
+            "path2": "static/icons/window-dock.svg"
+        },
+        {
+            "path2": "static/icons/window-sidebar.svg"
+        },
+        {
+            "path2": "static/icons/window.svg"
+        },
+        {
+            "path2": "static/icons/wrench.svg"
+        },
+        {
+            "path2": "static/icons/x-circle-fill.svg"
+        },
+        {
+            "path2": "static/icons/x-circle.svg"
+        },
+        {
+            "path2": "static/icons/x-diamond-fill.svg"
+        },
+        {
+            "path2": "static/icons/x-diamond.svg"
+        },
+        {
+            "path2": "static/icons/x-octagon-fill.svg"
+        },
+        {
+            "path2": "static/icons/x-octagon.svg"
+        },
+        {
+            "path2": "static/icons/x-square-fill.svg"
+        },
+        {
+            "path2": "static/icons/x-square.svg"
+        },
+        {
+            "path2": "static/icons/x.svg"
+        },
+        {
+            "path2": "static/icons/youtube.svg"
+        },
+        {
+            "path2": "static/icons/zoom-in.svg"
+        },
+        {
+            "path2": "static/icons/zoom-out.svg"
+        },
+        {
+            "path2": "static/images/bg-blur.jpg"
+        },
+        {
+            "path2": "static/images/bg.jpg"
+        },
+        {
+            "path2": "static/js/analyzer.js"
+        },
+        {
+            "path2": "static/js/funcs.js"
+        },
+        {
+            "path2": "static/js/jalalidatepicker.js"
+        },
+        {
+            "path2": "static/js/jalalidatepicker.min.js"
+        },
+        {
+            "path2": "static/js/jdatepicker.js"
+        },
+        {
+            "path2": "static/js/jquery.js"
+        },
+        {
+            "path2": "static/js/pdfFuncs.js"
+        },
+        {
+            "path2": "static/js/temp.js"
+        },
+        {
+            "path2": "static/logo/jpc.jpg"
+        },
+        {
+            "path2": "static/logo/pamidco.jpg"
+        },
+        {
+            "path2": "static/logo/pamidco.png"
+        },
+        {
+            "path2": "static/logo/temp.avif"
+        },
+        {
+            "path2": "static/logo/temp.webp"
+        }
+    ],
+    "count_of_new": 1503,
+    "modify": [],
+    "count_of_modify": 0,
+    "delete": [],
+    "count_of_delete": 0,
+    "log_identifier": "kov3a8tzm9uyb1wd435n52m2r3zpdlva7de2tb7r5pp5fft9i9"
+}
