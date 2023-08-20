@@ -27,9 +27,11 @@ class Project(models.Model):
     advisor = models.CharField(max_length=250,)
 
     contract_subject = models.CharField(max_length=250,)
-    contract_type = models.IntegerField(choices=CONTRACT_TYPES) # TODO : maybe to be changed later to an independent class and make it foreignkey
+    # contract_type = models.IntegerField(choices=CONTRACT_TYPES)
+    contract_type = models.CharField(max_length=250,) # TODO : maybe to be changed later to an independent class and make it foreignkey
     contract_number = models.CharField(max_length=15,
-                                       validators=[RegexValidator(r'^\d{1,10}$', 'Enter a valid number.')],
+                                       # validators=[RegexValidator(r'^\d{1,10}$', 'Enter a valid number.')],
+                                       # validators=[RegexValidator(r'^[\d\w\\/]{1,10}$', 'Enter a valid number.')],
                                        )
     start_date = jmodels.jDateField(null=True, blank=True)
     contract_duration = models.IntegerField()
