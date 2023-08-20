@@ -8,7 +8,7 @@ from .models import *
 # admin.site.register(Position)
 # admin.site.register(PositionCount)
 # admin.site.register(ProfessionCount)
-admin.site.register(DailyReport)
+# admin.site.register(DailyReport)
 # admin.site.register(Material)
 # admin.site.register(MaterialCount)
 # admin.site.register(Unit)
@@ -25,10 +25,9 @@ admin.site.register(DailyReport)
 
 # admin.site.register(ProjectUser, ProjectUserAdmin)
 
-
 admin.site.register(MyUser)
 admin.site.register(Project)
 
-admin.site.register(IssueReport)
-admin.site.register(Issue)
-admin.site.register(IssueCount)
+# admin.site.register(IssueReport)
+# admin.site.register(Issue)
+# admin.site.register(IssueCount)

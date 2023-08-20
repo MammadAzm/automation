@@ -401,7 +401,7 @@ class SubOperation(models.Model):
     name = models.CharField(max_length=250,)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
-    parent = models.ForeignKey(Operation, on_delete=models.PROTECT, )
+    parent = models.ForeignKey(Operation, on_delete=models.CASCADE, )
 
     weight = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(100.0)], default=0.0)
 
@@ -426,7 +426,7 @@ class SubOperation(models.Model):
 
 class ZoneOperation(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
-    operation = models.ForeignKey(Operation, on_delete=models.PROTECT)
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
@@ -583,7 +583,7 @@ class ParentTask(models.Model):
 
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
-    parent = models.ForeignKey(ParentTask, on_delete=models.PROTECT)
+    parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.PROTECT)
     suboperation = models.ForeignKey(SubOperation, on_delete=models.PROTECT, null=True, blank=True)
     equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
