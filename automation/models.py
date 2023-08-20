@@ -268,7 +268,7 @@ class Equipe(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
     profession = models.ForeignKey(Profession, on_delete=models.PROTECT)
     contractor = models.ForeignKey(Contractor, on_delete=models.PROTECT)
-    name = models.CharField(max_length=150, unique=True, blank=True)
+    name = models.CharField(max_length=150, blank=True)
 
     def set_name(self):
         self.name = self.profession.name + "-" + self.contractor.name
@@ -500,7 +500,7 @@ class ParentTask(models.Model):
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
-    unique_str = models.CharField(max_length=250, unique=True)
+    unique_str = models.CharField(max_length=250,)
 
     totalVolume = models.FloatField(default=0.1, )
     doneVolume = models.FloatField(default=0.0, )
@@ -593,7 +593,7 @@ class Task(models.Model):
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
-    unique_str = models.CharField(max_length=250, unique=True)
+    unique_str = models.CharField(max_length=250)
     totalVolume = models.FloatField(default=0.1,)
     doneVolume = models.FloatField(default=0.0,)
     donePercentage = models.FloatField(default=0.0,)
