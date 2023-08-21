@@ -37,7 +37,6 @@ class Project(models.Model):
     start_date = jmodels.jDateField(null=True, blank=True)
     contract_duration = models.IntegerField()
     contract_address = models.CharField(max_length=250, )
-
     final_worth = models.CharField(max_length=250, default="0")
 
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)
