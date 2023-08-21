@@ -27,50 +27,6 @@ import re
 
 from django.db.models import Case, When, Value, IntegerField
 
-def temp(request):
-    # template = get_template('pdf_A4_dailyReport_inDetails_humanresources_portrait.html')
-    #
-    # context = {'title': 'Sample PDF Report', 'content': 'This is a sample PDF report content.'}
-    # html = template.render(context)
-    #
-    # pdf = HTML(string=html).write_pdf()
-    #
-    # response = HttpResponse(pdf, content_type='application/pdf')
-    # response['Content-Disposition'] = 'filename="report.pdf"'
-
-    # buffer = BytesIO()
-    # p = canvas.Canvas(buffer)
-    #
-    # # Draw the text content onto the PDF
-    # p.drawString(100, 750, "PDF Report Example")
-    # p.drawString(100, 700, context['title'])
-    # p.drawString(100, 650, context['content'])
-    #
-    # p.showPage()
-    # p.save()
-
-    # pdf = buffer.getvalue()
-    # buffer.close()
-    # response.write(pdf)
-
-    # return response
-
-
-
-    return render(request, "pdf_A4_dailyReport_inDetails_humanresources_portrait.html",)
-
-def temp2(request):
-    return render(request, "pdf_A4_dailyReport_inDetails_machines_materials_portrait.html",)
-
-def temp3(request):
-    return render(request, "pdf_A4_dailyReport_inDetails_materials_portrait.html",)
-
-def temp4(request):
-    return render(request, "pdf_A4_dailyReport_inDetails_tasks_landscape.html",)
-
-def temp5(request):
-    return render(request, "pdf_A4_dailyReport_inDetails_issues_portrait.html",)
-
 
 def home(request):
     if request.user.is_authenticated:
@@ -1783,11 +1739,19 @@ def save_daily_report_to_db(request):
                     if status == "solved":
                         issueReport.complete(report.date)
 
-                    obj = IssueCount.objects.create(
-                        project=project,
-                        dailyReport=report,
-                        issue=issueReport,
-                    )
+                        obj = IssueCount.objects.create(
+                            project=project,
+                            dailyReport=report,
+                            issue=issueReport,
+                            state=False,
+                        )
+                    else:
+                        obj = IssueCount.objects.create(
+                            project=project,
+                            dailyReport=report,
+                            issue=issueReport,
+                            state=True,
+                        )
                     report.issues.add(obj.issue)
 
                     issueReport.issueCounts.add(obj)
@@ -1862,6 +1826,7 @@ def edit_daily_report_in_db(request):
                 materialproviders = MaterialProvider.objects.filter(project=project)
                 machineproviders = MachineProvider.objects.filter(project=project)
                 tasks = TaskReport.objects.filter(dailyReport=report, project=project)
+                issues = IssueCount.objects.filter(dailyReport=report, project=project)
 
                 other = {
                     "weekday": report.get_weekday_display(),
@@ -1880,6 +1845,7 @@ def edit_daily_report_in_db(request):
                     "materialproviders": materialproviders,
                     "machineproviders": machineproviders,
                     "tasks": tasks,
+                    "issues": issues,
                     "machine_types": MACHINE_TYPES,
                     "other": other,
                 }
@@ -2185,6 +2151,53 @@ def edit_daily_report_in_db(request):
                     report.cal_countPeople()
                     report.cal_countMachines()
 
+                for issue, status in issues.items():
+                    issue_name, projectField, zone, description = issue.split(" - ")
+
+                    issue = Issue.objects.get(
+                        project=project,
+                        name=issue_name
+                    )
+                    projectField = ProjectField.objects.get(
+                        project=project,
+                        name=projectField,
+                    )
+                    zone = Zone.objects.get(
+                        project=project,
+                        name=zone,
+                    )
+
+                    issueReport = IssueReport.objects.get(project=project,
+                                                          issue=issue,
+                                                          projectField=projectField,
+                                                          zone=zone,
+                                                          description=description)
+
+                    if not issueReport.started:
+                        issueReport.start(report.date)
+
+                    if status == "solved":
+                        issueReport.complete(report.date)
+
+                        obj = IssueCount.objects.create(
+                            project=project,
+                            dailyReport=report,
+                            issue=issueReport,
+                            state=False,
+                        )
+                    else:
+                        issueReport.uncomplete()
+                        obj = IssueCount.objects.create(
+                            project=project,
+                            dailyReport=report,
+                            issue=issueReport,
+                            state=True,
+                        )
+                    report.issues.add(obj.issue)
+
+                    issueReport.issueCounts.add(obj)
+
+
                 # return redirect(to="/home/daily-reports")
                 return HttpResponse(True)
 
@@ -2272,6 +2285,7 @@ def print_report_on_day(request, idd):
     MACHINE_MAX_COUNT = 34 #33
     MATERIAL_MAX_COUNT = 34 #33
     TASK_MAX_COUNT = 16 #8
+    ISSUE_MAX_COUNT = 34  # 33
 
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
@@ -2589,22 +2603,37 @@ def print_report_on_day(request, idd):
     context["helper"]["entire_items"] = done_task_zone
     context["helper"]["parentTaskPercents"] = parentTaskPercents
 
+    issues = IssueCount.objects.filter(project=project, dailyReport=report)
+    page_count = int(len(issues) / ISSUE_MAX_COUNT) + 1
 
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                issues[i * ISSUE_MAX_COUNT:(i + 1) * ISSUE_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                issues[i * ISSUE_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
 
+    context_issues = {
+        "page_count": int(len(issues) / ISSUE_MAX_COUNT) + 1,
+        "obj_count": len(issues),
+        "max_count": ISSUE_MAX_COUNT,
+        "rem_rows": [ISSUE_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["issues"] = {
+        "page_count": page_count,
+        "issues": context_issues,
+    }
 
     return render(request, "pdf_A4_dailyReport_inDetails.html", context=context)
 
-    # context = {
-    #     "report": report,
-    #     "positions": positions,
-    #     "professions": professions,
-    #     "machines": machines,
-    #     "materials": materials,
-    #     "equipes": equipes,
-    #     "tasks": tasks,
-    #     "other": other,
-    # }
-    # return render(request, "print-report.html", context=context)
 
 
 @login_required
@@ -2615,6 +2644,7 @@ def print_report_compact_on_day(request, idd):
     MACHINE_MAX_COUNT = 34 #33
     MATERIAL_MAX_COUNT = 34 #33
     TASK_MAX_COUNT = 16 #8
+    ISSUE_MAX_COUNT = 34 #33
 
     user = MyUser.objects.get(user=request.user)
     project = user.projects.all()[0]
@@ -2909,19 +2939,38 @@ def print_report_compact_on_day(request, idd):
     # context["helper"]["entire_items"] = done_task_zone
     # context["helper"]["parentTaskPercents"] = parentTaskPercents
 
+    issues = IssueCount.objects.filter(project=project, dailyReport=report)
+    page_count = int(len(issues) / ISSUE_MAX_COUNT) + 1
+
+    distributed_objs = []
+    for i in range(page_count):
+        if i != page_count - 1:
+            distributed_objs.append(
+                issues[i * ISSUE_MAX_COUNT:(i + 1) * ISSUE_MAX_COUNT]
+            )
+        else:
+            distributed_objs.append(
+                issues[i * ISSUE_MAX_COUNT:]
+            )
+    while len(distributed_objs) != page_count:
+        distributed_objs.append([])
+
+    context_issues = {
+        "page_count": int(len(issues) / ISSUE_MAX_COUNT) + 1,
+        "obj_count": len(issues),
+        "max_count": ISSUE_MAX_COUNT,
+        "rem_rows": [ISSUE_MAX_COUNT - len(distributed_objs[i]) for i in range(page_count)],
+        "objects": distributed_objs,
+    }
+
+    context["issues"] = {
+        "page_count": page_count,
+        "issues": context_issues,
+    }
+
     return render(request, "pdf_A4_dailyReport_compact.html", context=context)
 
-    # context = {
-    #     "report": report,
-    #     "positions": positions,
-    #     "professions": professions,
-    #     "machines": machines,
-    #     "materials": materials,
-    #     "equipes": equipes,
-    #     "tasks": tasks,
-    #     "other": other,
-    # }
-    # return render(request, "print-report.html", context=context)
+
 
 
 @login_required

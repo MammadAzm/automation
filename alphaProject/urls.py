@@ -22,12 +22,6 @@ from automation.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("temp/", temp, name="temp"),
-    path("temp2/", temp2, name="temp2"),
-    path("temp3/", temp3, name="temp3"),
-    path("temp4/", temp4, name="temp4"),
-    path("temp5/", temp5, name="temp5"),
-
     path("home/", home, name="home"),
 
     path('login/', login_view, name='login'),

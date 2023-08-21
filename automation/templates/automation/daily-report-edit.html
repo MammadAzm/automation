@@ -687,38 +687,41 @@
                         </thead>
 
                         <tbody>
-
-                            {% for issueReport in issueReports %}
+<!--                            issueReport actually means issueCount here-->
+                            {% for issueReport in issues %}
                                 <tr  id="{{issueReport}}">
                                     <td>
 <!--                                        <span class="badge rounded-pill"-->
 <!--                                            style="margin-left: 0pt; color: black;">-->
 <!--                                            <img src="{% static 'icons/patch-minus.svg' %}"/>-->
 <!--                                        </span>-->
-                                        {{ issueReport.issue.name }}
+                                        {{ issueReport.issue.issue.name }}
                                     </td>
 
                                     <td>
-                                        {{ issueReport.projectField.name }}
+                                        {{ issueReport.issue.projectField.name }}
                                     </td>
 
                                     <td>
-                                        {{ issueReport.zone.name }}
+                                        {{ issueReport.issue.zone.name }}
                                     </td>
 
                                     <td>
 <!--                                        <input style="border-radius: 0; text-align: center;"  required class="form-control py-0" id="issueReport_{{issueReport}}_today"-->
 <!--                                               name="issueReport_{{issueReport}}_today" type="text" maxlength="255">-->
-                                        {{issueReport.description}}
+                                        {{issueReport.issue.description}}
                                     </td>
 
                                     <td class="text-centred">
                                         <select required class="form-select" name="issueReport_{{ issueReport }}_status"
                                             style="font-size: 11px; padding: 0; padding-right: 20%; border-radius: 0; text-align: center;">
-
-                                            <option selected value="exists" >موجود</option>
-                                            <option value="solved" >رفع</option>
-
+                                            {% if issueReport.state %}
+                                                <option selected value="exists" >موجود</option>
+                                                <option value="solved" >رفع</option>
+                                            {% else %}
+                                                <option value="exists" >موجود</option>
+                                                <option selected value="solved" >رفع</option>
+                                            {% endif %}
                                         </select>
                                     </td>
                                 </tr>

@@ -916,6 +916,11 @@ class IssueReport(models.Model):
         self.solved = True
         self.save()
 
+    def uncomplete(self,):
+        self.completion_date = None
+        self.solved = False
+        self.save()
+
     class Meta:
         unique_together = ('project', 'issue', 'projectField', 'zone', 'description')
 
@@ -927,6 +932,7 @@ class IssueCount(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
     issue = models.ForeignKey(IssueReport, on_delete=models.PROTECT)
     dailyReport = models.ForeignKey("DailyReport", on_delete=models.CASCADE)
+    state = models.BooleanField(default=True, )
 
     class Meta:
         unique_together = ('dailyReport', 'project', 'issue')

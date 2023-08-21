@@ -1,18 +1,13 @@
-{% extends "pdf_A4_dailyReport_inDetails_base.html" %}
 {% load static %}
 {% load bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+{% load mathfilters %}
+{% load custom_tags %}
 
-<html dir="rtl">
-<head>
-    <title>A4 Template</title>
-</head>
-<body>
-    {% block content %}
+{% for page_number in data.page_count|arange %}
     <div class="box">
-
-        {% include 'pdf_A4_dailyReport_headers.html' with data="A" %}
+        {% include 'pdf_A4_dailyReport_headers.html' with data=headers %}
 
         <div class="content">
             <table class="table-label">
@@ -53,159 +48,53 @@
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                نقص نقشه
-                            </td>
-                            <td>
-                                سیویل
-                            </td>
-                            <td>
-                                طبقه اول
-                            </td>
-                            <td>
-                                description for issue report 01 for issue 01
-                            </td>
-                            <td>
-                                موجود
-                            </td>
-                        </tr>
+                        {% for obj in data.issues.objects|getIndex:page_number %}
+                            <tr>
+                                <td>
+                                    {{obj.issue.issue}}
+                                </td>
+                                <td>
+                                    {{obj.issue.projectField}}
+                                </td>
+                                <td>
+                                    {{obj.issue.zone}}
+                                </td>
+                                <td>
+                                    {{obj.issue.description}}
+                                </td>
+                                <td>
+                                    {% if obj.state %}
+                                        موجود
+                                    {%else%}
+                                        رفع شد
+                                    {%endif%}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                        {% if data.positions.objects|getIndex:page_number|length <  data.positions.max_count %}
+
+                            {% for i in data.issues.rem_rows|getIndex:page_number|arange %}
+                                <tr style="border: none">
+                                    <td style="border: none">
+                                        &nbsp;
+                                    </td>
+                                    <td style="border: none">
+                                        &nbsp;
+                                    </td>
+                                    <td style="border: none">
+                                        &nbsp;
+                                    </td>
+                                    <td style="border: none">
+                                        &nbsp;
+                                    </td>
+                                    <td style="border: none">
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
 
                     </tbody>
                 </table>
@@ -215,6 +104,5 @@
 <!--        <div class="footer">-->
 <!--        </div>-->
     </div>
-    {% endblock %}
-</body>
-</html>
+
+{% endfor %}
