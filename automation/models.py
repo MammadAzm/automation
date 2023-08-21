@@ -38,6 +38,8 @@ class Project(models.Model):
     contract_duration = models.IntegerField()
     contract_address = models.CharField(max_length=250, )
 
+    final_worth = models.CharField(max_length=250, default="0")
+
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)
 
     dailyReports = models.ManyToManyField("DailyReport", related_name="dailyReports", null=True, blank=True)
