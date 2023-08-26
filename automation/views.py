@@ -1207,6 +1207,31 @@ def add_suboperation_to_db(request):
 
         operation.update_assignedWeight()
 
+        parentTasks = ParentTask.objects.filter(project=project, operation__in=operation.zones.all())
+
+        for parentTask in parentTasks:
+            taskVol_for_subopr = (float(parentTask.totalVolume) / float(parentTask.operation.operation.amount)) * float(new_obj.amount)
+            new_task, new = Task.objects.get_or_create(
+                project=project,
+                parent=parentTask,
+                operation=parentTask.operation,
+                suboperation=new_obj,
+                equipe=parentTask.equipe,
+                zone=parentTask.zone,
+
+                defaults={
+                    'totalVolume': taskVol_for_subopr,
+                    'unit': unit,
+                }
+            )
+
+            new_task.set_unique()
+            new_task.update_percentage()
+
+            parentTask.subtasks.add(new_task)
+
+            parentTask.operation.tasks.add(new_task)
+            parentTask.operation.update_assignedAmount()
 
         return HttpResponse(1)
 
