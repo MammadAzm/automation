@@ -106,7 +106,7 @@ def add_base_data_template(request):
     if not tasks.exists():
         tasks = []
     if not parentTasks.exists():
-        tasks = []
+        parentTasks = []
     if not units.exists():
         units = []
     if not materialproviders.exists():
@@ -163,6 +163,35 @@ def edit_base_data(request):
             object.name = new_data['name']
             object.save()
 
+            if new_data["model"] == "contractor":
+                equipes = Equipe.objects.filter(project=project, contractor=object)
+                for item in equipes:
+                    item.set_name()
+
+                for item in Task.objects.filter(project=project, equipe__in=equipes):
+                    item.set_unique()
+
+                for item in ParentTask.objects.filter(project=project, equipe__in=equipes):
+                    item.set_unique()
+
+            elif new_data["model"] == "zone":
+                for item in Task.objects.filter(project=project, zone=object):
+                    item.set_unique()
+
+                for item in ParentTask.objects.filter(project=project, zone=object):
+                    item.set_unique()
+
+            elif new_data["model"] == "profession":
+                equipes = Equipe.objects.filter(project=project, profession=object)
+                for item in equipes:
+                    item.set_name()
+
+                for item in Task.objects.filter(project=project, equipe__in=equipes):
+                    item.set_unique()
+
+                for item in ParentTask.objects.filter(project=project, equipe__in=equipes):
+                    item.set_unique()
+
             return HttpResponse(True)
 
         elif new_data["model"] == "equipe":
@@ -179,8 +208,8 @@ def edit_base_data(request):
             if contractor:
                 object.contractor = Contractor.objects.get(name=contractor, project=project)
 
+            object.save()
             object.set_name()
-
             object.save()
 
             return HttpResponse(True)
@@ -197,6 +226,13 @@ def edit_base_data(request):
             )
             if name and name.strip() != object.name:
                 object.name = name.strip()
+                operations = ZoneOperation.objects.filter(project=project, operation=object)
+                for item in Task.objects.filter(project=project, operation__in=operations):
+                    item.set_unique()
+
+                for item in ParentTask.objects.filter(project=project, operation__in=operations):
+                    item.set_unique()
+
 
             if amount and amount.strip() != str(object.amount):
                 object.amount = amount.strip()
@@ -282,6 +318,9 @@ def edit_base_data(request):
 
             if name and name != object.name:
                 object.name = name
+                for item in Task.objects.filter(project=project, suboperation=object):
+                    item.set_unique()
+
             if weight and float(weight) != float(object.weight):
                 object.weight = weight
                 object.save()
@@ -1712,6 +1751,7 @@ def save_daily_report_to_db(request):
 
                 for task, amount in tasks.items():
                     if amount > 0:
+                        print(task)
                         tsk = Task.objects.get(unique_str=task, project=project)
 
                         if not tsk.started:
@@ -1784,7 +1824,8 @@ def save_daily_report_to_db(request):
         # return redirect(to="/home/daily-reports")
             return HttpResponse(True)
 
-        except:
+        except Exception as err:
+            print(err)
             return HttpResponse("Something went wrong", status=500)
     else:
         return -1
@@ -3572,7 +3613,7 @@ def get_subtask_in_report(request):
             )
         else:
             report = None
-
+        print(equipe)
         operation = Operation.objects.get(name=operation, project=project)
         zone = Zone.objects.get(name=zone, project=project)
         equipe = Equipe.objects.get(name=equipe, project=project)

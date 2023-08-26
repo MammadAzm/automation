@@ -647,7 +647,6 @@ class Task(models.Model):
         if not self.parent.started:
             self.parent.start(date=date)
 
-
     def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
         self.save()
