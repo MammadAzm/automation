@@ -30,17 +30,11 @@
                                 {% else %}
 
                                     {% if data.values|readIndex:value == headers|readIndex:header %}
-        <!--                                {{ header }} <br>-->
-        <!--                                {{ level }} <br>-->
-        <!--                                {{ priorities_values }} <br>-->
-        <!--                                {{ priorities_values|getIndex:level }}-->
-        <!--                                {% if header in priorities_values|getIndex:level %}-->
                                             <td class="" style="width: 22%">{{ header }}</td>
                                             <td class="" style="width: 22%">{{ value.doneVolume }}</td>
                                             <td class="" style="width: 22%">{{ value.totalVolume }}</td>
                                             <td class="" style="width: 12%">{{ value.unit }}</td>
                                             <td class="" style="width: 22%">{{ value.donePercentage|floatformat:2 }} %</td>
-                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             </tr>

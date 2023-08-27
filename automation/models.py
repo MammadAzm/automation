@@ -497,7 +497,7 @@ class ZoneOperation(models.Model):
 class ParentTask(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.PROTECT)
-    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
+    equipe = models.ForeignKey(Contractor, on_delete=models.PROTECT)
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
@@ -575,7 +575,7 @@ class ParentTask(models.Model):
         self.operation.update_doneAmount()
 
     def set_unique(self):
-        self.unique_str = self.operation.operation.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        self.unique_str = self.operation.operation.name + "-" + self.equipe.name + "-" + self.zone.name
         self.save()
 
     class Meta:
@@ -590,7 +590,7 @@ class Task(models.Model):
     parent = models.ForeignKey(ParentTask, on_delete=models.CASCADE)
     operation = models.ForeignKey(ZoneOperation, on_delete=models.PROTECT)
     suboperation = models.ForeignKey(SubOperation, on_delete=models.PROTECT, null=True, blank=True)
-    equipe = models.ForeignKey(Equipe, on_delete=models.PROTECT)
+    equipe = models.ForeignKey(Contractor, on_delete=models.PROTECT)
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
 
@@ -660,7 +660,7 @@ class Task(models.Model):
             self.reset()
 
     def set_unique(self):
-        self.unique_str = self.operation.operation.name + "-" + self.suboperation.name + "-" + self.equipe.profession.name + "-" + self.equipe.contractor.name + "-" + self.zone.name
+        self.unique_str = self.operation.operation.name + "-" + self.suboperation.name + "-" + self.equipe.name + "-" + self.zone.name
         self.save()
 
     class Meta:
@@ -694,7 +694,7 @@ class TaskReport(models.Model):
     def update_filtering_fields(self):
         self.operation = self.task.operation.operation
         self.zone = self.task.zone
-        self.equipe = self.task.equipe
+        # self.equipe = self.task.equipe
 
         self.save()
 
