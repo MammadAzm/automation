@@ -111,6 +111,7 @@ urlpatterns = [
     path("edit-db/get-zoneoperations/", get_zoneoperations),
     path("edit-db/get-all-equipes/", get_all_equipes),
     path("edit-db/get-equipes-in-report/", get_equipes_in_report),
+    path("edit-db/get-equipes2-in-report/", get_equipes2_in_report),
     path("edit-db/get-freeAmount/", get_freeAmount),
     path("edit-db/get-zones/", get_zones),
     path("edit-db/get-materialproviders/", get_materialproviders),

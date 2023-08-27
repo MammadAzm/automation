@@ -590,10 +590,10 @@
                         <tbody>
 
                             {% for task in tasks %}
-                                <tr  id="{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.task.equipe}}-{{task.task.zone}}">
+                                <tr  id="{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}">
                                     <td>
                                         <span class="badge rounded-pill"
-                                            style="margin-left: 0pt; color: black; " onclick="del_task_in_report('{{task.task.parent.operation.operation.name}}', '{{ task.task.suboperation.name }}', '{{ task.task.equipe }}', '{{ task.task.zone }}', false)">
+                                            style="margin-left: 0pt; color: black; " onclick="del_task_in_report('{{task.task.parent.operation.operation.name}}', '{{ task.task.suboperation.name }}', '{{ task.equipe }}', '{{ task.task.zone }}', false)">
                                             <img src="{% static 'icons/patch-minus.svg' %}"/>
                                         </span>
                                         {{ task.task.parent.operation.operation.name }}
@@ -604,7 +604,7 @@
                                     </td>
 
                                     <td>
-                                        {{ task.task.equipe }}
+                                        {{ task.equipe }}
                                     </td>
 
                                     <td>
@@ -612,17 +612,18 @@
                                     </td>
 
                                     <td class="text-centred">
-                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{ task.task.unique_str }}_today"
-                                               name="task_{{ task.task.unique_str }}_today" min="0" value="0" type="number"
+                                        <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today"
+                                               name="task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today" min="0" value="0" type="number"
                                                max="{{ task.task.totalVolume|sub:task.task.doneVolume }}"
-                                                onkeyup="update_live_total_done('task_{{ task.task.unique_str }}{{ task.unique_str }}_today')">
+                                                onkeyup="update_live_total_done('task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today')">
                                     </td>
 
-                                    <td class="text-centred" id="doneVolume_task_{{ task.task.unique_str }}_today">
+                                    <td class="text-centred" id="doneVolume_task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today">
+
                                         {{ task.task.doneVolume }}
                                     </td>
 
-                                    <td class="text-centred" id="live_total_done_task_{{ task.task.unique_str }}_today">
+                                    <td class="text-centred" id="live_total_done_task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today">
 
                                     </td>
 
@@ -1073,14 +1074,25 @@
                             </div>
 
                             <div id="equipe-box" style="width: 50%;">
-                                <select class="select2" id="select2-equipe" onselect=""
+                                <select class="select2" id="select2-equipe" onchange="handle_select('contractor')"
                                         name="equipe" style="width: 100%; border: solid black" onclick="">
                                     <option disabled selected value="">
-                                        انتخاب اکبپ
+                                        انتخاب پیمانکار
                                     </option>
                                 </select>
                             </div>
 
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div id="equipe-box2" style="width: 100%;">
+                                <select class="select2" id="select2-equipe2" required
+                                        name="equipe2" style="width: 100%; border: solid black" onclick="">
+                                    <option disabled selected value="">
+                                        انتخاب اکیپ
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="input-group mb-3">
@@ -1587,7 +1599,7 @@
                             <select required class="select2" id="select2-equipe-shortcut"
                                     name="equipe" style="width: 100%; border: solid black" onclick="">
                                 <option disabled selected value="">
-                                    انتخاب اکبپ
+                                    انتخاب پیمانکار
                                 </option>
                             </select>
                         </div>

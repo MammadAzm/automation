@@ -109,7 +109,7 @@
                                 </td>
 
                                 <td>{{obj.task.parent.totalVolume|floatformat:1}}</td> <!-- کل عملیات اصلی -->
-
+                                <script>console.log('{{helper}}')</script>
                                 <td rowspan="2"> <!-- درصد عملیات اصلی -->
                                     {{ helper.parentTaskPercents|return_item:obj.task.parent.id|floatformat:2}}%
                                 </td>

@@ -1598,7 +1598,8 @@ function del_task_in_report(taskOperation, taskSubOperation, equipeName, zoneNam
                 obj.remove()
                 }
         });
-    } else {
+    }
+    else {
         let obj = document.getElementById(taskOperation+"-"+taskSubOperation+"-"+equipeName+"-"+zoneName)
         obj.remove()
     }
@@ -2817,7 +2818,8 @@ function add_task_to_base_data(shortcut=null) {
                     }
                 }
             });
-    } else {
+    }
+    else {
         let taskName = document.getElementById("task-name").value
         document.getElementById("task-name").value = "";
 
@@ -4015,12 +4017,15 @@ function submitForm(ID, type, shortcut=null,) {
             let opr = formData.get("operation")
             let subopr = formData.get("suboperation")
             let zoneopr = formData.get("zoneoperation")
-            let equipe = formData.get("equipe")
+            let equipe = formData.get("equipe2")
             let unit = formData.get("unit")
 
-            let select = document.getElementById("select2-equipe")
+            let select = document.getElementById("select2-equipe2")
 
             $("#select2-equipe").empty().append(
+                '<option value="" selected disabled>انتخاب پیمانکار</option>'
+            )
+            $("#select2-equipe2").empty().append(
                 '<option value="" selected disabled>انتخاب اکیپ</option>'
             )
 
@@ -4183,9 +4188,12 @@ function submitForm(ID, type, shortcut=null,) {
             let equipe = formData.get("equipe")
             let unit = formData.get("unit")
 
-            let select = document.getElementById("select2-equipe")
+            let select = document.getElementById("select2-equipe2")
 
             $("#select2-equipe").empty().append(
+                '<option value="" selected disabled>انتخاب پیمانکار</option>'
+            )
+            $("#select2-equipe2").empty().append(
                 '<option value="" selected disabled>انتخاب اکیپ</option>'
             )
 
@@ -5018,7 +5026,7 @@ function submitForm(ID, type, shortcut=null,) {
                 $("#select2-equipe").empty().append(
                     '<option value="" selected disabled>انتخاب اکیپ</option>'
                 )
-                fetch_all_equipes(function (equipes) {
+                fetch_contractors(function (equipes) {
                     equipes.forEach(equipe => {
                         let option = document.createElement('option',)
                         option.value = equipe.name
@@ -6606,7 +6614,7 @@ function handle_select(type) {
         $("#select2-"+type+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب زیرآیتم </option>'
         )
-        $("#select2-zoneoperation+shortcut").empty().append(
+        $("#select2-zoneoperation"+shortcut).empty().append(
             '<option value="" selected disabled>انتخاب موقعیت آیتم </option>'
         )
         let subtype = document.getElementById("select2-operation"+shortcut).value
@@ -6661,9 +6669,9 @@ function handle_select(type) {
     }
     else if (type === "equipe") {
         $("#select2-"+type+shortcut).empty().append(
-            '<option value="" selected disabled>انتخاب اکیپ</option>'
+            '<option value="" selected disabled>انتخاب پیمانکار</option>'
         )
-        fetch_all_equipes(function (equipes) {
+        fetch_contractors(function (equipes) {
             equipes.forEach(equipe => {
                 let option = document.createElement('option',)
                 option.value = equipe.name
@@ -6698,6 +6706,7 @@ function handle_select(type) {
         let opr = document.getElementById('select2-operation'+shortcut).value
         let subopr = document.getElementById('select2-suboperation'+shortcut).value
         let zone = document.getElementById('select2-zoneoperation'+shortcut).value
+
         $.ajax({
             url: '/edit-db/get-equipes-in-report/',
             type: 'POST',
@@ -6715,14 +6724,73 @@ function handle_select(type) {
                 let select = document.getElementById("select2-equipe"+shortcut)
 
                 $("#select2-equipe"+shortcut).empty().append(
-                    '<option value="" selected disabled>انتخاب اکیپ</option>'
+                    '<option value="" selected disabled>انتخاب پیمانکار</option>'
                 )
                 for (let i=0; i<tasks.length; i++) {
                     let splitted = tasks[i].split("-")
 
                     let option = document.createElement("option")
-                    option.value = splitted[2] + "-" + splitted[3]
-                    option.innerText = splitted[2] + "-" + splitted[3]
+                    option.value = splitted[2] //+ "-" + splitted[3]
+                    option.innerText = splitted[2] //+ "-" + splitted[3]
+
+                    select.appendChild(option)
+                }
+
+            }
+        })
+
+
+    }
+    else if ( type === "contractor") {
+
+        let opr = document.getElementById('select2-operation'+shortcut).value
+        let subopr = document.getElementById('select2-suboperation'+shortcut).value
+        let zone = document.getElementById('select2-zoneoperation'+shortcut).value
+        let contractor = document.getElementById('select2-equipe'+shortcut).value
+
+        let table_tasks = document.getElementById("table-task")
+        let rows = table_tasks.querySelectorAll("tr")
+        for (let i=0; i<rows.length; i++){
+            let row = rows[i]
+            let ID = row.id
+            if (ID.includes(opr)) {
+                if (ID.includes(subopr)) {
+                    if (ID.includes(zone)) {
+                        if (ID.includes(contractor)) {
+                            alert("عملیات انتخابی قبلا به جدول اضافه شده است")
+                            handle_select('zone_in_report')
+                            return 0
+                        }
+                    }
+                }
+            }
+        }
+        $.ajax({
+            url: '/edit-db/get-equipes2-in-report/',
+            type: 'POST',
+            data: {
+                'operation': opr,
+                'suboperation': subopr,
+                'zone': zone,
+                'contractor': contractor,
+            },
+            beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            },
+            success: function(response) {
+                // let tasks = JSON.parse(response['tasks'])
+                let equipes = JSON.parse(response['equipes'])
+                let select = document.getElementById("select2-equipe2"+shortcut)
+
+                $("#select2-equipe2"+shortcut).empty().append(
+                    '<option value="" selected disabled>انتخاب اکیپ</option>'
+                )
+                for (let i=0; i<equipes.length; i++) {
+                    let splitted = equipes[i]
+
+                    let option = document.createElement("option")
+                    option.value = splitted.name
+                    option.innerText = splitted.name
 
                     select.appendChild(option)
                 }
@@ -6829,6 +6897,9 @@ function handle_select(type) {
 
         $('#select2-equipe'+shortcut).select2({
             dropdownParent: $("#equipe-box"+shortcut)
+        });
+        $('#select2-equipe2'+shortcut).select2({
+            dropdownParent: $("#equipe-box2"+shortcut)
         });
 
         $('#select2-filtering-model').select2({
@@ -7611,6 +7682,7 @@ function handle_formula_priority(priority=null, nonVolume=null ) {
             "zone" : "موقعیت",
             "operation" : "آیتم های قراردادی",
             // "suboperation" : "آیتم  اجرایی",
+            // "contractor" : "پیمانکار",
             "equipe" : "پیمانکار",
         }
         var select_priorities = ["one", "two", "three", "four", "five"]
@@ -7709,6 +7781,7 @@ function submitPriorityFormulaVolumes() {
         "zone" : "موقعیت",
         "operation" : "آیتم های قراردادی",
         // "suboperation" : "آیتم  اجرایی",
+        // "contractor" : "پیمانکار",
         "equipe" : "پیمانکار",
     }
     show_volume_filters()

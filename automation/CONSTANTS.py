@@ -199,6 +199,7 @@ MODELS = {
 
 MODELS_PERSIAN = {
     "equipe": "پیمانکار",
+    "contractor": "پیمانکار",
     "zone": "موقعیت",
     "operation": "عملیات",
 

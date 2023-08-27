@@ -838,7 +838,7 @@ def add_task_to_db(request,):
 
         new_parent_task, new = ParentTask.objects.get_or_create(
             operation=zoneoperation,
-            equipe=Equipe.objects.get(name=equipeName, project=project),
+            equipe=Contractor.objects.get(name=equipeName, project=project),
             zone=Zone.objects.get(name=zoneName, project=project),
             project=project,
 
@@ -868,7 +868,7 @@ def add_task_to_db(request,):
                     name=suboperation.name,
                     parent=operation,
                 ),
-                equipe=Equipe.objects.get(name=equipeName, project=project),
+                equipe=Contractor.objects.get(name=equipeName, project=project),
                 zone=Zone.objects.get(name=zoneName, project=project),
 
                 defaults={
@@ -1467,7 +1467,7 @@ def del_task_from_db(request):
             #     name=taskSubOperation,
             #     parent=Operation.objects.get(name=taskOperation),
             # ),
-            equipe=Equipe.objects.get(name=equipeName, project=project),
+            equipe=Contractor.objects.get(name=equipeName, project=project),
             zone=Zone.objects.get(name=zoneName, project=project),
         )
         obj.delete()
@@ -1751,7 +1751,14 @@ def save_daily_report_to_db(request):
 
                 for task, amount in tasks.items():
                     if amount > 0:
-                        print(task)
+                        equipeName = task.split("-")[2] + "-" + task.split("-")[3]
+
+                        index_to_drop = 2
+                        task = '-'.join(task.split('-')[:index_to_drop] + task.split('-')[index_to_drop + 1:])
+
+                        # print(equipeName)
+                        # print(task)
+
                         tsk = Task.objects.get(unique_str=task, project=project)
 
                         if not tsk.started:
@@ -1767,6 +1774,7 @@ def save_daily_report_to_db(request):
                             todayVolume=amount,
                             reportDate=report.date,
                             parentTask=tsk.parent,
+                            equipe=Equipe.objects.get(project=project, name=equipeName)
                         )
 
                         tsk_rep.update_percentage(False, date=report.date)
@@ -1825,7 +1833,7 @@ def save_daily_report_to_db(request):
             return HttpResponse(True)
 
         except Exception as err:
-            print(err)
+            # print(err)
             return HttpResponse("Something went wrong", status=500)
     else:
         return -1
@@ -2305,7 +2313,8 @@ def report_on_day(request, idd):
     done_task_zone = []
     parentTaskPercents = {}
     for task in tasks:
-        ids = Equipe.objects.filter(profession=task.task.equipe.profession, project=project).values_list('id', flat=True)
+        ids = Contractor.objects.filter(name=task.task.equipe, project=project).values_list('id', flat=True)
+        # print(">>>>", ids)
         objs = Task.objects.filter(equipe__id__in=ids, project=project)
         entire_item_vol = 0
         entire_item_done = 0
@@ -2625,7 +2634,7 @@ def print_report_on_day(request, idd):
     done_task_zone = []
     parentTaskPercents = {}
     for task in tasks:
-        ids = Equipe.objects.filter(profession=task.task.equipe.profession, project=project).values_list('id', flat=True)
+        ids = Contractor.objects.filter(name=task.task.equipe, project=project).values_list('id', flat=True)
         objs = Task.objects.filter(equipe__id__in=ids, project=project)
         entire_item_vol = 0
         entire_item_done = 0
@@ -2636,9 +2645,9 @@ def print_report_on_day(request, idd):
         done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
 
         if task.task.parent.id in parentTaskPercents.keys():
-            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.totalVolume * 100 + task.todayVolume / task.task.totalVolume * 100) * task.task.suboperation.weight / 100
+            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
         else:
-            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.totalVolume*100 + task.todayVolume/task.task.totalVolume*100)*task.task.suboperation.weight/100
+            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.parent.totalVolume*100 + task.todayVolume/task.task.parent.totalVolume*100)*task.task.suboperation.weight/100
 
     distributed_objs = []
     for i in range(page_count):
@@ -3613,10 +3622,10 @@ def get_subtask_in_report(request):
             )
         else:
             report = None
-        print(equipe)
+        # print(equipe)
         operation = Operation.objects.get(name=operation, project=project)
         zone = Zone.objects.get(name=zone, project=project)
-        equipe = Equipe.objects.get(name=equipe, project=project)
+        contractor = Contractor.objects.get(name=equipe.split("-")[1], project=project)
         suboperation = SubOperation.objects.get(name=suboperation, parent=operation, project=project)
 
         zoneoperation = ZoneOperation.objects.get(operation=operation, zone=zone, project=project)
@@ -3625,7 +3634,7 @@ def get_subtask_in_report(request):
             project=project,
             operation=zoneoperation,
             suboperation=suboperation,
-            equipe=equipe,
+            equipe=contractor,
             zone=zone,
         )
 
@@ -3643,7 +3652,7 @@ def get_subtask_in_report(request):
         }
 
         instance_fields = {
-            'equipe': subtask.equipe.name,
+            'equipe': equipe,
             'unit': subtask.unit.name,
             'zone': subtask.zone.name,
             'totalVolume': subtask.totalVolume,
@@ -3754,6 +3763,32 @@ def get_equipes_in_report(request):
             data = []
         context = {
             "tasks": data,
+        }
+        return JsonResponse(context)
+
+
+@login_required
+def get_equipes2_in_report(request):
+    user = MyUser.objects.get(user=request.user)
+    project = user.projects.all()[0]
+
+    if request.method == "POST":
+        operation = request.POST.get('operation')
+        suboperation = request.POST.get('suboperation')
+        zone = request.POST.get('zone')
+        contractor = request.POST.get('contractor')
+
+        contractor = Contractor.objects.get(project=project, name=contractor)
+
+        equipes = Equipe.objects.filter(project=project, contractor=contractor)
+
+        if equipes.exists():
+            data = json.dumps(list(equipes.values()))
+        else:
+            data = "[]"
+
+        context = {
+            "equipes": data,
         }
         return JsonResponse(context)
 
@@ -3944,9 +3979,11 @@ def group_queryset(queryset, pivot_fields, target, analyzeType, headers=[]):
     if not pivot_fields:
         return list(queryset), headers
     pivot_field = pivot_fields[0]
+
     hdrs = headers.copy()
     grouped_results = {}
     for key, group in groupby(queryset, key=lambda obj: getattr(obj, pivot_field)):
+        # print(">>>", key)
         hdrs = headers.copy()
         hdrs.append(key.name)
         # Recursively group the remaining queryset for the next pivot fields
@@ -3981,11 +4018,9 @@ def group_queryset(queryset, pivot_fields, target, analyzeType, headers=[]):
                 }
                 finalAttribute = "AMOUNT"
 
-
             cache_ids = []
             # print(nested_results)
             for result_obj in nested_results:
-
                 instance = result_obj
                 for attribute in OUTPUT_TARGETS[target]["ID"]:
                     instance = getattr(instance, attribute)
@@ -4063,6 +4098,8 @@ def analyzer(request):
             for key in sorted(list(data.keys())):
                 if "priority" in key:
                     priority, typee, _ = key.split("_")
+                    # if typee == "equipe":
+                    #     typee = "contractor"
                     if '0' in data[key]:
                         data[key] = 0
                         objs = FILTERS[typee].objects.filter(project=project)
@@ -4109,25 +4146,25 @@ def analyzer(request):
                 requested_models_persian.append(MODELS_PERSIAN[item])
 
             parentTasks = ParentTask.objects.filter(project=project)
+
             for model in requested_models:
                 q_filter = Q()
-
-                for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
-                    index = MODELS_PATH_TO_EXCLUDE[model]['models'].index(step)
-                    field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
-                    if field is not None:
-                        q_filter |= Q(**{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
-                        requested_instances[model] = step.objects.filter(q_filter).filter(project=project).values_list('id', flat=True)
-
+                if model != "equipe":
+                    for step in MODELS_PATH_TO_EXCLUDE[model]['models']:
+                        index = MODELS_PATH_TO_EXCLUDE[model]['models'].index(step)
+                        field = getattr(step, f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}", None)
+                        if field is not None:
+                            q_filter |= Q(**{f"{MODELS_PATH_TO_EXCLUDE[model]['attrs'][index]}_id__in": requested_instances[model]})
+                            requested_instances[model] = step.objects.filter(q_filter).filter(project=project).values_list('id', flat=True)
                 q_filter = Q()
                 field = getattr(ParentTask, f"{model}", None)
                 if field is not None:
                     q_filter |= Q(**{f"{model}_id__in": requested_instances[model]})
                     parentTasks = parentTasks.filter(q_filter).filter(project=project)
 
+
             parentTasks = parentTasks.filter(project=project).values_list('id', flat=True)
             taskReports = TaskReport.objects.filter(parentTask_id__in=parentTasks, project=project)
-
             if "lower-date" in query_formula and "upper-date" in query_formula:
                 taskReports = taskReports.filter(
                     project=project,
@@ -4139,9 +4176,8 @@ def analyzer(request):
                     "upper": query["upper-date-jalali"].replace("-", "/"),
                 }
 
-            # print(taskReports)
-
             taskReports = taskReports.order_by(*requested_models)
+
             target = findOutputTarget(requested_models)
             tree, _ = group_queryset(taskReports, requested_models, target=target, analyzeType=data["analyze-type"][0])
 
@@ -4360,7 +4396,7 @@ def analyzer(request):
             'context': True,
             'isRecord': isRecord,
             'analyzeType': data["analyze-type"][0],
-            'onRent': True if data["analyze-type"][0]=="machine" and onRent else False,
+            'onRent': True if data["analyze-type"][0] == "machine" and onRent else False,
             'priority_depths': priority_depth-1,
             'priorities_values': priorities_values,
             'priorityTypes': requested_models_persian,
@@ -4396,7 +4432,7 @@ def get_options_in_priority(request):
 
         if priority == "time":
             pass
-            pass
+
         elif priority == "zone":
             objs = Zone.objects.filter(project=project)
             if objs.exists():
@@ -4518,14 +4554,13 @@ def get_task_filters(request):
             if '0' in items:
                 tasks = ParentTask.objects.filter(
                     project=project,
-                    equipe__in=Equipe.objects.filter(project=project,
-                                                     contractor__in=Contractor.objects.filter(project=project))
+                    equipe__in=Contractor.objects.filter(project=project,)
                 )
                 items = Contractor.objects.filter(project=project).values_list("name", flat=True)
             else:
                 tasks = ParentTask.objects.filter(
                     project=project,
-                    equipe__in=Equipe.objects.filter(project=project, contractor__in=Contractor.objects.filter(name__in=items, project=project))
+                    equipe__in=Contractor.objects.filter(project=project, name__in=items,)
                 )
         elif model == "task":
             if '0' in items:
@@ -4550,18 +4585,18 @@ def get_task_filters(request):
 
         for task in tasks:
             if model == "task":
-                if task.equipe.contractor.name not in data[task.operation.operation.name]:
+                if task.equipe.name not in data[task.operation.operation.name]:
                     # data[task.operation.operation.name].append(task.equipe.contractor.name)
                     data[task.operation.operation.name].append({
-                        "target": task.equipe.contractor.name,
+                        "target": task.equipe.name,
                         "zone": task.operation.zone.name,
                         "amount": task.totalVolume,
                         "unit": task.operation.unit.name,
                     })
             elif model == "contractor":
-                if task.operation not in data[task.equipe.contractor.name]:
+                if task.operation not in data[task.equipe.name]:
                     # data[task.equipe.contractor.name].append(task.operation.operation.name)
-                    data[task.equipe.contractor.name].append({
+                    data[task.equipe.name].append({
                         "target": task.operation.operation.name,
                         "zone": task.operation.zone.name,
                         "amount": task.totalVolume,
