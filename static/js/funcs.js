@@ -4185,7 +4185,7 @@ function submitForm(ID, type, shortcut=null,) {
             let opr = formData.get("operation")
             let subopr = formData.get("suboperation")
             let zoneopr = formData.get("zoneoperation")
-            let equipe = formData.get("equipe")
+            let equipe = formData.get("equipe2")
             let unit = formData.get("unit")
 
             let select = document.getElementById("select2-equipe2")

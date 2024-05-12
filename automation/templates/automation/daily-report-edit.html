@@ -613,7 +613,7 @@
 
                                     <td class="text-centred">
                                         <input style="border-radius: 0; text-align: center;"  required class="small-input-integer" id="task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today"
-                                               name="task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today" min="0" value="0" type="number"
+                                               name="task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today" min="0" value="{{ task.todayVolume }}" type="number"
                                                max="{{ task.task.totalVolume|sub:task.task.doneVolume }}"
                                                 onkeyup="update_live_total_done('task_{{task.task.parent.operation.operation.name}}-{{task.task.suboperation.name}}-{{task.equipe}}-{{task.task.zone}}_today')">
                                     </td>

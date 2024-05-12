@@ -937,4 +937,6 @@ class IssueCount(models.Model):
         unique_together = ('dailyReport', 'project', 'issue')
 
     def __str__(self):
-        return self.dailyReport.short_date.strftime(format="%Y/%m/%d") + ": " + self.project.name + " - " + self.issue.issue.name + " - " + self.issue.projectField.name + " - " + self.issue.zone.name
+        # return self.dailyReport.short_date.strftime(format="%Y/%m/%d") + ": " + self.project.name + " - " + self.issue.issue.name + " - " + self.issue.projectField.name + " - " + self.issue.zone.name
+        return self.issue.issue.name + " - " + self.issue.projectField.name + " - " + self.issue.zone.name + " - " + self.issue.description
+

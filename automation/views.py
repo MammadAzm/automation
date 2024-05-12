@@ -1,3 +1,6 @@
+import traceback
+import linecache
+
 from django.db import transaction
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
@@ -15,11 +18,6 @@ import json
 from django.db.models import Q
 
 from itertools import groupby
-from operator import attrgetter
-from functools import reduce
-from operator import or_
-from django.db.models import F
-from operator import itemgetter
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -1484,6 +1482,7 @@ def del_task_from_db(request):
 
     return HttpResponse(-1)
 
+import os, sys
 
 @login_required
 def save_daily_report_to_db(request):
@@ -1586,7 +1585,6 @@ def save_daily_report_to_db(request):
 
         try:
             with transaction.atomic():
-
                 report = DailyReport.objects.create(
                     project=project,
                     project_name=data['project_name'][0],
@@ -1787,6 +1785,11 @@ def save_daily_report_to_db(request):
                 for issue, status in issues.items():
                     issue_name, projectField, zone, description = issue.split(" - ")
 
+                    print(issue_name)
+                    print(projectField)
+                    print(zone)
+                    print(description)
+
                     issue = Issue.objects.get(
                         project=project,
                         name=issue_name
@@ -1832,8 +1835,11 @@ def save_daily_report_to_db(request):
         # return redirect(to="/home/daily-reports")
             return HttpResponse(True)
 
-        except Exception as err:
-            # print(err)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            print(e)
             return HttpResponse("Something went wrong", status=500)
     else:
         return -1
@@ -2202,6 +2208,11 @@ def edit_daily_report_in_db(request):
 
                     for task, amount in tasks.items():
                         if amount > 0:
+                            equipeName = task.split("-")[2] + "-" + task.split("-")[3]
+
+                            index_to_drop = 2
+                            task = '-'.join(task.split('-')[:index_to_drop] + task.split('-')[index_to_drop + 1:])
+
                             tsk = Task.objects.get(unique_str=task, project=project)
 
                             if not tsk.started:
@@ -2217,6 +2228,7 @@ def edit_daily_report_in_db(request):
                                 todayVolume=amount,
                                 reportDate=report.date,
                                 parentTask=tsk.parent,
+                                equipe=Equipe.objects.get(project=project, name=equipeName),
                             )
                             tsk_rep.update_percentage(False, date=report.date)
                             tsk_rep.update_filtering_fields()
@@ -2275,7 +2287,14 @@ def edit_daily_report_in_db(request):
                 # return redirect(to="/home/daily-reports")
                 return HttpResponse(True)
 
-            except:
+            except Exception as e:
+                # Print the error line number and description
+                tb = traceback.TracebackException.from_exception(e)
+                last_frame = tb.stack[0]
+                line_number = last_frame.lineno
+                filename = last_frame.filename
+                line = linecache.getline(filename, line_number).strip()
+                print(f"Error at line {line_number}: {line}\n{e}")
                 return HttpResponse("Something went wrong", status=500)
 
 
