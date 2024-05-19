@@ -23,6 +23,7 @@ admin.site.register(TaskReport)
 #
 admin.site.register(Operation)
 admin.site.register(SubOperation)
+admin.site.register(ZoneOperation)
 
 
 admin.site.register(MyUser)

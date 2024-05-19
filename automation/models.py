@@ -469,7 +469,6 @@ class ZoneOperation(models.Model):
             self.doneAmount = 0.0
             for task in self.parentTasks.all():
                 self.doneAmount += task.doneVolume
-
         else:
             if action == "+":
                 self.doneAmount += amount
@@ -556,8 +555,8 @@ class ParentTask(models.Model):
     def update_doneVolume(self, date=None):
         self.doneVolume = 0
         for subtask in self.subtasks.all():
-            self.doneVolume += subtask.doneVolume * subtask.suboperation.weight / 100
-
+            # self.doneVolume += subtask.doneVolume * subtask.suboperation.weight / 100
+            self.doneVolume += subtask.doneVolume / subtask.totalVolume * subtask.parent.totalVolume * subtask.suboperation.weight / 100
         self.save()
         self.update_percentage(date=date)
         pass
@@ -565,14 +564,13 @@ class ParentTask(models.Model):
     def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
         self.save()
-
         if not self.donePercentage < 100:
             self.complete(date=date)
 
         elif self.donePercentage <= 0.0:
             self.reset()
-
         self.operation.update_doneAmount()
+
 
     def set_unique(self):
         self.unique_str = self.operation.operation.name + "-" + self.equipe.name + "-" + self.zone.name
@@ -650,9 +648,7 @@ class Task(models.Model):
     def update_percentage(self, date=None):
         self.donePercentage = (self.doneVolume / self.totalVolume)*100
         self.save()
-
         self.parent.update_doneVolume(date=date)
-
         if not self.donePercentage < 100:
             self.complete(date=date)
 
@@ -723,13 +719,9 @@ class TaskReport(models.Model):
 
         else:
             self.task.doneVolume -= self.todayVolume
-
             self.save()
-
             self.task.update_percentage(date=date)
-
             self.task.suboperation.update_doneAmount(amount=self.todayVolume, action="-")
-
             self.task.check_completion()
 
     def __str__(self):
