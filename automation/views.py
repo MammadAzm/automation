@@ -1785,11 +1785,6 @@ def save_daily_report_to_db(request):
                 for issue, status in issues.items():
                     issue_name, projectField, zone, description = issue.split(" - ")
 
-                    print(issue_name)
-                    print(projectField)
-                    print(zone)
-                    print(description)
-
                     issue = Issue.objects.get(
                         project=project,
                         name=issue_name
@@ -1836,10 +1831,10 @@ def save_daily_report_to_db(request):
             return HttpResponse(True)
 
         except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            print(e)
+            # exc_type, exc_obj, exc_tb = sys.exc_info()
+            # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            # print(exc_type, fname, exc_tb.tb_lineno)
+            # print(e)
             return HttpResponse("Something went wrong", status=500)
     else:
         return -1
@@ -1877,7 +1872,14 @@ def del_daily_report_from_db(request):
 
                 return redirect(to="/home/daily-reports")
 
-            except:
+            except Exception as e:
+                # Print the error line number and description
+                # tb = traceback.TracebackException.from_exception(e)
+                # last_frame = tb.stack[0]
+                # line_number = last_frame.lineno
+                # filename = last_frame.filename
+                # line = linecache.getline(filename, line_number).strip()
+                # print(f"Error at line {line_number}: {line}\n{e}")
                 return HttpResponse("Something went wrong", status=500)
 
         else:
@@ -2289,12 +2291,12 @@ def edit_daily_report_in_db(request):
 
             except Exception as e:
                 # Print the error line number and description
-                tb = traceback.TracebackException.from_exception(e)
-                last_frame = tb.stack[0]
-                line_number = last_frame.lineno
-                filename = last_frame.filename
-                line = linecache.getline(filename, line_number).strip()
-                print(f"Error at line {line_number}: {line}\n{e}")
+                # tb = traceback.TracebackException.from_exception(e)
+                # last_frame = tb.stack[0]
+                # line_number = last_frame.lineno
+                # filename = last_frame.filename
+                # line = linecache.getline(filename, line_number).strip()
+                # print(f"Error at line {line_number}: {line}\n{e}")
                 return HttpResponse("Something went wrong", status=500)
 
 
@@ -2343,10 +2345,12 @@ def report_on_day(request, idd):
 
         done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
 
+
         if task.task.parent.id in parentTaskPercents.keys():
-            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
+            # parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
+            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
         else:
-            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.parent.totalVolume*100 + task.todayVolume/task.task.parent.totalVolume*100)*task.task.suboperation.weight/100
+            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
 
     machines = machines.order_by('-provider',)
 
@@ -2664,9 +2668,10 @@ def print_report_on_day(request, idd):
         done_task_zone.append([task.id, entire_item_done / entire_item_vol * 100, entire_item_vol])
 
         if task.task.parent.id in parentTaskPercents.keys():
-            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
+            # parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) * task.task.suboperation.weight / 100
+            parentTaskPercents[task.task.parent.id] += (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
         else:
-            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume/task.task.parent.totalVolume*100 + task.todayVolume/task.task.parent.totalVolume*100)*task.task.suboperation.weight/100
+            parentTaskPercents[task.task.parent.id] = (task.preDoneVolume / task.task.parent.totalVolume * 100 + task.todayVolume / task.task.parent.totalVolume * 100) / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
 
     distributed_objs = []
     for i in range(page_count):
@@ -2935,34 +2940,13 @@ def print_report_compact_on_day(request, idd):
 
     tsks = {}
 
-    # if you want it based on Operation model==============================================
-    """
-    for task in tasks:
-        if task.task.operation.operation.name in tsks.keys():
-            tsks[task.task.operation.operation.name]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
 
-        else:
-            tsks[task.task.operation.operation.name] = {
-                'name': task.task.operation.operation.name,
-                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
-                'preDoneVolume': 0.0,
-                'entire_item_vol': task.task.operation.operation.amount,
-                'entire_item_done': 0.0,
-                'entire_item_done_percent': 0.0,
-                'unit': task.task.unit,
-            }
-
-    for task in history:
-        if task.task.operation.operation.name in tsks.keys():
-            tsks[task.task.operation.operation.name]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
-
-    # endif--------------------------------------------------------------------------------
-    """
     # if you want it based on ZoneOperation model==============================================
+
     for task in tasks:
         if task.task.operation in tsks.keys():
-            tsks[task.task.operation][
-                'todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            # tsks[task.task.operation]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            tsks[task.task.operation]['todayVolume'] += task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
 
             if task.parentTask.completed:
                 if task.parentTask.completion_date > tsks[task.task.operation]['completion_date']:
@@ -2977,7 +2961,8 @@ def print_report_compact_on_day(request, idd):
                 'parentID': task.task.parent.id,
                 'name': task.task.operation.operation.name,
                 'zone': task.task.operation.zone.name,
-                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                # 'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                'todayVolume': task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100,
                 'preDoneVolume': 0.0,
                 'entire_item_vol': task.task.operation.amount,
                 'entire_item_done': 0.0,
@@ -2989,9 +2974,8 @@ def print_report_compact_on_day(request, idd):
 
     for task in history:
         if task.task.operation in tsks.keys():
-            tsks[task.task.operation][
-                'preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
-
+            # tsks[task.task.operation]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            tsks[task.task.operation]['preDoneVolume'] += task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
     # endif--------------------------------------------------------------------------------
 
     for key, value in tsks.items():
@@ -3089,40 +3073,19 @@ def compact_report_on_day(request, idd):
     history = history.exclude(id__in=tasks.values('id'), project=project)
     tsks = {}
 
-    # if you want it based on Operation model==============================================
-    """
-    for task in tasks:
-        if task.task.operation.operation.name in tsks.keys():
-            tsks[task.task.operation.operation.name]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
 
-        else:
-            tsks[task.task.operation.operation.name] = {
-                'name': task.task.operation.operation.name,
-                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
-                'preDoneVolume': 0.0,
-                'entire_item_vol': task.task.operation.operation.amount,
-                'entire_item_done': 0.0,
-                'entire_item_done_percent': 0.0,
-                'unit': task.task.unit,
-            }
-
-    for task in history:
-        if task.task.operation.operation.name in tsks.keys():
-            tsks[task.task.operation.operation.name]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
-    
-    # endif--------------------------------------------------------------------------------
-    """
     # if you want it based on ZoneOperation model==============================================
     for task in tasks:
         if task.task.operation in tsks.keys():
-            tsks[task.task.operation][
-                'todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            # tsks[task.task.operation]['todayVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            tsks[task.task.operation]['todayVolume'] += task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
 
         else:
             tsks[task.task.operation] = {
                 'name': task.task.operation.operation.name,
                 'zone': task.task.operation.zone.name,
-                'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                # 'todayVolume': task.todayVolume * task.task.suboperation.weight / 100,
+                'todayVolume': task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100,
                 'preDoneVolume': 0.0,
                 'entire_item_vol': task.task.operation.amount,
                 'entire_item_done': 0.0,
@@ -3132,8 +3095,8 @@ def compact_report_on_day(request, idd):
 
     for task in history:
         if task.task.operation in tsks.keys():
-            tsks[task.task.operation][
-                'preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            # tsks[task.task.operation]['preDoneVolume'] += task.todayVolume * task.task.suboperation.weight / 100
+            tsks[task.task.operation]['preDoneVolume'] += task.todayVolume / task.task.totalVolume * task.task.parent.totalVolume * task.task.suboperation.weight / 100
 
     # endif--------------------------------------------------------------------------------
 
@@ -4069,7 +4032,7 @@ def group_queryset(queryset, pivot_fields, target, analyzeType, headers=[]):
                     pass
 
                 if analyzeType == "Ahjam":
-                    data["doneVolume"] += (result_obj.todayVolume * result_obj.task.suboperation.weight / 100)
+                    data["doneVolume"] += (result_obj.todayVolume / result_obj.task.totalVolume * result_obj.task.parent.totalVolume * result_obj.task.suboperation.weight / 100)
                     data["donePercentage"] = data["doneVolume"] / data["totalVolume"] * 100
 
             for k in FILTER_KEY_NAMES[type(key)]:
